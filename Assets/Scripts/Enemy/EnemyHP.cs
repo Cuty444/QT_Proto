@@ -26,7 +26,6 @@ public class EnemyHP : MonoBehaviour
         if (_currentHp <= 0)
             return;
         _currentHp -= damage;
-        Debug.Log(QT.Util.Math.floatNormalization(_currentHp, _maxHp, 0));
         _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _maxHp, 0);
         if(_currentHp == 0)
         {

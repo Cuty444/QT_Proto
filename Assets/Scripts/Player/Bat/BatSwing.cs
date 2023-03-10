@@ -1,9 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
+using QT.Core.Player;
 using UnityEngine;
 
 public class BatSwing : MonoBehaviour
 {
+    private PlayerSystem _playerSystem;
+    private void Start()
+    {
+        _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (enabled == false)
@@ -18,6 +27,7 @@ public class BatSwing : MonoBehaviour
             Ball.ForceChange();
             Ball.IsShot = true;
             Ball.gameObject.layer = LayerMask.NameToLayer("BallHit");
+            _playerSystem.BatSwingBallHitEvent.Invoke();
         }
     }
 }

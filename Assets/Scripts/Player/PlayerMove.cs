@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
-using QT.Core.Player;
+using QT.Data;
 namespace QT.Player
 {
 
@@ -20,7 +20,7 @@ namespace QT.Player
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyMoveEvent.AddListener(SetMoveDirection);
             inputSystem.OnKeyDownAttackEvent.AddListener(AttackOn);
-            _speed = SystemManager.Instance.GetSystem<PlayerSystem>().CharacterTable.MovementSpd;
+            _speed = SystemManager.Instance.GetSystem<GlobalDataSystem>().CharacterTable.MovementSpd;
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _currentReduceSpeed = 1f;
         }

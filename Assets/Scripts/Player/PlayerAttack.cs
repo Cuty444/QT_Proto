@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
 using QT.Core.Player;
+using QT.Data;
+
 namespace QT.Player
 {
     public class PlayerAttack : MonoBehaviour
@@ -26,11 +29,12 @@ namespace QT.Player
         // Start is called before the first frame update
         void Start()
         {
-            PlayerSystem playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-            _bulletSpeed = playerSystem.BallTable.ThrowSpd;
-            _coolTime = playerSystem.BatTable.AtkCooldown;
+            GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            _bulletSpeed = globalDataSystem.BallTable.ThrowSpd;
+            _coolTime = globalDataSystem.BatTable.AtkCooldown;
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyDownAttackEvent.AddListener(SetAttackDirection);
+            SystemManager.Instance.GetSystem<PlayerSystem>().BallMinSpdDestroyedEvent.AddListener(BallObjectDestroyedChecking);
             //inputSystem.OnRightKeyDownGrapEvent.AddListener(GrapCheck);
             _currentCoolTime = _coolTime;
             _batSwing.enabled = false;
@@ -39,6 +43,10 @@ namespace QT.Player
         private void Update()
         {
             _currentCoolTime += Time.deltaTime;
+        }
+
+        private void LateUpdate()
+        {
             PlayerAngle();
         }
 
@@ -127,7 +135,11 @@ namespace QT.Player
             _batSwing.enabled = false;
         }
 
-
+        private void BallObjectDestroyedChecking(GameObject gameObject)
+        {
+            _tempBallObject = null;
+        }
+        
         //private void GrapCheck()
         //{
         //    if (_currentGrapCoolTime < _grapCoolTime)
