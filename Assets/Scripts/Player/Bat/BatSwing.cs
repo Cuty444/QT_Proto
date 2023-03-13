@@ -3,14 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Player;
+using QT.Data;
+using UnityEditor.Playables;
 using UnityEngine;
 
 public class BatSwing : MonoBehaviour
 {
     private PlayerSystem _playerSystem;
+    private GlobalDataSystem _globalDataSystem;
     private void Start()
     {
         _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
+        _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -20,13 +24,30 @@ public class BatSwing : MonoBehaviour
         if(collision.gameObject.layer == LayerMask.NameToLayer("Ball") || collision.gameObject.layer == LayerMask.NameToLayer("BallHit"))
         {
             Vector2 _attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            float bulletAngleRadian = Mathf.Atan2(_attackDirection.y - transform.position.y, _attackDirection.x - transform.position.x);
-            float bulletAngleDegree = 180 / Mathf.PI * bulletAngleRadian;
+            float bulletAngleDegree = QT.Util.Math.GetDegree(transform.position, _attackDirection);
             BallMove Ball = collision.GetComponent<BallMove>();
             Ball.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
             Ball.ForceChange();
             Ball.IsShot = true;
-            Ball.gameObject.layer = LayerMask.NameToLayer("BallHit");
+            if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerSystem.ChargeAtkPierce))
+            {
+                if (!QT.Util.Flags.ChargeAtkPierce.None.HasFlag(_playerSystem.ChargeAtkPierce))
+                {
+                    
+                    Ball.gameObject.layer = LayerMask.NameToLayer("BallHit");
+                    Debug.Log("BallHit");
+                }
+                else
+                {
+                    Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
+                    Debug.Log("Ball");
+                }
+            }
+            else
+            {
+                Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
+                Debug.Log("Ball");
+            }
             _playerSystem.BatSwingBallHitEvent.Invoke();
         }
     }

@@ -35,7 +35,7 @@ namespace QT.Player
             _moveDirection = dir.normalized;
         }
 
-        private void AttackOn(Vector2 d)
+        private void AttackOn()
         {
             _currentReduceSpeed = _reduceSpeed;
         }

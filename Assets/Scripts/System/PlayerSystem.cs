@@ -7,10 +7,13 @@ namespace QT.Core.Player
 {
     public class PlayerSystem : SystemBase
     {
+        private Util.Flags.ChargeAtkPierce _chargeAtkPierce;
+        public Util.Flags.ChargeAtkPierce ChargeAtkPierce { get => _chargeAtkPierce; set => _chargeAtkPierce = value; }
+
         private UnityEvent<GameObject> _ballMinSpdDestroyedEvent = new UnityEvent<GameObject>();
-        public UnityEvent<GameObject> BallMinSpdDestroyedEvent { get => _ballMinSpdDestroyedEvent; }
+        public UnityEvent<GameObject> BallMinSpdDestroyedEvent => _ballMinSpdDestroyedEvent;
 
         private UnityEvent _batSwingBallHitEvent = new UnityEvent();
-        public UnityEvent BatSwingBallHitEvent { get => _batSwingBallHitEvent; }
+        public UnityEvent BatSwingBallHitEvent => _batSwingBallHitEvent;
     }
 }

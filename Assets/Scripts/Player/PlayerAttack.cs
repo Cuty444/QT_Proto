@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using QT.Core;
 using QT.Core.Input;
 using QT.Core.Player;
@@ -19,108 +20,168 @@ namespace QT.Player
         //[SerializeField] private Transform _armTransform;
         [SerializeField] private TrailRenderer _trailRenderer;
         [SerializeField] private Transform _batPos;
-        [SerializeField] private BoxCollider2D _batBoxCollider2D;
+        [SerializeField] private RectTransform _playerCanvas;
+        [SerializeField] private RectTransform _chargingBarBackground;
         [SerializeField] private BatSwing _batSwing;
         [SerializeField] private float _rotationTime = 0.1f;
+
+        private Image _chargingBarImage;
+        
         private Vector2 _attackDirection;
-        private float _currentCoolTime;
+        private float _currentAtkCoolTime;
+        private float _currentChargingTime;
         private GameObject _tempBallObject = null;
         private bool _isUpDown = true;
+        private float[] _chargingMaxTimes;
+        private bool _isMouseDownCheck = false;
+
+        private PlayerSystem _playerSystem;
         // Start is called before the first frame update
         void Start()
         {
             GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             _bulletSpeed = globalDataSystem.BallTable.ThrowSpd;
             _coolTime = globalDataSystem.BatTable.AtkCooldown;
+            _chargingMaxTimes = globalDataSystem.BatTable.ChargingMaxTimes;
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
-            inputSystem.OnKeyDownAttackEvent.AddListener(SetAttackDirection);
-            SystemManager.Instance.GetSystem<PlayerSystem>().BallMinSpdDestroyedEvent.AddListener(BallObjectDestroyedChecking);
+            inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
+            inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
+            _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
+            _playerSystem.BallMinSpdDestroyedEvent.AddListener(BallObjectDestroyedChecking);
             //inputSystem.OnRightKeyDownGrapEvent.AddListener(GrapCheck);
-            _currentCoolTime = _coolTime;
+            _currentAtkCoolTime = _coolTime;
+            _currentChargingTime = 0f;
             _batSwing.enabled = false;
+            _isMouseDownCheck = false;
+            _chargingBarBackground.gameObject.SetActive(false);
+            _chargingBarImage = _chargingBarBackground.GetComponentsInChildren<Image>()[1];
         }
 
         private void Update()
         {
-            _currentCoolTime += Time.deltaTime;
+            _currentAtkCoolTime += Time.deltaTime;
+            if (_isMouseDownCheck)
+            {
+                _currentChargingTime += Time.deltaTime;
+                if (_currentChargingTime > _chargingMaxTimes[0])
+                {
+                    if (!_chargingBarBackground.gameObject.activeSelf)
+                    {
+                        _chargingBarBackground.gameObject.SetActive(true);
+                    }
+
+                    _chargingBarImage.fillAmount = QT.Util.Math.floatNormalization(_currentChargingTime,
+                        _chargingMaxTimes[_chargingMaxTimes.Length - 1], _chargingMaxTimes[0]);
+                }
+            }
         }
 
         private void LateUpdate()
         {
-            PlayerAngle();
+            _playerCanvas.transform.position = transform.position;
+            Angle();
         }
 
-
-        private void SetAttackDirection(Vector2 dir)
+        private void Angle()
         {
-            _attackDirection = Camera.main.ScreenToWorldPoint(dir);
-            AttackCheck();
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            float playerAngleDegree = Util.Math.GetDegree(transform.position,mousePos);
+            transform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
         }
 
-        private void AttackCheck()
+        private void KeyDownAttack()
         {
-            if (_currentCoolTime < _coolTime)
-                return;
+            _attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             if(_tempBallObject == null)
             {
                 AttackBulletInstate();
 
             }
+            else if (_currentAtkCoolTime < _coolTime)
+            {
+                return;
+            }
             else
             {
+                _isMouseDownCheck = true;
+                _currentChargingTime = 0f;
+            }
+        }
+
+        private void KeyUpAttack()
+        {
+            AttackCheck();
+            _isMouseDownCheck = false;
+        }
+        
+        private void AttackCheck()
+        {
+            if (!_isMouseDownCheck)
+                return;
+            if(_currentChargingTime <= _chargingMaxTimes[0])
+            {
+                // ÀÏ¹Ý½ºÀ®
                 AttackBatSwing();
+
+            }
+            else
+            {
+                // Â÷Â¡½ºÀ®
+                ChargingBatSwing();
             }
         }
 
         private void AttackBulletInstate()
         {
-            float bulletAngleRadian = Mathf.Atan2(_attackDirection.y - transform.position.y, _attackDirection.x - transform.position.x);
-            float bulletAngleDegree = 180 / Mathf.PI * bulletAngleRadian;
+            float bulletAngleDegree = Util.Math.GetDegree(transform.position, _attackDirection);
             BallMove Ball = Instantiate(_bulletObject).GetComponent<BallMove>();
             Ball.transform.position = transform.position;
             Ball.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
             Ball.BulletSpeed = _bulletSpeed;
-            //Ball.BulletRange = _bulletRange;
             Ball.IsShot = true;
             _tempBallObject = Ball.gameObject;
-            //_currentCoolTime = 0f;
         }
 
         private void AttackBatSwing()
         {
             float rotationSpeed;
+            _playerSystem.ChargeAtkPierce = Util.Flags.ChargeAtkPierce.None;
             if (_isUpDown == true)
             {
                 transform.localRotation = Quaternion.Euler(0f, 0f, -150f);
                 rotationSpeed = Mathf.DeltaAngle(_batPos.localEulerAngles.z, -30f) / _rotationTime;
-                StartCoroutine(BatSwing(_batPos,rotationSpeed, -30f, _batPos.localEulerAngles.z));
+                StartCoroutine(BatSwing(_batPos,rotationSpeed, -30f));
             }
             else
             {
                 transform.localRotation = Quaternion.Euler(0f, 0f, -30f);
                 rotationSpeed = (Mathf.DeltaAngle(_batPos.localEulerAngles.z, -150f) / _rotationTime) * -1f;
-                StartCoroutine(BatSwing(_batPos, rotationSpeed, -150f, _batPos.localEulerAngles.z));
+                StartCoroutine(BatSwing(_batPos, rotationSpeed, -150f));
             }
-            //float rotationSpeed = Mathf.DeltaAngle(_batPos.localEulerAngles.z, isUpDown ? -30f : -150f) / rotationTime;
-            //_batPos.rotation = Quaternion.RotateTowards(_batPos.rotation, targetRoation, Time.deltaTime * _swingSpeed);
             _isUpDown = !_isUpDown;
-            _currentCoolTime = 0f;
+            _currentAtkCoolTime = 0f;
         }
 
-        private void PlayerAngle()
+        private void ChargingBatSwing()
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            float playerAngleRadian = Mathf.Atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x);
-            float playerAngleDegree = 180 / Mathf.PI * playerAngleRadian;
-            transform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
+            AttackBatSwing();
+            for (int i = _chargingMaxTimes.Length - 1; i >= 0; i--)
+            {
+                if (_chargingMaxTimes[i] < _currentChargingTime)
+                {
+                    _playerSystem.ChargeAtkPierce = (Util.Flags.ChargeAtkPierce)(1 << i);
+                    break;
+                }
+            }
+            _chargingBarBackground.gameObject.SetActive(false);
         }
+        
 
-        private IEnumerator BatSwing(Transform targetTransform,float rotateSpeed,float targetZ,float startZ)
+        private IEnumerator BatSwing(Transform targetTransform,float rotateSpeed,float targetZ)
         {
             _trailRenderer.enabled = true;
             _batSwing.enabled = true;
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetZ);
-            Quaternion targetStartRotation = Quaternion.Euler(0f, 0f, startZ);
             float currentRotationTime = 0.0f;
             while(_rotationTime > currentRotationTime)
             {
@@ -139,7 +200,7 @@ namespace QT.Player
         {
             _tempBallObject = null;
         }
-        
+
         //private void GrapCheck()
         //{
         //    if (_currentGrapCoolTime < _grapCoolTime)
