@@ -12,8 +12,6 @@ namespace QT.Player
 {
     public class PlayerAttack : MonoBehaviour
     {
-        private float _coolTime;
-        private float _bulletSpeed;
         [Header("Bullet")]
         [SerializeField] private GameObject _bulletObject;
         //[Header("Arm")]
@@ -34,6 +32,9 @@ namespace QT.Player
         private bool _isUpDown = true;
         private float[] _chargingMaxTimes;
         private bool _isMouseDownCheck = false;
+        private float _coolTime;
+        private float _bulletSpeed;
+        private float[] _atkShootSpd;
 
         private PlayerSystem _playerSystem;
         // Start is called before the first frame update
@@ -43,6 +44,7 @@ namespace QT.Player
             _bulletSpeed = globalDataSystem.BallTable.ThrowSpd;
             _coolTime = globalDataSystem.BatTable.AtkCooldown;
             _chargingMaxTimes = globalDataSystem.BatTable.ChargingMaxTimes;
+            _atkShootSpd = globalDataSystem.BatTable.AtkShootSpd;
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
             inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
@@ -160,6 +162,10 @@ namespace QT.Player
             }
             _isUpDown = !_isUpDown;
             _currentAtkCoolTime = 0f;
+            if(!_chargingBarBackground.gameObject.activeSelf)
+            {
+                _playerSystem.ChargeAtkShootEvent.Invoke(_atkShootSpd[0]);
+            }
         }
 
         private void ChargingBatSwing()
@@ -170,6 +176,7 @@ namespace QT.Player
                 if (_chargingMaxTimes[i] < _currentChargingTime)
                 {
                     _playerSystem.ChargeAtkPierce = (Util.Flags.ChargeAtkPierce)(1 << i);
+                    _playerSystem.ChargeAtkShootEvent.Invoke(_atkShootSpd[i]);
                     break;
                 }
             }

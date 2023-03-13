@@ -15,7 +15,7 @@ public class CharacterTable : ScriptableObject
 
     [SerializeField]
     [Tooltip("캐릭터 히트박스 원형 반지름값")]
-    private float _pcHitBoxRad = 1f;
+    private float _pcHitBoxRad = 0.5f;
     /// <summary>
     /// 캐릭터 히트박스 원형 반지름값
     /// </summary>

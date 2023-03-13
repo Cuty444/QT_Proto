@@ -8,10 +8,10 @@ public class GlobalData : ScriptableObject
     public string Index => _index;
 
     [SerializeField]
-    [Tooltip("에어본 상태의 적이 충돌했을 때 최소로 들어갈 수 있는 피해량 제한.")]
+    [Tooltip("튕김이 최소로 들어갈 수 있는 피해량 제한. - 미적용")]
     private int _bounceMinDmg = 100;
     /// <summary>
-    /// 에어본 상태의 적이 충돌했을 때 최소로 들어갈 수 있는 피해량 제한.
+    /// 튕김이 최소로 들어갈 수 있는 피해량 제한.
     /// </summary>
     public int BounceMinDmg => _bounceMinDmg;
 
@@ -41,7 +41,7 @@ public class GlobalData : ScriptableObject
     public float AirborneSpdDecelerationValue => _airborneSpdDecelerationValue;
 
     [SerializeField]
-    [Tooltip("경직 상태 진입한 적이 ms당 속도가 감소되는 값")]
+    [Tooltip("경직 상태 진입한 적이 ms당 속도가 감소되는 값 - 미적용")]
     private float _rigidSpdDecelerationValue = 1f;
     /// <summary>
     /// 경직 상태 진입한 적이 ms당 속도가 감소되는 값
@@ -49,7 +49,7 @@ public class GlobalData : ScriptableObject
     public float RigidSpdDecelerationValue => _rigidSpdDecelerationValue;
 
     [SerializeField]
-    [Tooltip("배트로 때려서 경직(rigid)상태에 진입했을 때 적 속도")]
+    [Tooltip("배트로 때려서 경직(rigid)상태에 진입했을 때 적 속도 - 미적용")]
     private float _rigidSpd = 1f;
     /// <summary>
     /// 배트로 때려서 경직(rigid)상태에 진입했을 때 적 속도

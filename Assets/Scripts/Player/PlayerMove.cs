@@ -20,8 +20,10 @@ namespace QT.Player
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyMoveEvent.AddListener(SetMoveDirection);
             inputSystem.OnKeyDownAttackEvent.AddListener(AttackOn);
-            _speed = SystemManager.Instance.GetSystem<GlobalDataSystem>().CharacterTable.MovementSpd;
+            GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            _speed = globalDataSystem.CharacterTable.MovementSpd;
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            GetComponent<CircleCollider2D>().radius = globalDataSystem.CharacterTable.PCHitBoxRad;
             _currentReduceSpeed = 1f;
         }
 
