@@ -15,5 +15,8 @@ namespace QT.Core.Player
 
         private UnityEvent _batSwingBallHitEvent = new UnityEvent();
         public UnityEvent BatSwingBallHitEvent => _batSwingBallHitEvent;
+
+        private UnityEvent<float> _chargeAtkShootEvent = new UnityEvent<float>();
+        public UnityEvent<float> ChargeAtkShootEvent => _chargeAtkShootEvent;
     }
 }

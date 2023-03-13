@@ -22,7 +22,7 @@ public class BallCollsion : MonoBehaviour
             //collision.GetContacts(contacts);
             //Vector2 contactPoint = contacts[0].point;
             //Vector3 contactPointInWorld = new Vector3(contactPoint.x, contactPoint.y, 0f);
-        }
+        } // 속도에 따른 대미지식 미구현
 
     }
 

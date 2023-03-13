@@ -43,7 +43,7 @@ public class BallTable : ScriptableObject
     public float ThrowSpd => _throwSpd;
 
     [SerializeField]
-    [Tooltip("무게")]
+    [Tooltip("무게 - 미적용")]
     private float _ballWeight = 1f;
     /// <summary>
     /// 무게
@@ -51,10 +51,10 @@ public class BallTable : ScriptableObject
     public float BallWeight => _ballWeight;
 
     [SerializeField]
-    [Tooltip("공을 튕겨냈을 때 속도당 데미지 퍼센트")]
+    [Tooltip("볼 튕김 피해량 가중치 - 미적용")]
     private float _ballBounceSpdDmgPer = 1f;
     /// <summary>
-    /// 공을 튕겨냈을 때 속도당 데미지 퍼센트
+    /// 볼 튕김 피해량 가중치
     /// </summary>
     public float BallBounceSpdDmgPer => _ballBounceSpdDmgPer;
 }
