@@ -19,6 +19,7 @@ public class BallMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         GlobalDataSystem dataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+        GetComponent<CircleCollider2D>().radius = dataSystem.BallTable.BallColliderRad;
         rb.drag = dataSystem.GlobalData.BallSpdDecelerationValue;
         //transform.localScale = new Vector3(dataSystem.BallTable.BallRad,dataSystem.BallTable.BallRad, transform.localScale.z);
         //GetComponent<TrailRenderer>().startWidth = dataSystem.BallTable.BallRad;

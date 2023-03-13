@@ -8,13 +8,16 @@ namespace QT.Core.Input
     public class InputSystem : SystemBase
     {
         private UnityEvent<Vector2> _onKeyMoveEvent = new UnityEvent<Vector2>();
-        public UnityEvent<Vector2> OnKeyMoveEvent { get => _onKeyMoveEvent; }
+        public UnityEvent<Vector2> OnKeyMoveEvent => _onKeyMoveEvent;
 
-        private UnityEvent<Vector2> _onKeyDownAttackEvent = new UnityEvent<Vector2>();
-        public UnityEvent<Vector2> OnKeyDownAttackEvent { get => _onKeyDownAttackEvent; }
+        private UnityEvent _onKeyDownAttackEvent = new UnityEvent();
+        public UnityEvent OnKeyDownAttackEvent => _onKeyDownAttackEvent;
+
+        private UnityEvent _onKeyUpAttackEvent = new UnityEvent();
+        public UnityEvent OnKeyUpAttackEvent => _onKeyUpAttackEvent;
 
         private UnityEvent _onRightKeyDownGrapEvent = new UnityEvent();
-        public UnityEvent OnRightKeyDownGrapEvent { get => _onRightKeyDownGrapEvent; }
+        public UnityEvent OnRightKeyDownGrapEvent => _onRightKeyDownGrapEvent;
 
 
         public override void OnInitialized()
@@ -39,7 +42,11 @@ namespace QT.Core.Input
         {
             if(UnityEngine.Input.GetMouseButtonDown(0))
             {
-                OnKeyDownAttackEvent.Invoke(UnityEngine.Input.mousePosition);
+                OnKeyDownAttackEvent.Invoke();
+            }
+            else if (UnityEngine.Input.GetMouseButtonUp(0))
+            {
+                OnKeyUpAttackEvent.Invoke();
             }
         }
 
