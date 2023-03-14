@@ -11,22 +11,6 @@ public class BallTable : ScriptableObject
     public int Index => _index;
 
     [SerializeField]
-    [Tooltip("던져서 맞췄을 때 딜")]
-    private int _ballRigidDmg = 100;
-    /// <summary>
-    /// 던져서 맞췄을 때 딜
-    /// </summary>
-    public int BallRigidDmg => _ballRigidDmg;
-
-    [SerializeField]
-    [Tooltip("공 히트박스 범위. 반지름.")]
-    private float ballHitBoxRad = 1f;
-    /// <summary>
-    /// 공 히트박스 범위. 반지름.
-    /// </summary>
-    public float BallHitBoxRad => ballHitBoxRad;
-
-    [SerializeField]
     [Tooltip("공 콜라이더 범위. 반지름.")]
     private float _ballColliderRad = 1f;
     /// <summary>

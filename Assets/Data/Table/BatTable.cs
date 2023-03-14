@@ -11,7 +11,7 @@ public class BatTable : ScriptableObject
     public int Index => _index;
 
     [SerializeField]
-    [Tooltip("휘두르기 적중 피해량 미차징, 차징 - 미적용")]
+    [Tooltip("휘두르기 적중 피해량 미차징, 차징")]
     private int[] _swingRigidDmg;
     /// <summary>
     /// 공격을 통한 즉발 피해량
@@ -51,10 +51,10 @@ public class BatTable : ScriptableObject
     public float AtkAfterDelay => _atkAfterDelay;
 
     [SerializeField]
-    [Tooltip("공격으로 튕겨난 적이 다른 콜리전과 충돌하며 입는 피해량 가중치 - 미적용")]
+    [Tooltip("공격으로 튕겨난 공, 적이 다른 콜리전과 충돌하며 입는 피해량 가중치 - 미적용")]
     private float _batBounceSpdDmgPer = 1f;
     /// <summary>
-    /// 공격으로 튕겨난 적이 다른 콜리전과 충돌하며 입는 피해량 가중치
+    /// 공격으로 튕겨난 공, 적이 다른 콜리전과 충돌하며 입는 피해량 가중치
     /// </summary>
     public float BounceSpdDmgPer => _batBounceSpdDmgPer;
     [SerializeField]
