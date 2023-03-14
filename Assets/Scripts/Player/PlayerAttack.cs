@@ -35,6 +35,7 @@ namespace QT.Player
         private float _coolTime;
         private float _bulletSpeed;
         private float[] _atkShootSpd;
+        private int[] _swingRigidDmg;
 
         private PlayerSystem _playerSystem;
         // Start is called before the first frame update
@@ -45,6 +46,7 @@ namespace QT.Player
             _coolTime = globalDataSystem.BatTable.AtkCooldown;
             _chargingMaxTimes = globalDataSystem.BatTable.ChargingMaxTimes;
             _atkShootSpd = globalDataSystem.BatTable.AtkShootSpd;
+            _swingRigidDmg = globalDataSystem.BatTable.SwingRigidDmg;
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
             inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
@@ -165,6 +167,7 @@ namespace QT.Player
             if(!_chargingBarBackground.gameObject.activeSelf)
             {
                 _playerSystem.ChargeAtkShootEvent.Invoke(_atkShootSpd[0]);
+                _playerSystem.BatSwingRigidHitEvent.Invoke(_swingRigidDmg[0]);
             }
         }
 
@@ -177,6 +180,7 @@ namespace QT.Player
                 {
                     _playerSystem.ChargeAtkPierce = (Util.Flags.ChargeAtkPierce)(1 << i);
                     _playerSystem.ChargeAtkShootEvent.Invoke(_atkShootSpd[i]);
+                    _playerSystem.BatSwingRigidHitEvent.Invoke(_swingRigidDmg[i]);
                     break;
                 }
             }

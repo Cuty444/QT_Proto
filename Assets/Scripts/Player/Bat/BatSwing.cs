@@ -12,11 +12,13 @@ public class BatSwing : MonoBehaviour
     private PlayerSystem _playerSystem;
     private GlobalDataSystem _globalDataSystem;
     private float _shootSpd;
+    private int _swingRigidDmg;
     private void Start()
     {
         _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
         _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
         _playerSystem.ChargeAtkShootEvent.AddListener(SetShootSpeed);
+        _playerSystem.BatSwingRigidHitEvent.AddListener(SetSwingRigidDamage);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -35,28 +37,31 @@ public class BatSwing : MonoBehaviour
             if(QT.Util.Flags.ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
             {
                 Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
-                Debug.Log("Ball");
             }
             else if(_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerSystem.ChargeAtkPierce))
             {
                 Ball.gameObject.layer = LayerMask.NameToLayer("BallHit");
-                Debug.Log("BallHit");
             }
             else
             {
                 Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
-                Debug.Log("Ball");
             }
             _playerSystem.BatSwingBallHitEvent.Invoke();
         }
         else if(collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-
+            EnemyHP enemyHP = collision.GetComponent<EnemyHP>();
+            enemyHP.HitDamage(_swingRigidDmg);
         }
     }
 
     private void SetShootSpeed(float speed)
     {
         _shootSpd = speed;
+    }
+
+    private void SetSwingRigidDamage(int damage)
+    {
+        _swingRigidDmg = damage;
     }
 }
