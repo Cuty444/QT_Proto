@@ -55,7 +55,6 @@ namespace QT.Player
             //inputSystem.OnRightKeyDownGrapEvent.AddListener(GrapCheck);
             _currentAtkCoolTime = _coolTime;
             _currentChargingTime = 0f;
-            _batSwing.enabled = false;
             _isMouseDownCheck = false;
             _chargingBarBackground.gameObject.SetActive(false);
             _chargingBarImage = _chargingBarBackground.GetComponentsInChildren<Image>()[1];

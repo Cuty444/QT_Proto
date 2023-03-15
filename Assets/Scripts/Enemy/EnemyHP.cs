@@ -27,7 +27,7 @@ public class EnemyHP : MonoBehaviour
             return;
         _currentHp -= damage;
         _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _maxHp, 0);
-        if(_currentHp == 0)
+        if(_currentHp <= 0)
         {
             Invoke("EnemyDead", 0.5f);
         }
