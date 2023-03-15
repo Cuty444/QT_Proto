@@ -19,6 +19,7 @@ public class BatSwing : MonoBehaviour
         _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
         _playerSystem.ChargeAtkShootEvent.AddListener(SetShootSpeed);
         _playerSystem.BatSwingRigidHitEvent.AddListener(SetSwingRigidDamage);
+        this.enabled = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
