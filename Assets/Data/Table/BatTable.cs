@@ -66,7 +66,7 @@ public class BatTable : ScriptableObject
     public float[] ChargingMaxTimes => _chargingMaxTimes;
 
     [SerializeField]
-    [Tooltip("차징 단계에 따른 고정 속도 - 미적용")]
+    [Tooltip("차징 단계에 따른 고정 속도")]
     private float[] _atkShootSpd;
     /// <summary>
     /// 차징 단계에 따라 걸리는 시간(s)

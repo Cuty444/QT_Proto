@@ -1,20 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
+using QT.Data;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 public class EnemyHP : MonoBehaviour
 {
-    [SerializeField] private int _maxHp = 300;
     [SerializeField] private RectTransform _hpRectTransform;
     private Image _hpImage;
+    private int _hpMax;
     private int _currentHp;
     private Rigidbody2D _rigidbody2D;
     private void Awake()
     {
-        _currentHp = _maxHp;
         _hpImage = _hpRectTransform.GetComponentsInChildren<Image>()[1];
         _rigidbody2D = GetComponent<Rigidbody2D>();
     }
+
+    private void Start()
+    {
+        GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+        _hpMax = globalDataSystem.EnemyTable.HPMax;
+        _currentHp = _hpMax;
+    }
+
 
     private void FixedUpdate()
     {
@@ -26,10 +37,10 @@ public class EnemyHP : MonoBehaviour
         if (_currentHp <= 0)
             return;
         _currentHp -= damage;
-        _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _maxHp, 0);
+        _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _hpMax, 0);
         if(_currentHp <= 0)
         {
-            Invoke("EnemyDead", 0.5f);
+            StartCoroutine(QT.Util.UnityUtil.WaitForFunc(EnemyDead, 0.5f));
         }
     }
     

@@ -1,8 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace QT.Util
 {
+    public static class UnityUtil
+    {
+        public static IEnumerator WaitForFunc(Action func, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            func.Invoke();
+        }
+    }
     public static class Math
     {
         public static float floatNormalization(float value,float max,float min)

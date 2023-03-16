@@ -28,6 +28,8 @@ public class BatSwing : MonoBehaviour
             return;
         if(collision.gameObject.layer == LayerMask.NameToLayer("Ball") || collision.gameObject.layer == LayerMask.NameToLayer("BallHit"))
         {
+            if (collision.GetComponent<BallCollsion>().IsBatNoHit)
+                return;
             Vector2 _attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             float bulletAngleDegree = QT.Util.Math.GetDegree(transform.position, _attackDirection);
             BallMove Ball = collision.GetComponent<BallMove>();

@@ -8,7 +8,7 @@ public class GlobalData : ScriptableObject
     public string Index => _index;
 
     [SerializeField]
-    [Tooltip("튕김이 최소로 들어갈 수 있는 피해량 제한. - 미적용")]
+    [Tooltip("튕김이 최소로 들어갈 수 있는 피해량 제한.")]
     private int _bounceMinDmg = 100;
     /// <summary>
     /// 튕김이 최소로 들어갈 수 있는 피해량 제한.

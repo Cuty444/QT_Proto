@@ -25,8 +25,6 @@ public class PlayerBullet : MonoBehaviour
         if (!IsShot)
             return;
         float angle = transform.eulerAngles.z * Mathf.Deg2Rad;
-        float xVelocity = Mathf.Cos(angle);
-        float yVelocity = Mathf.Sin(angle);
 
         _rigidbody2D.velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * BulletSpeed;
         if (BulletRange <= Vector2.Distance(StartPosition,transform.position))

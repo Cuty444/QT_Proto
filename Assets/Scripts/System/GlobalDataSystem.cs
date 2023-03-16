@@ -20,15 +20,22 @@ namespace QT.Data
     {
         [SerializeField]
         private CharacterTable _characterTable;
-        public CharacterTable CharacterTable { get => _characterTable; }
+        public CharacterTable CharacterTable => _characterTable;
+
         [SerializeField]
         private GlobalData _globalData;
-        public GlobalData GlobalData { get => _globalData; }
+        public GlobalData GlobalData => _globalData;
+
         [SerializeField]
         private BatTable _batTable;
-        public BatTable BatTable { get => _batTable; }
+        public BatTable BatTable => _batTable;
+
         [SerializeField]
         private BallTable _ballTable;
-        public BallTable BallTable { get => _ballTable; }
+        public BallTable BallTable => _ballTable;
+
+        [SerializeField]
+        private EnemyTable _enemyTable;
+        public EnemyTable EnemyTable => _enemyTable;
     }
 }

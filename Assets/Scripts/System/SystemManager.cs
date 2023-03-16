@@ -14,11 +14,11 @@ namespace QT.Core
 
             _InitializeSystems();
 
-            //UI.UIManager.Instance.Initialize();
+            UI.UIManager.Instance.Initialize();
 
             _PostInitializeSystems();
 
-            //UI.UIManager.Instance.PostSystemInitialize();
+            UI.UIManager.Instance.PostSystemInitialize();
         }
 
         private void _InitializeSystems()
