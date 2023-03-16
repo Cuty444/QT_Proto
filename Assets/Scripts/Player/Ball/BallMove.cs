@@ -26,8 +26,11 @@ public class BallMove : MonoBehaviour
         _rigidbody2D.sharedMaterial.bounciness = dataSystem.GlobalData.BounceSpdReductionRate;
         _minVelocity = dataSystem.GlobalData.BallMinSpdDestroyed;
         SystemManager.Instance.GetSystem<PlayerSystem>().BatSwingBallHitEvent.AddListener(SwingBallHitEvent);
-        ForceChange();
-        StartCoroutine(BallMinSpdCheck());
+        if (gameObject.layer == LayerMask.NameToLayer("Ball"))
+        {
+            ForceChange();
+            StartCoroutine(BallMinSpdCheck());
+        }
     }
 
     public void ForceChange()
@@ -49,6 +52,11 @@ public class BallMove : MonoBehaviour
         //{
         //    Destroy(gameObject);
         //}
+    }
+
+    public void EnemyToBallSpdCheck()
+    {
+        StartCoroutine(BallMinSpdCheck());
     }
 
     private IEnumerator BallMinSpdCheck()

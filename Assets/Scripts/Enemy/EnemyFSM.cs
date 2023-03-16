@@ -13,15 +13,21 @@ public class EnemyFSM : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private float _movementSpeed;
 
+    private bool _isMove;
+    public bool IsMove => _isMove;
+
     private void Start()
     {
         _playerTransform = SystemManager.Instance.GetSystem<EnemySystem>().PlayerTransform;
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _movementSpeed = SystemManager.Instance.GetSystem<GlobalDataSystem>().EnemyTable.MovementSpd;
+        _isMove = false;
     }
 
     private void FixedUpdate()
     {
+        if (_isMove)
+            return;
         EnemyMove();
     }
 
@@ -31,7 +37,7 @@ public class EnemyFSM : MonoBehaviour
         float enemyAngleDegree = QT.Util.Math.GetDegree(transform.position,_playerTransform.position);
         float angle = enemyAngleDegree * Mathf.Deg2Rad;
 
-        _rigidbody2D.velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * _movementSpeed;
+        _rigidbody2D.velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * _movementSpeed * Time.fixedDeltaTime;
     }
     
 }
