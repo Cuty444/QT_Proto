@@ -7,6 +7,7 @@ using QT.Core;
 using QT.Core.Input;
 using QT.Core.Player;
 using QT.Data;
+using QT.UI;
 
 namespace QT.Player
 {
@@ -18,8 +19,6 @@ namespace QT.Player
         //[SerializeField] private Transform _armTransform;
         [SerializeField] private TrailRenderer _trailRenderer;
         [SerializeField] private Transform _batPos;
-        [SerializeField] private RectTransform _playerCanvas;
-        [SerializeField] private RectTransform _chargingBarBackground;
         [SerializeField] private BatSwing _batSwing;
         [SerializeField] private float _rotationTime = 0.1f;
 
@@ -38,6 +37,8 @@ namespace QT.Player
         private int[] _swingRigidDmg;
 
         private PlayerSystem _playerSystem;
+        private PlayerCanvas _playerCanvas;
+        private RectTransform _chargingBarBackground;
         // Start is called before the first frame update
         void Start()
         {
@@ -56,6 +57,8 @@ namespace QT.Player
             _currentAtkCoolTime = _coolTime;
             _currentChargingTime = 0f;
             _isMouseDownCheck = false;
+            _playerCanvas = UIManager.Instance.GetUIPanel<PlayerCanvas>();
+            _chargingBarBackground = _playerCanvas.ChargingBarBackground;
             _chargingBarBackground.gameObject.SetActive(false);
             _chargingBarImage = _chargingBarBackground.GetComponentsInChildren<Image>()[1];
         }
@@ -202,7 +205,7 @@ namespace QT.Player
             targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation, rotateSpeed * Time.deltaTime);
             yield return new WaitForSeconds(0.1f);
             _trailRenderer.enabled = false;
-            yield return new WaitForSeconds(0.23f);
+            //yield return new WaitForSeconds(0.23f);
             _batSwing.enabled = false;
         }
 

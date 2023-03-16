@@ -35,7 +35,7 @@ public class BallTable : ScriptableObject
     public float BallWeight => _ballWeight;
 
     [SerializeField]
-    [Tooltip("볼 튕김 피해량 가중치 - 미적용")]
+    [Tooltip("볼 튕김 피해량 가중치")]
     private float _ballBounceSpdDmgPer = 1f;
     /// <summary>
     /// 볼 튕김 피해량 가중치

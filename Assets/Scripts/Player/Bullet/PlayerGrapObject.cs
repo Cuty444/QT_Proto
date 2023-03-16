@@ -30,11 +30,6 @@ public class PlayerGrapObject : MonoBehaviour
         return new Vector2((EndPos.x - StartPos.x) / time, (EndPos.y - StartPos.y) / time);
     }
 
-    private float FloatToNormalization(float value,float min,float max)
-    {
-        return (value - min) / (max - min);
-    }
-
     public void GetTimeScalePostion(float time)
     {
         transform.position = StartPos;
