@@ -143,7 +143,7 @@ namespace QT.Player
         private void AttackBatSwing()
         {
             float rotationSpeed;
-            _playerSystem.ChargeAtkPierce = Util.Flags.ChargeAtkPierce.None;
+            _playerSystem.ChargeAtkPierce = ChargeAtkPierce.None;
             if (_isUpDown == true)
             {
                 transform.localRotation = Quaternion.Euler(0f, 0f, -150f);
@@ -172,7 +172,7 @@ namespace QT.Player
             {
                 if (_chargingMaxTimes[i] < _currentChargingTime)
                 {
-                    _playerSystem.ChargeAtkPierce = (Util.Flags.ChargeAtkPierce)(1 << i);
+                    _playerSystem.ChargeAtkPierce = (ChargeAtkPierce)(1 << i);
                     _playerSystem.ChargeAtkShootEvent.Invoke(_atkShootSpd[i]);
                     _playerSystem.BatSwingRigidHitEvent.Invoke(_swingRigidDmg[i]);
                     break;

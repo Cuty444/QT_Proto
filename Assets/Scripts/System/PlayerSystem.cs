@@ -8,8 +8,8 @@ namespace QT.Core.Player
     public class PlayerSystem : SystemBase
     {
         [SerializeField] private GameObject _playerObject;
-        private Util.Flags.ChargeAtkPierce _chargeAtkPierce;
-        public Util.Flags.ChargeAtkPierce ChargeAtkPierce { get => _chargeAtkPierce; set => _chargeAtkPierce = value; }
+        private ChargeAtkPierce _chargeAtkPierce;
+        public ChargeAtkPierce ChargeAtkPierce { get => _chargeAtkPierce; set => _chargeAtkPierce = value; }
 
         private UnityEvent<GameObject> _ballMinSpdDestroyedEvent = new UnityEvent<GameObject>();
         public UnityEvent<GameObject> BallMinSpdDestroyedEvent => _ballMinSpdDestroyedEvent;

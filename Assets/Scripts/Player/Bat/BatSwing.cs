@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Player;
 using QT.Data;
-using UnityEditor.Playables;
 using UnityEngine;
 
 public class BatSwing : MonoBehaviour
@@ -45,7 +44,7 @@ public class BatSwing : MonoBehaviour
             Ball.BulletSpeed = _shootSpd;
             Ball.ForceChange();
             Ball.IsShot = true;
-            if(QT.Util.Flags.ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
+            if(ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
             {
                 Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
             }
