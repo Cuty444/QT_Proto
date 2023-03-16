@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
-using QT.Core.Player;
+using QT.Data;
 namespace QT.Player
 {
 
@@ -20,8 +20,10 @@ namespace QT.Player
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyMoveEvent.AddListener(SetMoveDirection);
             inputSystem.OnKeyDownAttackEvent.AddListener(AttackOn);
-            _speed = SystemManager.Instance.GetSystem<PlayerSystem>().CharacterTable.MovementSpd;
+            GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            _speed = globalDataSystem.CharacterTable.MovementSpd;
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            GetComponent<CircleCollider2D>().radius = globalDataSystem.CharacterTable.PCHitBoxRad;
             _currentReduceSpeed = 1f;
         }
 
@@ -35,7 +37,7 @@ namespace QT.Player
             _moveDirection = dir.normalized;
         }
 
-        private void AttackOn(Vector2 d)
+        private void AttackOn()
         {
             _currentReduceSpeed = _reduceSpeed;
         }
@@ -43,7 +45,7 @@ namespace QT.Player
 
         void Move()
         {
-            _rigidbody2D.velocity = _moveDirection * _speed /** _currentReduceSpeed*/;
+            _rigidbody2D.velocity = _moveDirection * _speed * Time.fixedDeltaTime/** _currentReduceSpeed*/;
         }
     }
 
