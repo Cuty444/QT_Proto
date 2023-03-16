@@ -45,7 +45,7 @@ public class BallCollsion : MonoBehaviour
         if (col.gameObject.layer == LayerMask.NameToLayer("Bat"))
         {
             _isBatNoHit = true;
-            StartCoroutine(QT.Util.UnityUtil.WaitForFunc(() => _isBatNoHit = false, 0.3f));
+            StartCoroutine(QT.Util.UnityUtil.WaitForFunc(() => _isBatNoHit = false, 0.1f));
         }
     }
 }
