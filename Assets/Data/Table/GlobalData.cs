@@ -63,4 +63,12 @@ public class GlobalData : ScriptableObject
     /// 일정 속도에 도달시 삭제되는 속도값
     /// </summary>
     public float BallMinSpdDestroyed => _ballMinSpdDestroyed;
+
+    [SerializeField]
+    [Tooltip("[기절] 상태 진입 후 사망처리 되는데 까지 걸리는 시간")]
+    /// <summary>
+    /// [기절] 상태 진입 후 사망처리 되는데 까지 걸리는 시간
+    /// </summary>
+    private float _deadAfterStunTime = 5f;
+    public float DeadAfterStunTime => _deadAfterStunTime;
 }

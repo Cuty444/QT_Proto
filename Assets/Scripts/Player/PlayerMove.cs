@@ -45,7 +45,7 @@ namespace QT.Player
 
         void Move()
         {
-            _rigidbody2D.velocity = _moveDirection * _speed /** _currentReduceSpeed*/;
+            _rigidbody2D.velocity = _moveDirection * _speed * Time.fixedDeltaTime/** _currentReduceSpeed*/;
         }
     }
 

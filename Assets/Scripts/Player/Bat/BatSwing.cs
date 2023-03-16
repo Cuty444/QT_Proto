@@ -30,6 +30,14 @@ public class BatSwing : MonoBehaviour
         {
             if (collision.GetComponent<BallCollsion>().IsBatNoHit)
                 return;
+            EnemyHP enemyHP = collision.GetComponent<EnemyHP>();
+            if (enemyHP != null)
+            {
+                if(!enemyHP.IsStun())
+                {
+                    return;
+                }
+            }
             Vector2 _attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             float bulletAngleDegree = QT.Util.Math.GetDegree(transform.position, _attackDirection);
             BallMove Ball = collision.GetComponent<BallMove>();

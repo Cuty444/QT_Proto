@@ -85,14 +85,6 @@ namespace QT.Player
         private void LateUpdate()
         {
             _playerCanvas.transform.position = transform.position;
-            Angle();
-        }
-
-        private void Angle()
-        {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            float playerAngleDegree = Util.Math.GetDegree(transform.position,mousePos);
-            transform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
         }
 
         private void KeyDownAttack()
@@ -211,7 +203,7 @@ namespace QT.Player
 
         private void BallObjectDestroyedChecking(GameObject gameObject)
         {
-            _tempBallObject = null;
+            //_tempBallObject = null;
         }
 
         //private void GrapCheck()
