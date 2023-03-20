@@ -2,22 +2,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using QT.Ball;
 
-public class EnemyTrigger : MonoBehaviour
+namespace QT.Enemy
 {
-    private EnemyHP _enemyHp;
-
-    private void Start()
+    public class EnemyTrigger : MonoBehaviour
     {
-        _enemyHp = GetComponentInParent<EnemyHP>();
-    }
+        #region Inspector_Definition
 
-    private void OnTriggerEnter2D(Collider2D col)
-    { 
-        if (col.gameObject.layer == LayerMask.NameToLayer("BallHit"))
+        [SerializeField] private EnemyHP _enemyHp;
+
+        #endregion
+
+        private void OnTriggerEnter2D(Collider2D col)
         {
-            _enemyHp.HitDamage(col.GetComponent<BallCollsion>().GetBallHitDamage());
+            if (col.gameObject.layer == LayerMask.NameToLayer("BallHit"))
+            {
+                _enemyHp.HitDamage(col.GetComponent<BallAttack>().GetBallHitDamage());
+            }
         }
-        
     }
 }

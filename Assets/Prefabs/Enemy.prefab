@@ -61,6 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c3e6af01040b24299c1c743c5f159d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enemyHp: {fileID: 4101211350449200752}
 --- !u!1 &4101211348438607860
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,6 +255,7 @@ GameObject:
   - component: {fileID: 4101211350449200752}
   - component: {fileID: 617656770682597622}
   - component: {fileID: 8128642063645672226}
+  - component: {fileID: 3383500749834406835}
   - component: {fileID: 8532627329521050502}
   m_Layer: 11
   m_Name: Enemy
@@ -384,6 +386,7 @@ MonoBehaviour:
   _enemyTrigger: {fileID: 2979352273415540431}
   _enemyHP: {fileID: 4101211350449200752}
   _enemyFSM: {fileID: 8128642063645672226}
+  _enemyAttack: {fileID: 0}
   _physicsMaterial2D: {fileID: 6200000, guid: 8ac5eff9bedb7b44ca3140d4c65328ce, type: 2}
   _rigidbody2D: {fileID: 4101211350449200758}
   _trailRenderer: {fileID: 8532627329521050502}
@@ -400,7 +403,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hpRectTransform: {fileID: 4101211350472131074}
-  _rigidbody2D: {fileID: 0}
 --- !u!114 &617656770682597622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,6 +415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ba8d224f784e1549be7f483a19d18e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enemyHp: {fileID: 4101211350449200752}
 --- !u!114 &8128642063645672226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,6 +426,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 39bef4de7d0cc6f4dbade4bee23eedf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3383500749834406835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4101211350449200755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 685ada925b9e6b14fa6c3362f5f19467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!96 &8532627329521050502

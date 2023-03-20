@@ -21,12 +21,6 @@ namespace QT.UI
                 panel.Initialize();
                 if(!_Panels.ContainsKey(panel.GetType().ToString()))
                     _Panels.Add(panel.GetType().ToString(), panel);
-
-                //if(i == 0)
-                //{
-                //    _CurrentPanel = panel;
-                //    _CurrentPanel.OnOpen();
-                //}
             }
         }
 

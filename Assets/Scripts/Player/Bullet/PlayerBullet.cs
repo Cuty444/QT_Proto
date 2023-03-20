@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBullet : MonoBehaviour
+public class PlayerBullet : MonoBehaviour // 현재 폐기된 시스템
 {
     public float BulletSpeed { get; set; }
     public float BulletRange { get; set; }
