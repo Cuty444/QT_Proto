@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using QT.Data;
 
 
 [CustomPropertyDrawer(typeof(ChargeAtkPierce))]

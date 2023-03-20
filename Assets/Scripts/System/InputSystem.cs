@@ -19,12 +19,6 @@ namespace QT.Core.Input
         private UnityEvent _onRightKeyDownGrapEvent = new UnityEvent();
         public UnityEvent OnRightKeyDownGrapEvent => _onRightKeyDownGrapEvent;
 
-
-        public override void OnInitialized()
-        {
-            base.OnInitialized();
-        }
-
         private void Update()
         {
             KeyInputMove();
@@ -50,7 +44,7 @@ namespace QT.Core.Input
             }
         }
 
-        private  void RightMouseInputGrap()
+        private  void RightMouseInputGrap() // 현재 미사용 시스템
         {
             if(UnityEngine.Input.GetMouseButtonDown(1))
             {

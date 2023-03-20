@@ -49,16 +49,13 @@ namespace QT
             }
         }
 
-        // This function is called when the instance is used the first time
-        // Put all the initializations you need here, as you would do in Awake
+
         protected virtual void _Init()
         {
-            /* BLANK */
         }
 
         protected virtual void _Release()
         {
-            /* BLANK */
         }
 
         void OnDestroy()

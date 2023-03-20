@@ -3,18 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
-using QT.Data;
+using QT.Core.Data;
+
 namespace QT.Player
 {
-
     public class PlayerMove : MonoBehaviour
     {
-        [SerializeField] private float _reduceSpeed;
+        #region StartData_Declaration
 
-        private Vector2 _moveDirection;
-        private Rigidbody2D _rigidbody2D;
-        private float _currentReduceSpeed;
         private float _speed;
+
+        #endregion
+
+        #region Global_Declaration
+
+        private Rigidbody2D _rigidbody2D;
+        private Vector2 _moveDirection;
+        private float _currentReduceSpeed;
+
+        #endregion
+
+        [SerializeField] private float _reduceSpeed; // 이 값은 추후 테이블 참조
+
         private void Start()
         {
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
@@ -45,8 +55,7 @@ namespace QT.Player
 
         void Move()
         {
-            _rigidbody2D.velocity = _moveDirection * _speed * Time.fixedDeltaTime/** _currentReduceSpeed*/;
+            _rigidbody2D.velocity = _moveDirection * _speed * Time.fixedDeltaTime /** _currentReduceSpeed*/;
         }
     }
-
 }

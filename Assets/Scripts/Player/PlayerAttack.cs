@@ -6,45 +6,59 @@ using UnityEngine.UI;
 using QT.Core;
 using QT.Core.Input;
 using QT.Core.Player;
+using QT.Core.Data;
 using QT.Data;
 using QT.UI;
+using QT.Player.Bat;
+using QT.Ball;
 
 namespace QT.Player
 {
     public class PlayerAttack : MonoBehaviour
     {
-        [Header("Bullet")]
-        [SerializeField] private GameObject _bulletObject;
-        //[Header("Arm")]
-        //[SerializeField] private Transform _armTransform;
+        #region Inspector_Definition
+
+        [Header("Bullet")] [SerializeField] private GameObject _bulletObject;
         [SerializeField] private TrailRenderer _trailRenderer;
         [SerializeField] private Transform _batPos;
         [SerializeField] private BatSwing _batSwing;
-        [SerializeField] private float _rotationTime = 0.1f;
+        [SerializeField] private float _rotationTime = 0.1f; // 공속 부분과 동기화 필요 임시 수치
 
-        private Image _chargingBarImage;
-        
-        private Vector2 _attackDirection;
-        private float _currentAtkCoolTime;
-        private float _currentChargingTime;
-        private GameObject _tempBallObject = null;
-        private bool _isUpDown = true;
-        private float[] _chargingMaxTimes;
-        private bool _isMouseDownCheck = false;
-        private float _coolTime;
-        private float _bulletSpeed;
-        private float[] _atkShootSpd;
-        private int[] _swingRigidDmg;
+        #endregion
+
+        #region StartData_Declaration
 
         private PlayerSystem _playerSystem;
         private PlayerCanvas _playerCanvas;
         private RectTransform _chargingBarBackground;
-        // Start is called before the first frame update
+        private Image _chargingBarImage;
+
+        private float _bulletSpeed;
+        private float[] _atkShootSpd;
+        private float _atkCoolTime;
+        private float[] _chargingMaxTimes;
+        private int[] _swingRigidDmg;
+
+        #endregion
+
+        #region Global_Declaration
+
+        private GameObject _tempBallObject = null;
+        private Vector2 _attackDirection;
+
+        private float _currentAtkCoolTime;
+        private float _currentChargingTime;
+
+        private bool _isUpDown = true;
+        private bool _isMouseDownCheck = false;
+
+        #endregion
+
         void Start()
         {
             GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             _bulletSpeed = globalDataSystem.BallTable.ThrowSpd;
-            _coolTime = globalDataSystem.BatTable.AtkCooldown;
+            _atkCoolTime = globalDataSystem.BatTable.AtkCooldown;
             _chargingMaxTimes = globalDataSystem.BatTable.ChargingMaxTimes;
             _atkShootSpd = globalDataSystem.BatTable.AtkShootSpd;
             _swingRigidDmg = globalDataSystem.BatTable.SwingRigidDmg;
@@ -52,9 +66,7 @@ namespace QT.Player
             inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
             inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-            _playerSystem.BallMinSpdDestroyedEvent.AddListener(BallObjectDestroyedChecking);
-            //inputSystem.OnRightKeyDownGrapEvent.AddListener(GrapCheck);
-            _currentAtkCoolTime = _coolTime;
+            _currentAtkCoolTime = _atkCoolTime;
             _currentChargingTime = 0f;
             _isMouseDownCheck = false;
             _playerCanvas = UIManager.Instance.GetUIPanel<PlayerCanvas>();
@@ -64,6 +76,18 @@ namespace QT.Player
         }
 
         private void Update()
+        {
+            AttackCoolTime();
+        }
+
+        private void LateUpdate()
+        {
+            _playerCanvas.transform.position = transform.position;
+        }
+
+        #region AttackFunc
+
+        private void AttackCoolTime()
         {
             _currentAtkCoolTime += Time.deltaTime;
             if (_isMouseDownCheck)
@@ -82,20 +106,14 @@ namespace QT.Player
             }
         }
 
-        private void LateUpdate()
-        {
-            _playerCanvas.transform.position = transform.position;
-        }
-
         private void KeyDownAttack()
         {
             _attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            if(_tempBallObject == null)
+            if (_tempBallObject == null)
             {
                 AttackBulletInstate();
-
             }
-            else if (_currentAtkCoolTime < _coolTime)
+            else if (_currentAtkCoolTime < _atkCoolTime)
             {
                 return;
             }
@@ -111,16 +129,15 @@ namespace QT.Player
             AttackCheck();
             _isMouseDownCheck = false;
         }
-        
+
         private void AttackCheck()
         {
             if (!_isMouseDownCheck)
                 return;
-            if(_currentChargingTime <= _chargingMaxTimes[0])
+            if (_currentChargingTime <= _chargingMaxTimes[0])
             {
                 // 일반스윙
                 AttackBatSwing();
-
             }
             else
             {
@@ -136,7 +153,6 @@ namespace QT.Player
             Ball.transform.position = transform.position;
             Ball.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
             Ball.BulletSpeed = _bulletSpeed;
-            Ball.IsShot = true;
             _tempBallObject = Ball.gameObject;
         }
 
@@ -148,7 +164,7 @@ namespace QT.Player
             {
                 transform.localRotation = Quaternion.Euler(0f, 0f, -150f);
                 rotationSpeed = Mathf.DeltaAngle(_batPos.localEulerAngles.z, -30f) / _rotationTime;
-                StartCoroutine(BatSwing(_batPos,rotationSpeed, -30f));
+                StartCoroutine(BatSwing(_batPos, rotationSpeed, -30f));
             }
             else
             {
@@ -156,9 +172,10 @@ namespace QT.Player
                 rotationSpeed = (Mathf.DeltaAngle(_batPos.localEulerAngles.z, -150f) / _rotationTime) * -1f;
                 StartCoroutine(BatSwing(_batPos, rotationSpeed, -150f));
             }
+
             _isUpDown = !_isUpDown;
             _currentAtkCoolTime = 0f;
-            if(!_chargingBarBackground.gameObject.activeSelf)
+            if (!_chargingBarBackground.gameObject.activeSelf)
             {
                 _playerSystem.ChargeAtkShootEvent.Invoke(_atkShootSpd[0]);
                 _playerSystem.BatSwingRigidHitEvent.Invoke(_swingRigidDmg[0]);
@@ -178,32 +195,31 @@ namespace QT.Player
                     break;
                 }
             }
+
             _chargingBarBackground.gameObject.SetActive(false);
         }
-        
 
-        private IEnumerator BatSwing(Transform targetTransform,float rotateSpeed,float targetZ)
+
+        private IEnumerator BatSwing(Transform targetTransform, float rotateSpeed, float targetZ)
         {
             _trailRenderer.enabled = true;
             _batSwing.enabled = true;
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetZ);
             float currentRotationTime = 0.0f;
-            while(_rotationTime > currentRotationTime)
+            while (_rotationTime > currentRotationTime)
             {
-                targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation, rotateSpeed * Time.deltaTime);
+                targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation,
+                    rotateSpeed * Time.deltaTime);
                 yield return null;
                 currentRotationTime += Time.deltaTime;
             }
-            targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation, rotateSpeed * Time.deltaTime);
+
+            targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation,
+                rotateSpeed * Time.deltaTime);
             yield return new WaitForSeconds(0.1f);
             _trailRenderer.enabled = false;
-            //yield return new WaitForSeconds(0.23f);
             _batSwing.enabled = false;
-        }
-
-        private void BallObjectDestroyedChecking(GameObject gameObject)
-        {
-            //_tempBallObject = null;
+            _playerSystem.BatSwingEndEvent.Invoke();
         }
 
         //private void GrapCheck()
@@ -231,6 +247,6 @@ namespace QT.Player
         //    }
         //}
 
-
+        #endregion
     }
 }

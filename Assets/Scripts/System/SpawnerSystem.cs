@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QT.Core.Spawner
 {
 
-    public class SpawnerSystem : SystemBase
+    public class SpawnerSystem : SystemBase // 임시 시스템 변경예정
     {
         [SerializeField] private GameObject _enemyObject;
         [SerializeField] private Transform _enemyParentTransform;

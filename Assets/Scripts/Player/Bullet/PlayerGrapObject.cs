@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerGrapObject : MonoBehaviour
+public class PlayerGrapObject : MonoBehaviour // 현재 폐기된 시스템
 {
     public Vector2 StartPos { get; set; }
     public Transform EndPos { get; set; }
