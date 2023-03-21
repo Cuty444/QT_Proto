@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace QT.Core
@@ -7,7 +8,7 @@ namespace QT.Core
     //시스템 관리 매니저입니다.
     public class SystemManager : MonoSingleton<SystemManager>
     {
-        Dictionary<string, SystemBase> _systems = new Dictionary<string, SystemBase>();
+        Dictionary<Type, SystemBase> _systems = new Dictionary<Type, SystemBase>();
 
         private void Awake()
         {
@@ -33,7 +34,7 @@ namespace QT.Core
                 }
 
                 childSystem.OnInitialized();
-                _systems.Add(childSystem.GetType().ToString(), childSystem);
+                _systems.Add(childSystem.GetType(), childSystem);
             }
         }
 
@@ -47,15 +48,12 @@ namespace QT.Core
 
         public T GetSystem<T>() where T : SystemBase
         {
-            T childSystem = null;
-            string childSystemTypeName = typeof(T).ToString();
-
-            if (_systems.ContainsKey(childSystemTypeName))
+            if (_systems.TryGetValue(typeof(T), out var system))
             {
-                childSystem = _systems[childSystemTypeName] as T;
+                return (T)system;
             }
 
-            return childSystem;
+            return null;
         }
 
         public static T GetSystemInInstance<T>() where T : SystemBase
