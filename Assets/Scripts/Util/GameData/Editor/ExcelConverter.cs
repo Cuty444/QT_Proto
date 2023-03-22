@@ -12,7 +12,7 @@ using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 
 
-namespace QT
+namespace QT.Core
 {
     public class ExcelConverter
     {

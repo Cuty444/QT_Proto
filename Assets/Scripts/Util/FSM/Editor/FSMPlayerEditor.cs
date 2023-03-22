@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
-namespace QT
+namespace QT.Core
 {
     [CustomEditor(typeof(FSMPlayer<>), true)]
     public class FSMPlayerEditor : Editor

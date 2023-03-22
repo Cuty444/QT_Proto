@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Reflection;
 
-namespace QT
+namespace QT.Core
 {
     public interface IGameData
     {
