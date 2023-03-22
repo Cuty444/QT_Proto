@@ -56,13 +56,13 @@ namespace QT.Core
                 return;
             }
 
-            _currentStateName = GetTypeName(GetValue("currentState"));
-            var previousStateName = GetTypeName(GetValue("previousState"));
-            var globalStateName = GetTypeName(GetValue("globalState"));
+            _currentStateName = GetTypeName(GetValue("_currentState"));
+            var previousStateName = GetTypeName(GetValue("_previousState"));
+            var globalStateName = GetTypeName(GetValue("_globalState"));
 
             var ids = new List<int>();
             var names = new List<string>();
-            SetStateList((dynamic)GetValue("states"), ids, names, _currentStateName);
+            SetStateList((dynamic)GetValue("_states"), ids, names, _currentStateName);
 
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Height(55));
