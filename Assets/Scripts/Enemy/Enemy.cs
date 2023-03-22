@@ -13,13 +13,16 @@ namespace QT.Enemy
             Projectile,
             Dead,
         }
-        
-        [field:SerializeField]public int MonsterId { get; private set; }
+
+        [SerializeField] private int _enemyId;
+
+        public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
 
         private void Awake()
         {
             Rigidbody = GetComponent<Rigidbody2D>();
+            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
             
             SetUp(States.Normal);
         }
