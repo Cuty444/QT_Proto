@@ -6,7 +6,6 @@ public class EnemyGameData : IGameData
     public enum MoveTypes
     {
         None,
-        PC,
         Spacing,
         SpacingLeft
     }
@@ -23,11 +22,11 @@ public class EnemyGameData : IGameData
     public int MaxHP { get; set; }
     
     public MoveTypes MoveType { get; set; }
-    public float MoveSpeed { get; set; }
+    public float MoveSpd { get; set; }
     public float SpacingRad { get; set; }
     
     public AtkStartTypes AtkStartType { get; set; }
-    public float AtkStartValue { get; set; }
+    public float AtkStartParam { get; set; }
     
     public int DropGoldMin { get; set; }
     public int DropGoldMax { get; set; }
