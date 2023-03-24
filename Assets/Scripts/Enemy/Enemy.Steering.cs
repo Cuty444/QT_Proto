@@ -34,6 +34,8 @@ namespace QT.Enemy
 
     public class DirectionWeights
     {
+        public const int DirCount = 8;
+        
         public static readonly Vector2[] Directions =
         {
             new(0, 1),
@@ -46,13 +48,13 @@ namespace QT.Enemy
             new Vector2(-1, 1).normalized
         };
 
-        public readonly float[] Weights = new float[8];
+        public readonly float[] Weights = new float[DirCount];
 
         public void AddWeight(Vector2 dir, float weight)
         {
             dir.Normalize();
 
-            for (var i = 0; i < 8; i++)
+            for (var i = 0; i < DirCount; i++)
             {
                 var result = Vector2.Dot(dir, Directions[i]) * weight;
 
@@ -66,7 +68,7 @@ namespace QT.Enemy
         public void ShowDebugRays(Vector2 start, Color color)
         {
 #if UNITY_EDITOR
-            for (var i = 0; i < 8; i++)
+            for (var i = 0; i < DirCount; i++)
             {
                 Debug.DrawRay(start, Directions[i] * Weights[i], color);
             }
