@@ -37,7 +37,6 @@ namespace QT.Enemy
             
             if (_data.MoveType != EnemyGameData.MoveTypes.None)
             {
-                //SpacingMove(_data.MoveType == EnemyGameData.MoveTypes.SpacingLeft);
                 dir = Move(_data.MoveType == EnemyGameData.MoveTypes.SpacingLeft);
             }
 
@@ -83,7 +82,7 @@ namespace QT.Enemy
             }
             
             dir = Vector2.zero;
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < DirectionWeights.DirCount; i++)
             {
                 interest.Weights[i] = Mathf.Clamp01(interest.Weights[i] - danger.Weights[i]);
                 dir += DirectionWeights.Directions[i] * interest.Weights[i];
