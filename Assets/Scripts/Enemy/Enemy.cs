@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QT.Enemy
 {
-    public class Enemy : FSMPlayer<Enemy>, IFSMEntity
+    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity
     {
         public enum States : int
         {
