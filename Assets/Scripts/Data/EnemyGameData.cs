@@ -24,7 +24,8 @@ public class EnemyGameData : IGameData
     public MoveTypes MoveType { get; set; }
     public float MoveSpd { get; set; }
     public float SpacingRad { get; set; }
-    
+    public float MoveTargetUpdatePeroid { get; set; }
+
     public AtkStartTypes AtkStartType { get; set; }
     public float AtkStartParam { get; set; }
     
