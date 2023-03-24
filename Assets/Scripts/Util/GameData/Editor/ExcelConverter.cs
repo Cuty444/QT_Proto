@@ -116,6 +116,11 @@ namespace QT.Core
                     var datas = new Dictionary<string, string>();
                     IRow row = sheet.GetRow(rowNum);
 
+                    if (row == null)
+                    {
+                        continue;
+                    }
+
                     for (int cellNum = 0; cellNum < columns.Count; cellNum++)
                     {
                         if (string.IsNullOrEmpty(columns[cellNum]))
