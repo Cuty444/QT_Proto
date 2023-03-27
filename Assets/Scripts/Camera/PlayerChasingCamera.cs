@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Player;
+using QT.Player;
 using UnityEngine;
 
 public class PlayerChasingCamera : MonoBehaviour
@@ -12,20 +13,24 @@ public class PlayerChasingCamera : MonoBehaviour
     [SerializeField] private float _minDistance = 0.5f; // 최소 거리
     [SerializeField] private float _maxDistance = 5f; // 최대 거리
     [SerializeField] private float _moveSpeed = 10f;
-
+    [SerializeField] private Sprite[] _playerSprites;
     #endregion
 
     #region Global_Declaration
 
     private Transform _player;
-
+    private SpriteRenderer _spriteRenderer;
+    private PlayerAttack _playerAttack;
     #endregion
 
     private void Start()
     {
         _player = null;
         PlayerSystem playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-        playerSystem.PlayerCreateEvent.AddListener((obj) => { _player = obj.transform; });
+        playerSystem.PlayerCreateEvent.AddListener((obj) => { _player = obj.transform;
+            _spriteRenderer = _player.GetComponent<SpriteRenderer>();
+            _playerAttack = _player.GetComponent<PlayerAttack>();
+        });
         playerSystem.OnPlayerCreate();
     }
 
@@ -73,6 +78,22 @@ public class PlayerChasingCamera : MonoBehaviour
     private void Angle(Vector2 mousePos) //각도 계산
     {
         float playerAngleDegree = QT.Util.Math.GetDegree(_player.position, mousePos);
-        _player.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
+        switch (playerAngleDegree)
+        {
+            case > 45.0f and < 135.0f:
+                _spriteRenderer.sprite = _playerSprites[0];
+                break;
+            case > -135.5f and < -45.0f:
+                _spriteRenderer.sprite = _playerSprites[1];
+                break;
+            case > 135.0f:
+            case < -135.0f:
+                _spriteRenderer.sprite = _playerSprites[2];
+                break;
+            default:
+                _spriteRenderer.sprite = _playerSprites[3];
+                break;
+        }
+        _playerAttack._batAngleTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
     }
 }
