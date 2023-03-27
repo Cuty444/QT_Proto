@@ -39,14 +39,22 @@ namespace QT
     }
 
 
-    [GameDataBaseAttribute(typeof(EnemyGameData), "EnemyGameData")]
+    [GameDataBase(typeof(EnemyGameData), "EnemyGameData")]
     public class EnemyGameDataBase : IGameDataBase
     {
-        public Dictionary<int, IGameData> datas { get; set; }
+        private readonly Dictionary<int, EnemyGameData> _datas = new();
+
+        public void RegisterData(IGameData data)
+        {
+            _datas.Add(data.Index, (EnemyGameData)data);
+        }
 
         public EnemyGameData GetData(int id)
         {
-            if (datas.TryGetValue(id, out var value)) return (EnemyGameData) value;
+            if (_datas.TryGetValue(id, out var value))
+            {
+                return value;
+            }
 
             return null;
         }
