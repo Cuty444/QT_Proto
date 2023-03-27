@@ -64,6 +64,7 @@ namespace QT.Player
 
         #endregion
 
+        public Transform _batAngleTransform;
         void Start()
         {
             GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
@@ -263,7 +264,7 @@ namespace QT.Player
 
         private void PlayerSwingAngle()
         {
-            float playerRotation = transform.rotation.z;
+            float playerRotation = _batAngleTransform.rotation.z;
             switch (playerRotation)
             {
                 case > 0.35f and < 0.7f:
