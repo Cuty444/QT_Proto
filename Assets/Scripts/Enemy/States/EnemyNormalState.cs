@@ -99,22 +99,7 @@ namespace QT.Enemy
                 interest.AddWeight(new Vector2(dir.y, -dir.x), 1);
             }
 
-            dir = Vector2.zero;
-            for (int i = 0; i < DirectionWeights.DirCount; i++)
-            {
-                interest.Weights[i] = Mathf.Clamp01(interest.Weights[i] - danger.Weights[i]);
-                dir += DirectionWeights.Directions[i] * interest.Weights[i];
-            }
-            dir.Normalize();
-
-            // Debug
-            #if UNITY_EDITOR
-            interest.ShowDebugRays(ownerPos, Color.green);
-            danger.ShowDebugRays(ownerPos, Color.red);
-            Debug.DrawRay(ownerPos, dir, Color.yellow);
-            #endif
-            
-            return dir;
+            return _ownerEntity.CalculateContexts(danger, interest);
         }
 
         private bool CheckAttackStart(float targetDistance)
