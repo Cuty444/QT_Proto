@@ -9,7 +9,7 @@ namespace QT.Core
 {
     public interface IGameData
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Class)]
@@ -95,7 +95,7 @@ namespace QT.Core
                         }
                     }
 
-                    database.datas.Add(data.Id, data);
+                    database.datas.Add(data.Index, data);
                 }
 
                 _databases.Add(dataBaseType, database);
