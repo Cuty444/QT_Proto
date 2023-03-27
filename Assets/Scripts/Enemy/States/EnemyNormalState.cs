@@ -1,3 +1,4 @@
+using System.Timers;
 using QT.Core;
 using QT.Core.Enemy;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace QT.Enemy
         private float _lastMoveTargetUpdateTime;
         private Vector2 _moveTarget;
 
+        private float _lastAtkCheckTime;
+
         public EnemyNormalState(IFSMEntity owner) : base(owner)
         {
             _data = _ownerEntity.Data;
@@ -20,6 +23,7 @@ namespace QT.Enemy
         public override void InitializeState()
         {
             _lastMoveTargetUpdateTime = 0;
+            _lastAtkCheckTime = Time.time;
         }
 
         public override void UpdateState()
@@ -33,13 +37,33 @@ namespace QT.Enemy
 
         public override void FixedUpdateState()
         {
-            var dir = Vector2.zero;
+            var targetDistance = (_moveTarget-(Vector2) _ownerEntity.transform.position).magnitude;
             
-            if (_data.MoveType != EnemyGameData.MoveTypes.None)
+            Move(targetDistance);
+            if (CheckAttackStart(targetDistance))
             {
-                dir = Move(_data.MoveType == EnemyGameData.MoveTypes.SpacingLeft);
+                Debug.Log("빵야 빵야");
             }
+        }
 
+        public override void ClearState()
+        {
+        }
+
+        private void Move(float targetDistance)
+        {
+            var dir = Vector2.zero;
+
+            switch (_data.MoveType)
+            {
+                case EnemyGameData.MoveTypes.Spacing :
+                    dir = SpacingMove(targetDistance,false);
+                    break;
+                case EnemyGameData.MoveTypes.SpacingLeft:
+                    dir = SpacingMove(targetDistance, true);
+                    break;
+            }
+            
             if (dir != Vector2.zero)
             {
                 var currentDir = _ownerEntity.Rigidbody.velocity.normalized;
@@ -52,35 +76,29 @@ namespace QT.Enemy
             }
         }
 
-        public override void ClearState()
-        {
-        }
-
-        private Vector2 Move(bool isRotate)
+        private Vector2 SpacingMove(float targetDistance, bool isRotate = false)
         {
             var ownerPos = (Vector2) _ownerEntity.transform.position;
             var dir = _moveTarget - ownerPos;
-            var sqrDistance = dir.sqrMagnitude;
             
             var danger = new DirectionWeights();
             var interest = new DirectionWeights();
             
             _ownerEntity.DetectObstacle(danger);
 
-            if (sqrDistance > _data.SpacingRad * _data.SpacingRad)
+            if (targetDistance > _data.SpacingRad)
             {
                 interest.AddWeight(dir, 1);
             }
-            else if(sqrDistance < (_data.SpacingRad - 1) * (_data.SpacingRad - 1))
+            else if(targetDistance < _data.SpacingRad - 1)
             {
                 interest.AddWeight(-dir, 1);
             }
-            
-            if (isRotate)
+            else if (isRotate)
             {
                 interest.AddWeight(new Vector2(dir.y, -dir.x), 1);
             }
-            
+
             dir = Vector2.zero;
             for (int i = 0; i < DirectionWeights.DirCount; i++)
             {
@@ -89,12 +107,35 @@ namespace QT.Enemy
             }
             dir.Normalize();
 
-            
+            // Debug
+            #if UNITY_EDITOR
             interest.ShowDebugRays(ownerPos, Color.green);
             danger.ShowDebugRays(ownerPos, Color.red);
             Debug.DrawRay(ownerPos, dir, Color.yellow);
+            #endif
             
             return dir;
+        }
+
+        private bool CheckAttackStart(float targetDistance)
+        {
+            if (_data.AtkDataId == 0 || _lastAtkCheckTime + _data.AtkCheakDelay > Time.time)
+            {
+                return false;
+            }
+
+            switch (_data.AtkStartType)
+            {
+                case EnemyGameData.AtkStartTypes.Sight:
+                    if (targetDistance < _data.AtkStartParam)
+                    {
+                        _lastAtkCheckTime = Time.time;
+                        return true;
+                    }
+                    break;
+            }
+            
+            return false;
         }
     }
 }
