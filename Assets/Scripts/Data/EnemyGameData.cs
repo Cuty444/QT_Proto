@@ -18,7 +18,7 @@ namespace QT
             Sight,
         }
 
-        public int Id { get; set; }
+        public int Index { get; set; }
         public string Name { get; set; }
         public int MaxHP { get; set; }
     
