@@ -9,47 +9,80 @@ public class CharacterTable : ScriptableObject
     public int Index => _index;
 
     [SerializeField]
-    [Tooltip("ÃÖ´ë Ã¼·Â")]
+    [Tooltip("ìµœëŒ€ ì²´ë ¥")]
     private int _hpMax = 100;
     public int HPMax => _hpMax;
+    
+    [SerializeField]
+    [Tooltip("ê°€ì§€ê³  ìˆëŠ” ê³µ ìµœëŒ€ ê°¯ìˆ˜ ì œí•œ")]
+    private int _ballStackMax = 3;
+    /// <summary>
+    /// ê°€ì§€ê³  ìˆëŠ” ê³µ ìµœëŒ€ ê°¯ìˆ˜ ì œí•œ
+    /// </summary>
+    public int BallStackMax => _ballStackMax;
 
     [SerializeField]
-    [Tooltip("Ä³¸¯ÅÍ È÷Æ®¹Ú½º ¿øÇü ¹İÁö¸§°ª")]
+    [Tooltip("ìºë¦­í„° íˆíŠ¸ë°•ìŠ¤ ì›í˜• ë°˜ì§€ë¦„ê°’")]
     private float _pcHitBoxRad = 0.5f;
     /// <summary>
-    /// Ä³¸¯ÅÍ È÷Æ®¹Ú½º ¿øÇü ¹İÁö¸§°ª
+    /// ìºë¦­í„° íˆíŠ¸ë°•ìŠ¤ ì›í˜• ë°˜ì§€ë¦„ê°’
     /// </summary>
     public float PCHitBoxRad => _pcHitBoxRad;
 
     [SerializeField]
-    [Tooltip("ÀÌµ¿ ¼Óµµ. unit")]
+    [Tooltip("ì´ë™ ì†ë„. unit")]
     private float _movementSpd = 1f;
     /// <summary>
-    /// ÀÌµ¿ ¼Óµµ. unit
+    /// ì´ë™ ì†ë„. unit
     /// </summary>
     public float MovementSpd => _movementSpd;
 
     [SerializeField]
-    [Tooltip("ÇÇ°İ ½Ã ¹«Àû ½Ã°£(s)")]
+    [Tooltip("í”¼ê²© ì‹œ ë¬´ì  ì‹œê°„(s)")]
     private float _mercyInvincibleTime = 1f;
     /// <summary>
-    /// ÇÇ°İ ½Ã ¹«Àû ½Ã°£(s)
+    /// í”¼ê²© ì‹œ ë¬´ì  ì‹œê°„(s)
     /// </summary>
     public float MercyInvincibleTime => _mercyInvincibleTime;
 
     [SerializeField]
-    [Tooltip("È¸ÇÇ ÈÄ Àç»ç¿ë ´ë±â ½Ã°£(s) - ¹ÌÀû¿ë")]
+    [Tooltip("íšŒí”¼ í›„ ì¬ì‚¬ìš© ëŒ€ê¸° ì‹œê°„(s)")]
     private float _dodgeCooldown = 1f;
     /// <summary>
-    /// È¸ÇÇ ÈÄ Àç»ç¿ë ´ë±â ½Ã°£(s)
+    /// íšŒí”¼ í›„ ì¬ì‚¬ìš© ëŒ€ê¸° ì‹œê°„(s)
     /// </summary>
     public float DodgeCooldown => _dodgeCooldown;
 
     [SerializeField]
-    [Tooltip("È¸ÇÇ ½Ã ¹«Àû ½Ã°£(s) - ¹ÌÀû¿ë")]
+    [Tooltip("íšŒí”¼ ì‹œ ë¬´ì  ì‹œê°„(s)")]
     private float _dodgeInvincibleTime = 1f;
     /// <summary>
-    /// È¸ÇÇ ½Ã ¹«Àû ½Ã°£(s)
+    /// íšŒí”¼ ì‹œ ë¬´ì  ì‹œê°„(s)
     /// </summary>
     public float DodgeInvincibleTime => _dodgeInvincibleTime;
+    
+    [SerializeField]
+    [Tooltip("íšŒí”¼ ì‹œ ì¶”ê°€ ê°€ì† ë°°ìœ¨(*)")]
+    private float _dodgeDecelerationSpeed = 1f;
+    /// <summary>
+    /// íšŒí”¼ ì‹œ ì¶”ê°€ ê°€ì† ë°°ìœ¨(*)
+    /// </summary>
+    public float DodgeDecelerationSpeed => _dodgeDecelerationSpeed;
+
+    [SerializeField]
+    [Tooltip("íšŒí”¼ ê±°ë¦¬(unit)")]
+    private float _dodgeStopDistance = 1f;
+    /// <summary>
+    /// íšŒí”¼ ê±°ë¦¬(unit)
+    /// </summary>
+    public float DodgeStopDistance => _dodgeStopDistance;
+    
+    [SerializeField]
+    [Tooltip("ì°¨ì§•ì¤‘ ì´ë™ ì†ë„ê°ì†Œë¹„ìœ¨(f)")]
+    [Range(0f,1f)]
+    private float _chargeMovementDecreasePer = 1f;
+    /// <summary>
+    /// ì°¨ì§•ì¤‘ ì´ë™ ì†ë„ê°ì†Œë¹„ìœ¨(f)
+    /// </summary>
+    public float ChargeMovementDecreasePer => _chargeMovementDecreasePer;
 }

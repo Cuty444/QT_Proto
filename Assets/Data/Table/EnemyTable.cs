@@ -9,17 +9,17 @@ public class EnemyTable : ScriptableObject
     public int Index => _index;
 
     [SerializeField]
-    [Tooltip("ÃÖ´ë Ã¼·Â")]
+    [Tooltip("ìµœëŒ€ ì²´ë ¥")]
     private int _hpMax = 100;
     public int HPMax => _hpMax;
 
     [SerializeField]
-    [Tooltip("°ø°Ý·Â")]
+    [Tooltip("ê³µê²©ë ¥")]
     private int _atkDmg = 100;
     public int ATKDmg => _atkDmg;
     
     [SerializeField]
-    [Tooltip("ÀÌµ¿ ¼Óµµ")]
+    [Tooltip("ì´ë™ ì†ë„")]
     private float _movementSpd = 100;
     public float MovementSpd => _movementSpd;
 }

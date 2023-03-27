@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QT.Enemy
 {
-    public class EnemyFSM : MonoBehaviour // 추후 행동 패턴에 따른 컴포넌트 분리
+    public class EnemyFSM : MonoBehaviour
     {
         #region StartData_Declaration
 

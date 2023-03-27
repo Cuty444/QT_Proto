@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Experimental.GlobalIllumination;
 
 namespace QT.Core.Input
 {
@@ -16,14 +17,18 @@ namespace QT.Core.Input
         private UnityEvent _onKeyUpAttackEvent = new UnityEvent();
         public UnityEvent OnKeyUpAttackEvent => _onKeyUpAttackEvent;
 
-        private UnityEvent _onRightKeyDownGrapEvent = new UnityEvent();
-        public UnityEvent OnRightKeyDownGrapEvent => _onRightKeyDownGrapEvent;
+        private UnityEvent _onKeySpaceDodgeEvent = new UnityEvent();
+        public UnityEvent OnKeySpaceDodgeEvent => _onKeySpaceDodgeEvent;
+
+        private UnityEvent _onKeyEThrowEvent = new UnityEvent();
+        public UnityEvent OnKeyEThrowEvent => _onKeyEThrowEvent;
 
         private void Update()
         {
+            SpaceKeyInputDodge();
             KeyInputMove();
+            EKeyInputThrow();
             MouseInputAttack();
-            RightMouseInputGrap();
         }
 
         private void KeyInputMove()
@@ -44,12 +49,19 @@ namespace QT.Core.Input
             }
         }
 
-        private  void RightMouseInputGrap() // 현재 미사용 시스템
+        private void SpaceKeyInputDodge()
         {
-            if(UnityEngine.Input.GetMouseButtonDown(1))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
             {
-                Debug.Log("우클릭");
-                OnRightKeyDownGrapEvent.Invoke();
+                OnKeySpaceDodgeEvent.Invoke();
+            }
+        }
+
+        private void EKeyInputThrow()
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.E))
+            {
+                OnKeyEThrowEvent.Invoke();
             }
         }
     }

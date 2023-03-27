@@ -11,34 +11,34 @@ public class BallTable : ScriptableObject
     public int Index => _index;
 
     [SerializeField]
-    [Tooltip("°ø Äİ¶óÀÌ´õ ¹üÀ§. ¹İÁö¸§.")]
+    [Tooltip("ê³µ ì½œë¼ì´ë” ë²”ìœ„. ë°˜ì§€ë¦„.")]
     private float _ballColliderRad = 1f;
     /// <summary>
-    /// °ø Äİ¶óÀÌ´õ ¹üÀ§. ¹İÁö¸§.
+    /// ê³µ ì½œë¼ì´ë” ë²”ìœ„. ë°˜ì§€ë¦„.
     /// </summary>
     public float BallColliderRad => _ballColliderRad;
 
     [SerializeField]
-    [Tooltip("´øÁú¶§ ¼Óµµ")]
+    [Tooltip("ë˜ì§ˆë•Œ ì†ë„")]
     private float _throwSpd = 1f;
     /// <summary>
-    /// ´øÁú¶§ ¼Óµµ
+    /// ë˜ì§ˆë•Œ ì†ë„
     /// </summary>
     public float ThrowSpd => _throwSpd;
 
     [SerializeField]
-    [Tooltip("¹«°Ô - ¹ÌÀû¿ë")]
+    [Tooltip("ë¬´ê²Œ - ë¯¸ì ìš©")]
     private float _ballWeight = 1f;
     /// <summary>
-    /// ¹«°Ô
+    /// ë¬´ê²Œ
     /// </summary>
     public float BallWeight => _ballWeight;
 
     [SerializeField]
-    [Tooltip("º¼ Æ¨±è ÇÇÇØ·® °¡ÁßÄ¡")]
+    [Tooltip("ë³¼ íŠ•ê¹€ í”¼í•´ëŸ‰ ê°€ì¤‘ì¹˜")]
     private float _ballBounceSpdDmgPer = 1f;
     /// <summary>
-    /// º¼ Æ¨±è ÇÇÇØ·® °¡ÁßÄ¡
+    /// ë³¼ íŠ•ê¹€ í”¼í•´ëŸ‰ ê°€ì¤‘ì¹˜
     /// </summary>
     public float BallBounceSpdDmgPer => _ballBounceSpdDmgPer;
 }

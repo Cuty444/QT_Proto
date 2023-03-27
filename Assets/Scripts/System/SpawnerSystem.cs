@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QT.Core.Spawner
 {
 
-    public class SpawnerSystem : SystemBase // 임시 시스템 변경예정
+    public class SpawnerSystem : SystemBase
     {
         [SerializeField] private GameObject _enemyObject;
         [SerializeField] private Transform _enemyParentTransform;
@@ -15,7 +15,7 @@ namespace QT.Core.Spawner
         public override void OnInitialized()
         {
             enemy = GetComponentsInChildren<SpriteRenderer>();
-            StartCoroutine(EnemySpawnerRepeat(_enemySpawnDelay));
+            StartCoroutine(QT.Util.UnityUtil.WaitForFunc(() => StartCoroutine(EnemySpawnerRepeat(_enemySpawnDelay)),0.1f));
         }
 
         private void EnemySpawn()

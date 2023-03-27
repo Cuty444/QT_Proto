@@ -26,70 +26,70 @@ public class BatTable : ScriptableObject
     public int Index => _index;
 
     [SerializeField]
-    [Tooltip("ÈÖµÎ¸£±â ÀûÁß ÇÇÇØ·® ¹ÌÂ÷Â¡, Â÷Â¡")]
+    [Tooltip("íœ˜ë‘ë¥´ê¸° ì ì¤‘ í”¼í•´ëŸ‰ ë¯¸ì°¨ì§•, ì°¨ì§•")]
     private int[] _swingRigidDmg;
     /// <summary>
-    /// °ø°İÀ» ÅëÇÑ Áï¹ß ÇÇÇØ·®
+    /// ê³µê²©ì„ í†µí•œ ì¦‰ë°œ í”¼í•´ëŸ‰
     /// </summary>
     public int[] SwingRigidDmg => _swingRigidDmg;
 
     [SerializeField]
-    [Tooltip("°ø°İ ¹üÀ§ ¹İÁö¸§ - ¹ÌÀû¿ë")]
+    [Tooltip("ê³µê²© ë²”ìœ„ ë°˜ì§€ë¦„ - ë¯¸ì ìš©")]
     private float _atkRad = 1f;
     /// <summary>
-    /// °ø°İ ¹üÀ§ ¹İÁö¸§
+    /// ê³µê²© ë²”ìœ„ ë°˜ì§€ë¦„
     /// </summary>
     public float ATKRad => _atkRad;
 
     [SerializeField]
-    [Tooltip("°ø°İ °¢µµ - ¹ÌÀû¿ë")]
+    [Tooltip("ê³µê²© ê°ë„")]
     private float _atkCentralAngle = 1f;
     /// <summary>
-    /// °ø°İ °¢µµ
+    /// ê³µê²© ê°ë„
     /// </summary>
     public float AtkCentralAngle => _atkCentralAngle;
 
     [SerializeField]
-    [Tooltip("°ø°İ ÄğÅ¸ÀÓ (s)")]
+    [Tooltip("ê³µê²© ì¿¨íƒ€ì„ (s)")]
     private float _atkCooldown = 1f;
     /// <summary>
-    /// °ø°İ ÄğÅ¸ÀÓ (s)
+    /// ê³µê²© ì¿¨íƒ€ì„ (s)
     /// </summary>
     public float AtkCooldown => _atkCooldown;
 
     [SerializeField]
-    [Tooltip("°ø°İ ¹ß»ı Áö¿¬ ½Ã°£ (s) - ¹ÌÀû¿ë")]
+    [Tooltip("ê³µê²© ë°œìƒ ì§€ì—° ì‹œê°„ (s) - ë¯¸ì ìš©")]
     private float _atkAfterDelay = 1f;
     /// <summary>
-    /// °ø°İ ¹ß»ı Áö¿¬ ½Ã°£ (s)
+    /// ê³µê²© ë°œìƒ ì§€ì—° ì‹œê°„ (s)
     /// </summary>
     public float AtkAfterDelay => _atkAfterDelay;
 
     [SerializeField]
-    [Tooltip("°ø°İÀ¸·Î Æ¨°Ü³­ °ø, ÀûÀÌ ´Ù¸¥ Äİ¸®Àü°ú Ãæµ¹ÇÏ¸ç ÀÔ´Â ÇÇÇØ·® °¡ÁßÄ¡ - ¹ÌÀû¿ë")]
+    [Tooltip("ê³µê²©ìœ¼ë¡œ íŠ•ê²¨ë‚œ ê³µ, ì ì´ ë‹¤ë¥¸ ì½œë¦¬ì „ê³¼ ì¶©ëŒí•˜ë©° ì…ëŠ” í”¼í•´ëŸ‰ ê°€ì¤‘ì¹˜ - ë¯¸ì ìš©")]
     private float _batBounceSpdDmgPer = 1f;
     /// <summary>
-    /// °ø°İÀ¸·Î Æ¨°Ü³­ °ø, ÀûÀÌ ´Ù¸¥ Äİ¸®Àü°ú Ãæµ¹ÇÏ¸ç ÀÔ´Â ÇÇÇØ·® °¡ÁßÄ¡
+    /// ê³µê²©ìœ¼ë¡œ íŠ•ê²¨ë‚œ ê³µ, ì ì´ ë‹¤ë¥¸ ì½œë¦¬ì „ê³¼ ì¶©ëŒí•˜ë©° ì…ëŠ” í”¼í•´ëŸ‰ ê°€ì¤‘ì¹˜
     /// </summary>
     public float BounceSpdDmgPer => _batBounceSpdDmgPer;
     [SerializeField]
-    [Tooltip("Â÷Â¡ ´Ü°è¿¡ µû¶ó °É¸®´Â ½Ã°£(s)")]
+    [Tooltip("ì°¨ì§• ë‹¨ê³„ì— ë”°ë¼ ê±¸ë¦¬ëŠ” ì‹œê°„(s)")]
     private float[] _chargingMaxTimes;
     /// <summary>
-    /// Â÷Â¡ ´Ü°è¿¡ µû¶ó °É¸®´Â ½Ã°£(s)
+    /// ì°¨ì§• ë‹¨ê³„ì— ë”°ë¼ ê±¸ë¦¬ëŠ” ì‹œê°„(s)
     /// </summary>
     public float[] ChargingMaxTimes => _chargingMaxTimes;
 
     [SerializeField]
-    [Tooltip("Â÷Â¡ ´Ü°è¿¡ µû¸¥ °íÁ¤ ¼Óµµ")]
+    [Tooltip("ì°¨ì§• ë‹¨ê³„ì— ë”°ë¥¸ ê³ ì • ì†ë„")]
     private float[] _atkShootSpd;
     /// <summary>
-    /// Â÷Â¡ ´Ü°è¿¡ µû¶ó °É¸®´Â ½Ã°£(s)
+    /// ì°¨ì§• ë‹¨ê³„ì— ë”°ë¼ ê±¸ë¦¬ëŠ” ì‹œê°„(s)
     /// </summary>
     public float[] AtkShootSpd => _atkShootSpd;
 
     [SerializeField]
-    [Header("Â÷Â¡·®¿¡ µû¸¥ °üÅë¼¦ ¿©ºÎ")]
+    [Header("ì°¨ì§•ëŸ‰ì— ë”°ë¥¸ ê´€í†µìƒ· ì—¬ë¶€")]
     private ChargeAtkPierce _chargeAtkPierce;
     public ChargeAtkPierce ChargeAtkPierce => _chargeAtkPierce;
 }
