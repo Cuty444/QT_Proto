@@ -4,6 +4,7 @@ using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
 using QT.Core.Data;
+using QT.Core.Player;
 
 namespace QT.Player
 {
@@ -12,6 +13,7 @@ namespace QT.Player
         #region StartData_Declaration
 
         private float _speed;
+        private float _reduceSpeed;
 
         #endregion
 
@@ -20,21 +22,23 @@ namespace QT.Player
         private Rigidbody2D _rigidbody2D;
         private Vector2 _moveDirection;
         private float _currentReduceSpeed;
-
+        private bool _isDodge;
         #endregion
-
-        [SerializeField] private float _reduceSpeed; // 이 값은 추후 테이블 참조
-
+        
         private void Start()
         {
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyMoveEvent.AddListener(SetMoveDirection);
             inputSystem.OnKeyDownAttackEvent.AddListener(AttackOn);
+            inputSystem.OnKeyUpAttackEvent.AddListener(AttackOff);
             GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             _speed = globalDataSystem.CharacterTable.MovementSpd;
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            _reduceSpeed = globalDataSystem.CharacterTable.ChargeMovementDecreasePer;
             GetComponent<CircleCollider2D>().radius = globalDataSystem.CharacterTable.PCHitBoxRad;
             _currentReduceSpeed = 1f;
+            SystemManager.Instance.GetSystem<PlayerSystem>().DodgeEvent.AddListener(Dodging);
+            _isDodge = false;
         }
 
         private void FixedUpdate()
@@ -52,10 +56,22 @@ namespace QT.Player
             _currentReduceSpeed = _reduceSpeed;
         }
 
-
-        void Move()
+        private void AttackOff()
         {
-            _rigidbody2D.velocity = _moveDirection * _speed * Time.fixedDeltaTime /** _currentReduceSpeed*/;
+            _currentReduceSpeed = 1f;
+        }
+
+
+        private void Move()
+        {
+            if(_isDodge)
+                return;
+            _rigidbody2D.velocity = _moveDirection * (_speed * Time.fixedDeltaTime * _currentReduceSpeed);
+        }
+
+        private void Dodging(bool isDodge)
+        {
+            _isDodge = isDodge;
         }
     }
 }

@@ -24,7 +24,13 @@ namespace QT.Core.Player
         private UnityEvent<GameObject> _playerCreateEvent = new UnityEvent<GameObject>();
         public UnityEvent<GameObject> PlayerCreateEvent => _playerCreateEvent;
 
-        public void OnPlayerCreate() // ÃßÈÄ ·Î±×¶óÀÌÅ©¸Ê ÀıÂ÷ »ı¼º SystemManager¿¡¼­ °ü¸®ÇÏµµ·Ï ÄÚµå À§Ä¡ º¯°æÀÌ ÇÊ¿äÇÔ
+        private UnityEvent<bool> _dodgeEvent = new UnityEvent<bool>();
+        public UnityEvent<bool> DodgeEvent => _dodgeEvent;
+
+        private UnityEvent _playerCollisionEnemyEvent = new UnityEvent();
+        public UnityEvent PlayerCollisionEnemyEvent => _playerCollisionEnemyEvent;
+        
+        public void OnPlayerCreate() // ì¶”í›„ ë¡œê·¸ë¼ì´í¬ë§µ ì ˆì°¨ ìƒì„± SystemManagerì—ì„œ ê´€ë¦¬í•˜ë„ë¡ ì½”ë“œ ìœ„ì¹˜ ë³€ê²½ì´ í•„ìš”í•¨
         {
             GameObject playerObject = Instantiate(_playerObject, Vector3.zero, Quaternion.identity);
             _playerCreateEvent.Invoke(playerObject);

@@ -12,9 +12,9 @@ namespace QT.Ball
     {
         #region StartData_Declaration
 
-        private float _batBounce; //¹èÆ® Æ¨±è ÇÇÇØ·® °¡ÁßÄ¡
-        private float _ballBounce; // º¼ Æ¨±è ÇÇÇØ·® °¡ÁßÄ¡
-        private int _bounceMinDmg; // Æ¨±è ÇÇÇØ·® ÃÖ¼Ò°ª
+        private float _batBounce; //ë°°íŠ¸ íŠ•ê¹€ í”¼í•´ëŸ‰ ê°€ì¤‘ì¹˜
+        private float _ballBounce; // ë³¼ íŠ•ê¹€ í”¼í•´ëŸ‰ ê°€ì¤‘ì¹˜
+        private int _bounceMinDmg; // íŠ•ê¹€ í”¼í•´ëŸ‰ ìµœì†Œê°’
 
         #endregion
 
@@ -45,7 +45,7 @@ namespace QT.Ball
                 damage = Mathf.RoundToInt(_rigidbody2D.velocity.magnitude * _ballBounce * _batBounce);
             }
 
-            return damage < _bounceMinDmg ? _bounceMinDmg : damage;
+            return damage < _bounceMinDmg ? 0 : damage;
         }
     }
 }

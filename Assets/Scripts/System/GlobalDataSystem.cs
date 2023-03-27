@@ -7,7 +7,7 @@ namespace QT.Core.Data
     public class GlobalDataSystem : SystemBase
     {
         [SerializeField]
-        // PlayerTableÀº ÃßÈÄ PlayerSystemÀÌ °¢CharacterTable °ªÀ» ÀúÀåÇÏµµ·Ï °ü¸®
+        // PlayerTableì€ ì¶”í›„ PlayerSystemì´ ê°CharacterTable ê°’ì„ ì €ìž¥í•˜ë„ë¡ ê´€ë¦¬
         private CharacterTable _characterTable;
 
         public CharacterTable CharacterTable => _characterTable;
@@ -18,13 +18,13 @@ namespace QT.Core.Data
         public BatTable BatTable => _batTable;
 
         [SerializeField]
-        //Bat¿Í BallÀº ÃßÈÄ ¾ÆÀÌÅÛÇü½ÄÀÌ ³ª¿À¸é ¼öÁ¤
+        //Batì™€ Ballì€ ì¶”í›„ ì•„ì´í…œí˜•ì‹ì´ ë‚˜ì˜¤ë©´ ìˆ˜ì •
         private BallTable _ballTable;
 
         public BallTable BallTable => _ballTable;
 
         [SerializeField]
-        // EnemyTableÀº ÃßÈÄ EnemyController ÄÄÆ÷³ÍÆ®°¡ °³Ã¼Table °ªÀ» ÀúÀåÇÏµµ·Ï °ü¸®
+        // EnemyTableì€ ì¶”í›„ EnemyController ì»´í¬ë„ŒíŠ¸ê°€ ê°œì²´Table ê°’ì„ ì €ìž¥í•˜ë„ë¡ ê´€ë¦¬
         private EnemyTable _enemyTable;
 
         public EnemyTable EnemyTable => _enemyTable;

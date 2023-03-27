@@ -9,8 +9,8 @@ public class PlayerChasingCamera : MonoBehaviour
 {
     #region Inspector_Definition
 
-    [SerializeField] private float _minDistance = 0.5f; // ÃÖ¼Ò °Å¸®
-    [SerializeField] private float _maxDistance = 5f; // ÃÖ´ë °Å¸®
+    [SerializeField] private float _minDistance = 0.5f; // ìµœì†Œ ê±°ë¦¬
+    [SerializeField] private float _maxDistance = 5f; // ìµœëŒ€ ê±°ë¦¬
     [SerializeField] private float _moveSpeed = 10f;
 
     #endregion
@@ -43,34 +43,34 @@ public class PlayerChasingCamera : MonoBehaviour
         Vector2 playerPos = _player.position;
         Angle(mousePos);
 
-        // Ä«¸Ş¶ó¿Í ÇÃ·¹ÀÌ¾îÀÇ ÇöÀç °Å¸®
+        // ì¹´ë©”ë¼ì™€ í”Œë ˆì´ì–´ì˜ í˜„ì¬ ê±°ë¦¬
         float currentDistance = Vector2.Distance(mousePos, playerPos) / 2.5f;
         float t = Mathf.Clamp01((currentDistance - _minDistance) / (_maxDistance - _minDistance));
 
-        // ÇöÀç °Å¸®°¡ ÃÖ¼Ò °Å¸®º¸´Ù ÀÛÀ¸¸é ÃÖ¼Ò °Å¸®·Î Á¶Á¤
+        // í˜„ì¬ ê±°ë¦¬ê°€ ìµœì†Œ ê±°ë¦¬ë³´ë‹¤ ì‘ìœ¼ë©´ ìµœì†Œ ê±°ë¦¬ë¡œ ì¡°ì •
         if (currentDistance < _minDistance)
         {
             midPoint = Vector2.zero;
         }
-        // ÇöÀç °Å¸®°¡ ÃÖ´ë °Å¸®º¸´Ù Å©¸é ÃÖ´ë °Å¸®·Î Á¶Á¤
+        // í˜„ì¬ ê±°ë¦¬ê°€ ìµœëŒ€ ê±°ë¦¬ë³´ë‹¤ í¬ë©´ ìµœëŒ€ ê±°ë¦¬ë¡œ ì¡°ì •
         else if (currentDistance > _maxDistance)
         {
             midPoint = (mousePos - playerPos).normalized * (_maxDistance * t);
         }
-        else // °Å¸®°¡ ÃÖ¼Ò~ÃÖ´ë ¹üÀ§ ¾È¿¡ ÀÖÀ¸¸é ÇöÀç °Å¸®·Î ¼³Á¤
+        else // ê±°ë¦¬ê°€ ìµœì†Œ~ìµœëŒ€ ë²”ìœ„ ì•ˆì— ìˆìœ¼ë©´ í˜„ì¬ ê±°ë¦¬ë¡œ ì„¤ì •
         {
             midPoint = (mousePos - playerPos) / 2.5f * t;
         }
 
-        // midpoint_as_v3 °è»ê
+        // midpoint_as_v3 ê³„ì‚°
         Vector3 midPoint_as_V3 = new Vector3(midPoint.x, midPoint.y, -10);
 
-        // Ä«¸Ş¶ó À§Ä¡ ¼³Á¤
+        // ì¹´ë©”ë¼ ìœ„ì¹˜ ì„¤ì •
         transform.position = Vector3.Lerp(transform.position, _player.position + midPoint_as_V3,
             Time.fixedDeltaTime * _moveSpeed);
     }
 
-    private void Angle(Vector2 mousePos) //°¢µµ °è»ê
+    private void Angle(Vector2 mousePos) //ê°ë„ ê³„ì‚°
     {
         float playerAngleDegree = QT.Util.Math.GetDegree(_player.position, mousePos);
         _player.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
