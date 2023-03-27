@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using QT.Core;
-using UnityEngine;
 
 namespace QT.Enemy
 {
-    [FSMState((int)Enemy.States.Rigid)]
+    [FSMState((int) Enemy.States.Rigid)]
     public class EnemyRigidState : FSMState<Enemy>
     {
         public EnemyRigidState(IFSMEntity owner) : base(owner)
@@ -14,22 +11,18 @@ namespace QT.Enemy
 
         public override void InitializeState()
         {
-            
         }
 
         public override void UpdateState()
         {
-            
         }
 
         public override void FixedUpdateState()
         {
-            
         }
 
         public override void ClearState()
         {
-            
         }
     }
 }
