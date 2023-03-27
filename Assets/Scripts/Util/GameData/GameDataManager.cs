@@ -5,11 +5,11 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Reflection;
 
-namespace QT
+namespace QT.Core
 {
     public interface IGameData
     {
-        public int id { get; set; }
+        public int Id { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Class)]
@@ -95,7 +95,7 @@ namespace QT
                         }
                     }
 
-                    database.datas.Add(data.id, data);
+                    database.datas.Add(data.Id, data);
                 }
 
                 _databases.Add(dataBaseType, database);

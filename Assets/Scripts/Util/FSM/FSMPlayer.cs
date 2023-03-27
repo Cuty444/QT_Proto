@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 
 
-namespace QT
+namespace QT.Core
 {
     public interface IFSMEntity
     {

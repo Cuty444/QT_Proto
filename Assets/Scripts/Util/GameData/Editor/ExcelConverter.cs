@@ -12,7 +12,7 @@ using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 
 
-namespace QT
+namespace QT.Core
 {
     public class ExcelConverter
     {
@@ -85,10 +85,10 @@ namespace QT
                 ISheet sheet = xssWorkbook.GetSheetAt(0);
 
 
-                // 첫번째 행은 어떤 데이터가 있는지 확인하는 용도
+                // 1 번째 행은 어떤 데이터가 있는지 확인하는 용도
                 result.Append("[\n\t[\n");
 
-                IRow headerRow = sheet.GetRow(0);
+                IRow headerRow = sheet.GetRow(1);
                 for (int cellNum = 0; cellNum < headerRow.LastCellNum; cellNum++)
                 {
                     ICell cell = headerRow.GetCell(cellNum);
@@ -111,10 +111,15 @@ namespace QT
 
                 // 나머지 행들을 돌아가며 데이터 가공
 
-                for (int rowNum = 1; rowNum <= sheet.LastRowNum; rowNum++)
+                for (int rowNum = 2; rowNum <= sheet.LastRowNum; rowNum++)
                 {
                     var datas = new Dictionary<string, string>();
                     IRow row = sheet.GetRow(rowNum);
+
+                    if (row == null)
+                    {
+                        continue;
+                    }
 
                     for (int cellNum = 0; cellNum < columns.Count; cellNum++)
                     {

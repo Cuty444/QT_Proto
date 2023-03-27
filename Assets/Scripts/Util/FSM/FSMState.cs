@@ -1,7 +1,7 @@
 using System;
 
 
-namespace QT
+namespace QT.Core
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class FSMStateAttribute : System.Attribute
