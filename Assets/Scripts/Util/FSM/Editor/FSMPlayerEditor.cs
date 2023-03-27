@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace QT.Core
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(FSMPlayer<>), true)]
     public class FSMPlayerEditor : Editor
     {
