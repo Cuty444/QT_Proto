@@ -29,6 +29,26 @@ namespace QT.Enemy
                 danger.AddWeight(obstacleDir, weight);
             }
         }
+        
+        public Vector2 CalculateContexts(DirectionWeights danger, DirectionWeights interest)
+        {
+            var dir = Vector2.zero;
+            for (var i = 0; i < DirectionWeights.DirCount; i++)
+            {
+                interest.Weights[i] = Mathf.Clamp01(interest.Weights[i] - danger.Weights[i]);
+                dir += DirectionWeights.Directions[i] * interest.Weights[i];
+            }
+            dir.Normalize();
+            
+            //Debug
+#if UNITY_EDITOR
+            interest.ShowDebugRays(transform.position, Color.green);
+            danger.ShowDebugRays(transform.position, Color.red);
+            Debug.DrawRay(transform.position, dir, Color.yellow);
+#endif
+            
+            return dir;
+        }
     }
 
 
