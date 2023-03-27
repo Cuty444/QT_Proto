@@ -10,7 +10,7 @@ namespace QT.Enemy
 
         [SerializeField] private float _enemySize;
 
-        public void DetectObstacle(DirectionWeights danger)
+        public void DetectObstacle(ref DirectionWeights danger)
         {
             var obstacles = Physics2D.OverlapCircleAll(transform.position, _detectionRadius, _obstacleLayerMask);
 
