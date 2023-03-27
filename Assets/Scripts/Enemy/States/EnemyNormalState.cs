@@ -84,7 +84,7 @@ namespace QT.Enemy
             var danger = new DirectionWeights();
             var interest = new DirectionWeights();
             
-            _ownerEntity.DetectObstacle(danger);
+            _ownerEntity.DetectObstacle(ref danger);
 
             if (targetDistance > _data.SpacingRad)
             {
