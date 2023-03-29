@@ -40,20 +40,24 @@ namespace QT
         private void Update()
         {
             var moveLength = _speed * Time.deltaTime;
-            
             var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
 
             if (hit != null)
             {
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
+
+                if (--_bounceCount < 0)
+                {
+                    Destroy(gameObject); // Todo: 오브젝트 풀링
+                }
             }
             
-            
             transform.Translate(_direction * moveLength);
+            
             _speed -= _speedDecay * Time.deltaTime;
             if (_speed <= 0)
             {
-                Destroy(gameObject);
+                Destroy(gameObject); // Todo: 오브젝트 풀링
             }
         }
     }
