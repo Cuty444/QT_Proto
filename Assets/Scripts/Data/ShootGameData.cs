@@ -8,6 +8,7 @@ namespace QT
         public int Index { get; set; }
         
         public float ShootAngle { get; set; }
+        public int MaxBounceCount { get; set; }
         public int ProjectileDataId { get; set; }
     }
 
