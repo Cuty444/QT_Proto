@@ -11,7 +11,7 @@ using QT.Data;
 using QT.UI;
 using QT.Player.Bat;
 using QT.Ball;
-using Unity.Mathematics;
+using UnityEditor;
 
 namespace QT.Player
 {
@@ -21,6 +21,8 @@ namespace QT.Player
 
         [Header("Bullet")] [SerializeField] private GameObject _bulletObject;
         [SerializeField] private TrailRenderer _trailRenderer;
+        [SerializeField] private Transform _eyePos;
+        [SerializeField] private Transform _swingAreaPos;
         [SerializeField] private Transform _batPos;
         [SerializeField] private BatSwing _batSwing;
         [SerializeField] private float _rotationTime = 0.1f; // 공속 부분과 동기화 필요 임시 수치
@@ -41,6 +43,7 @@ namespace QT.Player
         private float _atkCoolTime;
         private float[] _chargingMaxTimes;
         private float _atkCentralAngle;
+        private float _atkRadius;
         private int[] _swingRigidDmg;
         private int _ballStackMax;
 
@@ -49,6 +52,10 @@ namespace QT.Player
         #region Global_Declaration
 
         private SpriteRenderer _batSpriteRenderer;
+
+        private List<GameObject> _ballList = new List<GameObject>();
+
+        private Color _swingAreaColor;
 
         private float _currentAtkCoolTime;
         private float _currentChargingTime;
@@ -61,6 +68,10 @@ namespace QT.Player
         private bool _isUpDown = true;
         private bool _isMouseDownCheck = false;
         
+        private Mesh _mesh;
+        private MeshFilter _meshFilter;
+        private MeshRenderer _meshRenderer;
+
 
         #endregion
 
@@ -77,12 +88,14 @@ namespace QT.Player
             float halfAngle = _atkCentralAngle * 0.5f;
             _upAtkCentralAngle = -90.0f - halfAngle;
             _downAtkCentralAngle = -90.0f + halfAngle;
+            _atkRadius = globalDataSystem.BatTable.ATKRad;
             _ballStackMax = globalDataSystem.CharacterTable.BallStackMax;
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
             inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
             _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
+            _playerSystem.PlayerBallDestroyedEvent.AddListener(BallDestroyed);
             _currentAtkCoolTime = _atkCoolTime;
             _currentChargingTime = 0f;
             _isMouseDownCheck = false;
@@ -98,6 +111,14 @@ namespace QT.Player
             _currentBallStack = _ballStackMax;
             _ballStackBarImage.fillAmount = 0;
             _ballStackText.text = _currentBallStack.ToString();
+            _swingAreaColor = new Color(0f, 0f, 1f, 0.2f);
+            _meshFilter = _swingAreaPos.gameObject.GetComponent<MeshFilter>();
+            _meshRenderer = _swingAreaPos.gameObject.GetComponent<MeshRenderer>();
+            _mesh = CreateMesh(_atkRadius, _atkCentralAngle, 32);
+            _meshFilter.mesh = _mesh;
+            _meshRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            _meshRenderer.material.color = _swingAreaColor;
+            _meshRenderer.enabled = false;
         }
 
         private void Update()
@@ -118,7 +139,7 @@ namespace QT.Player
                 PlayerSwingAngle();
             }
         }
-
+        
         #region AttackFunc
 
         private void AttackCoolTime()
@@ -144,7 +165,7 @@ namespace QT.Player
         {
             if (_currentBallStack == 0)
                 return;
-            AttackBulletInstate();
+            AttackBallInstate();
         }
 
         private void KeyDownAttack()
@@ -156,6 +177,7 @@ namespace QT.Player
             else
             {
                 _isMouseDownCheck = true;
+                _meshRenderer.enabled = true;
                 _currentChargingTime = 0f;
             }
         }
@@ -164,6 +186,8 @@ namespace QT.Player
         {
             AttackCheck();
             _isMouseDownCheck = false;
+            _meshRenderer.enabled = false;
+
         }
 
         private void AttackCheck()
@@ -183,14 +207,23 @@ namespace QT.Player
             }
         }
 
-        private void AttackBulletInstate()
+        private void AttackBallInstate()
         {
             float bulletAngleDegree = Util.Math.GetDegree(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            BallMove Ball = Instantiate(_bulletObject).GetComponent<BallMove>();
-            Ball.transform.position = transform.position;
-            Ball.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
-            Ball.BulletSpeed = _bulletSpeed;
+            BallMove ballMove = Instantiate(_bulletObject).GetComponent<BallMove>();
+            ballMove.transform.position = transform.position;
+            ballMove.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
+            ballMove.BulletSpeed = _bulletSpeed;
+            _ballList.Add(ballMove.gameObject);
             _currentBallStack--;
+        }
+
+        private void BallDestroyed(GameObject bulletObject)
+        {
+            if (_ballList.Contains(bulletObject))
+            {
+                _ballList.Remove(bulletObject);
+            }
         }
 
         private void AttackBatSwing()
@@ -301,6 +334,34 @@ namespace QT.Player
             }
             _ballStackBarImage.fillAmount = QT.Util.Math.floatNormalization(_currentBallRecoveryTime,_ballRecoveryCoolTime, 0);
             _ballStackText.text = _currentBallStack.ToString();
+        }
+        
+        private Mesh CreateMesh(float radius, float angle, int segments)
+        {
+            Mesh mesh = new Mesh();
+            int vertexCount = segments + 2;
+            int indexCount = segments * 3;
+            Vector3[] vertices = new Vector3[vertexCount];
+            int[] indices = new int[indexCount];
+            float angleRad = angle * Mathf.Deg2Rad;
+            float angleStep = angleRad / segments;
+            float currentAngle = -angleRad / 2f;
+            vertices[0] = Vector3.zero;
+            for (int i = 0; i <= segments; i++)
+            {
+                vertices[i + 1] = new Vector3(Mathf.Cos(currentAngle), Mathf.Sin(currentAngle), 0f) * radius;
+                currentAngle += angleStep;
+            }
+            for (int i = 0; i < segments; i++)
+            {
+                indices[i * 3] = 0;
+                indices[i * 3 + 1] = i + 1;
+                indices[i * 3 + 2] = i + 2;
+            }
+            mesh.vertices = vertices;
+            mesh.triangles = indices;
+            mesh.RecalculateBounds();
+            return mesh;
         }
     }
 }

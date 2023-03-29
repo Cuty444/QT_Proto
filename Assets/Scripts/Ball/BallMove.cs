@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
+using QT.Core.Player;
 using UnityEngine;
 
 namespace QT.Ball
@@ -70,7 +71,7 @@ namespace QT.Ball
                         yield return wfs;
                         continue;
                     }
-
+                    SystemManager.Instance.GetSystem<PlayerSystem>().PlayerBallDestroyedEvent.Invoke(gameObject);
                     Destroy(gameObject);
                     isShot = false;
                 }
