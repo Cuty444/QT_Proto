@@ -29,7 +29,10 @@ namespace QT.Core.Player
 
         private UnityEvent _playerCollisionEnemyEvent = new UnityEvent();
         public UnityEvent PlayerCollisionEnemyEvent => _playerCollisionEnemyEvent;
-        
+
+        private UnityEvent<GameObject> _playerBallDestroyedEvent = new UnityEvent<GameObject>();
+
+        public UnityEvent<GameObject> PlayerBallDestroyedEvent => _playerBallDestroyedEvent;
         public void OnPlayerCreate() // 추후 로그라이크맵 절차 생성 SystemManager에서 관리하도록 코드 위치 변경이 필요함
         {
             GameObject playerObject = Instantiate(_playerObject, Vector3.zero, Quaternion.identity);

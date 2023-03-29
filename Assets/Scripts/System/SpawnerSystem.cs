@@ -11,6 +11,9 @@ namespace QT.Core.Spawner
         [SerializeField] private Transform _enemyParentTransform;
         [SerializeField] private float _enemySpawnDelay = 10f;
         private SpriteRenderer[] enemy;
+        private List<GameObject> _enemyList = new List<GameObject>();
+
+        public List<GameObject> EnemyList => _enemyList;
 
         public override void OnInitialized()
         {
@@ -22,7 +25,7 @@ namespace QT.Core.Spawner
         {
             for (int i = 0; i < enemy.Length; i++)
             {
-                Instantiate(_enemyObject, enemy[i].transform.position, Quaternion.identity, _enemyParentTransform);
+                EnemyList.Add(Instantiate(_enemyObject, enemy[i].transform.position, Quaternion.identity, _enemyParentTransform));
                 enemy[i].enabled = false;
             }
         }
