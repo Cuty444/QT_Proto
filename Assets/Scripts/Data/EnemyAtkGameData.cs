@@ -5,17 +5,11 @@ namespace QT
 {
     public class EnemyAtkGameData : IGameData
     {
-        public enum AimTypes
-        {
-            World,
-            Angle,
-        }
-
         public int Index { get; set; }
         
         public int ShootDataId { get; set; }
 
-        public AimTypes TargetType { get; set; }
+        public AimTypes AimType { get; set; }
         
         public float BeforeDelay { get; set; }
         public float AfterDelay { get; set; }
