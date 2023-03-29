@@ -40,9 +40,11 @@ namespace QT.Enemy
             var targetDistance = (_moveTarget-(Vector2) _ownerEntity.transform.position).magnitude;
             
             Move(targetDistance);
+            
             if (CheckAttackStart(targetDistance))
             {
-                Debug.Log("빵야 빵야");
+                _ownerEntity.Shooter.SetTarget(SystemManager.Instance.GetSystem<EnemySystem>().PlayerTransform);// Todo : 한번만 세팅
+                _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId);
             }
         }
 
@@ -94,7 +96,8 @@ namespace QT.Enemy
             {
                 interest.AddWeight(-dir, 1);
             }
-            else if (isRotate)
+            
+            if (isRotate)
             {
                 interest.AddWeight(new Vector2(dir.y, -dir.x), 1);
             }
