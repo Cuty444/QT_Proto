@@ -18,11 +18,14 @@ namespace QT.Enemy
 
         public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
+        
+        public EnemyProjectileShooter Shooter { get; private set; }
 
         private void Awake()
         {
-            Rigidbody = GetComponent<Rigidbody2D>();
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
+            Rigidbody = GetComponent<Rigidbody2D>();
+            Shooter = GetComponent<EnemyProjectileShooter>();
             
             SetUp(States.Normal);
         }

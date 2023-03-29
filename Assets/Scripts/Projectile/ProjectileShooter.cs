@@ -7,7 +7,7 @@ using UnityEngine;
 public enum AimTypes
 {
     World,
-    Angle,
+    Target,
     MoveDirection,
 }
 
@@ -17,7 +17,7 @@ public class ProjectileShooter : MonoBehaviour
     
     [SerializeField] protected Transform _shootPoint;
 
-    [SerializeField] private Transform _targetTransform;
+    private Transform _targetTransform;
 
     public void SetTarget(Transform target)
     {
@@ -53,7 +53,7 @@ public class ProjectileShooter : MonoBehaviour
     {
         switch (aimType)
         {
-            case AimTypes.Angle:
+            case AimTypes.Target:
                 var dir = _targetTransform.position - transform.position;
                 angle += Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
                 break;
