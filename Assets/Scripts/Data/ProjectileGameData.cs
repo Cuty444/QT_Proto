@@ -6,6 +6,13 @@ namespace QT
     public class ProjectileGameData : IGameData
     {
         public int Index { get; set; }
+        
+        public bool IsBounce { get; set; }
+        public float ColliderRad { get; set; }
+        public float InitalSpd { get; set; }
+        public float SpdDecay { get; set; }
+        public float MinDestroySpd { get; set; }
+        public float DestroyDelay { get; set; }
     }
 
 
