@@ -11,6 +11,7 @@ using QT.Data;
 using QT.UI;
 using QT.Player.Bat;
 using QT.Ball;
+using Unity.Mathematics;
 using UnityEditor;
 
 namespace QT.Player
@@ -30,7 +31,8 @@ namespace QT.Player
         #endregion
 
         #region StartData_Declaration
-
+        
+        private GlobalDataSystem _globalDataSystem;
         private PlayerSystem _playerSystem;
         private PlayerCanvas _playerCanvas;
         private RectTransform _chargingBarBackground;
@@ -62,6 +64,7 @@ namespace QT.Player
         private float _currentBallRecoveryTime;
         private float _upAtkCentralAngle;
         private float _downAtkCentralAngle;
+        private float _shootSpd;
 
         private int _currentBallStack;
 
@@ -76,25 +79,27 @@ namespace QT.Player
         #endregion
 
         public Transform _batAngleTransform;
+        private LayerMask _reflectLayerMask;
         void Start()
         {
-            GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
-            _bulletSpeed = globalDataSystem.BallTable.ThrowSpd;
-            _atkCoolTime = globalDataSystem.BatTable.AtkCooldown;
-            _chargingMaxTimes = globalDataSystem.BatTable.ChargingMaxTimes;
-            _atkShootSpd = globalDataSystem.BatTable.AtkShootSpd;
-            _swingRigidDmg = globalDataSystem.BatTable.SwingRigidDmg;
-            _atkCentralAngle = globalDataSystem.BatTable.AtkCentralAngle;
+            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            _bulletSpeed = _globalDataSystem.BallTable.ThrowSpd;
+            _atkCoolTime = _globalDataSystem.BatTable.AtkCooldown;
+            _chargingMaxTimes = _globalDataSystem.BatTable.ChargingMaxTimes;
+            _atkShootSpd = _globalDataSystem.BatTable.AtkShootSpd;
+            _swingRigidDmg = _globalDataSystem.BatTable.SwingRigidDmg;
+            _atkCentralAngle = _globalDataSystem.BatTable.AtkCentralAngle;
             float halfAngle = _atkCentralAngle * 0.5f;
             _upAtkCentralAngle = -90.0f - halfAngle;
             _downAtkCentralAngle = -90.0f + halfAngle;
-            _atkRadius = globalDataSystem.BatTable.ATKRad;
-            _ballStackMax = globalDataSystem.CharacterTable.BallStackMax;
+            _atkRadius = _globalDataSystem.BatTable.ATKRad;
+            _ballStackMax = _globalDataSystem.CharacterTable.BallStackMax;
             InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
             inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
             _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
+            _playerSystem.ChargeAtkShootEvent.AddListener(SetShootSpeed);
             _playerSystem.PlayerBallDestroyedEvent.AddListener(BallDestroyed);
             _currentAtkCoolTime = _atkCoolTime;
             _currentChargingTime = 0f;
@@ -119,12 +124,14 @@ namespace QT.Player
             _meshRenderer.material = new Material(Shader.Find("Sprites/Default"));
             _meshRenderer.material.color = _swingAreaColor;
             _meshRenderer.enabled = false;
+            _reflectLayerMask = 1 << LayerMask.NameToLayer("Wall");
         }
 
         private void Update()
         {
             AttackCoolTime();
             BallRecovery();
+            SwingAreaInBallLineDraw();
         }
 
         private void LateUpdate()
@@ -205,6 +212,8 @@ namespace QT.Player
                 // 차징스윙
                 ChargingBatSwing();
             }
+
+            BallPositionSwingCheck();
         }
 
         private void AttackBallInstate()
@@ -213,7 +222,7 @@ namespace QT.Player
             BallMove ballMove = Instantiate(_bulletObject).GetComponent<BallMove>();
             ballMove.transform.position = transform.position;
             ballMove.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
-            ballMove.BulletSpeed = _bulletSpeed;
+            ballMove.BulletSpeed = 0;
             _ballList.Add(ballMove.gameObject);
             _currentBallStack--;
         }
@@ -243,7 +252,6 @@ namespace QT.Player
                 StartCoroutine(BatSwing(_batPos, rotationSpeed, _upAtkCentralAngle));
             }
 
-            //_isUpDown = !_isUpDown;
             _currentAtkCoolTime = 0f;
             if (!_chargingBarBackground.gameObject.activeSelf)
             {
@@ -272,7 +280,7 @@ namespace QT.Player
 
         private IEnumerator BatSwing(Transform targetTransform, float rotateSpeed, float targetZ)
         {
-            _trailRenderer.enabled = true;
+            _trailRenderer.emitting = true;
             _batSwing.enabled = true;
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetZ);
             float currentRotationTime = 0.0f;
@@ -287,10 +295,110 @@ namespace QT.Player
             targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation,
                 rotateSpeed * Time.deltaTime);
             yield return new WaitForSeconds(0.1f);
-            _trailRenderer.enabled = false;
+            _trailRenderer.emitting = false;
             _batSwing.enabled = false;
             _batSpriteRenderer.enabled = false;
             _playerSystem.BatSwingEndEvent.Invoke();
+        }
+
+        private void SwingAreaInBallLineDraw() // 공격 범위내 공의 궤적들 라인 Draw
+        {
+            if (!_isMouseDownCheck)
+                return;
+            Vector2 startPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            for (int i = 0; i < _ballList.Count; i++)
+            {
+                if (SwingAreaCollision(_ballList[i].transform))
+                {
+                    Vector2 dir = (startPos - (Vector2)_ballList[i].transform.position).normalized;
+                    dir = PlayerMouseAngleCorrectionBall(dir,transform,_ballList[i].transform,startPos);
+                    RayCastAngleIncidence(_ballList[i].GetComponent<BallMove>()._lineRenderer,dir);
+                }
+            }
+            
+        }
+
+        private void RayCastAngleIncidence(LineRenderer lineRenderer,Vector2 reflectDirection) // 레이캐스트 입사각 처리후 반사각 계산
+        {
+            lineRenderer.enabled = true;
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0,Vector2.zero);
+            lineRenderer.SetPosition(1,Vector2.zero);
+            int reflectCount = 2;
+            
+            RaycastHit2D hit2D = Physics2D.Raycast(lineRenderer.transform.position, reflectDirection, Mathf.Infinity,_reflectLayerMask);
+            if (hit2D.collider != null)
+            {
+                Debug.Log("CollisionCheck");
+                // 충돌 지점에서 입사각과 반사각 계산
+                Vector2 incomingVec = reflectDirection;
+                Vector2 normalVec = hit2D.normal;
+                Vector2 reflectVec = Vector2.Reflect(incomingVec, normalVec);
+                reflectDirection = reflectVec;
+
+                // LineRenderer에 반사 지점 추가
+                lineRenderer.SetPosition(0,lineRenderer.transform.position);
+                lineRenderer.SetPosition(1, hit2D.point);
+                reflectCount++;
+                lineRenderer.positionCount = reflectCount;
+                lineRenderer.SetPosition(2, hit2D.point + reflectDirection * 10f);
+            }
+        }
+        
+        private void BallPositionSwingCheck()
+        {
+            for (int i = 0; i < _ballList.Count; i++)
+            {
+                if (SwingAreaCollision(_ballList[i].transform))
+                {
+                    Vector2 _attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    Vector2 dir = (_attackDirection - (Vector2)_ballList[i].transform.position).normalized;
+                    //dir = PlayerMouseAngleCorrectionBall(dir,transform,_ballList[i].transform);
+                    float bulletAngleDegree = QT.Util.Math.GetDegree(_ballList[i].transform.position, _attackDirection);
+                    BallMove Ball = _ballList[i].GetComponent<BallMove>();
+                    Ball.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
+                    Ball.BulletSpeed = _shootSpd;
+                    Ball.ForceChange();
+                    Ball.SwingBallHit();
+                    if (ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
+                    {
+                        Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
+                    }
+                    else if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerSystem.ChargeAtkPierce))
+                    {
+                        Ball.gameObject.layer = LayerMask.NameToLayer("BallHit");
+                    }
+                    else
+                    {
+                        Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
+                    }
+                }
+            }
+        }
+        private bool SwingAreaCollision(Transform targetTransform)
+        {
+            Vector2 interV = targetTransform.position - transform.position;
+
+            // target과 나 사이의 거리가 radius 보다 작다면
+            if (interV.magnitude <= _atkRadius)
+            {
+                //Vector2 lookDir = AngleToDirZ(_eyePos.rotation.z);
+                // '타겟-나 벡터'와 '내 정면 벡터'를 내적
+                float dot = Vector2.Dot(interV.normalized, _eyePos.transform.right);
+                // 두 벡터 모두 단위 벡터이므로 내적 결과에 cos의 역을 취해서 theta를 구함
+                float theta = Mathf.Acos(dot);
+                // angleRange와 비교하기 위해 degree로 변환
+                float degree = Mathf.Rad2Deg * theta;
+
+                // 시야각 판별
+                if (degree <= _atkCentralAngle / 2f)
+                    return true;
+                else
+                    return false;
+
+            }
+            else
+                return false;
         }
 
         #endregion
@@ -362,6 +470,96 @@ namespace QT.Player
             mesh.triangles = indices;
             mesh.RecalculateBounds();
             return mesh;
+        }
+
+        private Vector2 PlayerMouseAngleCorrectionBall(Vector2 dir,Transform playerTransform,Transform targetTransform,Vector2 mousePos) // 플레이어와 탄막 사이의 마우스 각도 보정처리
+        {
+            // 플레이어와 탄막 사이의 위치 관계를 계산합니다.
+            Vector2 playerPos = playerTransform.position;
+            Vector2 targetPos = targetTransform.position;
+            float dx = targetPos.x - playerPos.x;
+            float dy = targetPos.y - playerPos.y;
+            float mx = mousePos.x - playerPos.x;
+            float my = mousePos.y - playerPos.y;
+
+            float pt = Vector2.Distance(playerPos, targetPos);
+            float pm = Vector2.Distance(playerPos, mousePos);
+            if (pt > pm)
+            {
+                if (Mathf.Abs(my) < Mathf.Abs(dy))
+                {
+                    dir.y = -dir.y;
+                }
+
+                if (Mathf.Abs(mx) < Mathf.Abs(dx))
+                {
+                    dir.x = -dir.x;
+                }
+            }
+            else
+            {
+
+
+                if (Mathf.Abs(my) < Mathf.Abs(dy))
+                {
+                    //dir.y = -dir.y;
+
+                    //switch (dy)
+                    //{
+                    //    case < 0f when dir.y > 0f:
+                    //    case > 0f when dir.y < 0f:
+                    //        dir.y = -dir.y;
+                    //        break;
+                    //}
+                }
+            }
+            if (Mathf.Abs(mx) < Mathf.Abs(dx))
+            {
+                //dir.x = -dir.x;
+
+                //switch (dx)
+                //{
+                //    case > 0f when dir.x < 0f:
+                //    case < 0f when dir.x > 0f:
+                //        dir.x = -dir.x;
+                //        break;
+                //}
+            }
+            if (Mathf.Abs(my) < Mathf.Abs(dy))
+            {
+                //dir.y = -dir.y;
+
+                //switch (dy)
+                //{
+                //    case < 0f when dir.y > 0f:
+                //    case > 0f when dir.y < 0f:
+                //        dir.y = -dir.y;
+                //        break;
+                //}
+            }
+            //if (Mathf.Abs(dx) < Mathf.Abs(dy))
+            //{
+            //    //dir의 값이 음수일때 양수로 바꾸거나 반전시킵니다.
+            //    if (dy < 0f && dir.y > 0f) // target이 아래쪽에 있고, dir도 아래쪽을 향할 때
+            //        dir.y = -dir.y; // y값을 반전시켜서 위쪽으로 향하도록 합니다.
+            //    else if (dy > 0f && dir.y < 0f) // target이 위쪽에 있고, dir도 위쪽을 향할 때
+            //        dir.y = -dir.y; // y값을 반전시켜서 아래쪽으로 향하도록 합니다.
+            //}
+            //else
+            //{
+            //    if (dx > 0f && dir.x < 0f) // target이 오른쪽에 있고, dir도 왼쪽을 향할 때
+            //        dir.x = -dir.x; // x값을 반전시켜서 오른쪽으로 향하도록 합니다.
+            //    else if (dx < 0f && dir.x > 0f) // target이 왼쪽에 있고, dir도 오른쪽을 향할 때
+            //        dir.x = -dir.x; // x값을 반전시켜서 왼쪽으로 향하도록 합니다.
+            //}
+            
+
+            return dir;
+        }
+        
+        private void SetShootSpeed(float speed)
+        {
+            _shootSpd = speed;
         }
     }
 }

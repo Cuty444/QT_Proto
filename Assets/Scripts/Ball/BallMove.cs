@@ -10,6 +10,8 @@ namespace QT.Ball
 
     public class BallMove : MonoBehaviour
     {
+        public LineRenderer _lineRenderer;
+        
         #region StartData_Declaration
 
         private float _minVelocity;
@@ -71,9 +73,9 @@ namespace QT.Ball
                         yield return wfs;
                         continue;
                     }
-                    SystemManager.Instance.GetSystem<PlayerSystem>().PlayerBallDestroyedEvent.Invoke(gameObject);
-                    Destroy(gameObject);
-                    isShot = false;
+                    //SystemManager.Instance.GetSystem<PlayerSystem>().PlayerBallDestroyedEvent.Invoke(gameObject);
+                    //Destroy(gameObject);
+                    //isShot = false;
                 }
 
                 yield return null;
