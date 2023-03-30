@@ -352,9 +352,15 @@ namespace QT.Player
                 if (SwingAreaCollision(_ballList[i].transform))
                 {
                     Vector2 _attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    Vector2 dir = (_attackDirection - (Vector2)_ballList[i].transform.position).normalized;
-                    //dir = PlayerMouseAngleCorrectionBall(dir,transform,_ballList[i].transform);
-                    float bulletAngleDegree = QT.Util.Math.GetDegree(_ballList[i].transform.position, _attackDirection);
+                    float bulletAngleDegree;
+                    if(PlayerMouseAngleCorrectionBallCheck(transform, _ballList[i].transform,_attackDirection))
+                    {
+                        bulletAngleDegree = QT.Util.Math.GetDegree(transform.position, _attackDirection);
+                    }
+                    else
+                    {
+                        bulletAngleDegree = QT.Util.Math.GetDegree(_ballList[i].transform.position, _attackDirection);
+                    }
                     BallMove Ball = _ballList[i].GetComponent<BallMove>();
                     Ball.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
                     Ball.BulletSpeed = _shootSpd;
@@ -474,87 +480,25 @@ namespace QT.Player
 
         private Vector2 PlayerMouseAngleCorrectionBall(Vector2 dir,Transform playerTransform,Transform targetTransform,Vector2 mousePos) // 플레이어와 탄막 사이의 마우스 각도 보정처리
         {
-            // 플레이어와 탄막 사이의 위치 관계를 계산합니다.
             Vector2 playerPos = playerTransform.position;
             Vector2 targetPos = targetTransform.position;
-            float dx = targetPos.x - playerPos.x;
-            float dy = targetPos.y - playerPos.y;
-            float mx = mousePos.x - playerPos.x;
-            float my = mousePos.y - playerPos.y;
 
             float pt = Vector2.Distance(playerPos, targetPos);
             float pm = Vector2.Distance(playerPos, mousePos);
-            if (pt > pm)
+            if(pt > pm)
             {
-                if (Mathf.Abs(my) < Mathf.Abs(dy))
-                {
-                    dir.y = -dir.y;
-                }
-
-                if (Mathf.Abs(mx) < Mathf.Abs(dx))
-                {
-                    dir.x = -dir.x;
-                }
+                dir = (mousePos - (Vector2) playerTransform.position).normalized;
             }
-            else
-            {
-
-
-                if (Mathf.Abs(my) < Mathf.Abs(dy))
-                {
-                    //dir.y = -dir.y;
-
-                    //switch (dy)
-                    //{
-                    //    case < 0f when dir.y > 0f:
-                    //    case > 0f when dir.y < 0f:
-                    //        dir.y = -dir.y;
-                    //        break;
-                    //}
-                }
-            }
-            if (Mathf.Abs(mx) < Mathf.Abs(dx))
-            {
-                //dir.x = -dir.x;
-
-                //switch (dx)
-                //{
-                //    case > 0f when dir.x < 0f:
-                //    case < 0f when dir.x > 0f:
-                //        dir.x = -dir.x;
-                //        break;
-                //}
-            }
-            if (Mathf.Abs(my) < Mathf.Abs(dy))
-            {
-                //dir.y = -dir.y;
-
-                //switch (dy)
-                //{
-                //    case < 0f when dir.y > 0f:
-                //    case > 0f when dir.y < 0f:
-                //        dir.y = -dir.y;
-                //        break;
-                //}
-            }
-            //if (Mathf.Abs(dx) < Mathf.Abs(dy))
-            //{
-            //    //dir의 값이 음수일때 양수로 바꾸거나 반전시킵니다.
-            //    if (dy < 0f && dir.y > 0f) // target이 아래쪽에 있고, dir도 아래쪽을 향할 때
-            //        dir.y = -dir.y; // y값을 반전시켜서 위쪽으로 향하도록 합니다.
-            //    else if (dy > 0f && dir.y < 0f) // target이 위쪽에 있고, dir도 위쪽을 향할 때
-            //        dir.y = -dir.y; // y값을 반전시켜서 아래쪽으로 향하도록 합니다.
-            //}
-            //else
-            //{
-            //    if (dx > 0f && dir.x < 0f) // target이 오른쪽에 있고, dir도 왼쪽을 향할 때
-            //        dir.x = -dir.x; // x값을 반전시켜서 오른쪽으로 향하도록 합니다.
-            //    else if (dx < 0f && dir.x > 0f) // target이 왼쪽에 있고, dir도 오른쪽을 향할 때
-            //        dir.x = -dir.x; // x값을 반전시켜서 왼쪽으로 향하도록 합니다.
-            //}
             
 
             return dir;
+        }
+
+        private bool PlayerMouseAngleCorrectionBallCheck(Transform playerTransform, Transform targetTransform, Vector2 mousePos)
+        {
+            Vector2 playerPos = playerTransform.position;
+            Vector2 targetPos = targetTransform.position;
+            return Vector2.Distance(playerPos, targetPos) > Vector2.Distance(playerPos, mousePos);
         }
         
         private void SetShootSpeed(float speed)
