@@ -18,6 +18,9 @@ namespace QT.Core.Player
         private UnityEvent<int> _batSwingRigidHitEvent = new UnityEvent<int>();
         public UnityEvent<int> BatSwingRigidHitEvent => _batSwingRigidHitEvent;
 
+        private UnityEvent<int> _chargeBounceValueEvent = new UnityEvent<int>();
+        public UnityEvent<int> ChargeBounceValueEvent => _chargeBounceValueEvent;
+
         private UnityEvent _batSwingEndEvent = new UnityEvent();
         public UnityEvent BatSwingEndEvent => _batSwingEndEvent;
 
