@@ -20,7 +20,7 @@ namespace QT.Player
 
         [Header("Bullet")] [SerializeField] private GameObject _bulletObject;
         [SerializeField] private TrailRenderer _trailRenderer;
-        [SerializeField] private Transform _eyePos;
+        [SerializeField] private Transform _eyeTransform;
         [SerializeField] private Transform _swingAreaPos;
         [SerializeField] private Transform _batPos;
         [SerializeField] private BatSwing _batSwing;
@@ -56,6 +56,7 @@ namespace QT.Player
 
         private List<GameObject> _ballList = new List<GameObject>();
 
+
         private Color _swingAreaColor;
 
         private float _currentAtkCoolTime;
@@ -63,10 +64,8 @@ namespace QT.Player
         private float _currentBallRecoveryTime;
         private float _upAtkCentralAngle;
         private float _downAtkCentralAngle;
-        private float _shootSpd;
 
         private int _currentBallStack;
-        private int _chargeBounceValue;
 
         private bool _isUpDown = true;
         private bool _isMouseDownCheck = false;
@@ -75,11 +74,10 @@ namespace QT.Player
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
 
+        public Transform EyeTransform => _eyeTransform;
 
         #endregion
 
-        public Transform _batAngleTransform;
-        private LayerMask _reflectLayerMask;
         void Start()
         {
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
@@ -100,7 +98,6 @@ namespace QT.Player
             inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
             _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-            _playerSystem.ChargeAtkShootEvent.AddListener(SetShootSpeed);
             _playerSystem.PlayerBallDestroyedEvent.AddListener(BallDestroyed);
             _currentAtkCoolTime = _atkCoolTime;
             _currentChargingTime = 0f;
@@ -125,19 +122,17 @@ namespace QT.Player
             _meshRenderer.material = new Material(Shader.Find("Sprites/Default"));
             _meshRenderer.material.color = _swingAreaColor;
             _meshRenderer.enabled = false;
-            _reflectLayerMask = 1 << LayerMask.NameToLayer("Wall");
         }
 
         private void Update()
         {
             AttackCoolTime();
             BallRecovery();
-            SwingAreaInBallLineDraw();
         }
 
         private void LateUpdate()
         {
-            _playerCanvas.transform.position = transform.position;
+            _playerCanvas.transform.position = transform.position; // 이 코드 캔버스 LateUpdate로 옮기기
         }
 
         private void FixedUpdate()
@@ -156,6 +151,7 @@ namespace QT.Player
             if (_isMouseDownCheck)
             {
                 _currentChargingTime += Time.deltaTime;
+                _playerSystem.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
                 if (_currentChargingTime > _chargingMaxTimes[0])
                 {
                     if (!_chargingBarBackground.gameObject.activeSelf)
@@ -165,16 +161,6 @@ namespace QT.Player
 
                     _chargingBarImage.fillAmount = QT.Util.Math.floatNormalization(_currentChargingTime,
                         _chargingMaxTimes[_chargingMaxTimes.Length - 1], _chargingMaxTimes[0]);
-                }
-
-                _chargeBounceValue = _chargeBounceValues[0];
-                for (int i = _chargingMaxTimes.Length - 1; i >= 0; i--)
-                {
-                    if (_currentChargingTime > _chargingMaxTimes[i])
-                    {
-                        _chargeBounceValue = _chargeBounceValues[i];
-                        break;
-                    }
                 }
             }
         }
@@ -196,7 +182,6 @@ namespace QT.Player
             {
                 _isMouseDownCheck = true;
                 _meshRenderer.enabled = true;
-                _currentChargingTime = 0f;
             }
         }
 
@@ -223,8 +208,8 @@ namespace QT.Player
                 // 차징스윙
                 ChargingBatSwing();
             }
-
-            BallPositionSwingCheck();
+            _currentChargingTime = 0f;
+            _playerSystem.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
         }
 
         private void AttackBallInstate()
@@ -307,6 +292,7 @@ namespace QT.Player
 
             targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation,
                 rotateSpeed * Time.deltaTime);
+            _playerSystem.BatSwingEndEvent.Invoke();
             yield return new WaitForSeconds(0.1f);
             _trailRenderer.emitting = false;
             _batSwing.enabled = false;
@@ -316,109 +302,6 @@ namespace QT.Player
                 _ballList[i].GetComponent<BallMove>()._lineRenderer.enabled = false;
             }
 
-            _playerSystem.BatSwingEndEvent.Invoke();
-        }
-
-        private void SwingAreaInBallLineDraw() // 공격 범위내 공의 궤적들 라인 Draw
-        {
-            if (!_isMouseDownCheck)
-                return;
-            Vector2 startPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            for (int i = 0; i < _ballList.Count; i++)
-            {
-                if (SwingAreaCollision(_ballList[i].transform))
-                {
-                    Vector2 dir = (startPos - (Vector2)_ballList[i].transform.position).normalized;
-                    dir = PlayerMouseAngleCorrectionBall(dir,transform,_ballList[i].transform,startPos);
-                    RayCastAngleIncidence(_ballList[i].GetComponent<BallMove>()._lineRenderer,dir);
-                }
-                else
-                {
-                    _ballList[i].GetComponent<BallMove>()._lineRenderer.enabled = false;
-                }
-            }
-            
-        }
-
-        private void RayCastAngleIncidence(LineRenderer lineRenderer,Vector2 reflectDirection) // 레이캐스트 입사각 처리후 반사각 계산 이 코드 Bat쪽으로 리팩토링 필요함
-        {
-            lineRenderer.enabled = true;
-            lineRenderer.positionCount = 0;
-            int reflectCount = 2;
-            
-            RaycastHit2D hit2D = Physics2D.Raycast(lineRenderer.transform.position, reflectDirection, Mathf.Infinity,_reflectLayerMask);
-            if (hit2D.collider != null)
-            {
-                // 충돌 지점에서 입사각과 반사각 계산
-                reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
-
-                // LineRenderer에 반사 지점 추가
-                reflectCount++;
-                lineRenderer.positionCount = reflectCount;
-                lineRenderer.SetPosition(0,lineRenderer.transform.position);
-                lineRenderer.SetPosition(1, hit2D.point);
-                lineRenderer.SetPosition(2, hit2D.point + reflectDirection);
-            }
-            for (; reflectCount < _chargeBounceValue + 2; reflectCount++)
-            {
-                if (!BallBounceRayCast(lineRenderer, ref reflectDirection, reflectCount))
-                {
-                    break;
-                }
-            }
-            
-        }
-
-        private bool BallBounceRayCast(LineRenderer lineRenderer,ref Vector2 reflectDirection,int reflectCount)
-        {
-            RaycastHit2D hit2D = Physics2D.Raycast(lineRenderer.GetPosition(reflectCount - 1), reflectDirection, Mathf.Infinity,_reflectLayerMask);
-            if (hit2D.collider != null)
-            {
-                reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
-                lineRenderer.positionCount = reflectCount + 1;
-                lineRenderer.SetPosition(reflectCount - 1, hit2D.point);
-                lineRenderer.SetPosition(reflectCount, hit2D.point + reflectDirection);
-                return true;
-            }
-
-            return false;
-        }
-        
-        private void BallPositionSwingCheck()
-        {
-            for (int i = 0; i < _ballList.Count; i++)
-            {
-                if (SwingAreaCollision(_ballList[i].transform))
-                {
-                    Vector2 _attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    float bulletAngleDegree;
-                    if(PlayerMouseAngleCorrectionBallCheck(transform, _ballList[i].transform,_attackDirection))
-                    {
-                        bulletAngleDegree = QT.Util.Math.GetDegree(transform.position, _attackDirection);
-                    }
-                    else
-                    {
-                        bulletAngleDegree = QT.Util.Math.GetDegree(_ballList[i].transform.position, _attackDirection);
-                    }
-                    BallMove Ball = _ballList[i].GetComponent<BallMove>();
-                    Ball.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
-                    Ball.BulletSpeed = _shootSpd;
-                    Ball.ForceChange();
-                    Ball.SwingBallHit();
-                    if (ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
-                    {
-                        Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
-                    }
-                    else if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerSystem.ChargeAtkPierce))
-                    {
-                        Ball.gameObject.layer = LayerMask.NameToLayer("BallHit");
-                    }
-                    else
-                    {
-                        Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
-                    }
-                }
-            }
         }
         private bool SwingAreaCollision(Transform targetTransform)
         {
@@ -428,7 +311,7 @@ namespace QT.Player
             if (interV.magnitude <= _atkRadius + targetRadius)
             {
                 // '타겟-나 벡터'와 '내 정면 벡터'를 내적
-                float dot = Vector2.Dot(interV.normalized, _eyePos.transform.right);
+                float dot = Vector2.Dot(interV.normalized, _eyeTransform.transform.right);
                 // 두 벡터 모두 단위 벡터이므로 내적 결과에 cos의 역을 취해서 theta를 구함
                 float theta = Mathf.Acos(dot);
                 // angleRange와 비교하기 위해 degree로 변환
@@ -447,7 +330,7 @@ namespace QT.Player
 
         private void PlayerSwingAngle()
         {
-            float playerRotation = _batAngleTransform.rotation.z;
+            float playerRotation = _eyeTransform.rotation.z;
             switch (playerRotation)
             {
                 case > 0.35f and < 0.7f:
@@ -512,34 +395,6 @@ namespace QT.Player
             mesh.triangles = indices;
             mesh.RecalculateBounds();
             return mesh;
-        }
-
-        private Vector2 PlayerMouseAngleCorrectionBall(Vector2 dir,Transform playerTransform,Transform targetTransform,Vector2 mousePos) // 플레이어와 탄막 사이의 마우스 각도 보정처리
-        {
-            Vector2 playerPos = playerTransform.position;
-            Vector2 targetPos = targetTransform.position;
-
-            float pt = Vector2.Distance(playerPos, targetPos);
-            float pm = Vector2.Distance(playerPos, mousePos);
-            if(pt > pm)
-            {
-                dir = (mousePos - (Vector2) playerTransform.position).normalized;
-            }
-            
-
-            return dir;
-        }
-
-        private bool PlayerMouseAngleCorrectionBallCheck(Transform playerTransform, Transform targetTransform, Vector2 mousePos)
-        {
-            Vector2 playerPos = playerTransform.position;
-            Vector2 targetPos = targetTransform.position;
-            return Vector2.Distance(playerPos, targetPos) > Vector2.Distance(playerPos, mousePos);
-        }
-        
-        private void SetShootSpeed(float speed)
-        {
-            _shootSpd = speed;
         }
     }
 }

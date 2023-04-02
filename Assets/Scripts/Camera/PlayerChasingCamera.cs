@@ -94,6 +94,6 @@ public class PlayerChasingCamera : MonoBehaviour
                 _spriteRenderer.sprite = _playerSprites[3];
                 break;
         }
-        _playerAttack._batAngleTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
+        _playerAttack.EyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
     }
 }
