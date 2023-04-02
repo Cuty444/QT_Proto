@@ -26,7 +26,8 @@ namespace QT.Enemy
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
             Rigidbody = GetComponent<Rigidbody2D>();
             Shooter = GetComponent<EnemyProjectileShooter>();
-            
+
+            SetUpStats();
             SetUp(States.Normal);
         }
     }    

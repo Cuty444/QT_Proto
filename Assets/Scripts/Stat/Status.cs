@@ -8,6 +8,8 @@ namespace QT
         
         private float _statusValue;
         
+        public static implicit operator float(Status status) => status.StatusValue;
+        
         public Status(float baseValue) : base(baseValue)
         {
             _statusValue = baseValue;
@@ -25,5 +27,6 @@ namespace QT
             
             _statusValue = Value * ratio;
         }
+        
     }
 }
