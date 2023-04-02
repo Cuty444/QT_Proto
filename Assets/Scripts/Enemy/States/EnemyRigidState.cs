@@ -7,9 +7,9 @@ namespace QT.Enemy
     [FSMState((int) Enemy.States.Rigid)]
     public class EnemyRigidState : FSMState<Enemy>
     {
-        private float _rigidTime = 0f;
+        private float _rigidStartTime = 0f;
 
-        private float _deadAfterStunTime;
+        private float _rigidTime;
         
         public EnemyRigidState(IFSMEntity owner) : base(owner)
         {
@@ -17,27 +17,16 @@ namespace QT.Enemy
 
         public override void InitializeState()
         {
-            _rigidTime = Time.time;
-            _deadAfterStunTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
-            _ownerEntity.OnDamageEvent.AddListener(OnDamage);
+            _rigidStartTime = Time.time;
+            _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
         }
 
         public override void UpdateState()
         {
-            if (_rigidTime + _deadAfterStunTime < Time.time)
+            if (_rigidStartTime + _rigidTime < Time.time)
             {
-                _ownerEntity.ChangeState(Enemy.States.Dead);
+                _ownerEntity.RevertToPreviousState();
             }
-        }
-
-        public override void ClearState()
-        {
-            _ownerEntity.OnDamageEvent.RemoveListener(OnDamage);
-        }
-        
-        private void OnDamage(float damage, Vector2 hitPoint)
-        {
-            _ownerEntity.ChangeState(Enemy.States.Projectile);
         }
     }
 }

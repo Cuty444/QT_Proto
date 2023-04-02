@@ -1,3 +1,4 @@
+using System;
 using QT.Core;
 using UnityEngine;
 
@@ -15,12 +16,22 @@ namespace QT.Enemy
 
         private void OnDamage(float damage, Vector2 hitPoint)
         {
-            _ownerEntity.HP.AddStatus(-damage);
-            
-            if (_ownerEntity.HP <= 0 && !_isRiged)
+            if (_ownerEntity.CurrentState == (int)Enemy.States.Dead)
             {
-                _ownerEntity.ChangeState(Enemy.States.Rigid);
-                _isRiged = true;
+                return;
+            }
+
+            if (_ownerEntity.CurrentState != (int) Enemy.States.Rigid)
+            {
+                _ownerEntity.HP.AddStatus(-damage);
+                if (_ownerEntity.HP > 0)
+                {
+                    _ownerEntity.ChangeState(Enemy.States.Rigid);
+                }
+                else
+                {
+                    _ownerEntity.ChangeState(Enemy.States.Projectile);
+                }
             }
         }
     }
