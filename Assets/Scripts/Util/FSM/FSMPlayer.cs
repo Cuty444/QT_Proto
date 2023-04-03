@@ -59,22 +59,22 @@ namespace QT.Core
             ChangeState(firstState);
         }
 
-        public void ChangeState(ValueType enumValue)
+        public FSMState<T> ChangeState(ValueType enumValue)
         {
             if (!_states.TryGetValue((int)enumValue, out var state))
             {
                 Debug.LogError($"{GetType()} : 사용할 수 없는 상태입니다. {enumValue}");
-                return;
+                return null;
             }
 
             CurrentState = (int)enumValue;
 
-            ChangeState(state);
+            return ChangeState(state);
         }
 
-        private void ChangeState(FSMState<T> newState)
+        private FSMState<T> ChangeState(FSMState<T> newState)
         {
-            if (newState == null || newState == _currentState) return;
+            if (newState == null || newState == _currentState) return null;
 
             if (_currentState != null)
             {
@@ -89,6 +89,8 @@ namespace QT.Core
             _currentState.InitializeState();
 
             Debug.Log($"{this.GetType()} : {newState.GetType()} 상태로 전환");
+
+            return _currentState;
         }
 
         public void SetGlobalState(FSMState<T> newState)
