@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
+using QT.Core.Player;
 using UnityEngine;
 
 namespace QT.Ball
@@ -9,6 +10,8 @@ namespace QT.Ball
 
     public class BallMove : MonoBehaviour
     {
+        public LineRenderer _lineRenderer;
+        
         #region StartData_Declaration
 
         private float _minVelocity;
@@ -18,9 +21,10 @@ namespace QT.Ball
         #region Global_Declaration
 
         private Rigidbody2D _rigidbody2D;
-
-        private bool _swingBallHit = false;
         public float BulletSpeed { get; set; }
+
+        private bool _isSwingBallHit = false;
+        private bool _isBallEndGoal = false;
 
         #endregion
 
@@ -40,6 +44,10 @@ namespace QT.Ball
             }
         }
 
+        private void FixedUpdate()
+        {
+            BallBounceEndGoal();
+        }
         public void ForceChange()
         {
             _rigidbody2D.velocity = Vector2.zero;
@@ -64,15 +72,15 @@ namespace QT.Ball
             {
                 if (_rigidbody2D.velocity.magnitude < _minVelocity)
                 {
-                    if (_swingBallHit)
+                    if (_isSwingBallHit)
                     {
-                        _swingBallHit = false;
+                        _isSwingBallHit = false;
                         yield return wfs;
                         continue;
                     }
-
-                    Destroy(gameObject);
-                    isShot = false;
+                    //SystemManager.Instance.GetSystem<PlayerSystem>().PlayerBallDestroyedEvent.Invoke(gameObject);
+                    //Destroy(gameObject);
+                    //isShot = false;
                 }
 
                 yield return null;
@@ -81,7 +89,24 @@ namespace QT.Ball
 
         public void SwingBallHit()
         {
-            _swingBallHit = true;
+            _isSwingBallHit = true;
+        }
+
+        private void BallBounceEndGoal()
+        {
+            //if (gameObject.layer == LayerMask.NameToLayer("BallBounce"))
+            //{
+            //    if (_isBallEndGoal)
+            //        return;
+            //    _rigidbody2D.MovePosition(_rigidbody2D.position + QT.Util.Math.ZAngleToGetDirection(transform) * 0.01f);
+            //    var lastPostion = _lineRenderer.GetPosition(_lineRenderer.positionCount - 2);
+            //    float distance = (lastPostion - transform.position).magnitude;
+            //    Debug.Log(distance);
+            //    if (distance < transform.localScale.x * 0.5f)
+            //    {
+            //        _isBallEndGoal = true;
+            //    }
+            //}
         }
     }
 }

@@ -87,6 +87,14 @@ public class BatTable : ScriptableObject
     /// 차징 단계에 따라 걸리는 시간(s)
     /// </summary>
     public float[] AtkShootSpd => _atkShootSpd;
+    
+    [SerializeField]
+    [Tooltip("차징 단계에 따른 튕기는 횟수")]
+    private int[] _chargeBounceValue;
+    /// <summary>
+    /// 차징 단계에 따른 튕기는 횟수
+    /// </summary>
+    public int[] ChargeBounceValue => _chargeBounceValue;
 
     [SerializeField]
     [Header("차징량에 따른 관통샷 여부")]

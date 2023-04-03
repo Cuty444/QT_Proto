@@ -13,7 +13,9 @@ public class PlayerChasingCamera : MonoBehaviour
     [SerializeField] private float _minDistance = 0.5f; // 최소 거리
     [SerializeField] private float _maxDistance = 5f; // 최대 거리
     [SerializeField] private float _moveSpeed = 10f;
+    [SerializeField] private float _cameraSakeDiameter = 1f;
     [SerializeField] private Sprite[] _playerSprites;
+    [SerializeField] private bool _isChasing;
     #endregion
 
     #region Global_Declaration
@@ -21,6 +23,8 @@ public class PlayerChasingCamera : MonoBehaviour
     private Transform _player;
     private SpriteRenderer _spriteRenderer;
     private PlayerAttack _playerAttack;
+
+    private bool _isCameraShaking;
     #endregion
 
     private void Start()
@@ -32,21 +36,39 @@ public class PlayerChasingCamera : MonoBehaviour
             _playerAttack = _player.GetComponent<PlayerAttack>();
         });
         playerSystem.OnPlayerCreate();
+        playerSystem.BatSwingTimeScaleEvent.AddListener(CameraShaking);
     }
 
     private void FixedUpdate()
     {
         if (_player == null)
             return;
-        ChasingCamera();
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Angle(mousePos);
+
+        if (_isChasing)
+        {
+            ChasingCamera(mousePos);
+        }
     }
 
-    private void ChasingCamera()
+    private void LateUpdate()
+    {
+        if (!_isChasing)
+        {
+            transform.position = new Vector3(_player.transform.position.x, _player.transform.position.y, transform.position.z);
+            if(_isCameraShaking)
+            {
+                transform.position = UnityEngine.Random.insideUnitSphere * _cameraSakeDiameter + transform.position;
+                Debug.Log(transform.position);
+            }
+        }
+    }
+
+    private void ChasingCamera(Vector2 mousePos)
     {
         Vector2 midPoint;
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 playerPos = _player.position;
-        Angle(mousePos);
 
         // 카메라와 플레이어의 현재 거리
         float currentDistance = Vector2.Distance(mousePos, playerPos) / 2.5f;
@@ -94,6 +116,12 @@ public class PlayerChasingCamera : MonoBehaviour
                 _spriteRenderer.sprite = _playerSprites[3];
                 break;
         }
-        _playerAttack._batAngleTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
+        _playerAttack.EyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
     }
+
+    private void CameraShaking(bool isCheck)
+    {
+        _isCameraShaking = isCheck;
+    }
+
 }
