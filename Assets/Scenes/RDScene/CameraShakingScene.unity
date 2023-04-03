@@ -630,7 +630,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 11
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -676,11 +676,13 @@ MonoBehaviour:
   _minDistance: 0.1
   _maxDistance: 6.5
   _moveSpeed: 10
+  _cameraSakeDiameter: 0.1
   _playerSprites:
   - {fileID: 21300000, guid: 84ecb6f5669dbaa4081111c269842b53, type: 3}
   - {fileID: 21300000, guid: b8d7955f240784f47b83980089f17dc9, type: 3}
   - {fileID: 21300000, guid: 8396f1169b831dc4e933f222773b1dbb, type: 3}
   - {fileID: 21300000, guid: 39747f70daab65441a9f3301b6cc4c60, type: 3}
+  _isChasing: 0
 --- !u!1 &566259582
 GameObject:
   m_ObjectHideFlags: 0
@@ -1662,7 +1664,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1239314006
 Transform:
   m_ObjectHideFlags: 0
@@ -2233,7 +2235,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8551448360743188446, guid: 5a49243f56af20b4daa186389604e4bd, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a49243f56af20b4daa186389604e4bd, type: 3}

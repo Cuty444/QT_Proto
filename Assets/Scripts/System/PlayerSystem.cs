@@ -37,12 +37,14 @@ namespace QT.Core.Player
 
         public UnityEvent<GameObject> PlayerBallAddedEvent => _playerBallAddedEvent;
 
-        private UnityEvent<GameObject> _playerBallDestroyedEvent = new UnityEvent<GameObject>();
-
         private UnityEvent<float> _playerCurrentChargingTimeEvent = new UnityEvent<float>();
         public UnityEvent<float> PlayerCurrentChargingTimeEvent => _playerCurrentChargingTimeEvent;
 
-        public UnityEvent<GameObject> PlayerBallDestroyedEvent => _playerBallDestroyedEvent;
+        private UnityEvent<bool> _batSwingTimeScaleEvent = new UnityEvent<bool>();
+        public UnityEvent<bool> BatSwingTimeScaleEvent => _batSwingTimeScaleEvent;
+
+        private UnityEvent _batSwingBallHitEvent = new UnityEvent();
+        public UnityEvent BatSwingBallHitEvent => _batSwingBallHitEvent;
 
         private Transform _playerTransform;
         public Transform PlayerTransform => _playerTransform;

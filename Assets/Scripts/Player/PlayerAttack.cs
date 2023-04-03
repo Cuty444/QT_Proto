@@ -18,7 +18,7 @@ namespace QT.Player
     {
         #region Inspector_Definition
 
-        [Header("Bullet")] [SerializeField] private GameObject _bulletObject;
+        [Header("Bullet")][SerializeField] private GameObject _bulletObject;
         [SerializeField] private TrailRenderer _trailRenderer;
         [SerializeField] private Transform _eyeTransform;
         [SerializeField] private Transform _swingAreaPos;
@@ -29,7 +29,7 @@ namespace QT.Player
         #endregion
 
         #region StartData_Declaration
-        
+
         private GlobalDataSystem _globalDataSystem;
         private PlayerSystem _playerSystem;
         private PlayerCanvas _playerCanvas;
@@ -54,8 +54,6 @@ namespace QT.Player
 
         private SpriteRenderer _batSpriteRenderer;
 
-        private List<GameObject> _ballList = new List<GameObject>();
-
 
         private Color _swingAreaColor;
 
@@ -64,17 +62,21 @@ namespace QT.Player
         private float _currentBallRecoveryTime;
         private float _upAtkCentralAngle;
         private float _downAtkCentralAngle;
+        private float _beforeChargingTime;
 
         private int _currentBallStack;
 
         private bool _isUpDown = true;
         private bool _isMouseDownCheck = false;
-        
+
+        private bool _isSwingBallHit;
+
         private Mesh _mesh;
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
 
         public Transform EyeTransform => _eyeTransform;
+
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace QT.Player
             inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
             _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-            _playerSystem.PlayerBallDestroyedEvent.AddListener(BallDestroyed);
+            _playerSystem.BatSwingBallHitEvent.AddListener(SwingBallHitCheck);
             _currentAtkCoolTime = _atkCoolTime;
             _currentChargingTime = 0f;
             _isMouseDownCheck = false;
@@ -142,7 +144,7 @@ namespace QT.Player
                 PlayerSwingAngle();
             }
         }
-        
+
         #region AttackFunc
 
         private void AttackCoolTime()
@@ -198,6 +200,7 @@ namespace QT.Player
             if (!_isMouseDownCheck)
                 return;
             _batSpriteRenderer.enabled = true;
+            _beforeChargingTime = _currentChargingTime;
             if (_currentChargingTime <= _chargingMaxTimes[0])
             {
                 // 일반스윙
@@ -219,16 +222,7 @@ namespace QT.Player
             ballMove.transform.position = transform.position;
             ballMove.transform.rotation = Quaternion.Euler(0, 0, bulletAngleDegree);
             ballMove.BulletSpeed = 0;
-            _ballList.Add(ballMove.gameObject);
             _currentBallStack--;
-        }
-
-        private void BallDestroyed(GameObject bulletObject)
-        {
-            if (_ballList.Contains(bulletObject))
-            {
-                _ballList.Remove(bulletObject);
-            }
         }
 
         private void AttackBatSwing()
@@ -238,7 +232,7 @@ namespace QT.Player
             if (_isUpDown == true)
             {
                 _batPos.transform.localRotation = Quaternion.Euler(0f, 0f, _upAtkCentralAngle);
-                rotationSpeed = Mathf.DeltaAngle(_batPos.localEulerAngles.z,_downAtkCentralAngle) / _rotationTime;
+                rotationSpeed = Mathf.DeltaAngle(_batPos.localEulerAngles.z, _downAtkCentralAngle) / _rotationTime;
                 StartCoroutine(BatSwing(_batPos, rotationSpeed, _downAtkCentralAngle));
             }
             else
@@ -293,14 +287,31 @@ namespace QT.Player
             targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation,
                 rotateSpeed * Time.deltaTime);
             _playerSystem.BatSwingEndEvent.Invoke();
-            yield return new WaitForSeconds(0.1f);
+            if (_chargingMaxTimes[_chargingMaxTimes.Length - 1] < _beforeChargingTime && _isSwingBallHit)
+            {
+                _playerSystem.BatSwingTimeScaleEvent.Invoke(true);
+                Time.timeScale = 0.1f;
+                yield return new WaitForSeconds(0.01f);
+                Time.timeScale = 0.2f;
+                yield return new WaitForSeconds(0.01f);
+                Time.timeScale = 0.3f;
+                yield return new WaitForSeconds(0.01f);
+                Time.timeScale = 0.5f;
+                yield return new WaitForSeconds(0.01f);
+                Time.timeScale = 0.75f;
+                yield return new WaitForSeconds(0.01f);
+                Time.timeScale = 1.0f;
+                _playerSystem.BatSwingTimeScaleEvent.Invoke(false);
+                _isSwingBallHit = false;
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            _beforeChargingTime = 0f;
             _trailRenderer.emitting = false;
             _batSwing.enabled = false;
             _batSpriteRenderer.enabled = false;
-            for (int i = 0; i < _ballList.Count; i++)
-            {
-                _ballList[i].GetComponent<BallMove>()._lineRenderer.enabled = false;
-            }
 
         }
 
@@ -343,10 +354,10 @@ namespace QT.Player
                 _currentBallRecoveryTime = 0f;
                 _currentBallStack++;
             }
-            _ballStackBarImage.fillAmount = QT.Util.Math.floatNormalization(_currentBallRecoveryTime,_ballRecoveryCoolTime, 0);
+            _ballStackBarImage.fillAmount = QT.Util.Math.floatNormalization(_currentBallRecoveryTime, _ballRecoveryCoolTime, 0);
             _ballStackText.text = _currentBallStack.ToString();
         }
-        
+
         private Mesh CreateMesh(float radius, float angle, int segments)
         {
             Mesh mesh = new Mesh();
@@ -373,6 +384,11 @@ namespace QT.Player
             mesh.triangles = indices;
             mesh.RecalculateBounds();
             return mesh;
+        }
+
+        private void SwingBallHitCheck()
+        {
+            _isSwingBallHit = true;
         }
     }
 }

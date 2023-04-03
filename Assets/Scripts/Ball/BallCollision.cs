@@ -160,6 +160,7 @@ namespace QT.Ball
                 {
                     gameObject.layer = LayerMask.NameToLayer("Ball");
                 }
+                _playerSystem.BatSwingBallHitEvent.Invoke();
             }
         }
 
@@ -218,44 +219,40 @@ namespace QT.Ball
             lineRenderer.enabled = true;
             lineRenderer.positionCount = 0;
             int reflectCount = 2;
-            float radius = transform.localScale.x * 0.5f;
 
-            RaycastHit2D hit2D = Physics2D.CircleCast(lineRenderer.transform.position,radius ,reflectDirection, Mathf.Infinity,
+            RaycastHit2D hit2D = Physics2D.Raycast(lineRenderer.transform.position ,reflectDirection, Mathf.Infinity,
                 _reflectLayerMask);
             if (hit2D.collider != null)
-            {
-                Vector2 hitPointMinusRadius = hit2D.point - (reflectDirection.normalized * radius);
-                // 충돌 지점에서 입사각과 반사각 계산
+            {                // 충돌 지점에서 입사각과 반사각 계산
                 reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
 
                 // LineRenderer에 반사 지점 추가
                 reflectCount++;
                 lineRenderer.positionCount = reflectCount;
                 lineRenderer.SetPosition(0, lineRenderer.transform.position);
-                lineRenderer.SetPosition(1, hitPointMinusRadius);
-                lineRenderer.SetPosition(2, hitPointMinusRadius + reflectDirection);
+                lineRenderer.SetPosition(1, hit2D.point);
+                lineRenderer.SetPosition(2, hit2D.point + reflectDirection);
             }
 
             for (; reflectCount < _chargeBounceValue + 2; reflectCount++)
             {
-                if (!BallBounceRayCast(lineRenderer, ref reflectDirection, reflectCount,radius))
+                if (!BallBounceRayCast(lineRenderer, ref reflectDirection, reflectCount))
                 {
                     break;
                 }
             }
         }
 
-        private bool BallBounceRayCast(LineRenderer lineRenderer, ref Vector2 reflectDirection, int reflectCount,float radius)
+        private bool BallBounceRayCast(LineRenderer lineRenderer, ref Vector2 reflectDirection, int reflectCount)
         {
-            RaycastHit2D hit2D = Physics2D.CircleCast(lineRenderer.GetPosition(reflectCount - 1),radius,reflectDirection,
+            RaycastHit2D hit2D = Physics2D.Raycast(lineRenderer.GetPosition(reflectCount - 1),reflectDirection,
                 Mathf.Infinity, _reflectLayerMask);
             if (hit2D.collider != null)
             {
-                Vector2 hitPointMinusRadius = hit2D.point - (reflectDirection.normalized * radius);
                 reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
                 lineRenderer.positionCount = reflectCount + 1;
-                lineRenderer.SetPosition(reflectCount - 1, hitPointMinusRadius);
-                lineRenderer.SetPosition(reflectCount, hitPointMinusRadius + reflectDirection);
+                lineRenderer.SetPosition(reflectCount - 1, hit2D.point);
+                lineRenderer.SetPosition(reflectCount, hit2D.point + reflectDirection);
                 return true;
             }
 
