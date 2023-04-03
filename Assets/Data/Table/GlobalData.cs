@@ -57,6 +57,14 @@ public class GlobalData : ScriptableObject
     public float RigidSpd => _rigidSpd;
 
     [SerializeField]
+    [Tooltip("배트로 때려서 경직(rigid)상태가 풀릴때까지 걸리는 시간")]
+    private float _rigidTime = 0.1f;
+    /// <summary>
+    /// 배트로 때려서 경직(rigid)상태가 풀릴때까지 걸리는 시간
+    /// </summary>
+    public float RigidTime => _rigidTime;
+    
+    [SerializeField]
     [Tooltip("일정 속도에 도달시 삭제되는 속도값")]
     private float _ballMinSpdDestroyed = 0.1f;
     /// <summary>

@@ -20,6 +20,8 @@ namespace QT.Core
         private FSMState<T> _previousState = null;
         private FSMState<T> _globalState = null;
 
+        public int CurrentState { get; private set; }
+
         protected virtual void Update()
         {
             _globalState?.UpdateState();
@@ -57,20 +59,22 @@ namespace QT.Core
             ChangeState(firstState);
         }
 
-        public void ChangeState(ValueType enumValue)
+        public FSMState<T> ChangeState(ValueType enumValue)
         {
             if (!_states.TryGetValue((int)enumValue, out var state))
             {
                 Debug.LogError($"{GetType()} : 사용할 수 없는 상태입니다. {enumValue}");
-                return;
+                return null;
             }
 
-            ChangeState(state);
+            CurrentState = (int)enumValue;
+
+            return ChangeState(state);
         }
 
-        private void ChangeState(FSMState<T> newState)
+        private FSMState<T> ChangeState(FSMState<T> newState)
         {
-            if (newState == null) return;
+            if (newState == null || newState == _currentState) return null;
 
             if (_currentState != null)
             {
@@ -84,9 +88,9 @@ namespace QT.Core
             _currentState = newState;
             _currentState.InitializeState();
 
-
-
             Debug.Log($"{this.GetType()} : {newState.GetType()} 상태로 전환");
+
+            return _currentState;
         }
 
         public void SetGlobalState(FSMState<T> newState)
