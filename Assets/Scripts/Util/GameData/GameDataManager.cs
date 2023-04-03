@@ -27,7 +27,7 @@ namespace QT.Core
 
     public interface IGameDataBase
     {
-        public Dictionary<int, IGameData> datas { get; set; }
+        public void RegisterData(IGameData data);
     }
 
 
@@ -59,7 +59,6 @@ namespace QT.Core
                 }
 
                 var database = Activator.CreateInstance(dataBaseType) as IGameDataBase;
-                database.datas = new Dictionary<int, IGameData>();
 
                 var gameDataTypes = new Dictionary<string, PropertyInfo>();
                 var propertyInfos = attribute.GameDataType.GetProperties();
@@ -95,7 +94,7 @@ namespace QT.Core
                         }
                     }
 
-                    database.datas.Add(data.Index, data);
+                    database.RegisterData(data);
                 }
 
                 _databases.Add(dataBaseType, database);
