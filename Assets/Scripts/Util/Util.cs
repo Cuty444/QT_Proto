@@ -20,15 +20,21 @@ namespace QT.Util
         }
 
         /// <summary>
-        /// ¸ñÇ¥ À§Ä¡¸¦ ¹Ù¶óº¸´Â °¢µµ °ª ±¸ÇÏ±â
+        /// ëª©í‘œ ìœ„ì¹˜ë¥¼ ë°”ë¼ë³´ëŠ” ê°ë„ ê°’ êµ¬í•˜ê¸°
         /// </summary>
-        /// <param name="originalPos">½ÃÀÛ ÁÂÇ¥</param>
-        /// <param name="targetPos">¸ñÇ¥ ÁÂÇ¥</param>
+        /// <param name="originalPos">ì‹œì‘ ì¢Œí‘œ</param>
+        /// <param name="targetPos">ëª©í‘œ ì¢Œí‘œ</param>
         /// <returns></returns>
         public static float GetDegree(Vector2 originalPos, Vector2 targetPos)
         {
             float angleRadian = Mathf.Atan2(targetPos.y - originalPos.y, targetPos.x - originalPos.x);
             return 180 / Mathf.PI * angleRadian;
+        }
+
+        public static Vector2 ZAngleToGetDirection(Transform transform)
+        {
+            float angleInRadians = transform.eulerAngles.z * Mathf.Deg2Rad;
+            return new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
         }
     }
 }
