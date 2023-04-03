@@ -7,10 +7,9 @@ namespace QT.Enemy
     [FSMState((int) Enemy.States.Rigid)]
     public class EnemyRigidState : FSMState<Enemy>
     {
-        private float _rigidStartTime = 0f;
-
+        private float _rigidStartTime;
         private float _rigidTime;
-        
+
         public EnemyRigidState(IFSMEntity owner) : base(owner)
         {
         }
@@ -29,7 +28,7 @@ namespace QT.Enemy
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
             }
         }
-        
+
         public override void ClearState()
         {
             _ownerEntity.OnDamageEvent.RemoveListener(OnDamage);
@@ -49,10 +48,11 @@ namespace QT.Enemy
                 }
             }
         }
-        
+
         private void OnDamage(float damage, Vector2 hitPoint)
         {
-            _ownerEntity.ChangeState(Enemy.States.Projectile);
+            var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
+            ((EnemyProjectileState) state).InitializeState(damage, hitPoint);
         }
     }
 }
