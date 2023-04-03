@@ -8,8 +8,12 @@ namespace QT.Enemy
         public enum States : int
         {
             Global,
+            
+            // 살아있음
             Normal,
-            Rigid,
+            Rigid, 
+            
+            // 사실상 죽어있음
             Projectile,
             Dead,
         }
