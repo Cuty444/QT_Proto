@@ -303,28 +303,6 @@ namespace QT.Player
             }
 
         }
-        private bool SwingAreaCollision(Transform targetTransform)
-        {
-            Vector2 interV = targetTransform.position - transform.position;
-            float targetRadius = targetTransform.localScale.x / 2f;
-            // target과 나 사이의 거리가 radius 보다 작다면
-            if (interV.magnitude <= _atkRadius + targetRadius)
-            {
-                // '타겟-나 벡터'와 '내 정면 벡터'를 내적
-                float dot = Vector2.Dot(interV.normalized, _eyeTransform.transform.right);
-                // 두 벡터 모두 단위 벡터이므로 내적 결과에 cos의 역을 취해서 theta를 구함
-                float theta = Mathf.Acos(dot);
-                // angleRange와 비교하기 위해 degree로 변환
-                float degree = Mathf.Rad2Deg * theta;
-
-                // 시야각 판별
-                if (degree <= _atkCentralAngle / 2f)
-                    return true;
-
-            }
-            
-            return false;
-        }
 
         #endregion
 
