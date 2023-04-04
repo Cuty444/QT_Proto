@@ -1,16 +1,31 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using QT.Data;
 
-[CreateAssetMenu(fileName = "BatTableObject", menuName = "Data/BatTable", order = 0)]
-public class BatTable : ScriptableObject
+namespace QT.Data
+{
+
+    [Flags]
+    public enum ChargeAtkPierce
+    {
+        None = 0,
+        isNormalAtkPierce = 1 << 0,
+        isCharge1Pierce = 1 << 1,
+        isCharge2Pierce = 1 << 2,
+        isCharge3Pierce = 1 << 3,
+    }
+    
+}
+
+[CreateAssetMenu(fileName = "CharacterAtkTableObject",menuName = "Data/CharacterAtkTable", order = 2)]
+public class CharacterAtkTable : ScriptableObject
 {
     [SerializeField]
-    private int _index = 300;
+    private int _index = 200;
     public int Index => _index;
-
+    
     [SerializeField]
     [Tooltip("휘두르기 적중 피해량 미차징, 차징")]
     private int[] _swingRigidDmg;
@@ -50,7 +65,23 @@ public class BatTable : ScriptableObject
     /// 공격 발생 지연 시간 (s)
     /// </summary>
     public float AtkAfterDelay => _atkAfterDelay;
-
+    
+    [SerializeField]
+    [Tooltip("던지기 쿨타임 (s)")]
+    private float _throwCooldown = 1f;
+    /// <summary>
+    /// 던지기 쿨타임 (s)
+    /// </summary>
+    public float ThrowCooldown => _throwCooldown;
+    
+    [SerializeField]
+    [Tooltip("던지기 쿨타임 (s)")]
+    private float _throwAfterDelay = 1f;
+    /// <summary>
+    /// 던지기 쿨타임 (s)
+    /// </summary>
+    public float ThrowAfterDelay => _throwAfterDelay;
+    
     [SerializeField]
     [Tooltip("공격으로 튕겨난 공, 적이 다른 콜리전과 충돌하며 입는 피해량 가중치 - 미적용")]
     private float _batBounceSpdDmgPer = 1f;
@@ -87,3 +118,4 @@ public class BatTable : ScriptableObject
     private ChargeAtkPierce _chargeAtkPierce;
     public ChargeAtkPierce ChargeAtkPierce => _chargeAtkPierce;
 }
+
