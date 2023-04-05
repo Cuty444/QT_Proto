@@ -91,6 +91,8 @@ namespace QT.Core
                 for (int cellNum = 0; cellNum < headerRow.LastCellNum; cellNum++)
                 {
                     ICell cell = headerRow.GetCell(cellNum);
+                    cell?.SetCellType(CellType.String);
+                    
                     var name = cell?.ToString().Trim() ?? null;
 
                     if (string.IsNullOrWhiteSpace(name) || name[0] == '#')
@@ -127,7 +129,8 @@ namespace QT.Core
                             continue;
                         }
                         ICell cell = row.GetCell(cellNum);
-
+                        cell?.SetCellType(CellType.String);
+                        
                         var data = cell?.ToString() ?? null;
 
                         if (!string.IsNullOrWhiteSpace(data))
