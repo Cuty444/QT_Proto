@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
 
 using NPOI.SS.UserModel;
@@ -17,7 +16,7 @@ namespace QT.Core
     public class ExcelConverter
     {
         private static string GameDataPath = $"{Directory.GetCurrentDirectory()}/_GameData";
-        private static string JsonDataPath = $"{Directory.GetCurrentDirectory()}/Assets/Resources/GameData";
+        private static string JsonDataPath = $"{Directory.GetCurrentDirectory()}/Assets/Data/GameData";
 
 
         [MenuItem("File/Convert Excel Sheets")]
