@@ -15,6 +15,7 @@ namespace QT.Core
 
         private void Awake()
         {
+            ResourceManager.Initialize();
             DataManager.Initialize();
             
             _InitializeSystems();
