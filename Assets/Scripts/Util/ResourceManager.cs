@@ -21,6 +21,15 @@ namespace QT
             GameObject.DontDestroyOnLoad(_poolRootTransform);
         }
 
+        public async UniTaskVoid CacheAssets(string[] paths)
+        {
+            foreach (var path in paths)
+            {
+                var asset = await Addressables.LoadAssetAsync<Object>(path);
+                _cache.TryAdd(path, asset);
+            }
+        }
+        
         public async UniTask<T> LoadAsset<T>(string path, bool isCaching) where T : Object
         {
             T asset;
