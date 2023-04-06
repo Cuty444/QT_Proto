@@ -45,7 +45,6 @@ namespace QT
             }
             else
             {
-                Debug.Log(path);
                 asset = await Addressables.LoadAssetAsync<T>(path);
             }
 
