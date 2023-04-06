@@ -25,9 +25,14 @@ namespace QT
         {
             foreach (var path in paths)
             {
-                var asset = await Addressables.LoadAssetAsync<Object>(path);
-                _cache.TryAdd(path, asset);
+                CacheAsset(path);
             }
+        }
+        
+        public async UniTaskVoid CacheAsset(string path)
+        {
+            var asset = await Addressables.LoadAssetAsync<Object>(path);
+            _cache.TryAdd(path, asset);
         }
         
         public async UniTask<T> LoadAsset<T>(string path, bool isCaching) where T : Object
