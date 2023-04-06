@@ -13,7 +13,7 @@ public enum AimTypes
 
 public class ProjectileShooter : MonoBehaviour
 {
-    [SerializeField] private GameObject _projectilePrefab; // Todo: 오브젝트 풀링 기능이 포함된 리소스 매니저 구현 필요
+    private const string ProjectilePrefabPath = "Prefabs/Projectile.prefab";
     
     [SerializeField] protected Transform _shootPoint;
 
@@ -24,7 +24,7 @@ public class ProjectileShooter : MonoBehaviour
         _targetTransform = target;
     }
     
-    public virtual void Shoot(int shootDataId, AimTypes aimType)
+    public async virtual void Shoot(int shootDataId, AimTypes aimType)
     {
         var shootData = SystemManager.Instance.DataManager.GetDataBase<ShootGameDataBase>().GetData(shootDataId);
 
@@ -41,8 +41,8 @@ public class ProjectileShooter : MonoBehaviour
                 continue;
             }
             
-            // Todo: 오브젝트 풀링 기능이 포함된 리소스 매니저 구현 필요
-            var projectile = Instantiate(_projectilePrefab, _shootPoint.position, Quaternion.identity).GetComponent<Projectile>();
+            var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(ProjectilePrefabPath);
+            projectile.transform.position = _shootPoint.position;
             
             var dir = GetDirection(shoot.ShootAngle, aimType);
             projectile.Init(projectileData, dir, shoot.MaxBounceCount);

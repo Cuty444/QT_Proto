@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
 using UnityEngine;
 
 namespace QT
@@ -48,7 +49,7 @@ namespace QT
 
                 if (--_bounceCount < 0)
                 {
-                    Destroy(gameObject); // Todo: 오브젝트 풀링
+                    SystemManager.Instance.ResourceManager.ReleaseObject(this);
                 }
             }
             
@@ -57,7 +58,7 @@ namespace QT
             _speed -= _speedDecay * Time.deltaTime;
             if (_speed <= 0)
             {
-                Destroy(gameObject); // Todo: 오브젝트 풀링
+                SystemManager.Instance.ResourceManager.ReleaseObject(this);
             }
         }
     }
