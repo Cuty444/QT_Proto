@@ -8,12 +8,14 @@ namespace QT.Core
     //시스템 관리 매니저입니다.
     public class SystemManager : MonoSingleton<SystemManager>
     {
-        public GameDataManager DataManager { get; private set; } = new GameDataManager();
+        public ResourceManager ResourceManager { get; private set; } = new ();
+        public GameDataManager DataManager { get; private set; } = new ();
 
-        private readonly Dictionary<Type, SystemBase> _systems = new Dictionary<Type, SystemBase>();
+        private readonly Dictionary<Type, SystemBase> _systems = new ();
 
         private void Awake()
         {
+            ResourceManager.Initialize();
             DataManager.Initialize();
             
             _InitializeSystems();
