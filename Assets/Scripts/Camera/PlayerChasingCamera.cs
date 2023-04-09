@@ -60,7 +60,6 @@ public class PlayerChasingCamera : MonoBehaviour
             if(_isCameraShaking)
             {
                 transform.position = UnityEngine.Random.insideUnitSphere * _cameraSakeDiameter + transform.position;
-                Debug.Log(transform.position);
             }
         }
     }
