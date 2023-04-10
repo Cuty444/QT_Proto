@@ -3,20 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Data;
-namespace QT.Data
-{
-
-    [Flags]
-    public enum ChargeAtkPierce
-    {
-        None = 0,
-        isNormalAtkPierce = 1 << 0,
-        isCharge1Pierce = 1 << 1,
-        isCharge2Pierce = 1 << 2,
-        isCharge3Pierce = 1 << 3,
-    }
-    
-}
 
 [CreateAssetMenu(fileName = "BatTableObject", menuName = "Data/BatTable", order = 0)]
 public class BatTable : ScriptableObject

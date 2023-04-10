@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_Caustics
-  m_Shader: {fileID: -6465566751694194690, guid: b05c3b05e76533b488ef390426b4d0f8, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 55815823cdf3c8340b05c05814fbb161, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -24,8 +24,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Alpha_Texture:
+        m_Texture: {fileID: 2800000, guid: 1b41059a38ad14245a72e1a79c67b0ba, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Caustics_Tex:
-        m_Texture: {fileID: 2800000, guid: 2a0e782d512f0674e881c6825414fd03, type: 3}
+        m_Texture: {fileID: 2800000, guid: b2b84ffde79b53446ae54e58bfc4f07d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -34,6 +38,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _Main_Tex:
         m_Texture: {fileID: 2800000, guid: a8960d5435686894cad0a7473ed0efd7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Main_Texture:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
@@ -62,20 +70,50 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BUILTIN_QueueControl: -1
+    - _BUILTIN_QueueOffset: 0
     - _Caustics_Intensity: 1
+    - _Dissolve_Inten: 4
+    - _Dissolve_Prog: 0
+    - _Dissolve_line_Am: 1
     - _EnableExternalAlpha: 0
     - _Float: 0.5
     - _Noise_Amount: 1
+    - _Noise_Grad_XY: 0
+    - _Noise_Intensity: 0.5
+    - _Noise_LERP: 0.6
+    - _Noise_Scale: 5
+    - _Noise_time_sp_X: -0.5
+    - _Noise_time_sp_Y: 0
+    - _Particle_check: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Water_Amount: 0.4
+    - _main_1st_Intensity: 6
+    - _main_2ed_Intensity: 1
     m_Colors:
     - _Caustics_Color: {r: 0.0042719753, g: 0.23740357, b: 0.3018868, a: 0.7058824}
     - _Caustics_Fast: {r: 0, g: 0.1, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Dissovle_Color: {r: 0.1177465, g: 0.7748813, b: 0.9245283, a: 0}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _Noise_Fast: {r: 0.02, g: 0.02, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _Tiling_Amount: {r: 3, g: 3, b: 0, a: 0}
     - _Water_Amount: {r: 1, g: 1, b: 0, a: 0}
+    - _main_1st_Color: {r: 1, g: 0.6316536, b: 0.0518868, a: 0}
+    - _main_2ed_Color: {r: 1, g: 0.3682712, b: 0.1273585, a: 0}
   m_BuildTextureStacks: []
+--- !u!114 &3480990884586215116
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 639247ca83abc874e893eb93af2b5e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 0
