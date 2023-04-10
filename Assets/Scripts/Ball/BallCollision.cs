@@ -213,7 +213,7 @@ namespace QT.Ball
             }
             if (reflectCount > 3)
             {
-                float endTime = QT.Util.Math.floatNormalization(3, reflectCount, 0);
+                float endTime = QT.Util.Math.Remap(3, reflectCount, 0);
                 Gradient gradient = new Gradient();
                 gradient.SetKeys(new GradientColorKey[] { new GradientColorKey(Color.white, 0.0f), new GradientColorKey(Color.white, 1.0f) },
                     new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, endTime), new GradientAlphaKey(0.0f, endTime + 0.03f), new GradientAlphaKey(0f, 1f) });
