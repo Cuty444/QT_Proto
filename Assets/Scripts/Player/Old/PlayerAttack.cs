@@ -161,7 +161,7 @@ namespace QT.Player
                         _chargingBarBackground.gameObject.SetActive(true);
                     }
 
-                    _chargingBarImage.fillAmount = QT.Util.Math.floatNormalization(_currentChargingTime,
+                    _chargingBarImage.fillAmount = QT.Util.Math.Remap(_currentChargingTime,
                         _chargingMaxTimes[_chargingMaxTimes.Length - 1], _chargingMaxTimes[0]);
                 }
             }
@@ -354,7 +354,7 @@ namespace QT.Player
                 _currentBallRecoveryTime = 0f;
                 _currentBallStack++;
             }
-            _ballStackBarImage.fillAmount = QT.Util.Math.floatNormalization(_currentBallRecoveryTime, _ballRecoveryCoolTime, 0);
+            _ballStackBarImage.fillAmount = QT.Util.Math.Remap(_currentBallRecoveryTime, _ballRecoveryCoolTime, 0);
             _ballStackText.text = _currentBallStack.ToString();
         }
 

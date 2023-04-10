@@ -4,12 +4,13 @@ namespace QT.Player
 {
     public partial class Player
     {
-        public Status ThrowCooldown { get; private set; }
-        public Status ThrowAfterDelay { get; private set; }
+        #region CharacterAtkGameData
+        public Stat ThrowCooldown { get; private set; }
+        public Stat ThrowAfterDelay { get; private set; }
         public Stat ThrowSpd { get; private set; }
         public Stat ThrowBounceCount { get; private set; }
-        public Status SwingCooldown { get; private set; }
-        public Status SwingAfterDelay { get; private set; }
+        public Stat SwingCooldown { get; private set; }
+        public Stat SwingAfterDelay { get; private set; }
         public Stat[] ChargeTimes { get; private set; }
         public int ChargeAtkPierce { get; private set; }
         public Stat[] ChargeShootSpd { get; private set; }
@@ -20,16 +21,17 @@ namespace QT.Player
         public Stat SwingRadius { get; private set; }
         public Stat SwingCentralAngle { get; private set; }
         
-
+        #endregion
+        
         #region CharacterGameData
         public Status HP { get; private set; }
         
         public Stat PCHitboxRad { get; private set; }
         public Stat MovementSpd { get; private set; }
         public Stat ChargeMovementSpd { get; private set; }
-        public Status MercyInvincibleTime { get; private set; }
-        public Status DodgeCooldown { get; private set; }
-        public Status DodgeInvincibleTime { get; private set; }
+        public Stat MercyInvincibleTime { get; private set; }
+        public Stat DodgeCooldown { get; private set; }
+        public Stat DodgeInvincibleTime { get; private set; }
         public Stat ItemSlotMax { get; private set; }
         public Stat BallStackMax { get; private set; }
         public Stat GoldGain { get; private set; }
@@ -42,12 +44,12 @@ namespace QT.Player
             SwingRadius = new Stat(AtkData.SwingRad);
             SwingCentralAngle = new Stat(AtkData.SwingCentralAngle);
 
-            ThrowCooldown = new Status(AtkData.ThrowCooldown);
-            ThrowAfterDelay = new Status(AtkData.ThrowAfterDelay);
+            ThrowCooldown = new Stat(AtkData.ThrowCooldown);
+            ThrowAfterDelay = new Stat(AtkData.ThrowAfterDelay);
             ThrowSpd = new Stat(AtkData.ThrowSpd);
             ThrowBounceCount = new Stat(AtkData.ThrowBounceCount);
-            SwingCooldown = new Status(AtkData.SwingCooldown);
-            SwingAfterDelay = new Status(AtkData.SwingAfterDelay);
+            SwingCooldown = new Stat(AtkData.SwingCooldown * 0.01f);
+            SwingAfterDelay = new Stat(AtkData.SwingAfterDelay);
             AtkDmgPer = new Stat(AtkData.AtkDmgPer);
             ChargeAtkPierce = AtkData.ChargeAtkPierce;
             ChargeTimes = new Stat[]
@@ -89,9 +91,9 @@ namespace QT.Player
             PCHitboxRad = new Stat(Data.PCHitboxRad);
             MovementSpd = new Stat(Data.MovementSpd);
             ChargeMovementSpd = new Stat(Data.ChargeMovementSpd);
-            MercyInvincibleTime = new Status(Data.MercyInvincibleTime);
-            DodgeCooldown = new Status(Data.DodgeInvincibleTime);
-            DodgeInvincibleTime = new Status(Data.DodgeInvincibleTime);
+            MercyInvincibleTime = new Stat(Data.MercyInvincibleTime);
+            DodgeCooldown = new Stat(Data.DodgeInvincibleTime);
+            DodgeInvincibleTime = new Stat(Data.DodgeInvincibleTime);
             ItemSlotMax = new Stat(Data.ItemSlotMax);
             BallStackMax = new Stat(Data.BallStackMax);
             GoldGain = new Stat(Data.GoldGain);
