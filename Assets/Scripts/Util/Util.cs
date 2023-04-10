@@ -14,9 +14,10 @@ namespace QT.Util
     }
     public static class Math
     {
-        public static float floatNormalization(float value,float max,float min)
+        public static float Remap(float value,float max,float min)
         {
-            return (value - min) / (max - min);
+            return Unity.Mathematics.math.remap(min, max, 0f, 1f, value);
+            //return (value - min) / (max - min);
         }
 
         /// <summary>

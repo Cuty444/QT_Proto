@@ -93,13 +93,18 @@ namespace QT.Core
             return _currentState;
         }
 
-        public void SetGlobalState(FSMState<T> newState)
+        public void SetGlobalState(ValueType enumValue)
         {
-            _globalState?.ClearState();
+            //_globalState?.ClearState();
+            if (!_states.TryGetValue((int) enumValue, out var state)) // TODO : GlobalState가 시작할때 두번 로드하는 버그가 생겨서 임시로 수정함
+            {
+                Debug.LogError($"{GetType()} : 사용할 수 없는 상태입니다. {enumValue}");
+                return;
+            }
 
-            _globalState = newState;
+            _globalState = state;
 
-            _globalState?.InitializeState();
+            //_globalState?.InitializeState();
         }
 
         public void RevertToPreviousState()

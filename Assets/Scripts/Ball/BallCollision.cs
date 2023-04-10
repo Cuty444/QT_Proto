@@ -200,31 +200,31 @@ namespace QT.Ball
         {
             lineRenderer.enabled = true;
             lineRenderer.positionCount = 0;
-            int reflectCount = 2;
+            int reflectCount = 1;
+            lineRenderer.positionCount = reflectCount;
             float radius = transform.localScale.x * 0.5f;
-            
-            RaycastHit2D hit2D = Physics2D.CircleCast(lineRenderer.transform.position,radius ,reflectDirection, Mathf.Infinity,
-                _reflectLayerMask);
-            if (hit2D.collider != null)
-            {   
-                Vector2 hitPointMinusRadius = hit2D.point + (hit2D.normal * radius);
-                // 충돌 지점에서 입사각과 반사각 계산
-                reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
-
-                // LineRenderer에 반사 지점 추가
-                reflectCount++;
-                lineRenderer.positionCount = reflectCount;
-                lineRenderer.SetPosition(0, lineRenderer.transform.position);
-                lineRenderer.SetPosition(1, hitPointMinusRadius);
-                lineRenderer.SetPosition(2, hitPointMinusRadius + reflectDirection);
-            }
-
+            lineRenderer.SetPosition(0, lineRenderer.transform.position);
             for (; reflectCount < _chargeBounceValue + 2; reflectCount++)
             {
                 if (!BallBounceRayCast(lineRenderer, ref reflectDirection, reflectCount,radius))
                 {
                     break;
                 }
+            }
+            if (reflectCount > 3)
+            {
+                float endTime = QT.Util.Math.Remap(3, reflectCount, 0);
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(new GradientColorKey[] { new GradientColorKey(Color.white, 0.0f), new GradientColorKey(Color.white, 1.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, endTime), new GradientAlphaKey(0.0f, endTime + 0.03f), new GradientAlphaKey(0f, 1f) });
+                lineRenderer.colorGradient = gradient;
+            }
+            else
+            {
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(new GradientColorKey[] { new GradientColorKey(Color.white, 0.0f), new GradientColorKey(Color.white, 1.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1f, 1f) });
+                lineRenderer.colorGradient = gradient;
             }
         }
 
@@ -237,8 +237,8 @@ namespace QT.Ball
                 Vector2 hitPointMinusRadius = hit2D.point + (hit2D.normal * radius);
                 reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
                 lineRenderer.positionCount = reflectCount + 1;
-                lineRenderer.SetPosition(reflectCount - 1, hitPointMinusRadius);
-                lineRenderer.SetPosition(reflectCount, hitPointMinusRadius + reflectDirection);
+                lineRenderer.SetPosition(reflectCount, hitPointMinusRadius);
+                //lineRenderer.SetPosition(reflectCount, hitPointMinusRadius + reflectDirection);
                 return true;
             }
 
