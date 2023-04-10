@@ -2,7 +2,7 @@ using UnityEngine;
 using QT.Core;
 namespace QT.Player
 {
-    [FSMState((int)Player.States.Idle)]
+    [FSMState((int)Player.States.Global)]
     public class PlayerGlobalState : FSMState<Player>
     {
         public PlayerGlobalState(IFSMEntity owner) : base(owner)

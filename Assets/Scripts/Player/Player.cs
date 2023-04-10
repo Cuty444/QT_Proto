@@ -16,45 +16,30 @@ namespace QT.Player
             Swing,
             Dead,
         }
+
+        [SerializeField] private int _characterID = 100;
+        [SerializeField] private int _characterAtkID = 200;
         public Rigidbody2D Rigidbody { get; private set; }
 
+        public CharacterGameData Data { get; private set; }
+        public CharacterAtkGameData AtkData { get; private set; }
         private void Awake()
         {
+            Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
+            AtkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
             SetUp(States.Idle);
             SetGlobalState(new PlayerGlobalState(this));
             Rigidbody = GetComponent<Rigidbody2D>();
             MeshFilter = GetComponent<MeshFilter>();
             MeshRenderer = GetComponent<MeshRenderer>();
+            SetUpStats();
         }
 
         private void Start()
         {
-            DataLoad();
-            MeshFilter.mesh = SwingAreaCreateMesh(AtkRadius, AtkCentralAngle, 32);
-            MeshRenderer.material = new Material(Shader.Find("Sprites/Default"));
-            MeshRenderer.material.color = new Color(0f, 0f, 1f, 0.2f);
-            MeshRenderer.enabled = false;
+            //StatLoad();
+            //SwingAreaCreate();
         }
-
-        private void DataLoad()
-        {
-            GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
-            CharacterAtkTable characterAtkTable = globalDataSystem.CharacterAtkTable;
-            CharacterTable characterTable = globalDataSystem.CharacterTable;
-            AtkRadius = characterAtkTable.ATKRad;
-            AtkCentralAngle = characterAtkTable.AtkCentralAngle;
-            AtkShootSpeed = characterAtkTable.AtkShootSpd;
-            AtkCoolTime = characterAtkTable.AtkCooldown;
-            ChargingMaxTimes = characterAtkTable.ChargingMaxTimes;
-            SwingRigidDmg = characterAtkTable.SwingRigidDmg;
-            ChargeBounceValues = characterAtkTable.ChargeBounceValue;
-            
-            BallStackMax = characterTable.BallStackMax;
-            MercyInvincibleTime = characterTable.MercyInvincibleTime;
-            DodgeInvincibleTime = characterTable.DodgeInvincibleTime;
-
-            HPMax = characterTable.HPMax;
-            HP = HPMax;
-        }
+        
     }
 }
