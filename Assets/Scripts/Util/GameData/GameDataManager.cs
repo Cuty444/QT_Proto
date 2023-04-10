@@ -4,6 +4,8 @@ using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 namespace QT.Core
 {
@@ -41,88 +43,112 @@ namespace QT.Core
         public void Initialize()
         {
             _databases = new Dictionary<Type, IGameDataBase>();
-            ParseGameDatas();
+
+            try
+            {
+                ParseGameDatas();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
 
 
-        private void ParseGameDatas()
+        private async UniTaskVoid ParseGameDatas()
         {
             var dataBaseTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(IGameDataBase) != t && typeof(IGameDataBase).IsAssignableFrom(t));
 
+            List<UniTask<(Type, IGameDataBase)>> tasks = new(dataBaseTypes.Count());
+            
             foreach (var dataBaseType in dataBaseTypes)
             {
                 var attribute = dataBaseType.GetCustomAttribute<GameDataBaseAttribute>();
 
-                if(!GetJson(attribute, out var result))
+                var json = await GetJson(attribute);
+                
+                if(json == null)
                 {
                     continue;
                 }
+                
+                tasks.Add(SetDataBase(dataBaseType, attribute, json));
+            }
+            
+            var databases = await UniTask.WhenAll(tasks);
 
-                var database = Activator.CreateInstance(dataBaseType) as IGameDataBase;
-
-                var gameDataTypes = new Dictionary<string, PropertyInfo>();
-                var propertyInfos = attribute.GameDataType.GetProperties();
-
-                foreach (JToken gameData in result[0])
-                {
-                    var property = propertyInfos.FirstOrDefault(t => t.Name == gameData.ToString());
-
-                    if (property != null)
-                    {
-                        gameDataTypes.Add(gameData.ToString(), property);
-                    }
-                }
-
-                foreach (JObject gameData in result[1])
-                {
-                    var data = Activator.CreateInstance(attribute.GameDataType) as IGameData;
-
-                    foreach (var type in gameDataTypes)
-                    {
-                        if (gameData.TryGetValue(type.Key, out var value))
-                        {
-                            var parsedValue = ParseValue(type.Value.PropertyType, value.ToString());
-
-                            if (parsedValue != null)
-                            {
-                                type.Value.SetValue(data, parsedValue);
-                            }
-                            else
-                            {
-                                Debug.LogError($"{dataBaseType} : 지원되지 않는 형식의 변환입니다. Type : {type} Value : {value}");
-                            }
-                        }
-                    }
-
-                    database.RegisterData(data);
-                }
-
-                _databases.Add(dataBaseType, database);
+            foreach (var database in databases)
+            {
+                _databases.Add(database.Item1, database.Item2);
             }
         }
 
-        private bool GetJson(GameDataBaseAttribute attribute, out JArray result)
+        private async UniTask<JArray> GetJson(GameDataBaseAttribute attribute)
         {
-            result = null;
-
-            var json = Resources.Load<TextAsset>(JsonPath + attribute.JsonFileName); // todo : 리소스 매니저와 연동
-
+            var json = await SystemManager.Instance.ResourceManager.LoadAsset<TextAsset>(JsonPath + attribute.JsonFileName + ".json", false);
+            
             if (json == null)
             {
                 Debug.LogError($"{attribute.GameDataType}과 매칭되는 json 파일을 찾을 수 없습니다. JsonFilePath : {JsonPath}/{attribute.JsonFileName}");
-                return false;
+                return null;
             }
 
-            result = JArray.Parse(json.text);
+            var result = JArray.Parse(json.text);
 
             if (result == null || result.Count != 2)
             {
                 Debug.LogError($"json파일의 형식에 문제가 있습니다. JsonFilePath : {JsonPath}/{attribute.JsonFileName}");
-                return false;
+                return null;
             }
 
-            return true;
+            return result;
         }
+        
+        private async UniTask<(Type, IGameDataBase)> SetDataBase(Type dataBaseType, GameDataBaseAttribute attribute, JArray jsonResult)
+        {
+            var database = Activator.CreateInstance(dataBaseType) as IGameDataBase;
+
+            var gameDataTypes = new Dictionary<string, PropertyInfo>();
+            var propertyInfos = attribute.GameDataType.GetProperties();
+
+            foreach (JToken gameData in jsonResult[0])
+            {
+                var property = propertyInfos.FirstOrDefault(t => t.Name == gameData.ToString());
+
+                if (property != null)
+                {
+                    gameDataTypes.Add(gameData.ToString(), property);
+                }
+            }
+                
+            foreach (JObject gameData in jsonResult[1])
+            {
+                var data = Activator.CreateInstance(attribute.GameDataType) as IGameData;
+
+                foreach (var type in gameDataTypes)
+                {
+                    if (gameData.TryGetValue(type.Key, out var value))
+                    {
+                        var parsedValue = ParseValue(type.Value.PropertyType, value.ToString());
+
+                        if (parsedValue != null)
+                        {
+                            type.Value.SetValue(data, parsedValue);
+                        }
+                        else
+                        {
+                            Debug.LogError($"{dataBaseType} : 지원되지 않는 형식의 변환입니다. Type : {type} Value : {value}");
+                        }
+                    }
+                }
+
+                database.RegisterData(data);
+            }
+
+            return (dataBaseType, database);
+        }
+
+        
 
         private object ParseValue(Type type, string value)
         {

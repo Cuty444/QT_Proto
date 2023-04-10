@@ -26,8 +26,6 @@ namespace QT.Ball
         #region Global_Declaration
 
         private BallMove _ballMove;
-
-        private Rigidbody2D _rigidbody2D;
         
         private LineRenderer _lineRenderer;
 
@@ -62,20 +60,13 @@ namespace QT.Ball
             _lineRenderer = GetComponentInChildren<LineRenderer>();
             _reflectLayerMask = 1 << LayerMask.NameToLayer("Wall");
             _ballMove = GetComponent<BallMove>();
-            _rigidbody2D = GetComponent<Rigidbody2D>();
         }
 
         private void Update()
         {
             SwingAreaInBallLineDraw();
         }
-
-        private void FixedUpdate()
-        {
-            BallBounceMove();
-        }
-
-
+        
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (gameObject.layer == LayerMask.NameToLayer("BallBounce"))
@@ -96,15 +87,6 @@ namespace QT.Ball
                     //bounceZeroObject.layer = LayerMask.NameToLayer("BallBounce");
                     //gameObject.SetActive(false);
                 }
-            }
-        }
-
-        private void BallBounceMove()
-        {
-            if (gameObject.layer == LayerMask.NameToLayer("BallBounce"))
-            {
-                //var lineEndPos = _lineRenderer.GetPosition(_lineRenderer.positionCount - 1);
-                //transform.position = Vector3.MoveTowards(transform.position, lineEndPos, 0.1f * Time.fixedDeltaTime);
             }
         }
 
@@ -219,40 +201,44 @@ namespace QT.Ball
             lineRenderer.enabled = true;
             lineRenderer.positionCount = 0;
             int reflectCount = 2;
-
-            RaycastHit2D hit2D = Physics2D.Raycast(lineRenderer.transform.position ,reflectDirection, Mathf.Infinity,
+            float radius = transform.localScale.x * 0.5f;
+            
+            RaycastHit2D hit2D = Physics2D.CircleCast(lineRenderer.transform.position,radius ,reflectDirection, Mathf.Infinity,
                 _reflectLayerMask);
             if (hit2D.collider != null)
-            {                // 충돌 지점에서 입사각과 반사각 계산
+            {   
+                Vector2 hitPointMinusRadius = hit2D.point + (hit2D.normal * radius);
+                // 충돌 지점에서 입사각과 반사각 계산
                 reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
 
                 // LineRenderer에 반사 지점 추가
                 reflectCount++;
                 lineRenderer.positionCount = reflectCount;
                 lineRenderer.SetPosition(0, lineRenderer.transform.position);
-                lineRenderer.SetPosition(1, hit2D.point);
-                lineRenderer.SetPosition(2, hit2D.point + reflectDirection);
+                lineRenderer.SetPosition(1, hitPointMinusRadius);
+                lineRenderer.SetPosition(2, hitPointMinusRadius + reflectDirection);
             }
 
             for (; reflectCount < _chargeBounceValue + 2; reflectCount++)
             {
-                if (!BallBounceRayCast(lineRenderer, ref reflectDirection, reflectCount))
+                if (!BallBounceRayCast(lineRenderer, ref reflectDirection, reflectCount,radius))
                 {
                     break;
                 }
             }
         }
 
-        private bool BallBounceRayCast(LineRenderer lineRenderer, ref Vector2 reflectDirection, int reflectCount)
+        private bool BallBounceRayCast(LineRenderer lineRenderer, ref Vector2 reflectDirection, int reflectCount, float radius)
         {
-            RaycastHit2D hit2D = Physics2D.Raycast(lineRenderer.GetPosition(reflectCount - 1),reflectDirection,
-                Mathf.Infinity, _reflectLayerMask);
+            RaycastHit2D hit2D = Physics2D.CircleCast(lineRenderer.GetPosition((lineRenderer.positionCount - 1)),radius ,reflectDirection, Mathf.Infinity,
+                _reflectLayerMask);
             if (hit2D.collider != null)
             {
+                Vector2 hitPointMinusRadius = hit2D.point + (hit2D.normal * radius);
                 reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
                 lineRenderer.positionCount = reflectCount + 1;
-                lineRenderer.SetPosition(reflectCount - 1, hit2D.point);
-                lineRenderer.SetPosition(reflectCount, hit2D.point + reflectDirection);
+                lineRenderer.SetPosition(reflectCount - 1, hitPointMinusRadius);
+                lineRenderer.SetPosition(reflectCount, hitPointMinusRadius + reflectDirection);
                 return true;
             }
 
@@ -285,14 +271,6 @@ namespace QT.Ball
         {
             _shootSpd = speed;
         }
-
-        private Vector2 GetTargetPosition(Vector2 currentPos, Vector2 targetPos, float radius)
-        {
-            Vector2 direction = targetPos - currentPos; // 현재 위치에서 목표 위치로의 방향 벡터
-            direction.Normalize(); // 방향 벡터를 단위 벡터로 만듦
-
-            Vector2 newPosition = currentPos + direction * radius; // 방향 벡터를 반지름 길이만큼 늘려서 이동한 위치 계산
-            return newPosition;
-        }
+        
     }
 }
