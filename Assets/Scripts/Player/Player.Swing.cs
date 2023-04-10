@@ -8,6 +8,14 @@ namespace QT.Player
     {
         public MeshFilter MeshFilter { get; private set; }
         public MeshRenderer MeshRenderer { get; private set; }
+
+        private void SwingAreaCreate()
+        {
+            MeshFilter.mesh = SwingAreaCreateMesh(SwingRadius.Value, SwingCentralAngle.Value, 32);
+            MeshRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            MeshRenderer.material.color = new Color(0f, 0f, 1f, 0.2f);
+            MeshRenderer.enabled = false;
+        }
         
         private Mesh SwingAreaCreateMesh(float radius, float angle, int segments)
         {

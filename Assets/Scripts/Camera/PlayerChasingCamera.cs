@@ -23,6 +23,7 @@ public class PlayerChasingCamera : MonoBehaviour
     private Transform _player;
     private SpriteRenderer _spriteRenderer;
     private PlayerAttack _playerAttack;
+    private Transform _playerEyeTransform;
 
     private bool _isCameraShaking;
     #endregion
@@ -30,10 +31,14 @@ public class PlayerChasingCamera : MonoBehaviour
     private void Start()
     {
         _player = null;
-        PlayerSystem playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
+        PlayerSystem playerSystem = GameManager.Instance.GetSystem<PlayerSystem>();
         playerSystem.PlayerCreateEvent.AddListener((obj) => { _player = obj.transform;
             _spriteRenderer = _player.GetComponent<SpriteRenderer>();
             _playerAttack = _player.GetComponent<PlayerAttack>();
+            if (_playerAttack == null)
+            {
+                _playerEyeTransform = _player.GetComponentsInChildren<Transform>()[1];
+            }
         });
         playerSystem.OnPlayerCreate();
         playerSystem.BatSwingTimeScaleEvent.AddListener(CameraShaking);
@@ -115,7 +120,16 @@ public class PlayerChasingCamera : MonoBehaviour
                 _spriteRenderer.sprite = _playerSprites[3];
                 break;
         }
-        _playerAttack.EyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
+
+        if (_playerAttack == null)
+        {
+            _playerEyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
+            
+        }
+        else
+        {
+            _playerAttack.EyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
+        }
     }
 
     private void CameraShaking(bool isCheck)
