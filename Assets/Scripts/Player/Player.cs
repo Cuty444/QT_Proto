@@ -49,6 +49,7 @@ namespace QT.Player
             MeshFilter = GetComponentInChildren<MeshFilter>();
             MeshRenderer = GetComponentInChildren<MeshRenderer>();
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
+            _animator = GetComponentInChildren<Animator>();
             SetUpStats();
             SwingAreaCreate();
             SetUp(States.Idle);

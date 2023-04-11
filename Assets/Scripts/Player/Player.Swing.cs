@@ -15,7 +15,7 @@ namespace QT.Player
         {
             MeshFilter.mesh = SwingAreaCreateMesh(SwingRadius.Value, SwingCentralAngle.Value, 32);
             MeshRenderer.material = new Material(Shader.Find("Sprites/Default"));
-            MeshRenderer.material.color = new Color(0f, 0f, 1f, 0.2f);
+            MeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.2f);
             MeshRenderer.enabled = false;
         }
         
@@ -97,6 +97,8 @@ namespace QT.Player
                 {
                     if (LineProjectTileList.Contains(ProjectTileList[i]))
                     {
+                        if (!lineRendererDictionary.ContainsKey(ProjectTileList[i]))
+                            return;
                         lineRendererDictionary[ProjectTileList[i]].LineRenderer.positionCount = 0;
                         SystemManager.Instance.ResourceManager.ReleaseObject(lineRendererDictionary[ProjectTileList[i]]);
                         lineRendererDictionary.Remove(ProjectTileList[i]);
