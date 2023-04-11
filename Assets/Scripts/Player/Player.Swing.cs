@@ -47,11 +47,11 @@ namespace QT.Player
             return mesh;
         }
         
-        public void SwingAreaInBallLineDraw(float beforeChargingTime) // °ø°İ ¹üÀ§³» °øÀÇ ±ËÀûµé ¶óÀÎ Draw
+        public void SwingAreaInBallLineDraw(float beforeChargingTime) // ê³µê²© ë²”ìœ„ë‚´ ê³µì˜ ê¶¤ì ë“¤ ë¼ì¸ Draw
         {
             if (beforeChargingTime < ChargeTimes[0].Value)
             {
-                foreach(KeyValuePair<Projectile,PlayerLineDrawer> val in lineRendererDictionary) // TODO : ÀÌ ºÎºĞ ÃßÈÄ¿¡ ¿ÀºêÁ§Æ® Ç® ½Ã½ºÅÛÀ¸·Î ¹Ù²Ù±â
+                foreach(KeyValuePair<Projectile,PlayerLineDrawer> val in lineRendererDictionary) // TODO : ì´ ë¶€ë¶„ ì¶”í›„ì— ì˜¤ë¸Œì íŠ¸ í’€ ì‹œìŠ¤í…œìœ¼ë¡œ ë°”ê¾¸ê¸°
                 {
                     val.Value.LineRenderer.positionCount = 0;
                 }
@@ -108,7 +108,7 @@ namespace QT.Player
         }
 
         private Vector2 PlayerMouseAngleCorrectionBall(Vector2 dir, Transform playerTransform,
-            Transform targetTransform, Vector2 mousePos) // ÇÃ·¹ÀÌ¾î¿Í Åº¸· »çÀÌÀÇ ¸¶¿ì½º °¢µµ º¸Á¤Ã³¸®
+            Transform targetTransform, Vector2 mousePos) // í”Œë ˆì´ì–´ì™€ íƒ„ë§‰ ì‚¬ì´ì˜ ë§ˆìš°ìŠ¤ ê°ë„ ë³´ì •ì²˜ë¦¬
         {
             Vector2 playerPos = playerTransform.position;
             Vector2 targetPos = targetTransform.position;
@@ -133,7 +133,7 @@ namespace QT.Player
         }
         
         private void RayCastAngleIncidence(Projectile projectile,LineRenderer lineRenderer,
-                Vector2 reflectDirection,int chargeBounceValue) // ·¹ÀÌÄ³½ºÆ® ÀÔ»ç°¢ Ã³¸®ÈÄ ¹İ»ç°¢ °è»ê
+                Vector2 reflectDirection,int chargeBounceValue) // ë ˆì´ìºìŠ¤íŠ¸ ì…ì‚¬ê° ì²˜ë¦¬í›„ ë°˜ì‚¬ê° ê³„ì‚°
         {
             if (lineRenderer == null)
                 return;
@@ -198,7 +198,7 @@ namespace QT.Player
             _batSpriteRenderer.enabled = true;
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetZ);
             float currentRotationTime = 0.0f;
-            while (0.1f > currentRotationTime) // TODO : 0.1f = RotationTime °ø¼Ó ºÎºĞ µ¿±âÈ­ ÇÊ¿ä
+            while (0.1f > currentRotationTime) // TODO : 0.1f = RotationTime ê³µì† ë¶€ë¶„ ë™ê¸°í™” í•„ìš”
             {
                 targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation,
                     rotateSpeed * Time.deltaTime);
@@ -243,7 +243,7 @@ namespace QT.Player
             float halfAngle = SwingCentralAngle.Value * 0.5f;
             float upAtkCentralAngle = -90.0f - halfAngle;
             float downAtkCentralAngle = -90.0f + halfAngle;
-            float rotationTime = 0.1f; // TODO : 0.1f = RotationTime °ø¼Ó ºÎºĞ µ¿±âÈ­ ÇÊ¿ä
+            float rotationTime = 0.1f; // TODO : 0.1f = RotationTime ê³µì† ë¶€ë¶„ ë™ê¸°í™” í•„ìš”
             if (PlayerSwingAngle())
             {
                 _batTransform.transform.localRotation = Quaternion.Euler(0f, 0f, upAtkCentralAngle);
@@ -313,7 +313,7 @@ namespace QT.Player
 
                     if (!isChargeAtkPierce)
                         layerMask |= (1 << LayerMask.NameToLayer("Enemy"));
-                    //                       ÀÌ¼Ó                                  Æ¨±èÈ½¼ö  ´ë¹ÌÁö            °üÅë¿©ºÎ
+                    //                       ì´ì†                                  íŠ•ê¹€íšŸìˆ˜  ëŒ€ë¯¸ì§€            ê´€í†µì—¬ë¶€
                     ProjectTileList[i].Init(speed,0f,0.5f,direction,bounce,damage,true,layerMask);
                     CollisionProjectTileList.Add(ProjectTileList[i]);
                     //if (ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
@@ -338,17 +338,17 @@ namespace QT.Player
         {
             Vector2 interV = targetTransform.position - originalTransform.position;
             float targetRadius = targetTransform.localScale.x / 2f;
-            // target°ú ³ª »çÀÌÀÇ °Å¸®°¡ radius º¸´Ù ÀÛ´Ù¸é
+            // targetê³¼ ë‚˜ ì‚¬ì´ì˜ ê±°ë¦¬ê°€ radius ë³´ë‹¤ ì‘ë‹¤ë©´
             if (interV.magnitude <= SwingRadius.Value + targetRadius)
             {
-                // 'Å¸°Ù-³ª º¤ÅÍ'¿Í '³» Á¤¸é º¤ÅÍ'¸¦ ³»Àû
+                // 'íƒ€ê²Ÿ-ë‚˜ ë²¡í„°'ì™€ 'ë‚´ ì •ë©´ ë²¡í„°'ë¥¼ ë‚´ì 
                 float dot = Vector2.Dot(interV.normalized, _eyeTransform.right);
-                // µÎ º¤ÅÍ ¸ğµÎ ´ÜÀ§ º¤ÅÍÀÌ¹Ç·Î ³»Àû °á°ú¿¡ cosÀÇ ¿ªÀ» ÃëÇØ¼­ theta¸¦ ±¸ÇÔ
+                // ë‘ ë²¡í„° ëª¨ë‘ ë‹¨ìœ„ ë²¡í„°ì´ë¯€ë¡œ ë‚´ì  ê²°ê³¼ì— così˜ ì—­ì„ ì·¨í•´ì„œ thetaë¥¼ êµ¬í•¨
                 float theta = Mathf.Acos(dot);
-                // angleRange¿Í ºñ±³ÇÏ±â À§ÇØ degree·Î º¯È¯
+                // angleRangeì™€ ë¹„êµí•˜ê¸° ìœ„í•´ degreeë¡œ ë³€í™˜
                 float degree = Mathf.Rad2Deg * theta;
 
-                // ½Ã¾ß°¢ ÆÇº°
+                // ì‹œì•¼ê° íŒë³„
                 if (degree <= SwingCentralAngle.Value / 2f)
                     return true;
             }
