@@ -51,23 +51,23 @@ public class PlayerChasingCamera : MonoBehaviour
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Angle(mousePos);
 
-        if (_isChasing)
-        {
-            ChasingCamera(mousePos);
-        }
+        // if (_isChasing)
+        // {
+        //     ChasingCamera(mousePos);
+        // }
     }
 
-    private void LateUpdate()
-    {
-        if (!_isChasing)
-        {
-            transform.position = new Vector3(_player.transform.position.x, _player.transform.position.y, transform.position.z);
-            if(_isCameraShaking)
-            {
-                transform.position = UnityEngine.Random.insideUnitSphere * _cameraSakeDiameter + transform.position;
-            }
-        }
-    }
+    // private void LateUpdate()
+    // {
+    //     if (!_isChasing)
+    //     {
+    //         transform.position = new Vector3(_player.transform.position.x, _player.transform.position.y, transform.position.z);
+    //         if(_isCameraShaking)
+    //         {
+    //             transform.position = UnityEngine.Random.insideUnitSphere * _cameraSakeDiameter + transform.position;
+    //         }
+    //     }
+    // }
 
     private void ChasingCamera(Vector2 mousePos)
     {
