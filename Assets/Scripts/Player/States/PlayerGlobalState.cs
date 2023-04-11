@@ -5,7 +5,7 @@ using QT.Core.Input;
 
 namespace QT.Player
 {
-    [FSMState((int)Player.States.Global)]
+    [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>
     {
         private InputSystem _inputSystem;
@@ -108,12 +108,12 @@ namespace QT.Player
             _ownerEntity.BatSpriteRenderOnOff(true);
             if (_currentChargingTime <= _ownerEntity.ChargeTimes[0].Value)
             {
-                // ÀÏ¹Ý½ºÀ®
+                // ??????
                 _ownerEntity.AttackBatSwing(_currentChargingTime, () => { _currentSwingCoolTime = 0f;});
             }
             else
             {
-                // Â÷Â¡½ºÀ®
+                // ??¢®????
                 _ownerEntity.ChargingBatSwing(_currentChargingTime,() => { _currentSwingCoolTime = 0f;});
             }
             _currentChargingTime = 0f;

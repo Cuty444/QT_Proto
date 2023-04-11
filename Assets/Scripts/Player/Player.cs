@@ -52,7 +52,7 @@ namespace QT.Player
             SetUpStats();
             SwingAreaCreate();
             SetUp(States.Idle);
-            SetGlobalState(States.Global);
+            SetGlobalState(new PlayerGlobalState(this));
 
             _playerSystem = GameManager.Instance.GetSystem<PlayerSystem>();
         }

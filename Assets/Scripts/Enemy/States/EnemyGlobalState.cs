@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QT.Enemy
 {
-    [FSMState((int)Enemy.States.Global)]
+    [FSMState((int)Enemy.States.Global, false)]
     public class EnemyGlobalState : FSMState<Enemy>
     {
         public EnemyGlobalState(IFSMEntity owner) : base(owner)
