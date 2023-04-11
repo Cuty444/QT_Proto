@@ -18,8 +18,6 @@ namespace QT.Player
         
         private bool _isMouseDownCheck;
         
-        private bool _isUpDown = true;
-
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
             _inputSystem = GameManager.Instance.GetSystem<InputSystem>();
@@ -108,23 +106,19 @@ namespace QT.Player
             _ownerEntity.BatSpriteRenderOnOff(true);
             if (_currentChargingTime <= _ownerEntity.ChargeTimes[0].Value)
             {
-                // ??????
                 _ownerEntity.AttackBatSwing(_currentChargingTime, () => { _currentSwingCoolTime = 0f;});
             }
             else
             {
-                // ??во????
                 _ownerEntity.ChargingBatSwing(_currentChargingTime,() => { _currentSwingCoolTime = 0f;});
             }
             _currentChargingTime = 0f;
             //_playerSystem.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
         }
         
-//
-//
 
         #endregion
-        //
+        
         #region BallCollisionMathFunc
         
         
