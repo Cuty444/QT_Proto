@@ -28,9 +28,9 @@ namespace QT.Enemy
             _transform = _ownerEntity.transform;
         }
 
-        public void InitializeState(float power, Vector2 hitPoint)
+        public void InitializeState(Vector2 dir, float power)
         {
-            _direction = ((Vector2) _transform.position - hitPoint).normalized;
+            _direction = dir;
             _speed = power;
         }
 

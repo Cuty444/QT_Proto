@@ -5,11 +5,11 @@ namespace QT.Enemy
 {
     public partial class Enemy
     {
-        public UnityEvent<float, Vector2> OnDamageEvent { get; } = new();
+        public UnityEvent<Vector2, float> OnDamageEvent { get; } = new();
 
-        public void Hit(float damage, Vector2 hitPoint)
+        public void Hit(Vector2 dir, float power)
         {
-            OnDamageEvent.Invoke(damage, hitPoint);
+            OnDamageEvent.Invoke(dir, power);
         }
     }
 }

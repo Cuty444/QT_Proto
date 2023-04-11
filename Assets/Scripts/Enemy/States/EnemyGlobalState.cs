@@ -12,14 +12,14 @@ namespace QT.Enemy
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
         }
         
-        private void OnDamage(float damage, Vector2 hitPoint)
+        private void OnDamage(Vector2 dir, float power)
         {
             if (_ownerEntity.CurrentState >= (int)Enemy.States.Rigid)
             {
                 return;
             }
 
-            _ownerEntity.HP.AddStatus(-damage);
+            _ownerEntity.HP.AddStatus(-power);
             _ownerEntity.ChangeState(Enemy.States.Rigid);
         }
     }
