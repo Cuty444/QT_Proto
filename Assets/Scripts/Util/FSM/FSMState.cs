@@ -12,7 +12,7 @@ namespace QT.Core
         public FSMStateAttribute(int key, bool includeStates = true)
         {
             this.Key = key;
-            this.IncludeStates = IncludeStates;
+            this.IncludeStates = includeStates;
         }
     }
 
