@@ -6,8 +6,11 @@ using UnityEngine;
 
 namespace QT
 {
-    public class Projectile : MonoBehaviour
+    public class Projectile : MonoBehaviour, IProjectile
     {
+        public int ProjectileId => gameObject.GetInstanceID();
+        public Vector2 Position => transform.position;
+        
         [SerializeField] private LayerMask _bounceMask;
 
         private TrailRenderer _trailRenderer;
@@ -71,9 +74,9 @@ namespace QT
 
         }
 
-        public void ChangerDirection(Vector2 direction, float newSpeed)
+        public void Hit(Vector2 dir, float newSpeed)
         {
-            _direction = direction;
+            _direction = dir;
             _speed = newSpeed;
             _bounceCount = _maxBounce;
         }
