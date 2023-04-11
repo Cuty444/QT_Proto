@@ -13,52 +13,39 @@ namespace QT.Player
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, mousePos);
-            Debug.Log(playerAngleDegree);
+            float yAngle = 0f;
             switch (playerAngleDegree)
             {
                 case > 22.5f and < 67.5f:
-                    _animator.transform.rotation = Quaternion.Euler(0f, 180f,0f);
+                    yAngle = 180f;
                     _animator.SetFloat(_animatorValue,3f);
-                    //_spriteRenderer.sprite = _playerSprites[0];
                     break;
                 case > 67.5f and < 112.5f:
-                    _animator.transform.rotation = quaternion.identity;
                     _animator.SetFloat(_animatorValue,4f);
-                    //_spriteRenderer.sprite = _playerSprites[0];
                     break;
                 case > 112.5f and < 157.5f:
-                    _animator.transform.rotation = quaternion.identity;
                     _animator.SetFloat(_animatorValue,3f);
-                    //_spriteRenderer.sprite = _playerSprites[0];
                     break;
                 case > -157.5f and < -112.5f:
-                    //_spriteRenderer.sprite = _playerSprites[1];
-                    _animator.transform.rotation = quaternion.identity;
                     _animator.SetFloat(_animatorValue,1f);
                     break;
                 case > -112.5f and < -67.5f:
-                    _animator.transform.rotation = quaternion.identity;
                     _animator.SetFloat(_animatorValue,0f);
-                    //_spriteRenderer.sprite = _playerSprites[1];
                     break;
                 case > -67.5f and < -22.5f:
-                    _animator.transform.rotation = Quaternion.Euler(0f, 180f,0f);
+                    yAngle = 180f;
                     _animator.SetFloat(_animatorValue,1f);
-                    //_spriteRenderer.sprite = _playerSprites[1];
                     break;
                 case > 157.5f:
                 case < -157.5f:
-                    _animator.transform.rotation = quaternion.identity;
                     _animator.SetFloat(_animatorValue,2f);
-                    //_spriteRenderer.sprite = _playerSprites[2];
                     break;
                 default:
-                    _animator.transform.rotation = Quaternion.Euler(0f, 180f,0f);
+                    yAngle = 180f;
                     _animator.SetFloat(_animatorValue,2f);
-                    //_spriteRenderer.sprite = _playerSprites[3];
                     break;
             }
-
+            _animator.transform.rotation = Quaternion.Euler(0f, yAngle,0f);
             //if (_playerAttack == null)
             //{
             //    _playerEyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
