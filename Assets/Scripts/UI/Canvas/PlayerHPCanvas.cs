@@ -4,16 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using QT.UI;
 
-public class PlayerHPCanvas : UIPanel
+namespace QT.UI
 {
-    [SerializeField] private Image _playerHPImage;
-    [SerializeField] private Image _playerInvicibleImage;
-    [SerializeField] private Image _playerBallStackImage;
-    [SerializeField] private Text _playerBallStackText;
-    public Image PlayerHPImage => _playerHPImage;
-    public Image PlayerInvicibleImage => _playerInvicibleImage;
+    public class PlayerHPCanvas : UIPanel
+    {
+        [SerializeField] private Image _playerHPImage;
+        [SerializeField] private Image _playerInvicibleImage;
+        [SerializeField] private Image _playerBallStackImage;
+        [SerializeField] private Text _playerBallStackText;
+        public Image PlayerHPImage => _playerHPImage;
+        public Image PlayerInvicibleImage => _playerInvicibleImage;
 
-    public Image PlayerBallStackImage => _playerBallStackImage;
+        public Image PlayerBallStackImage => _playerBallStackImage;
 
-    public Text PlayerBallStackText => _playerBallStackText;
+        public Text PlayerBallStackText => _playerBallStackText;
+    }
+
 }
