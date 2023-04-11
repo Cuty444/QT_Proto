@@ -24,7 +24,6 @@ namespace QT.Ball
         public float BulletSpeed { get; set; }
 
         private bool _isSwingBallHit = false;
-        private bool _isBallEndGoal = false;
 
         #endregion
 

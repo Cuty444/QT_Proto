@@ -47,14 +47,14 @@ public class PlayerDodge : MonoBehaviour
         _playerSystem.PlayerCollisionEnemyEvent.AddListener(EnemyCollisionDragStop);;
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _invicibleBar = UIManager.Instance.GetUIPanel<PlayerHPCanvas>().PlayerInvicibleImage;
-        _invicibleBar.fillAmount = QT.Util.Math.floatNormalization(_currentDodgeCoolTime, _dodgeCoolDown, 0);
+        _invicibleBar.fillAmount = QT.Util.Math.Remap(_currentDodgeCoolTime, _dodgeCoolDown, 0);
         _dodgeState = 0;
     }
 
     private void Update()
     {
         _currentDodgeCoolTime += Time.deltaTime;
-        _invicibleBar.fillAmount = QT.Util.Math.floatNormalization(_currentDodgeCoolTime, _dodgeCoolDown, 0);
+        _invicibleBar.fillAmount = QT.Util.Math.Remap(_currentDodgeCoolTime, _dodgeCoolDown, 0);
     }
 
     private void SetMoveDirection(Vector2 dir)

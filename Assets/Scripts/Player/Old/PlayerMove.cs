@@ -27,17 +27,17 @@ namespace QT.Player
         
         private void Start()
         {
-            InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
+            InputSystem inputSystem = GameManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyMoveEvent.AddListener(SetMoveDirection);
             inputSystem.OnKeyDownAttackEvent.AddListener(AttackOn);
             inputSystem.OnKeyUpAttackEvent.AddListener(AttackOff);
-            GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            GlobalDataSystem globalDataSystem = GameManager.Instance.GetSystem<GlobalDataSystem>();
             _speed = globalDataSystem.CharacterTable.MovementSpd;
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _reduceSpeed = globalDataSystem.CharacterTable.ChargeMovementDecreasePer;
             GetComponent<CircleCollider2D>().radius = globalDataSystem.CharacterTable.PCHitBoxRad;
             _currentReduceSpeed = 1f;
-            SystemManager.Instance.GetSystem<PlayerSystem>().DodgeEvent.AddListener(Dodging);
+            GameManager.Instance.GetSystem<PlayerSystem>().DodgeEvent.AddListener(Dodging);
             _isDodge = false;
         }
 
