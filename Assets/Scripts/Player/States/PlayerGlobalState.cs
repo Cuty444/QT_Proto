@@ -42,11 +42,12 @@ namespace QT.Player
 
         public override void FixedUpdateState()
         {
+            _ownerEntity.AngleAnimation();
             //if (_currentSwingCoolTime > _ownerEntity.SwingCooldown)
             //{
             //    _isUpDown = _ownerEntity.PlayerSwingAngle();
             //}
-            
+
         }
         
         #region AttackFunc
