@@ -7,10 +7,12 @@ namespace QT.Core
     public class FSMStateAttribute : System.Attribute
     {
         public readonly int Key;
+        public readonly bool IncludeStates;
 
-        public FSMStateAttribute(int key)
+        public FSMStateAttribute(int key, bool includeStates = true)
         {
             this.Key = key;
+            this.IncludeStates = includeStates;
         }
     }
 

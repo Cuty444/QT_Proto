@@ -11,6 +11,12 @@ namespace QT.Core.Data
         private CharacterTable _characterTable;
 
         public CharacterTable CharacterTable => _characterTable;
+
+        [SerializeField]
+        private CharacterAtkTable _characterAtkTable;
+
+        public CharacterAtkTable CharacterAtkTable => _characterAtkTable;
+        
         [SerializeField] private GlobalData _globalData;
         public GlobalData GlobalData => _globalData;
 

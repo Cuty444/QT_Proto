@@ -43,7 +43,7 @@ namespace QT.Player
             _mercyInvincibleTime = characterTable.MercyInvincibleTime;
             _dodgeInvincibleTime = characterTable.DodgeInvincibleTime;
             _hpImage = UIManager.Instance.GetUIPanel<PlayerHPCanvas>().PlayerHPImage;
-            _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _hpMax, 0);
+            _hpImage.fillAmount = QT.Util.Math.Remap(_currentHp, _hpMax, 0);
             _isMercy = false;
             _InvincibleCoroutine = null;
         }
@@ -67,7 +67,7 @@ namespace QT.Player
                 return;
             _currentHp -= damage;
             Debug.Log("Player HP : " + _currentHp);
-            _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _hpMax, 0);
+            _hpImage.fillAmount = QT.Util.Math.Remap(_currentHp, _hpMax, 0);
             if (_currentHp <= 0)
             {
                 SceneManager.LoadScene(0);
