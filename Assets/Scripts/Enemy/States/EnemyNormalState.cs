@@ -1,6 +1,5 @@
 using System.Timers;
 using QT.Core;
-using QT.Core.Enemy;
 using UnityEngine;
 
 namespace QT.Enemy
@@ -24,6 +23,7 @@ namespace QT.Enemy
         {
             _lastMoveTargetUpdateTime = 0;
             _lastAtkCheckTime = Time.time;
+            _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
         }
 
         public override void UpdateState()
@@ -31,7 +31,7 @@ namespace QT.Enemy
             if (_lastMoveTargetUpdateTime + _data.MoveTargetUpdatePeroid < Time.time)
             {
                 _lastMoveTargetUpdateTime = Time.time;
-                _moveTarget = SystemManager.Instance.GetSystem<EnemySystem>().PlayerTransform.position;
+                _moveTarget = SystemManager.Instance.PlayerManager.Player.transform.position;
             }
         }
 
@@ -43,7 +43,6 @@ namespace QT.Enemy
             
             if (CheckAttackStart(targetDistance))
             {
-                _ownerEntity.Shooter.SetTarget(SystemManager.Instance.GetSystem<EnemySystem>().PlayerTransform);// Todo : 한번만 세팅
                 _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId);
             }
         }
@@ -70,7 +69,7 @@ namespace QT.Enemy
             {
                 var currentDir = _ownerEntity.Rigidbody.velocity.normalized;
                 currentDir = Vector2.Lerp(currentDir, dir, 0.4f);
-                _ownerEntity.Rigidbody.velocity = currentDir * (_data.MoveSpd * Time.fixedDeltaTime);
+                _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd * Time.fixedDeltaTime);
             }
             else
             {

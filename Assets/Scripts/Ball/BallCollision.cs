@@ -1,6 +1,5 @@
 using QT.Core;
 using QT.Core.Data;
-using QT.Core.Player;
 using QT.Data;
 using QT.Player;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace QT.Ball
         #region StartData_Declaration
 
         private GlobalDataSystem _globalDataSystem;
-        private PlayerSystem _playerSystem;
+        private PlayerManager _playerManager;
 
         private Transform _playerTransform;
         private Transform _eyeTransform;
@@ -50,12 +49,12 @@ namespace QT.Ball
             _atkCentralAngle = _globalDataSystem.BatTable.AtkCentralAngle;
             _atkRadius = _globalDataSystem.BatTable.ATKRad;
             _chargeBounceValues = _globalDataSystem.BatTable.ChargeBounceValue;
-            _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-            _playerSystem.PlayerCurrentChargingTimeEvent.AddListener(SetCurrentChargingTime);
-            _playerSystem.BatSwingEndEvent.AddListener(BallPositionSwingCheck);
-            _playerSystem.ChargeAtkShootEvent.AddListener(SetShootSpeed);
-            _playerSystem.ChargeBounceValueEvent.AddListener(SetCurrentChargingBounceValue);
-            _playerTransform = _playerSystem.PlayerTransform;
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.PlayerCurrentChargingTimeEvent.AddListener(SetCurrentChargingTime);
+            _playerManager.BatSwingEndEvent.AddListener(BallPositionSwingCheck);
+            _playerManager.ChargeAtkShootEvent.AddListener(SetShootSpeed);
+            _playerManager.ChargeBounceValueEvent.AddListener(SetCurrentChargingBounceValue);
+            _playerTransform = _playerManager.Player.transform;
             _eyeTransform = _playerTransform.GetComponent<PlayerAttack>().EyeTransform;
             _lineRenderer = GetComponentInChildren<LineRenderer>();
             _reflectLayerMask = 1 << LayerMask.NameToLayer("Wall");
@@ -130,11 +129,11 @@ namespace QT.Ball
                 _ballMove.BulletSpeed = _shootSpd;
                 _ballMove.ForceChange();
                 _ballMove.SwingBallHit();
-                if (ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
+                if (ChargeAtkPierce.None == _playerManager.ChargeAtkPierce)
                 {
                     gameObject.layer = LayerMask.NameToLayer("Ball");
                 }
-                else if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerSystem.ChargeAtkPierce))
+                else if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerManager.ChargeAtkPierce))
                 {
                     gameObject.layer = LayerMask.NameToLayer("BallHit");
                 }
@@ -142,7 +141,7 @@ namespace QT.Ball
                 {
                     gameObject.layer = LayerMask.NameToLayer("Ball");
                 }
-                _playerSystem.BatSwingBallHitEvent.Invoke();
+                _playerManager.BatSwingBallHitEvent.Invoke();
             }
         }
 

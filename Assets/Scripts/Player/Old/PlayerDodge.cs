@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
 using QT.Core.Input;
-using QT.Core.Player;
 using QT.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +12,7 @@ public class PlayerDodge : MonoBehaviour
 {
     #region StartData_Declaration
 
-    private PlayerSystem _playerSystem;
+    private PlayerManager _playerManager;
     private float _dodgeCoolDown;
     private float _decelerationSpeed;
     private float _stopDistance  = 3f; // 멈출 거리
@@ -43,10 +42,10 @@ public class PlayerDodge : MonoBehaviour
         InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
         inputSystem.OnKeySpaceDodgeEvent.AddListener(OnDodge);
         inputSystem.OnKeyMoveEvent.AddListener(SetMoveDirection);
-        _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-        _playerSystem.PlayerCollisionEnemyEvent.AddListener(EnemyCollisionDragStop);;
+        _playerManager = SystemManager.Instance.PlayerManager;
+        _playerManager.PlayerCollisionEnemyEvent.AddListener(EnemyCollisionDragStop);;
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _invicibleBar = UIManager.Instance.GetUIPanel<PlayerHPCanvas>().PlayerInvicibleImage;
+        _invicibleBar = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().PlayerInvicibleImage;
         _invicibleBar.fillAmount = QT.Util.Math.Remap(_currentDodgeCoolTime, _dodgeCoolDown, 0);
         _dodgeState = 0;
     }
@@ -72,7 +71,7 @@ public class PlayerDodge : MonoBehaviour
             {
                 _rigidbody2D.drag = 0f;
                 _dodgeState = 0;
-                _playerSystem.DodgeEvent.Invoke(false);
+                _playerManager.DodgeEvent.Invoke(false);
                 Debug.Log("Dodge End");
                 //_rigidbody2D.mass = 100;
             }
@@ -82,7 +81,7 @@ public class PlayerDodge : MonoBehaviour
     {
         if (_dodgeState > 0 || _moveDirection == Vector2.zero || _currentDodgeCoolTime <= _dodgeCoolDown)
             return;
-        _playerSystem.DodgeEvent.Invoke(true);
+        _playerManager.DodgeEvent.Invoke(true);
         _dodgeState++;
         _rigidbody2D.velocity = Vector2.zero;
         _currentDodgeCoolTime = 0f;
