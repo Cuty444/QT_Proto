@@ -20,7 +20,7 @@ namespace QT.Player
         
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
-            _inputSystem = GameManager.Instance.GetSystem<InputSystem>();
+            _inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             _inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
             _inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             _inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);

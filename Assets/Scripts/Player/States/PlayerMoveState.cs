@@ -11,7 +11,7 @@ namespace QT.Player
         private Vector2 _moveDirection;
         public PlayerMoveState(IFSMEntity owner) : base(owner)
         {
-            _inputSystem = GameManager.Instance.GetSystem<InputSystem>();
+            _inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
         }
 
         public override void InitializeState()

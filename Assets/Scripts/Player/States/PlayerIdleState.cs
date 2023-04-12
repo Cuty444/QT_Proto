@@ -10,7 +10,7 @@ namespace QT.Player
         private InputSystem _inputSystem;
         public PlayerIdleState(IFSMEntity owner) : base(owner)
         {
-            _inputSystem = GameManager.Instance.GetSystem<InputSystem>();
+            _inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
         }
 
         public override void InitializeState()

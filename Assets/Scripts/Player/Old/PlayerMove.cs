@@ -4,7 +4,6 @@ using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
 using QT.Core.Data;
-using QT.Core.Player;
 
 namespace QT.Player
 {
@@ -27,17 +26,17 @@ namespace QT.Player
         
         private void Start()
         {
-            InputSystem inputSystem = GameManager.Instance.GetSystem<InputSystem>();
+            InputSystem inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
             inputSystem.OnKeyMoveEvent.AddListener(SetMoveDirection);
             inputSystem.OnKeyDownAttackEvent.AddListener(AttackOn);
             inputSystem.OnKeyUpAttackEvent.AddListener(AttackOff);
-            GlobalDataSystem globalDataSystem = GameManager.Instance.GetSystem<GlobalDataSystem>();
+            GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             _speed = globalDataSystem.CharacterTable.MovementSpd;
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _reduceSpeed = globalDataSystem.CharacterTable.ChargeMovementDecreasePer;
             GetComponent<CircleCollider2D>().radius = globalDataSystem.CharacterTable.PCHitBoxRad;
             _currentReduceSpeed = 1f;
-            GameManager.Instance.GetSystem<PlayerSystem>().DodgeEvent.AddListener(Dodging);
+            SystemManager.Instance.PlayerManager.DodgeEvent.AddListener(Dodging);
             _isDodge = false;
         }
 
