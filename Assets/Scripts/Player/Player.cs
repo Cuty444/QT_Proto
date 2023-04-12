@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
 using QT.Core;
-using QT.Core.Data;
-using QT.Core.Player;
 using UnityEngine;
-using QT.Data;
-using Random = UnityEngine.Random;
 
 namespace QT.Player
 {
@@ -40,7 +36,7 @@ namespace QT.Player
 
         private Dictionary<Projectile,PlayerLineDrawer> lineRendererDictionary { get; } = new Dictionary<Projectile,PlayerLineDrawer>();
 
-        private PlayerSystem _playerSystem;
+        private PlayerManager _playerManager;
         private void Awake()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
@@ -55,7 +51,7 @@ namespace QT.Player
             SetUp(States.Idle);
             SetGlobalState(new PlayerGlobalState(this));
 
-            _playerSystem = GameManager.Instance.GetSystem<PlayerSystem>();
+            _playerManager = SystemManager.Instance.PlayerManager;
         }
 
     }

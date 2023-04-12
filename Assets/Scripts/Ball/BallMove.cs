@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
-using QT.Core.Player;
 using UnityEngine;
 
 namespace QT.Ball

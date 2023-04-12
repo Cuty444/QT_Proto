@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using QT.Core;
 using QT.Core.Input;
-using QT.Core.Player;
 using QT.Core.Data;
 using QT.Data;
 using QT.UI;
@@ -31,7 +30,7 @@ namespace QT.Player
         #region StartData_Declaration
 
         private GlobalDataSystem _globalDataSystem;
-        private PlayerSystem _playerSystem;
+        private PlayerManager _playerManager;
         private PlayerCanvas _playerCanvas;
         private RectTransform _chargingBarBackground;
         private Image _chargingBarImage;
@@ -99,16 +98,16 @@ namespace QT.Player
             inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
             inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
-            _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-            _playerSystem.BatSwingBallHitEvent.AddListener(SwingBallHitCheck);
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.BatSwingBallHitEvent.AddListener(SwingBallHitCheck);
             _currentAtkCoolTime = _atkCoolTime;
             _currentChargingTime = 0f;
             _isMouseDownCheck = false;
-            _playerCanvas = UIManager.Instance.GetUIPanel<PlayerCanvas>();
+            _playerCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerCanvas>();
             _chargingBarBackground = _playerCanvas.ChargingBarBackground;
             _chargingBarBackground.gameObject.SetActive(false);
             _chargingBarImage = _chargingBarBackground.GetComponentsInChildren<Image>()[1];
-            PlayerHPCanvas playerHpCanvas = UIManager.Instance.GetUIPanel<PlayerHPCanvas>();
+            PlayerHPCanvas playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _ballStackBarImage = playerHpCanvas.PlayerBallStackImage;
             _ballStackText = playerHpCanvas.PlayerBallStackText;
             _batSpriteRenderer = _batSwing.GetComponent<SpriteRenderer>();
@@ -153,7 +152,7 @@ namespace QT.Player
             if (_isMouseDownCheck)
             {
                 _currentChargingTime += Time.deltaTime;
-                _playerSystem.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
+                _playerManager.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
                 if (_currentChargingTime > _chargingMaxTimes[0])
                 {
                     if (!_chargingBarBackground.gameObject.activeSelf)
@@ -212,7 +211,7 @@ namespace QT.Player
                 ChargingBatSwing();
             }
             _currentChargingTime = 0f;
-            _playerSystem.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
+            _playerManager.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
         }
 
         private void AttackBallInstate()
@@ -228,7 +227,7 @@ namespace QT.Player
         private void AttackBatSwing()
         {
             float rotationSpeed;
-            _playerSystem.ChargeAtkPierce = ChargeAtkPierce.None;
+            _playerManager.ChargeAtkPierce = ChargeAtkPierce.None;
             if (_isUpDown == true)
             {
                 _batPos.transform.localRotation = Quaternion.Euler(0f, 0f, _upAtkCentralAngle);
@@ -245,9 +244,9 @@ namespace QT.Player
             _currentAtkCoolTime = 0f;
             if (!_chargingBarBackground.gameObject.activeSelf)
             {
-                _playerSystem.ChargeAtkShootEvent.Invoke(_atkShootSpd[0]);
-                _playerSystem.BatSwingRigidHitEvent.Invoke(_swingRigidDmg[0]);
-                _playerSystem.ChargeBounceValueEvent.Invoke(_chargeBounceValues[0]);
+                _playerManager.ChargeAtkShootEvent.Invoke(_atkShootSpd[0]);
+                _playerManager.BatSwingRigidHitEvent.Invoke(_swingRigidDmg[0]);
+                _playerManager.ChargeBounceValueEvent.Invoke(_chargeBounceValues[0]);
             }
         }
 
@@ -258,10 +257,10 @@ namespace QT.Player
             {
                 if (_chargingMaxTimes[i] < _currentChargingTime)
                 {
-                    _playerSystem.ChargeAtkPierce = (ChargeAtkPierce) (1 << i);
-                    _playerSystem.ChargeAtkShootEvent.Invoke(_atkShootSpd[i]);
-                    _playerSystem.BatSwingRigidHitEvent.Invoke(_swingRigidDmg[i]);
-                    _playerSystem.ChargeBounceValueEvent.Invoke(_chargeBounceValues[i]);
+                    _playerManager.ChargeAtkPierce = (ChargeAtkPierce) (1 << i);
+                    _playerManager.ChargeAtkShootEvent.Invoke(_atkShootSpd[i]);
+                    _playerManager.BatSwingRigidHitEvent.Invoke(_swingRigidDmg[i]);
+                    _playerManager.ChargeBounceValueEvent.Invoke(_chargeBounceValues[i]);
                     break;
                 }
             }
@@ -286,10 +285,10 @@ namespace QT.Player
 
             targetTransform.localRotation = Quaternion.RotateTowards(targetTransform.localRotation, targetRotation,
                 rotateSpeed * Time.deltaTime);
-            _playerSystem.BatSwingEndEvent.Invoke();
+            _playerManager.BatSwingEndEvent.Invoke();
             if (_chargingMaxTimes[_chargingMaxTimes.Length - 1] < _beforeChargingTime && _isSwingBallHit)
             {
-                _playerSystem.BatSwingTimeScaleEvent.Invoke(true);
+                _playerManager.BatSwingTimeScaleEvent.Invoke(true);
                 Time.timeScale = 0.1f;
                 yield return new WaitForSeconds(0.01f);
                 Time.timeScale = 0.2f;
@@ -301,7 +300,7 @@ namespace QT.Player
                 Time.timeScale = 0.75f;
                 yield return new WaitForSeconds(0.01f);
                 Time.timeScale = 1.0f;
-                _playerSystem.BatSwingTimeScaleEvent.Invoke(false);
+                _playerManager.BatSwingTimeScaleEvent.Invoke(false);
                 _isSwingBallHit = false;
             }
             else

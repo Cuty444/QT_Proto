@@ -213,7 +213,7 @@ namespace QT.Player
             BallPositionSwingCheck(attackDirection,beforeChargingTime);
             if (ChargeTimes[ChargeTimes.Length - 1].Value < beforeChargingTime && CollisionProjectTileList.Count > 0)
             {
-                _playerSystem.BatSwingTimeScaleEvent.Invoke(true);
+                _playerManager.BatSwingTimeScaleEvent.Invoke(true);
                 Time.timeScale = 0.1f;
                 yield return new WaitForSeconds(0.01f);
                 Time.timeScale = 0.2f;
@@ -225,7 +225,7 @@ namespace QT.Player
                 Time.timeScale = 0.75f;
                 yield return new WaitForSeconds(0.01f);
                 Time.timeScale = 1.0f;
-                _playerSystem.BatSwingTimeScaleEvent.Invoke(false);
+                _playerManager.BatSwingTimeScaleEvent.Invoke(false);
                 CollisionProjectTileList.Clear();
             }
             else
@@ -241,7 +241,7 @@ namespace QT.Player
         {
             float rotationSpeed;
             Vector2 attackDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            _playerSystem.ChargeAtkPierce = QT.Data.ChargeAtkPierce.None;
+            _playerManager.ChargeAtkPierce = QT.Data.ChargeAtkPierce.None;
             float halfAngle = SwingCentralAngle.Value * 0.5f;
             float upAtkCentralAngle = -90.0f - halfAngle;
             float downAtkCentralAngle = -90.0f + halfAngle;
