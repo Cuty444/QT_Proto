@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
-using QT.Core.Player;
 using QT.Player;
 using UnityEngine;
 
@@ -32,8 +31,8 @@ public class PlayerChasingCamera : MonoBehaviour
     private void Start()
     {
         _player = null;
-        PlayerSystem playerSystem = GameManager.Instance.GetSystem<PlayerSystem>();
-        playerSystem.PlayerCreateEvent.AddListener((obj) => { _player = obj.transform;
+        PlayerManager playerManager = SystemManager.Instance.PlayerManager;
+        playerManager.PlayerCreateEvent.AddListener((obj) => { _player = obj.transform;
             _spriteRenderer = _player.GetComponent<SpriteRenderer>();
             _playerAttack = _player.GetComponent<PlayerAttack>();
             if (_playerAttack == null)
@@ -41,8 +40,8 @@ public class PlayerChasingCamera : MonoBehaviour
                 _playerEyeTransform = _player.GetComponentsInChildren<Transform>()[1];
             }
         });
-        playerSystem.OnPlayerCreate();
-        playerSystem.BatSwingTimeScaleEvent.AddListener(CameraShaking);
+        playerManager.OnPlayerCreate();
+        playerManager.BatSwingTimeScaleEvent.AddListener(CameraShaking);
         _beforePosition = transform.position;
     }
 
