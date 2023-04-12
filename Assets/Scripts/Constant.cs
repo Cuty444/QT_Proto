@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QT.Core
 {
-    public class Constant
+    public static class Constant
     {
         public const string PlayerPrefabPath = "Prefabs/Player.prefab";
     }
