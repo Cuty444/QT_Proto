@@ -69,7 +69,7 @@ namespace QT.Enemy
             {
                 var currentDir = _ownerEntity.Rigidbody.velocity.normalized;
                 currentDir = Vector2.Lerp(currentDir, dir, 0.4f);
-                _ownerEntity.Rigidbody.velocity = currentDir * (_data.MoveSpd * Time.fixedDeltaTime);
+                _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd * Time.fixedDeltaTime);
             }
             else
             {

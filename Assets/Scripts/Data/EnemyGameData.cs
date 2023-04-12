@@ -23,7 +23,7 @@ namespace QT
         public int MaxHP { get; set; }
     
         public MoveTypes MoveType { get; set; }
-        public float MoveSpd { get; set; }
+        public float MovementSpd { get; set; }
         public float SpacingRad { get; set; }
         public float MoveTargetUpdatePeroid { get; set; }
 
