@@ -19,7 +19,7 @@ namespace QT.Core
         private static string JsonDataPath = $"{Directory.GetCurrentDirectory()}/Assets/Data/GameData";
 
 
-        [MenuItem("File/Convert Excel Sheets")]
+        [MenuItem("File/Convert Excel Sheets", false, 3)]
         public static void ConvertExcelToJson()
         {
             try
