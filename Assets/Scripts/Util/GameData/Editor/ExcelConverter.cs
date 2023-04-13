@@ -95,6 +95,7 @@ namespace QT.Core
                     
                     var name = cell?.ToString().Trim() ?? null;
 
+                    // #으로 시작하는 column 걸러내기
                     if (string.IsNullOrWhiteSpace(name) || name[0] == '#')
                     {
                         name = null;
@@ -135,6 +136,12 @@ namespace QT.Core
 
                         if (!string.IsNullOrWhiteSpace(data))
                         {
+                            // #으로 시작하는 row 걸러내기
+                            if(datas.Count == 0 && data[0] == '#')
+                            {
+                                break;
+                            }
+                            
                             datas.Add(columns[cellNum], data);
                         }
 
