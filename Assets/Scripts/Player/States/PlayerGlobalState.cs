@@ -88,7 +88,7 @@ namespace QT.Player
             else
             {
                 _isMouseDownCheck = true;
-                _ownerEntity.MeshRenderer.enabled = true;
+                _ownerEntity.SwingAreaMeshRenderer.enabled = true;
             }
         }
 
@@ -96,7 +96,7 @@ namespace QT.Player
         {
             AttackCheck();
             _isMouseDownCheck = false;
-            _ownerEntity.MeshRenderer.enabled = false;
+            _ownerEntity.SwingAreaMeshRenderer.enabled = false;
 
         }
 
