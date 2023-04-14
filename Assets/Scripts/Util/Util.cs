@@ -7,6 +7,8 @@ namespace QT.Util
 {
     public static class UnityUtil
     {
+        public static readonly Vector2Int[] PathDirections = new Vector2Int[4] {Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right};
+
         public static IEnumerator WaitForFunc(Action func, float delay)
         {
             yield return new WaitForSeconds(delay);

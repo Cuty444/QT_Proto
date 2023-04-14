@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using QT.Data;
+using QT.Map;
 
 namespace QT.Core
 {
@@ -20,6 +21,12 @@ namespace QT.Core
         public UnityEvent<bool> BatSwingTimeScaleEvent { get; } = new();
         public UnityEvent BatSwingBallHitEvent  { get; } = new();
 
+        public UnityEvent<Vector2Int> PlayerMapPosition { get; } = new();
+
+        public UnityEvent<Vector2Int> PlayerMapClearPosition { get; } = new();
+
+        public UnityEvent<Vector2Int> PlayerDoorEnter { get; } = new();
+        
         public Player.Player Player { get; private set; }
 
         public async void OnPlayerCreate() // 추후 로그라이크맵 절차 생성 SystemManager에서 관리하도록 코드 위치 변경이 필요함
