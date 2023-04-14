@@ -22,6 +22,11 @@ namespace QT.UI
                 if(!_Panels.ContainsKey(panel.GetType().ToString()))
                     _Panels.Add(panel.GetType().ToString(), panel);
             }
+            
+            foreach(KeyValuePair<string,UIPanel> panel in _Panels)
+            {
+                panel.Value.OnClose();
+            }
         }
 
         public void PostSystemInitialize()
