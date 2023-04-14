@@ -54,9 +54,9 @@ namespace QT.Player
             ChargeAtkPierce = AtkData.ChargeAtkPierce;
             ChargeTimes = new Stat[]
             {
-                new Stat(AtkData.ChargeTimes1),
-                new Stat(AtkData.ChargeTimes2), 
-                new Stat(AtkData.ChargeTimes3)
+                new Stat(AtkData.ChargeTime1),
+                new Stat(AtkData.ChargeTime2), 
+                new Stat(AtkData.ChargeTime3)
             };
             ChargeShootSpd = new Stat[]
             {
@@ -87,7 +87,7 @@ namespace QT.Player
                 new Stat(AtkData.ChargeProjectileDmg4)
             };
 
-            HP = new Status(Data.HPMax);
+            HP = new Status(Data.MaxHP);
             PCHitboxRad = new Stat(Data.PCHitboxRad);
             MovementSpd = new Stat(Data.MovementSpd);
             ChargeMovementSpd = new Stat(Data.ChargeMovementSpd);

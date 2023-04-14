@@ -10,6 +10,7 @@ namespace QT
         public float ShootAngle { get; set; }
         public int MaxBounceCount { get; set; }
         public int ProjectileDataId { get; set; }
+        public float InitalSpd { get; set; }
     }
 
 

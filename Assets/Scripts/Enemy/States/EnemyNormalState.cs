@@ -106,7 +106,7 @@ namespace QT.Enemy
 
         private bool CheckAttackStart(float targetDistance)
         {
-            if (_data.AtkDataId == 0 || _lastAtkCheckTime + _data.AtkCheakDelay > Time.time)
+            if (_data.AtkDataId == 0 || _lastAtkCheckTime + _data.AtkCheckDelay > Time.time)
             {
                 return false;
             }
