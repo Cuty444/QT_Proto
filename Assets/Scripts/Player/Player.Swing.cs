@@ -8,15 +8,21 @@ namespace QT.Player
 {
     public partial class Player
     {
-        public MeshFilter MeshFilter { get; private set; }
-        public MeshRenderer MeshRenderer { get; private set; }
+        public MeshFilter SwingAreaMeshFilter { get; private set; }
+        public MeshRenderer SwingAreaMeshRenderer { get; private set; }
 
+        private void SwingAreaSetup()
+        {
+            SwingAreaMeshRenderer.sortingOrder = 100;
+            SwingAreaCreate();
+        }
+        
         private void SwingAreaCreate()
         {
-            MeshFilter.mesh = SwingAreaCreateMesh(SwingRadius.Value, SwingCentralAngle.Value, 32);
-            MeshRenderer.material = new Material(Shader.Find("Sprites/Default"));
-            MeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.2f);
-            MeshRenderer.enabled = false;
+            SwingAreaMeshFilter.mesh = SwingAreaCreateMesh(SwingRadius.Value, SwingCentralAngle.Value, 32);
+            SwingAreaMeshRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.2f);
+            SwingAreaMeshRenderer.enabled = false;
         }
         
         private Mesh SwingAreaCreateMesh(float radius, float angle, int segments)
@@ -74,12 +80,6 @@ namespace QT.Player
                 {
                     if (!LineProjectTileList.Contains(ProjectTileList[i]))
                     {
-                        //if (lineRendererDictionary.ContainsKey(ProjectTileList[i]))
-                        //{
-                        //    lineRendererDictionary[ProjectTileList[i]].positionCount = 0;
-                        //    Destroy(lineRendererDictionary[ProjectTileList[i]].gameObject);
-                        //    lineRendererDictionary.Remove(ProjectTileList[i]);
-                        //}
                         CreateLine(ProjectTileList[i]);
                         LineProjectTileList.Add(ProjectTileList[i]);
                     }
