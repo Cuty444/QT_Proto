@@ -315,8 +315,8 @@ namespace QT.Player
 
                     if (!isChargeAtkPierce)
                         layerMask |= (1 << LayerMask.NameToLayer("Enemy"));
-                    //                       이속                                  튕김횟수  대미지            관통여부
-                    ProjectTileList[i].Init(speed,0f,0.5f,direction,bounce,damage,true,layerMask);
+                    
+                    ProjectTileList[i].Hit(direction, speed);
                     CollisionProjectTileList.Add(ProjectTileList[i]);
                     //if (ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
                     //{

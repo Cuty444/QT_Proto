@@ -45,7 +45,7 @@ public class ProjectileShooter : MonoBehaviour
             projectile.transform.position = _shootPoint.position;
             
             var dir = GetDirection(shoot.ShootAngle, aimType);
-            projectile.Init(projectileData, dir, shoot.MaxBounceCount);
+            projectile.Init(projectileData, dir, shoot.InitalSpd, shoot.MaxBounceCount);
         }
     }
 

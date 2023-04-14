@@ -8,7 +8,7 @@ namespace QT.Player
     public class CharacterGameData : IGameData
     {
         public int Index { get; set; }
-        public int HPMax { get; set; }
+        public int MaxHP { get; set; }
         public float PCHitboxRad { get; set; }
         public int MovementSpd { get; set; }
         public int ChargeMovementSpd { get; set; }
