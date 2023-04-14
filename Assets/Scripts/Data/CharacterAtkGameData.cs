@@ -16,9 +16,9 @@ namespace QT
         public float SwingAfterDelay { get; set; }
         public float SwingRad { get; set; }
         public int SwingCentralAngle { get; set; }
-        public float ChargeTimes1 { get; set; }
-        public float ChargeTimes2 { get; set; }
-        public float ChargeTimes3 { get; set; }
+        public float ChargeTime1 { get; set; }
+        public float ChargeTime2 { get; set; }
+        public float ChargeTime3 { get; set; }
         public int ChargeAtkPierce { get; set; }
         public int ChargeShootSpd1 { get; set; }
         public int ChargeShootSpd2 { get; set; }
