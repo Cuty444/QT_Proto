@@ -13,10 +13,11 @@ namespace QT.Util
             func.Invoke();
         }
     }
+
     public static class Math
     {
         //0~1f 값 비율 반환
-        public static float Remap(float value,float max,float min)
+        public static float Remap(float value, float max, float min)
         {
             return Unity.Mathematics.math.remap(min, max, 0f, 1f, value);
         }
@@ -39,11 +40,11 @@ namespace QT.Util
             return new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
         }
     }
-    
-    public  static  class RandomSeed
+
+    public static class RandomSeed
     {
-        private  const  string PASSWORD_CHARS = 
-            "0123456789abcdefghijklmnopqrstuvwxyz" ;
+        private const string stringSeeds =
+            "abcdefghijklmnopqrstuvwxyz0123456789";
 
         public static void SeedSetting()
         {
@@ -51,22 +52,22 @@ namespace QT.Util
             UnityEngine.Random.InitState(seed);
             string stringSeed = GenerateStringSeed(8);
             byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes(stringSeed);
-            int test = BitConverter.ToInt32(utf8Bytes);
-            UnityEngine.Random.InitState(test);
+            int utfSeed = BitConverter.ToInt32(utf8Bytes);
+            UnityEngine.Random.InitState(utfSeed);
         }
-        public static string GenerateStringSeed ( int length)
-        {
-            var sb = new System.Text.StringBuilder (length);
-            var r = new System.Random ();
 
-            for ( int i = 0 ; i <length; i ++)
+        public static string GenerateStringSeed(int length)
+        {
+            var sb = new System.Text.StringBuilder(length);
+
+            for (int i = 0; i < length; i++)
             {
-                int      pos = r.Next (PASSWORD_CHARS.Length);
-                char     c = PASSWORD_CHARS [pos];
-                sb.Append (c);
+                int pos = UnityEngine.Random.Range(0,stringSeeds.Length);
+                char c = stringSeeds[pos];
+                sb.Append(c);
             }
 
-            return sb.ToString ();
+            return sb.ToString();
         }
     }
 }
