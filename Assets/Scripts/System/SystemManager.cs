@@ -28,6 +28,8 @@ namespace QT.Core
             UIManager?.Initialize();
             
             _PostInitializeSystems();
+            
+            UIManager?.PostSystemInitialize();
         }
 
         private void InitializeSystems()

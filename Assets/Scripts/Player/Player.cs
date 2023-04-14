@@ -42,12 +42,12 @@ namespace QT.Player
             Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
             AtkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
             Rigidbody = GetComponent<Rigidbody2D>();
-            MeshFilter = GetComponentInChildren<MeshFilter>();
-            MeshRenderer = GetComponentInChildren<MeshRenderer>();
+            SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
+            SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             _animator = GetComponentInChildren<Animator>();
             SetUpStats();
-            SwingAreaCreate();
+            SwingAreaSetup();
             SetUp(States.Idle);
             SetGlobalState(new PlayerGlobalState(this));
 
