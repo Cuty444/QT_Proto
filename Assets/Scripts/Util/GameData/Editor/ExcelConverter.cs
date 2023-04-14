@@ -1,38 +1,35 @@
-using System.Collections.Generic;
-using UnityEditor;
-
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Diagnostics;
-
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using UnityEditor;
 using Debug = UnityEngine.Debug;
-
 
 namespace QT.Core
 {
     public class ExcelConverter
     {
-        private static string GameDataPath = $"{Directory.GetCurrentDirectory()}/_GameData";
-        private static string JsonDataPath = $"{Directory.GetCurrentDirectory()}/Assets/Data/GameData";
+        private static readonly string GameDataPath = $"{Directory.GetCurrentDirectory()}/_GameData";
+        private static readonly string JsonDataPath = $"{Directory.GetCurrentDirectory()}/Assets/Data/GameData";
 
-
-        [MenuItem("File/Convert Excel Sheets")]
+        
+        [MenuItem("GameData/Convert Excel Sheets", false, 3)]
         public static void ConvertExcelToJson()
         {
             try
             {
                 var stopWatch = new Stopwatch();
 
-                string[] files = Directory.GetFiles(GameDataPath, $"*.xlsx");
-                foreach (string file in files)
+                var files = Directory.GetFiles(GameDataPath, "*.xlsx");
+                foreach (var file in files)
                 {
                     var filename = file.Split('\\', '.', '/');
                     var name = filename[^2];
 
-                    if(name.StartsWith("~$"))
+                    if (name.StartsWith("~$"))
                     {
                         continue;
                     }
@@ -47,7 +44,7 @@ namespace QT.Core
                         continue;
                     }
 
-                    StreamWriter sw = new StreamWriter($"{JsonDataPath}/{name}.json", false, Encoding.UTF8);
+                    var sw = new StreamWriter($"{JsonDataPath}/{name}.json", false, Encoding.UTF8);
                     sw.WriteLine(data);
                     sw.Close();
 
@@ -66,13 +63,9 @@ namespace QT.Core
         }
 
 
-
         private static string ExcelDataToJson(string excelFilePath)
         {
-            if (!File.Exists(excelFilePath))
-            {
-                return null;
-            }
+            if (!File.Exists(excelFilePath)) return null;
 
             var result = new StringBuilder();
 
@@ -81,20 +74,21 @@ namespace QT.Core
             using (var stream = new FileStream(excelFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 var xssWorkbook = new XSSFWorkbook(stream);
-                ISheet sheet = xssWorkbook.GetSheetAt(0);
+                var sheet = xssWorkbook.GetSheetAt(0);
 
 
                 // 1 번째 행은 어떤 데이터가 있는지 확인하는 용도
                 result.Append("[\n\t[\n");
 
-                IRow headerRow = sheet.GetRow(1);
-                for (int cellNum = 0; cellNum < headerRow.LastCellNum; cellNum++)
+                var headerRow = sheet.GetRow(1);
+                for (var cellNum = 0; cellNum < headerRow.LastCellNum; cellNum++)
                 {
-                    ICell cell = headerRow.GetCell(cellNum);
+                    var cell = headerRow.GetCell(cellNum);
                     cell?.SetCellType(CellType.String);
-                    
+
                     var name = cell?.ToString().Trim() ?? null;
 
+                    // #으로 시작하는 column 걸러내기
                     if (string.IsNullOrWhiteSpace(name) || name[0] == '#')
                     {
                         name = null;
@@ -112,29 +106,36 @@ namespace QT.Core
 
                 // 나머지 행들을 돌아가며 데이터 가공
 
-                for (int rowNum = 2; rowNum <= sheet.LastRowNum; rowNum++)
+                for (var rowNum = 2; rowNum <= sheet.LastRowNum; rowNum++)
                 {
                     var datas = new Dictionary<string, string>();
-                    IRow row = sheet.GetRow(rowNum);
+                    var row = sheet.GetRow(rowNum);
 
                     if (row == null)
                     {
                         continue;
                     }
 
-                    for (int cellNum = 0; cellNum < columns.Count; cellNum++)
+                    for (var cellNum = 0; cellNum < columns.Count; cellNum++)
                     {
                         if (string.IsNullOrEmpty(columns[cellNum]))
                         {
                             continue;
                         }
-                        ICell cell = row.GetCell(cellNum);
-                        cell?.SetCellType(CellType.String);
                         
+                        var cell = row.GetCell(cellNum);
+                        cell?.SetCellType(CellType.String);
+
                         var data = cell?.ToString() ?? null;
 
                         if (!string.IsNullOrWhiteSpace(data))
                         {
+                            // #으로 시작하는 row 걸러내기
+                            if (datas.Count == 0 && data[0] == '#')
+                            {
+                                break;
+                            }
+                            
                             datas.Add(columns[cellNum], data);
                         }
 
