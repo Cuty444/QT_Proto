@@ -79,7 +79,7 @@ namespace QT.Core
             var foldoutStyle = new GUIStyle(EditorStyles.foldout);
             foldoutStyle.fontSize = 15;
             foldoutStyle.fontStyle = FontStyle.Bold;
-            info.IsOpen = EditorGUILayout.Foldout(info.IsOpen, info.Name, foldoutStyle);
+            info.IsOpen = EditorGUILayout.Foldout(info.IsOpen, info.Name, true, foldoutStyle);
 
             var errorStyle = new GUIStyle(EditorStyles.largeLabel);
             
