@@ -851,13 +851,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 806937146}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00734c92fe8b4334794be4c859102f69, type: 3}
+  m_Script: {fileID: 11500000, guid: 4cc8a0fb2d7211741b5f32493c097e16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _mapWidth: 11
   _mapHeight: 7
   _maxRoomVale: 10
-  _manyPathCorrection: 1
+  _manyPathCorrection: 0.9
 --- !u!1 &842886725
 GameObject:
   m_ObjectHideFlags: 0
@@ -1798,8 +1798,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2086223464}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 90}
-  m_LocalScale: {x: 0.00925926, y: 0.00925926, z: 0.00925926}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 150611415}
@@ -1809,8 +1809,8 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1919.9999, y: 1079.9999}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &2086223466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1850,7 +1850,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &2086223468
 Canvas:
   m_ObjectHideFlags: 0
@@ -1860,7 +1860,7 @@ Canvas:
   m_GameObject: {fileID: 2086223464}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 2
+  m_RenderMode: 1
   m_Camera: {fileID: 842886727}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1884,7 +1884,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d13abe966cb5c640b718505ca6d20b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _miniMapCamera: {fileID: 0}
   _miniMapCellTransform: {fileID: 928160502}
   _miniMapOnOff: {fileID: 150611414}
   _cellObject: {fileID: 7106620308453124126, guid: eb506fd05b07fc24394899b70eab6e2e, type: 3}

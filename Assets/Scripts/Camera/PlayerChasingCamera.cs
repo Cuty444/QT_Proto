@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Core.Map;
 using QT.Player;
 using UnityEngine;
 
@@ -40,7 +41,7 @@ public class PlayerChasingCamera : MonoBehaviour
                 _playerEyeTransform = _player.GetComponentsInChildren<Transform>()[1];
             }
         });
-        playerManager.OnPlayerCreate();
+        SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonStart();
         playerManager.BatSwingTimeScaleEvent.AddListener(CameraShaking);
         _beforePosition = transform.position;
     }
@@ -72,6 +73,11 @@ public class PlayerChasingCamera : MonoBehaviour
                  transform.position = _beforePosition;
              }
          }
+     }
+
+     public void SetBeforePosition(Vector3 position)
+     {
+         _beforePosition = position;
      }
 
     private void ChasingCamera(Vector2 mousePos)
