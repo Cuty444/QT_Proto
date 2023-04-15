@@ -8,7 +8,6 @@ namespace QT
 {
     public class PlayerProjectileShooter : ProjectileShooter
     {
-        private const string PlayerProjectilePrefabPath = "Prefabs/PlayerProjectile.prefab";
         public virtual async void PlayerShoot(int projectileDataId, AimTypes aimType, Vector2 direction, int bounce, List<Projectile> projectiles)
         {
             var projectileData = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>().GetData(projectileDataId);

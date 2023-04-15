@@ -13,8 +13,6 @@ public enum AimTypes
 
 public class ProjectileShooter : MonoBehaviour
 {
-    private const string ProjectilePrefabPath = "Prefabs/Projectile.prefab";
-    
     [SerializeField] protected Transform _shootPoint;
 
     private Transform _targetTransform;
@@ -41,7 +39,7 @@ public class ProjectileShooter : MonoBehaviour
                 continue;
             }
             
-            var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(ProjectilePrefabPath);
+            var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
             projectile.transform.position = _shootPoint.position;
             
             var dir = GetDirection(shoot.ShootAngle, aimType);
