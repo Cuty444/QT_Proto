@@ -23,7 +23,6 @@ namespace QT.Map
                 _doorTransforms[i].gameObject.SetActive(false);
                 var door = Instantiate(Door, _doorTransforms[i]);
                 door.transform.localPosition = Vector3.zero;
-                door.gameObject.name = _doorTransforms[i].gameObject.name;
             }
             
             _playerManager = SystemManager.Instance.PlayerManager;
