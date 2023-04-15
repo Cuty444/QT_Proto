@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using QT.Core;
 using QT.Core.Data;
 using UnityEngine;
@@ -58,14 +59,18 @@ namespace QT.Core.Map
         private Transform _mapCellsTransform;
         public Transform MapCellsTransform => _mapCellsTransform;
 
-        private Vector2 mapSizePosition;
+        private Vector2 _mapSizePosition;
+
+        private List<GameObject> _mapList;
+        private int _mapCount;
         
         public override void OnInitialized()
         {
             Vector2Int startPos = new Vector2Int(_mapWidth / 2, _mapHeight / 2);
-            mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
+            _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
             GenerateMap(startPos);
             _mapData = new MapData(_map, startPos,_mapNodeList);
+            MapLoad();
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
             {
                 _map[position.y, position.x].IsClear = true;
@@ -78,7 +83,7 @@ namespace QT.Core.Map
 
         public Vector2 GetMiniMapSizeToMapSize()
         {
-            return mapSizePosition;
+            return _mapSizePosition;
         }
         
         
@@ -183,6 +188,17 @@ namespace QT.Core.Map
         {
             _mapNodeList.Add(pos);
             _map[pos.y, pos.x].RoomType = RoomType.Normal;
+        }
+        private async void MapLoad()
+        {
+            var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var ObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
+            _mapList = QT.Util.RandomSeed.GetRandomIndexes(ObjectList.ToList(),30);
+        }
+
+        public GameObject GetMapObject()
+        {
+            return _mapList[_mapCount++ % _mapList.Count];
         }
     }
 }

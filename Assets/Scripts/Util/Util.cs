@@ -71,5 +71,52 @@ namespace QT.Util
 
             return sb.ToString();
         }
+        
+        public static List<T> GetRandomIndexes<T>(List<T> list, int maxIndex)
+        {
+            List<T> randomIndexes = new List<T>();
+            List<int> usedIndexes = new List<int>();
+            int currentIndex = 0;
+    
+            if (maxIndex > list.Count)
+            {
+                maxIndex = list.Count;
+            }
+
+            for (int i = 0; i < maxIndex; i++)
+            {
+                int randomIndex;
+
+                if (usedIndexes.Count == list.Count)
+                {
+                    randomIndex = UnityEngine.Random.Range(0, list.Count);
+                }
+                else
+                {
+                    do
+                    {
+                        randomIndex = UnityEngine.Random.Range(0, list.Count);
+                    } while (usedIndexes.Contains(randomIndex));
+
+                    usedIndexes.Add(randomIndex);
+                    currentIndex++;
+                }
+
+                randomIndexes.Add(list[randomIndex]);
+            }
+
+            if (maxIndex > list.Count)
+            {
+                for (int i = list.Count; i < maxIndex; i++)
+                {
+                    int randomIndex = UnityEngine.Random.Range(0, list.Count);
+                    randomIndexes.Add(list[randomIndex]);
+                }
+            }
+            
+            return randomIndexes;
+        }
+        
     }
+
 }
