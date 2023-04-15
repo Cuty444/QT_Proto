@@ -17,7 +17,7 @@ namespace QT
                 return;
             }
 
-            var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
+            var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(PlayerProjectilePrefabPath);
 
             projectile.transform.position = _shootPoint.position;
 
