@@ -37,6 +37,11 @@ namespace QT
         
         public async UniTask<T> LoadAsset<T>(string path, bool isCaching) where T : Object
         {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
+            
             T asset;
             
             if (isCaching && _cache.TryGetValue(path, out var cached))
@@ -69,7 +74,7 @@ namespace QT
             else
             {
                 _pool.Add(typeof(T), new Stack<MonoBehaviour>());
-                obj = (await LoadAsset<GameObject>(path, true)).GetComponent<T>();
+                (await LoadAsset<GameObject>(path, true))?.TryGetComponent(out obj);
             }
 
             if (obj != null)

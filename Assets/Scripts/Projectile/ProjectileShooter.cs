@@ -24,7 +24,7 @@ public class ProjectileShooter : MonoBehaviour
         _targetTransform = target;
     }
     
-    public async virtual void Shoot(int shootDataId, AimTypes aimType)
+    public virtual async void Shoot(int shootDataId, AimTypes aimType)
     {
         var shootData = SystemManager.Instance.DataManager.GetDataBase<ShootGameDataBase>().GetData(shootDataId);
 
