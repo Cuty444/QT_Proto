@@ -46,7 +46,7 @@ namespace QT.Core.Map
     {
         [SerializeField] private int _mapWidth = 11;
         [SerializeField] private int _mapHeight = 7;
-        [SerializeField] private int _maxRoomVale = 10;
+        [SerializeField] private int _maxRoomValue = 10;
         [Range(0.0f,1.0f)]
         [SerializeField] private float _manyPathCorrection = 1.0f;
 
@@ -107,7 +107,7 @@ namespace QT.Core.Map
             _map[startPos.y, startPos.x].RoomType = RoomType.Normal;
             _map[startPos.y, startPos.x].IsClear = true;
             _mapNodeList.Add(startPos);
-            for (int i = 1; i < _maxRoomVale; i++)
+            for (int i = 1; i < _maxRoomValue; i++)
             {
                 RouteConfirm(_mapNodeList);
             }
