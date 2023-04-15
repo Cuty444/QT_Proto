@@ -24,12 +24,12 @@ namespace QT.Map
         [SerializeField] private Color[] _mapColors;
         [SerializeField] private GameObject _lineRenders;
         [SerializeField] private UILineRenderer[] _uiLineRenderers;
-        [SerializeField] private GameObject _cellMapObject; // TODO : 추후 던전 시스템에서 할당한 맵 오브젝트를 불러오게 바꾸기
         
         [HideInInspector]public Vector2Int CellPos;
 
         private PlayerManager _playerManager;
         private DungeonMapSystem _dungeonMapSystem;
+        private GameObject _cellMapObject;
         private Image _mapImage;
         private bool _isClear;   // 맵 클리어여부(몬스터를 죽임)
         private MapDirection _pathOpenDirection;
@@ -47,6 +47,7 @@ namespace QT.Map
             _mapImage.enabled = false;
             _playerManager.PlayerCreateEvent.AddListener((obj) =>
             {
+                _cellMapObject = _dungeonMapSystem.GetMapObject();
                 _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();
                 _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
                 _mapCellData.OpenDoorDirection(_pathOpenDirection);

@@ -3,8 +3,8 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using System;
-
 using Object = UnityEngine.Object;
+using UnityEngine.ResourceManagement.ResourceLocations;
 
 namespace QT
 {
@@ -50,6 +50,24 @@ namespace QT
 
             return Object.Instantiate(asset);
         }
+        
+        public async UniTask<IList<T>> LoadAssets<T>(IList<IResourceLocation> locations) where T : Object
+        {
+            var assets = new List<T>();
+
+            foreach (var location in locations)
+            {
+                var asset = await Addressables.LoadAssetAsync<T>(location).Task;
+
+                if (asset != null)
+                {
+                    assets.Add(asset);
+                }
+            }
+
+            return assets;
+        }
+
 
         public async UniTask<T> GetFromPool<T>(string path, Transform parent = null) where T : MonoBehaviour
         {
@@ -94,5 +112,13 @@ namespace QT
                 Object.Destroy(obj.gameObject);
             }
         }
+        
+        public async UniTask<IList<IResourceLocation>> GetLocations(string assetLabel)
+        {
+            var handle = await Addressables.LoadResourceLocationsAsync(assetLabel);
+            return handle;
+        }
+        
+
     }
 }
