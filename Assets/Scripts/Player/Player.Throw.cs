@@ -9,7 +9,8 @@ namespace QT.Player
 
         public void AttackBallInstate()
         {
-            ProjectileShooter.PlayerShoot(400, AimTypes.MoveDirection, QT.Util.Math.ZAngleToGetDirection(_eyeTransform),(int)ThrowBounceCount.Value,ProjectTileList);
+            ProjectileShooter.ShootProjectile(400, Util.Math.ZAngleToGetDirection(_eyeTransform), 10,
+                (int) ThrowBounceCount.Value);
         }
     }
 }
