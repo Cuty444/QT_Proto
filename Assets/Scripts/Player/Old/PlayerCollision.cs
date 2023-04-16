@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using QT.Core;
 using QT.Core.Data;
-using QT.Core.Player;
 using QT.Enemy;
 using QT.UI;
 
@@ -16,7 +15,7 @@ namespace QT.Player
     {
         #region StartData_Declaration
 
-        private PlayerSystem _playerSystem;
+        private PlayerManager _playerManager;
         private Image _hpImage;
         private int _hpMax;
         private float _mercyInvincibleTime;
@@ -36,14 +35,14 @@ namespace QT.Player
         {
             GlobalDataSystem globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             CharacterTable characterTable = globalDataSystem.CharacterTable;
-            _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-            _playerSystem.DodgeEvent.AddListener(DodgeInvincible);
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.DodgeEvent.AddListener(DodgeInvincible);
             _hpMax = characterTable.HPMax;
             _currentHp = _hpMax;
             _mercyInvincibleTime = characterTable.MercyInvincibleTime;
             _dodgeInvincibleTime = characterTable.DodgeInvincibleTime;
-            _hpImage = UIManager.Instance.GetUIPanel<PlayerHPCanvas>().PlayerHPImage;
-            _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _hpMax, 0);
+            _hpImage = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().PlayerHPImage;
+            _hpImage.fillAmount = QT.Util.Math.Remap(_currentHp, _hpMax, 0);
             _isMercy = false;
             _InvincibleCoroutine = null;
         }
@@ -52,7 +51,7 @@ namespace QT.Player
         {
             if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                _playerSystem.PlayerCollisionEnemyEvent.Invoke();
+                _playerManager.PlayerCollisionEnemyEvent.Invoke();
                 if (_isMercy)
                     return;
                 HitDamage(collision.gameObject.GetComponent<EnemyAttack>().GetDamage());
@@ -67,7 +66,7 @@ namespace QT.Player
                 return;
             _currentHp -= damage;
             Debug.Log("Player HP : " + _currentHp);
-            _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _hpMax, 0);
+            _hpImage.fillAmount = QT.Util.Math.Remap(_currentHp, _hpMax, 0);
             if (_currentHp <= 0)
             {
                 SceneManager.LoadScene(0);

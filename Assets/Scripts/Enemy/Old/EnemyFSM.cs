@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
-using QT.Core.Enemy;
 using QT.Core.Data;
 using UnityEngine;
 
@@ -25,7 +24,7 @@ namespace QT.Enemy
 
         private void Start()
         {
-            _playerTransform = SystemManager.Instance.GetSystem<EnemySystem>().PlayerTransform;
+            _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _movementSpeed = SystemManager.Instance.GetSystem<GlobalDataSystem>().EnemyTable.MovementSpd;
         }

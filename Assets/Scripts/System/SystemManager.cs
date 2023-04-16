@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using QT.UI;
 using UnityEngine;
 
 namespace QT.Core
@@ -8,26 +9,30 @@ namespace QT.Core
     //시스템 관리 매니저입니다.
     public class SystemManager : MonoSingleton<SystemManager>
     {
-        public ResourceManager ResourceManager { get; private set; } = new ();
-        public GameDataManager DataManager { get; private set; } = new ();
-
+        public ResourceManager ResourceManager { get; } = new ();
+        public GameDataManager DataManager { get; } = new ();
+        public PlayerManager PlayerManager { get; } = new();
+        [field:SerializeField]public UIManager UIManager { get; private set; }
+        
         private readonly Dictionary<Type, SystemBase> _systems = new ();
 
         private void Awake()
         {
+            base.Awake();
+            
             ResourceManager.Initialize();
             DataManager.Initialize();
             
-            _InitializeSystems();
+            InitializeSystems();
 
-            UI.UIManager.Instance.Initialize();
-
+            UIManager?.Initialize();
+            
             _PostInitializeSystems();
-
-            UI.UIManager.Instance.PostSystemInitialize();
+            
+            UIManager?.PostSystemInitialize();
         }
 
-        private void _InitializeSystems()
+        private void InitializeSystems()
         {
             for (int i = 0; i < transform.childCount; i++)
             {

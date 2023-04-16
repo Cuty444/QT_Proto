@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
-using QT.Core.Player;
 using QT.Core.Data;
 using QT.Data;
 using QT.Enemy;
@@ -16,7 +15,7 @@ namespace QT.Player.Bat
     {
         #region StartData_Declaration
 
-        private PlayerSystem _playerSystem;
+        private PlayerManager _playerManager;
         private GlobalDataSystem _globalDataSystem;
 
         #endregion
@@ -32,11 +31,11 @@ namespace QT.Player.Bat
 
         private void Start()
         {
-            _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
+            _playerManager = SystemManager.Instance.PlayerManager;
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
-            _playerSystem.ChargeAtkShootEvent.AddListener(SetShootSpeed);
-            _playerSystem.BatSwingRigidHitEvent.AddListener(SetSwingRigidDamage);
-            _playerSystem.BatSwingEndEvent.AddListener(SwingEndObjectClear);
+            _playerManager.ChargeAtkShootEvent.AddListener(SetShootSpeed);
+            _playerManager.BatSwingRigidHitEvent.AddListener(SetSwingRigidDamage);
+            _playerManager.BatSwingEndEvent.AddListener(SwingEndObjectClear);
             this.enabled = false;
         }
 
@@ -67,11 +66,11 @@ namespace QT.Player.Bat
                 Ball.BulletSpeed = _shootSpd;
                 Ball.ForceChange();
                 Ball.SwingBallHit();
-                if (ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
+                if (ChargeAtkPierce.None == _playerManager.ChargeAtkPierce)
                 {
                     Ball.gameObject.layer = LayerMask.NameToLayer("Ball");
                 }
-                else if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerSystem.ChargeAtkPierce))
+                else if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerManager.ChargeAtkPierce))
                 {
                     Ball.gameObject.layer = LayerMask.NameToLayer("BallHit");
                 }

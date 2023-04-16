@@ -19,23 +19,24 @@ namespace QT
         }
 
         public int Index { get; set; }
-        public string Name { get; set; }
-        public int MaxHP { get; set; }
+        public int MaxHp { get; set; }
     
         public MoveTypes MoveType { get; set; }
-        public float MoveSpd { get; set; }
+        public float MovementSpd { get; set; }
         public float SpacingRad { get; set; }
         public float MoveTargetUpdatePeroid { get; set; }
 
-        public float AtkCheakDelay { get; set; }
+        public float AtkCheckDelay { get; set; }
         public AtkStartTypes AtkStartType { get; set; }
         public float AtkStartParam { get; set; }
     
-        public int DropGoldMin { get; set; }
-        public int DropGoldMax { get; set; }
-    
         public int AtkDataId { get; set; }
         public int DeadAtkDataId { get; set; }
+        
+        public int ProjectileDataId { get; set; }
+        
+        public int GoldDropMin { get; set; }
+        public int GoldDropMax { get; set; }
     }
 
 

@@ -9,8 +9,8 @@ namespace QT.Enemy
         
         private  void SetUpStats()
         {
-            HP = new Status(Data.MaxHP);
-            MoveSpd = new Stat(Data.MoveSpd);
+            HP = new Status(Data.MaxHp);
+            MoveSpd = new Stat(Data.MovementSpd);
         }
     }
 }
