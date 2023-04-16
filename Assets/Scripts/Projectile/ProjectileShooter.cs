@@ -13,7 +13,7 @@ public enum AimTypes
 
 public class ProjectileShooter : MonoBehaviour
 {
-    private const string ProjectilePrefabPath = "Prefabs/Projectile.prefab";
+    public virtual LayerMask BounceMask => LayerMask.GetMask("Wall");
     
     [SerializeField] protected Transform _shootPoint;
 
@@ -24,7 +24,7 @@ public class ProjectileShooter : MonoBehaviour
         _targetTransform = target;
     }
     
-    public async virtual void Shoot(int shootDataId, AimTypes aimType)
+    public virtual void Shoot(int shootDataId, AimTypes aimType)
     {
         var shootData = SystemManager.Instance.DataManager.GetDataBase<ShootGameDataBase>().GetData(shootDataId);
 
@@ -35,21 +35,26 @@ public class ProjectileShooter : MonoBehaviour
 
         foreach (var shoot in shootData)
         {
-            var projectileData = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>().GetData(shoot.ProjectileDataId);
-            if (projectileData == null)
-            {
-                continue;
-            }
-            
-            var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(ProjectilePrefabPath);
-            projectile.transform.position = _shootPoint.position;
-            
             var dir = GetDirection(shoot.ShootAngle, aimType);
-            projectile.Init(projectileData, dir, shoot.InitalSpd, shoot.MaxBounceCount);
+            ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, shoot.MaxBounceCount);
         }
     }
 
-    private Vector2 GetDirection(float angle ,AimTypes aimType)
+    public virtual async void ShootProjectile(int projectileDataId, Vector2 dir, float speed, int bounceCount)
+    {
+        var projectileData = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>().GetData(projectileDataId);
+        if (projectileData == null)
+        {
+            return;
+        }
+            
+        var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
+        projectile.transform.position = _shootPoint.position;
+            
+        projectile.Init(projectileData, dir, speed, bounceCount, BounceMask);
+    }
+
+    protected Vector2 GetDirection(float angle, AimTypes aimType)
     {
         switch (aimType)
         {

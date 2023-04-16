@@ -11,5 +11,15 @@ namespace QT.Enemy
         {
             OnDamageEvent.Invoke(dir, power);
         }
+        
+        public void Hit(Vector2 dir, float power, LayerMask bounceMask)
+        {
+            OnDamageEvent.Invoke(dir, power);
+        }
+        
+        public void ResetBounceCount(int maxBounce)
+        {
+            
+        }
     }
 }

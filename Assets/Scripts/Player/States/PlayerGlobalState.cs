@@ -27,7 +27,7 @@ namespace QT.Player
 
             _currentBallStack = (int)_ownerEntity.BallStackMax.Value + 100;
             _currentSwingCoolTime = _ownerEntity.SwingCooldown.Value;
-            _ownerEntity.BatSpriteRenderOnOff(false);
+            _ownerEntity.SetBatActive(false);
         }
 
         public override void InitializeState()
@@ -37,7 +37,6 @@ namespace QT.Player
         public override void UpdateState()
         {
             AttackCoolTime();
-            _ownerEntity.SwingAreaInBallLineDraw(_currentChargingTime);
         }
 
         public override void FixedUpdateState()
@@ -94,28 +93,10 @@ namespace QT.Player
 
         private void KeyUpAttack()
         {
-            AttackCheck();
             _isMouseDownCheck = false;
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
-
         }
 
-        private void AttackCheck()
-        {
-            if (!_isMouseDownCheck)
-                return;
-            _ownerEntity.BatSpriteRenderOnOff(true);
-            if (_currentChargingTime <= _ownerEntity.ChargeTimes[0].Value)
-            {
-                _ownerEntity.AttackBatSwing(_currentChargingTime, () => { _currentSwingCoolTime = 0f;});
-            }
-            else
-            {
-                _ownerEntity.ChargingBatSwing(_currentChargingTime,() => { _currentSwingCoolTime = 0f;});
-            }
-            _currentChargingTime = 0f;
-            //_playerSystem.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
-        }
         
 
         #endregion
