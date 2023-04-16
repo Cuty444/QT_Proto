@@ -1,6 +1,5 @@
 using QT.Core;
 using QT.Core.Data;
-using QT.Core.Player;
 using QT.Data;
 using QT.Player;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace QT.Ball
         #region StartData_Declaration
 
         private GlobalDataSystem _globalDataSystem;
-        private PlayerSystem _playerSystem;
+        private PlayerManager _playerManager;
 
         private Transform _playerTransform;
         private Transform _eyeTransform;
@@ -50,12 +49,12 @@ namespace QT.Ball
             _atkCentralAngle = _globalDataSystem.BatTable.AtkCentralAngle;
             _atkRadius = _globalDataSystem.BatTable.ATKRad;
             _chargeBounceValues = _globalDataSystem.BatTable.ChargeBounceValue;
-            _playerSystem = SystemManager.Instance.GetSystem<PlayerSystem>();
-            _playerSystem.PlayerCurrentChargingTimeEvent.AddListener(SetCurrentChargingTime);
-            _playerSystem.BatSwingEndEvent.AddListener(BallPositionSwingCheck);
-            _playerSystem.ChargeAtkShootEvent.AddListener(SetShootSpeed);
-            _playerSystem.ChargeBounceValueEvent.AddListener(SetCurrentChargingBounceValue);
-            _playerTransform = _playerSystem.PlayerTransform;
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.PlayerCurrentChargingTimeEvent.AddListener(SetCurrentChargingTime);
+            _playerManager.BatSwingEndEvent.AddListener(BallPositionSwingCheck);
+            _playerManager.ChargeAtkShootEvent.AddListener(SetShootSpeed);
+            _playerManager.ChargeBounceValueEvent.AddListener(SetCurrentChargingBounceValue);
+            _playerTransform = _playerManager.Player.transform;
             _eyeTransform = _playerTransform.GetComponent<PlayerAttack>().EyeTransform;
             _lineRenderer = GetComponentInChildren<LineRenderer>();
             _reflectLayerMask = 1 << LayerMask.NameToLayer("Wall");
@@ -130,11 +129,11 @@ namespace QT.Ball
                 _ballMove.BulletSpeed = _shootSpd;
                 _ballMove.ForceChange();
                 _ballMove.SwingBallHit();
-                if (ChargeAtkPierce.None == _playerSystem.ChargeAtkPierce)
+                if (ChargeAtkPierce.None == _playerManager.ChargeAtkPierce)
                 {
                     gameObject.layer = LayerMask.NameToLayer("Ball");
                 }
-                else if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerSystem.ChargeAtkPierce))
+                else if (_globalDataSystem.BatTable.ChargeAtkPierce.HasFlag(_playerManager.ChargeAtkPierce))
                 {
                     gameObject.layer = LayerMask.NameToLayer("BallHit");
                 }
@@ -142,7 +141,7 @@ namespace QT.Ball
                 {
                     gameObject.layer = LayerMask.NameToLayer("Ball");
                 }
-                _playerSystem.BatSwingBallHitEvent.Invoke();
+                _playerManager.BatSwingBallHitEvent.Invoke();
             }
         }
 
@@ -200,31 +199,31 @@ namespace QT.Ball
         {
             lineRenderer.enabled = true;
             lineRenderer.positionCount = 0;
-            int reflectCount = 2;
+            int reflectCount = 1;
+            lineRenderer.positionCount = reflectCount;
             float radius = transform.localScale.x * 0.5f;
-            
-            RaycastHit2D hit2D = Physics2D.CircleCast(lineRenderer.transform.position,radius ,reflectDirection, Mathf.Infinity,
-                _reflectLayerMask);
-            if (hit2D.collider != null)
-            {   
-                Vector2 hitPointMinusRadius = hit2D.point + (hit2D.normal * radius);
-                // 충돌 지점에서 입사각과 반사각 계산
-                reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
-
-                // LineRenderer에 반사 지점 추가
-                reflectCount++;
-                lineRenderer.positionCount = reflectCount;
-                lineRenderer.SetPosition(0, lineRenderer.transform.position);
-                lineRenderer.SetPosition(1, hitPointMinusRadius);
-                lineRenderer.SetPosition(2, hitPointMinusRadius + reflectDirection);
-            }
-
+            lineRenderer.SetPosition(0, lineRenderer.transform.position);
             for (; reflectCount < _chargeBounceValue + 2; reflectCount++)
             {
                 if (!BallBounceRayCast(lineRenderer, ref reflectDirection, reflectCount,radius))
                 {
                     break;
                 }
+            }
+            if (reflectCount > 3)
+            {
+                float endTime = QT.Util.Math.Remap(3, reflectCount, 0);
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(new GradientColorKey[] { new GradientColorKey(Color.white, 0.0f), new GradientColorKey(Color.white, 1.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, endTime), new GradientAlphaKey(0.0f, endTime + 0.03f), new GradientAlphaKey(0f, 1f) });
+                lineRenderer.colorGradient = gradient;
+            }
+            else
+            {
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(new GradientColorKey[] { new GradientColorKey(Color.white, 0.0f), new GradientColorKey(Color.white, 1.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1f, 1f) });
+                lineRenderer.colorGradient = gradient;
             }
         }
 
@@ -237,8 +236,8 @@ namespace QT.Ball
                 Vector2 hitPointMinusRadius = hit2D.point + (hit2D.normal * radius);
                 reflectDirection = Vector2.Reflect(reflectDirection, hit2D.normal);
                 lineRenderer.positionCount = reflectCount + 1;
-                lineRenderer.SetPosition(reflectCount - 1, hitPointMinusRadius);
-                lineRenderer.SetPosition(reflectCount, hitPointMinusRadius + reflectDirection);
+                lineRenderer.SetPosition(reflectCount, hitPointMinusRadius);
+                //lineRenderer.SetPosition(reflectCount, hitPointMinusRadius + reflectDirection);
                 return true;
             }
 

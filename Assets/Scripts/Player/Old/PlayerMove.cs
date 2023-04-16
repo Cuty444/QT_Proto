@@ -4,7 +4,6 @@ using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
 using QT.Core.Data;
-using QT.Core.Player;
 
 namespace QT.Player
 {
@@ -37,7 +36,7 @@ namespace QT.Player
             _reduceSpeed = globalDataSystem.CharacterTable.ChargeMovementDecreasePer;
             GetComponent<CircleCollider2D>().radius = globalDataSystem.CharacterTable.PCHitBoxRad;
             _currentReduceSpeed = 1f;
-            SystemManager.Instance.GetSystem<PlayerSystem>().DodgeEvent.AddListener(Dodging);
+            SystemManager.Instance.PlayerManager.DodgeEvent.AddListener(Dodging);
             _isDodge = false;
         }
 

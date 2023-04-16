@@ -43,7 +43,7 @@ namespace QT.Core
             {
                 var attribute = stateType.GetCustomAttribute<FSMStateAttribute>();
 
-                if (attribute == null)
+                if (attribute == null || !attribute.IncludeStates)
                 {
                     continue;
                 }
@@ -93,11 +93,11 @@ namespace QT.Core
             return _currentState;
         }
 
-        public void SetGlobalState(FSMState<T> newState)
+        public void SetGlobalState(FSMState<T> state)
         {
             _globalState?.ClearState();
-
-            _globalState = newState;
+            
+            _globalState = state;
 
             _globalState?.InitializeState();
         }

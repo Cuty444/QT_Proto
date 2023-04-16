@@ -4,8 +4,8 @@ using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 namespace QT.Core
 {
@@ -81,6 +81,10 @@ namespace QT.Core
             {
                 _databases.Add(database.Item1, database.Item2);
             }
+            Debug.Log("로드완료"); //TODO 데이터 로드 후 씬 불러오기 부분 수정 필요
+            if (SceneManager.GetActiveScene().buildIndex != 0)
+                return;
+            SceneManager.LoadScene(1);
         }
 
         private async UniTask<JArray> GetJson(GameDataBaseAttribute attribute)
@@ -137,7 +141,7 @@ namespace QT.Core
                         }
                         else
                         {
-                            Debug.LogError($"{dataBaseType} : 지원되지 않는 형식의 변환입니다. Type : {type} Value : {value}");
+                            //Debug.LogError($"{dataBaseType} : 지원되지 않는 형식의 변환입니다. Type : {type} Value : {value}");
                         }
                     }
                 }

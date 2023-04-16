@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QT.Enemy
 {
-    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity
+    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IProjectile
     {
         public enum States : int
         {
@@ -17,6 +17,9 @@ namespace QT.Enemy
             Projectile,
             Dead,
         }
+        
+        public int ProjectileId => gameObject.GetInstanceID();
+        public  Vector2 Position => transform.position;
 
         [SerializeField] private int _enemyId;
 

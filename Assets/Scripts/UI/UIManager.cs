@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace QT.UI
 {
-    public class UIManager : MonoSingleton<UIManager>
+    public class UIManager : MonoBehaviour
     {
-        Dictionary<string, UIPanel> _Panels = new Dictionary<string, UIPanel>();
-        UIPanel _CurrentPanel;
+        private Dictionary<string, UIPanel> _Panels = new Dictionary<string, UIPanel>();
+        private UIPanel _currentPanel;
 
         public void Initialize()
         {
@@ -22,6 +22,11 @@ namespace QT.UI
                 if(!_Panels.ContainsKey(panel.GetType().ToString()))
                     _Panels.Add(panel.GetType().ToString(), panel);
             }
+            
+            foreach(KeyValuePair<string,UIPanel> panel in _Panels)
+            {
+                panel.Value.OnClose();
+            }
         }
 
         public void PostSystemInitialize()
@@ -34,9 +39,9 @@ namespace QT.UI
 
         public void Open(string panelName)
         {
-            _CurrentPanel.OnClose();
-            _CurrentPanel = _Panels[panelName];
-            _CurrentPanel.OnOpen();
+            _currentPanel.OnClose();
+            _currentPanel = _Panels[panelName];
+            _currentPanel.OnOpen();
         }
 
         public T GetUIPanel<T>() where T : UIPanel

@@ -57,14 +57,7 @@ public class CharacterAtkTable : ScriptableObject
     /// 공격 쿨타임 (s)
     /// </summary>
     public float AtkCooldown => _atkCooldown;
-
-    [SerializeField]
-    [Tooltip("공격 발생 지연 시간 (s) - 미적용")]
-    private float _atkAfterDelay = 1f;
-    /// <summary>
-    /// 공격 발생 지연 시간 (s)
-    /// </summary>
-    public float AtkAfterDelay => _atkAfterDelay;
+    
     
     [SerializeField]
     [Tooltip("던지기 쿨타임 (s)")]
@@ -74,13 +67,6 @@ public class CharacterAtkTable : ScriptableObject
     /// </summary>
     public float ThrowCooldown => _throwCooldown;
     
-    [SerializeField]
-    [Tooltip("던지기 쿨타임 (s)")]
-    private float _throwAfterDelay = 1f;
-    /// <summary>
-    /// 던지기 쿨타임 (s)
-    /// </summary>
-    public float ThrowAfterDelay => _throwAfterDelay;
     
     [SerializeField]
     [Tooltip("공격으로 튕겨난 공, 적이 다른 콜리전과 충돌하며 입는 피해량 가중치 - 미적용")]

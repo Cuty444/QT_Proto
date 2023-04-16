@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
-using QT.Core.Player;
 using UnityEngine;
 
 namespace QT.Ball
@@ -24,7 +23,6 @@ namespace QT.Ball
         public float BulletSpeed { get; set; }
 
         private bool _isSwingBallHit = false;
-        private bool _isBallEndGoal = false;
 
         #endregion
 
@@ -34,7 +32,7 @@ namespace QT.Ball
             _rigidbody2D = GetComponent<Rigidbody2D>();
             GlobalDataSystem dataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             GetComponent<CircleCollider2D>().radius = dataSystem.BallTable.BallColliderRad;
-            _rigidbody2D.drag = dataSystem.GlobalData.BallSpdDecelerationValue;
+            _rigidbody2D.drag = dataSystem.GlobalData.SpdDecay;
             _rigidbody2D.sharedMaterial.bounciness = dataSystem.GlobalData.BounceSpdReductionRate;
             _minVelocity = dataSystem.GlobalData.BallMinSpdDestroyed;
             if (gameObject.layer == LayerMask.NameToLayer("Ball"))

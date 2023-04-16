@@ -49,10 +49,10 @@ namespace QT.Enemy
             }
         }
 
-        private void OnDamage(float damage, Vector2 hitPoint)
+        private void OnDamage(Vector2 dir, float power)
         {
             var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
-            ((EnemyProjectileState) state).InitializeState(damage, hitPoint);
+            ((EnemyProjectileState) state).InitializeState(dir, power);
         }
     }
 }

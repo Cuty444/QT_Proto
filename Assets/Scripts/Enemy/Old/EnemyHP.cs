@@ -57,7 +57,7 @@ namespace QT.Enemy
             if (_currentHp <= 0)
                 return;
             _currentHp -= damage;
-            _hpImage.fillAmount = QT.Util.Math.floatNormalization(_currentHp, _hpMax, 0);
+            _hpImage.fillAmount = QT.Util.Math.Remap(_currentHp, _hpMax, 0);
             if (_currentHp <= 0)
             {
                 _animator.SetInteger("EnemyState",1);

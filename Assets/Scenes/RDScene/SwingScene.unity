@@ -676,11 +676,13 @@ MonoBehaviour:
   _minDistance: 0.1
   _maxDistance: 6.5
   _moveSpeed: 10
+  _cameraSakeDiameter: 1
   _playerSprites:
   - {fileID: 21300000, guid: 84ecb6f5669dbaa4081111c269842b53, type: 3}
   - {fileID: 21300000, guid: b8d7955f240784f47b83980089f17dc9, type: 3}
   - {fileID: 21300000, guid: 8396f1169b831dc4e933f222773b1dbb, type: 3}
   - {fileID: 21300000, guid: 39747f70daab65441a9f3301b6cc4c60, type: 3}
+  _isChasing: 0
 --- !u!1 &566259582
 GameObject:
   m_ObjectHideFlags: 0
@@ -1410,26 +1412,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1074359047}
-  - component: {fileID: 1074359046}
+  - component: {fileID: 1074359048}
   m_Layer: 0
-  m_Name: SystemManager
+  m_Name: SystemManger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1074359046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1074359045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11081099767dd1640b0f692a5891df94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1074359047
 Transform:
   m_ObjectHideFlags: 0
@@ -1450,6 +1440,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1074359048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074359045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11081099767dd1640b0f692a5891df94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1149062577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,6 +1565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterTable: {fileID: 11400000, guid: 56894559dda22f447a38c860a9d07c3f, type: 2}
+  _characterAtkTable: {fileID: 0}
   _globalData: {fileID: 11400000, guid: 2772fa35208a01d46aff44af4fb1c5fa, type: 2}
   _batTable: {fileID: 11400000, guid: cb1606710d1e2bf4a8a6b14bafb01c5e, type: 2}
   _ballTable: {fileID: 11400000, guid: 42ebf3c1c3acf5b4eae30b408be21005, type: 2}
