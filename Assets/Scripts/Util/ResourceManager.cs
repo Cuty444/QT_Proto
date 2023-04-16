@@ -31,6 +31,11 @@ namespace QT
         
         public async UniTaskVoid CacheAsset(string path)
         {
+            if (_cache.ContainsKey(path))
+            {
+                return;
+            }
+            
             var asset = await Addressables.LoadAssetAsync<Object>(path);
             _cache.TryAdd(path, asset);
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace QT.Player
 {
@@ -18,23 +19,19 @@ namespace QT.Player
 
         [SerializeField] private int _characterID = 100;
         [SerializeField] private int _characterAtkID = 200;
-        [SerializeField] private Transform _eyeTransform;
+        
+        [field:SerializeField] public Transform EyeTransform { get; private set; }
         [SerializeField] private Transform _batTransform;
         [SerializeField] private Transform _lineRendersTransform;
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [SerializeField] private TrailRenderer _trailRenderer;
-        [SerializeField] private GameObject _lineRenderObject;
+        
         public Rigidbody2D Rigidbody { get; private set; }
         public CharacterGameData Data { get; private set; }
         public CharacterAtkGameData AtkData { get; private set; }
         
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
 
-        public List<Projectile> ProjectTileList { get; private set; } = new List<Projectile>();
-        public List<Projectile> CollisionProjectTileList { get; private set; } = new List<Projectile>();
-        public List<Projectile> LineProjectTileList { get; private set; } = new List<Projectile>();
-
-        private Dictionary<Projectile,PlayerLineDrawer> lineRendererDictionary { get; } = new Dictionary<Projectile,PlayerLineDrawer>();
 
         private PlayerManager _playerManager;
         private void Awake()
@@ -47,7 +44,6 @@ namespace QT.Player
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             _animator = GetComponentInChildren<Animator>();
             SetUpStats();
-            SwingAreaSetup();
             SetUp(States.Idle);
             SetGlobalState(new PlayerGlobalState(this));
 
