@@ -20,9 +20,6 @@ public class PlayerChasingCamera : MonoBehaviour
     #region Global_Declaration
 
     private Transform _player;
-    private SpriteRenderer _spriteRenderer;
-    private PlayerAttack _playerAttack;
-    private Transform _playerEyeTransform;
 
     private Vector3 _beforePosition;
 
@@ -33,14 +30,7 @@ public class PlayerChasingCamera : MonoBehaviour
     {
         _player = null;
         PlayerManager playerManager = SystemManager.Instance.PlayerManager;
-        playerManager.PlayerCreateEvent.AddListener((obj) => { _player = obj.transform;
-            _spriteRenderer = _player.GetComponent<SpriteRenderer>();
-            _playerAttack = _player.GetComponent<PlayerAttack>();
-            if (_playerAttack == null)
-            {
-                _playerEyeTransform = _player.GetComponentsInChildren<Transform>()[1];
-            }
-        });
+        playerManager.PlayerCreateEvent.AddListener((obj) => { _player = obj.transform;});
         SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonStart();
         playerManager.BatSwingTimeScaleEvent.AddListener(CameraShaking);
         _beforePosition = transform.position;
@@ -48,15 +38,13 @@ public class PlayerChasingCamera : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_player == null)
+        if (!_isChasing || _player == null)
+        {
             return;
+        }
+        
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Angle(mousePos);
-
-         if (_isChasing)
-         {
-             ChasingCamera(mousePos);
-         }
+        ChasingCamera(mousePos);
     }
 
      private void LateUpdate()
@@ -110,38 +98,6 @@ public class PlayerChasingCamera : MonoBehaviour
         // 카메라 위치 설정
         transform.position = Vector3.Lerp(transform.position, _player.position + midPoint_as_V3,
             Time.fixedDeltaTime * _moveSpeed);
-    }
-
-    private void Angle(Vector2 mousePos) //각도 계산
-    {
-        float playerAngleDegree = QT.Util.Math.GetDegree(_player.position, mousePos);
-        //Debug.Log(playerAngleDegree);
-        switch (playerAngleDegree)
-        {
-            case > 45.0f and < 135.0f:
-                //_spriteRenderer.sprite = _playerSprites[0];
-                break;
-            case > -135.5f and < -45.0f:
-                //_spriteRenderer.sprite = _playerSprites[1];
-                break;
-            case > 135.0f:
-            case < -135.0f:
-                //_spriteRenderer.sprite = _playerSprites[2];
-                break;
-            default:
-                //_spriteRenderer.sprite = _playerSprites[3];
-                break;
-        }
-
-        if (_playerAttack == null)
-        {
-            _playerEyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
-            
-        }
-        else
-        {
-            _playerAttack.EyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
-        }
     }
 
     private void CameraShaking(bool isCheck)

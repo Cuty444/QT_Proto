@@ -15,6 +15,7 @@ namespace QT
         public enum AtkStartTypes
         {
             None,
+            AfterIdleSec,
             Sight,
         }
 

@@ -11,9 +11,12 @@ namespace QT
     {
         public int ProjectileId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
-        
+
+        [SerializeField] private float _ballHeight;
+        [SerializeField] private Transform _ballObject;
         [SerializeField] private LayerMask _bounceMask;
 
+        private float _maxSpeed;
         private float _speed;
         private float _speedDecay;
 
@@ -32,21 +35,46 @@ namespace QT
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce)
+        private void OnEnable()
         {
-            _speed = speed;
-            _size = data.ColliderRad;
+            SystemManager.Instance.ProjectileManager.Register(this);
+        }
+
+        private void OnDisable()
+        {
+            SystemManager.Instance.ProjectileManager.UnRegister(this);
+        }
+
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask)
+        {
+            _maxSpeed = _speed = speed;
+            _size = data.ColliderRad * 0.5f;
             _damage = data.DirectDmg;
 
             _direction = dir;
             _bounceCount = _maxBounce = maxBounce;
+
+            _bounceMask = bounceMask;
         }
         
         public void Hit(Vector2 dir, float newSpeed)
         {
+            Hit(dir, newSpeed, _bounceMask);
+        }
+        
+        public void Hit(Vector2 dir, float newSpeed, LayerMask bounceMask)
+        {
             _direction = dir;
+            _maxSpeed = Mathf.Max(_speed, newSpeed);
             _speed = newSpeed;
             _bounceCount = _maxBounce;
+            
+            _bounceMask = bounceMask;
+        }
+        
+        public void ResetBounceCount(int maxBounce)
+        {
+            _bounceCount = _maxBounce = maxBounce;
         }
 
         private void Update()
@@ -68,9 +96,28 @@ namespace QT
             _speed -= _speedDecay * Time.deltaTime;
             if (_speed <= 0)
             {
-                SystemManager.Instance.ResourceManager.ReleaseObject(this);
+                _speed = 0.1f;
+                //SystemManager.Instance.ResourceManager.ReleaseObject(this);
             }
+
+            // easeInQuad
+            var height = _speed / _maxSpeed;
+            height *= height;
+
+            _ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            UnityEditor.Handles.color = Color.red;
+            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.back, _size);
+
+            UnityEditor.Handles.Label(transform.position, (_size * 2).ToString());
+            Gizmos.DrawRay(transform.position, Vector2.right * _size);
+        }
+#endif
+        
     }
 
 }

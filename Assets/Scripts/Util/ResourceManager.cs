@@ -13,7 +13,7 @@ namespace QT
         private Transform _poolRootTransform;
         
         private readonly Dictionary<string, Object> _cache = new ();
-        private readonly Dictionary<Type, Stack<MonoBehaviour>> _pool = new ();
+        private readonly Dictionary<Type, Stack<Component>> _pool = new ();
         
         public void Initialize()
         {
@@ -31,24 +31,37 @@ namespace QT
         
         public async UniTaskVoid CacheAsset(string path)
         {
+            if (_cache.ContainsKey(path))
+            {
+                return;
+            }
+            
             var asset = await Addressables.LoadAssetAsync<Object>(path);
             _cache.TryAdd(path, asset);
         }
         
         public async UniTask<T> LoadAsset<T>(string path, bool isCaching) where T : Object
         {
-            T asset;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
             
             if (isCaching && _cache.TryGetValue(path, out var cached))
             {
-                asset = cached as T;
+                return Object.Instantiate(cached as T);
             }
-            else
+            
+            try
             {
-                asset = await Addressables.LoadAssetAsync<T>(path);
+                return Object.Instantiate(await Addressables.LoadAssetAsync<T>(path));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"에셋 로드에 실패했습니다. Path : {path}\n\n{e.Message}");
             }
 
-            return Object.Instantiate(asset);
+            return null;
         }
         
         public async UniTask<IList<T>> LoadAssets<T>(IList<IResourceLocation> locations) where T : Object
@@ -69,7 +82,7 @@ namespace QT
         }
 
 
-        public async UniTask<T> GetFromPool<T>(string path, Transform parent = null) where T : MonoBehaviour
+        public async UniTask<T> GetFromPool<T>(string path, Transform parent = null) where T : Component
         {
             T obj = null;
 
@@ -86,8 +99,8 @@ namespace QT
             }
             else
             {
-                _pool.Add(typeof(T), new Stack<MonoBehaviour>());
-                obj = (await LoadAsset<GameObject>(path, true)).GetComponent<T>();
+                _pool.Add(typeof(T), new Stack<Component>());
+                (await LoadAsset<GameObject>(path, true))?.TryGetComponent(out obj);
             }
 
             if (obj != null)
@@ -99,7 +112,7 @@ namespace QT
             return obj;
         }
 
-        public void ReleaseObject<T>(T obj) where T : MonoBehaviour
+        public void ReleaseObject<T>(T obj) where T : Component
         {
             if (_pool.TryGetValue(typeof(T), out var pool))
             {
