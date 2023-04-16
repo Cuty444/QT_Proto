@@ -42,18 +42,21 @@ namespace QT
                 return null;
             }
             
-            T asset;
-            
             if (isCaching && _cache.TryGetValue(path, out var cached))
             {
-                asset = cached as T;
+                return Object.Instantiate(cached as T);
             }
-            else
+            
+            try
             {
-                asset = await Addressables.LoadAssetAsync<T>(path);
+                return Object.Instantiate(await Addressables.LoadAssetAsync<T>(path));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"에셋 로드에 실패했습니다. Path : {path}\n\n{e.Message}");
             }
 
-            return Object.Instantiate(asset);
+            return null;
         }
         
         public async UniTask<IList<T>> LoadAssets<T>(IList<IResourceLocation> locations) where T : Object
