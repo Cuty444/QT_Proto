@@ -10,6 +10,7 @@ namespace QT
         public Vector2 Position { get; }
         
         public void Hit(Vector2 dir, float power);
+        public void Hit(Vector2 dir, float power, LayerMask bounceMask);
     }
     
     public class ProjectileManager
