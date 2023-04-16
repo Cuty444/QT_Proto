@@ -7,7 +7,7 @@ namespace QT
 {
     public class EnemyProjectileShooter : ProjectileShooter
     {
-        protected override LayerMask _bounceMask => LayerMask.GetMask("Wall", "Player");
+        public override LayerMask BounceMask => LayerMask.GetMask("Wall", "Player");
         
         public void PlayEnemyAtkSequence(int atkDataId, bool canOverlap = false)
         {
