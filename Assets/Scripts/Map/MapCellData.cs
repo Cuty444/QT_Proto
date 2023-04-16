@@ -11,19 +11,19 @@ namespace QT.Map
     {
         [SerializeField] private Transform[] _doorTransforms;
         [SerializeField] private Transform[] _doorExitTransforms;
-
+        [Header("문 순서는 상하좌우")]
+        [SerializeField] private GameObject[] _door;
+        [Header("이 밑은 현재 더미데이터 미적용중")]
+        [SerializeField] private RoomType _roomType;
         private PlayerManager _playerManager;
-        private RoomType RoomType;
-        public GameObject Door;
 
         private void Awake()
         {
             for (int i = 0; i < _doorTransforms.Length; i++)
             {
                 _doorTransforms[i].gameObject.SetActive(false);
-                var door = Instantiate(Door, _doorTransforms[i]);
+                var door = Instantiate(_door[i], _doorTransforms[i]);
                 door.transform.localPosition = Vector3.zero;
-                door.gameObject.name = _doorTransforms[i].gameObject.name;
             }
             
             _playerManager = SystemManager.Instance.PlayerManager;

@@ -87,6 +87,10 @@ namespace QT.UI
             cell.transform.localPosition = pos;
             cell.SetRouteDirection(direction);
             cell.CellPos = createPos;
+            if (createPos == _mapData.BossRoomPosition)
+            {
+                cell.SetRoomType(RoomType.Boss);
+            }
             _cellList.Add(cell);
         }
 
