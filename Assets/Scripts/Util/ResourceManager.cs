@@ -13,7 +13,7 @@ namespace QT
         private Transform _poolRootTransform;
         
         private readonly Dictionary<string, Object> _cache = new ();
-        private readonly Dictionary<Type, Stack<MonoBehaviour>> _pool = new ();
+        private readonly Dictionary<Type, Stack<Component>> _pool = new ();
         
         public void Initialize()
         {
@@ -77,7 +77,7 @@ namespace QT
         }
 
 
-        public async UniTask<T> GetFromPool<T>(string path, Transform parent = null) where T : MonoBehaviour
+        public async UniTask<T> GetFromPool<T>(string path, Transform parent = null) where T : Component
         {
             T obj = null;
 
@@ -94,7 +94,7 @@ namespace QT
             }
             else
             {
-                _pool.Add(typeof(T), new Stack<MonoBehaviour>());
+                _pool.Add(typeof(T), new Stack<Component>());
                 (await LoadAsset<GameObject>(path, true))?.TryGetComponent(out obj);
             }
 
@@ -107,7 +107,7 @@ namespace QT
             return obj;
         }
 
-        public void ReleaseObject<T>(T obj) where T : MonoBehaviour
+        public void ReleaseObject<T>(T obj) where T : Component
         {
             if (_pool.TryGetValue(typeof(T), out var pool))
             {
