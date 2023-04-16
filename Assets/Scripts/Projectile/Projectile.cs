@@ -35,6 +35,16 @@ namespace QT
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
         }
 
+        private void OnEnable()
+        {
+            SystemManager.Instance.ProjectileManager.Register(this);
+        }
+
+        private void OnDisable()
+        {
+            SystemManager.Instance.ProjectileManager.UnRegister(this);
+        }
+
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask)
         {
             _maxSpeed = _speed = speed;

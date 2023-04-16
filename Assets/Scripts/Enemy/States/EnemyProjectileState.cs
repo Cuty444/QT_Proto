@@ -32,6 +32,8 @@ namespace QT.Enemy
         {
             _direction = dir;
             _speed = power;
+            
+            SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
         }
 
         public override void UpdateState()
@@ -56,6 +58,11 @@ namespace QT.Enemy
             {
                 _ownerEntity.ChangeState(Enemy.States.Dead);
             }
+        }
+
+        public override void ClearState()
+        {
+            SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
         }
     }
 }
