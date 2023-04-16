@@ -71,6 +71,11 @@ namespace QT
             
             _bounceMask = bounceMask;
         }
+        
+        public void ResetBounceCount(int maxBounce)
+        {
+            _bounceCount = _maxBounce = maxBounce;
+        }
 
         private void Update()
         {
@@ -91,7 +96,8 @@ namespace QT
             _speed -= _speedDecay * Time.deltaTime;
             if (_speed <= 0)
             {
-                SystemManager.Instance.ResourceManager.ReleaseObject(this);
+                _speed = 0.1f;
+                //SystemManager.Instance.ResourceManager.ReleaseObject(this);
             }
 
             // easeInQuad

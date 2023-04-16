@@ -16,11 +16,13 @@ namespace QT.Player
         public override void InitializeState()
         {
             _inputSystem.OnKeyMoveEvent.AddListener(ChangeMove);
+            _inputSystem.OnKeyDownAttackEvent.AddListener(OnAttackStart);
         }
 
         public override void ClearState()
         {
             _inputSystem.OnKeyMoveEvent.RemoveListener(ChangeMove);
+            _inputSystem.OnKeyDownAttackEvent.RemoveListener(OnAttackStart);
         }
 
         private void ChangeMove(Vector2 direction)
@@ -28,6 +30,11 @@ namespace QT.Player
             if (direction == Vector2.zero)
                 return;
             _ownerEntity.ChangeState(Player.States.Move);
+        }
+        
+        private void OnAttackStart()
+        {
+            _ownerEntity.ChangeState(Player.States.Swing);
         }
     }
 

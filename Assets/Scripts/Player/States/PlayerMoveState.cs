@@ -8,7 +8,7 @@ namespace QT.Player
     public class PlayerMoveState : FSMState<Player>
     {
         private InputSystem _inputSystem;
-        private Vector2 _moveDirection;
+        protected Vector2 _moveDirection;
         public PlayerMoveState(IFSMEntity owner) : base(owner)
         {
             _inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
@@ -17,11 +17,13 @@ namespace QT.Player
         public override void InitializeState()
         {
             _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
+            _inputSystem.OnKeyDownAttackEvent.AddListener(OnAttackStart);
         }
 
         public override void ClearState()
         {
             _inputSystem.OnKeyMoveEvent.RemoveListener(MoveDirection);
+            _inputSystem.OnKeyDownAttackEvent.RemoveListener(OnAttackStart);
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
 
@@ -30,7 +32,12 @@ namespace QT.Player
             Move();
         }
 
-        private void MoveDirection(Vector2 direction)
+        private void OnAttackStart()
+        {
+            _ownerEntity.ChangeState(Player.States.Swing);
+        }
+        
+        protected virtual void MoveDirection(Vector2 direction)
         {
             _moveDirection = direction.normalized;
             if (_moveDirection == Vector2.zero)

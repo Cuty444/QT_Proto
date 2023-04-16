@@ -16,5 +16,10 @@ namespace QT.Enemy
         {
             OnDamageEvent.Invoke(dir, power);
         }
+        
+        public void ResetBounceCount(int maxBounce)
+        {
+            
+        }
     }
 }
