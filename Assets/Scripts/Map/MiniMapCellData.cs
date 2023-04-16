@@ -24,7 +24,9 @@ namespace QT.Map
         [SerializeField] private Color[] _mapColors;
         [SerializeField] private GameObject _lineRenders;
         [SerializeField] private UILineRenderer[] _uiLineRenderers;
-        
+        [SerializeField] private Sprite[] _mapIconSprite;
+        [SerializeField] private Transform _iconsTransform;
+        [SerializeField] private GameObject _miniMapIconObject;
         [HideInInspector]public Vector2Int CellPos;
 
         private PlayerManager _playerManager;
@@ -35,6 +37,8 @@ namespace QT.Map
         private MapDirection _pathOpenDirection;
 
         private MapCellData _mapCellData;
+
+        private RoomType _roomType;
         private void Awake()
         {
             _lineRenders.SetActive(false);
@@ -52,6 +56,7 @@ namespace QT.Map
                 _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
                 _mapCellData.OpenDoorDirection(_pathOpenDirection);
             });
+            _iconsTransform.gameObject.SetActive(false);
         }
 
         public void SetRouteDirection(MapDirection mapDirection)
@@ -92,6 +97,7 @@ namespace QT.Map
             {
                 _lineRenders.SetActive(true);
                 _mapImage.enabled = true;
+                _iconsTransform.gameObject.SetActive(true);
                 _mapImage.color = _mapColors[0];
                 //ColorSetLineRender(_mapColors[0]);
             }
@@ -100,11 +106,13 @@ namespace QT.Map
                 _lineRenders.SetActive(true);
                 _mapImage.enabled = true;
                 _mapImage.color = _mapColors[1];
+                _iconsTransform.gameObject.SetActive(true);
                 //ColorSetLineRender(_mapColors[1]);
             }
             else if (_dungeonMapSystem.MultiPathClearCheck(CellPos))
             {
                 _mapImage.enabled = true;
+                _iconsTransform.gameObject.SetActive(true);
             }
         }
 
@@ -114,6 +122,13 @@ namespace QT.Map
             {
                 _uiLineRenderers[i].color = color;
             }
+        }
+
+        public void SetRoomType(RoomType roomType)
+        {
+            _roomType = roomType;
+            GameObject iconObject = Instantiate(_miniMapIconObject, _iconsTransform);
+            iconObject.GetComponent<Image>().sprite = _mapIconSprite?[(int) RoomType.Boss];
         }
     }
 }
