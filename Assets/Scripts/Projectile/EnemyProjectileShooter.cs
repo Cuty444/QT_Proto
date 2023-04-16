@@ -7,7 +7,7 @@ namespace QT
 {
     public class EnemyProjectileShooter : ProjectileShooter
     {
-        private Coroutine _coroutine = null;
+        protected override LayerMask _bounceMask => LayerMask.GetMask("Wall", "Player");
         
         public void PlayEnemyAtkSequence(int atkDataId, bool canOverlap = false)
         {
@@ -17,12 +17,12 @@ namespace QT
                 return;
             }
 
-            if (!canOverlap && _coroutine != null)
+            if (!canOverlap)
             {
-                StopCoroutine(_coroutine);
+                StopAllCoroutines();
             }
 
-            _coroutine = StartCoroutine(AttackSequence(atkList));
+            StartCoroutine(AttackSequence(atkList));
         }
 
         private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList)
@@ -30,12 +30,11 @@ namespace QT
             foreach (var data in atkList)
             {
                 yield return new WaitForSeconds(data.BeforeDelay);
-                
+
                 Shoot(data.ShootDataId, data.AimType);
                 
                 yield return new WaitForSeconds(data.AfterDelay);
             }
-            
         }
     }
 }

@@ -32,7 +32,7 @@ namespace QT
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce)
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask)
         {
             _speed = speed;
             _size = data.ColliderRad;
@@ -40,13 +40,22 @@ namespace QT
 
             _direction = dir;
             _bounceCount = _maxBounce = maxBounce;
+
+            _bounceMask = bounceMask;
         }
         
         public void Hit(Vector2 dir, float newSpeed)
         {
+            Hit(dir, newSpeed, _bounceMask);
+        }
+        
+        public void Hit(Vector2 dir, float newSpeed, LayerMask bounceMask)
+        {
             _direction = dir;
             _speed = newSpeed;
             _bounceCount = _maxBounce;
+            
+            _bounceMask = bounceMask;
         }
 
         private void Update()
