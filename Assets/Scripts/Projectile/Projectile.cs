@@ -11,9 +11,12 @@ namespace QT
     {
         public int ProjectileId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
-        
+
+        [SerializeField] private float _ballHeight;
+        [SerializeField] private Transform _ballObject;
         [SerializeField] private LayerMask _bounceMask;
 
+        private float _maxSpeed;
         private float _speed;
         private float _speedDecay;
 
@@ -34,8 +37,8 @@ namespace QT
 
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask)
         {
-            _speed = speed;
-            _size = data.ColliderRad;
+            _maxSpeed = _speed = speed;
+            _size = data.ColliderRad * 0.5f;
             _damage = data.DirectDmg;
 
             _direction = dir;
@@ -52,6 +55,7 @@ namespace QT
         public void Hit(Vector2 dir, float newSpeed, LayerMask bounceMask)
         {
             _direction = dir;
+            _maxSpeed = Mathf.Max(_speed, newSpeed);
             _speed = newSpeed;
             _bounceCount = _maxBounce;
             
@@ -79,7 +83,25 @@ namespace QT
             {
                 SystemManager.Instance.ResourceManager.ReleaseObject(this);
             }
+
+            // easeInQuad
+            var height = _speed / _maxSpeed;
+            height *= height;
+
+            _ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            UnityEditor.Handles.color = Color.red;
+            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.back, _size);
+
+            UnityEditor.Handles.Label(transform.position, (_size * 2).ToString());
+            Gizmos.DrawRay(transform.position, Vector2.right * _size);
+        }
+#endif
+        
     }
 
 }
