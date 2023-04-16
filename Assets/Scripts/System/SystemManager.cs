@@ -12,6 +12,8 @@ namespace QT.Core
         public ResourceManager ResourceManager { get; } = new ();
         public GameDataManager DataManager { get; } = new ();
         public PlayerManager PlayerManager { get; } = new();
+        public ProjectileManager ProjectileManager { get; } = new();
+        
         [field:SerializeField]public UIManager UIManager { get; private set; }
         
         private readonly Dictionary<Type, SystemBase> _systems = new ();
