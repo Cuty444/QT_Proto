@@ -13,7 +13,7 @@ public enum AimTypes
 
 public class ProjectileShooter : MonoBehaviour
 {
-    protected virtual LayerMask _bounceMask => LayerMask.GetMask("Wall");
+    public virtual LayerMask BounceMask => LayerMask.GetMask("Wall");
     
     [SerializeField] protected Transform _shootPoint;
 
@@ -51,7 +51,7 @@ public class ProjectileShooter : MonoBehaviour
         var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
         projectile.transform.position = _shootPoint.position;
             
-        projectile.Init(projectileData, dir, speed, bounceCount, _bounceMask);
+        projectile.Init(projectileData, dir, speed, bounceCount, BounceMask);
     }
 
     protected Vector2 GetDirection(float angle, AimTypes aimType)
