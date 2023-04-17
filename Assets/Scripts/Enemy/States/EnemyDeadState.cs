@@ -8,28 +8,16 @@ namespace QT.Enemy
     [FSMState((int)Enemy.States.Dead)]
     public class EnemyDeadState : FSMState<Enemy>
     {
+        private static readonly int DeadAnimHash = Animator.StringToHash("Dead");
+        
         public EnemyDeadState(IFSMEntity owner) : base(owner)
         {
         }
 
         public override void InitializeState()
         {
-            
-        }
-
-        public override void UpdateState()
-        {
-            
-        }
-
-        public override void FixedUpdateState()
-        {
-            
-        }
-
-        public override void ClearState()
-        {
-            
+            _ownerEntity.Animator.SetTrigger(DeadAnimHash);
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
     }
 }

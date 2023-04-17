@@ -33,7 +33,7 @@ namespace QT.Map
         {
             for (int i = 0; i < _enemyList.Count; i++)
             {
-                if (_enemyList[i].CurrentState > (int) Enemy.Enemy.States.Rigid)
+                if (_enemyList[i].CurrentStateIndex > (int) Enemy.Enemy.States.Rigid)
                 {
                     _enemyList.RemoveAt(i);
                     i = 0;

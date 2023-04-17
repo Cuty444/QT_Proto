@@ -77,7 +77,7 @@ namespace QT.Player
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
-                projectile.Hit(GetNewProjectileDir(projectile), power, mask);
+                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask);
             }
             
             _ownerEntity.PlayBatAnimation();

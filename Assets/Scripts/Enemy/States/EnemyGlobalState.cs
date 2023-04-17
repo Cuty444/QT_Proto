@@ -14,12 +14,14 @@ namespace QT.Enemy
         
         private void OnDamage(Vector2 dir, float power)
         {
-            if (_ownerEntity.CurrentState >= (int)Enemy.States.Rigid)
+            if (_ownerEntity.CurrentStateIndex >= (int)Enemy.States.Rigid)
             {
                 return;
             }
 
             _ownerEntity.HP.AddStatus(-power);
+            
+            _ownerEntity.Rigidbody.AddForce(-dir, ForceMode2D.Impulse);
             _ownerEntity.ChangeState(Enemy.States.Rigid);
         }
     }
