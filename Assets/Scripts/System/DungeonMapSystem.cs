@@ -17,6 +17,18 @@ namespace QT.Core.Map
         HpShop,
     }
 
+    public class BFSCellData
+    {
+        public Vector2Int Position;
+        public int RoomCount;
+
+        public BFSCellData(Vector2Int position, int roomCount)
+        {
+            Position = position;
+            RoomCount = roomCount;
+        }
+    }
+
     public class CellData
     {
         public RoomType RoomType;
@@ -188,72 +200,70 @@ namespace QT.Core.Map
         
         private Vector2Int GetFarthestRoomFromStart()
         {
-            // ½ÃÀÛ¹æÀÇ ÁÂÇ¥
+            // ì‹œì‘ë°©ì˜ ì¢Œí‘œ
             Vector2Int startRoomPos = _mapNodeList[0];
 
-            // BFS ¾Ë°í¸®Áò¿¡ »ç¿ëÇÒ Å¥¿Í ¹æ¹® ¿©ºÎ¸¦ Ã¼Å©ÇÒ ¹è¿­
-            Queue<Vector2Int> queue = new Queue<Vector2Int>();
+            // BFS ì•Œê³ ë¦¬ì¦˜ì— ì‚¬ìš©í•  íì™€ ë°©ë¬¸ ì—¬ë¶€ë¥¼ ì²´í¬í•  ë°°ì—´
+            Queue<BFSCellData> queue = new Queue<BFSCellData>();
             bool[,] visited = new bool[_mapHeight, _mapWidth];
 
-            // ½ÃÀÛ ¹æÀ» Å¥¿¡ Ãß°¡ÇÏ°í ¹æ¹® Ã¼Å©
-            queue.Enqueue(startRoomPos);
+            // ì‹œì‘ ë°©ì„ íì— ì¶”ê°€í•˜ê³  ë°©ë¬¸ ì²´í¬
+            queue.Enqueue(new BFSCellData(startRoomPos,0));
             visited[startRoomPos.y, startRoomPos.x] = true;
 
-            // BFS ¾Ë°í¸®ÁòÀ» »ç¿ëÇÏ¿© ½ÃÀÛ ¹æÀ¸·ÎºÎÅÍ °¡Àå ¸Õ ¹æµéÀÇ ÁÂÇ¥¸¦ Ã£½À´Ï´Ù.
-            List<Vector2Int> farthestRoomPosList = new List<Vector2Int>();
+            // BFS ì•Œê³ ë¦¬ì¦˜ì„ ì‚¬ìš©í•˜ì—¬ ì‹œì‘ ë°©ìœ¼ë¡œë¶€í„° ê°€ì¥ ë¨¼ ë°©ë“¤ì˜ ì¢Œí‘œë¥¼ ì°¾ìŠµë‹ˆë‹¤.
+            List<BFSCellData> farthestRoomPosList = new List<BFSCellData>();
             int farthestDistance = 0;
             while (queue.Count > 0)
             {
-                Vector2Int currRoomPos = queue.Dequeue();
-                int distance = Mathf.Abs(currRoomPos.x - startRoomPos.x) + Mathf.Abs(currRoomPos.y - startRoomPos.y);
+                BFSCellData currRoomPos = queue.Dequeue();
 
-                if (distance > farthestDistance)
+                if (currRoomPos.RoomCount > farthestDistance)
                 {
-                    farthestDistance = distance;
+                    farthestDistance = currRoomPos.RoomCount;
                     farthestRoomPosList.Clear();
                     farthestRoomPosList.Add(currRoomPos);
                 }
-                else if (distance == farthestDistance)
+                else if (currRoomPos.RoomCount == farthestDistance)
                 {
                     farthestRoomPosList.Add(currRoomPos);
                 }
 
                 foreach (Vector2Int dir in QT.Util.UnityUtil.PathDirections)
                 {
-                    Vector2Int nextRoomPos = currRoomPos + dir;
+                    Vector2Int nextRoomPos = currRoomPos.Position - dir;
 
-                    // ´ÙÀ½ ¹æÀÌ ¸ÊÀ» ¹ş¾î³ª¸é °Ç³Ê¶Ü
+                    // ë‹¤ìŒ ë°©ì´ ë§µì„ ë²—ì–´ë‚˜ë©´ ê±´ë„ˆëœ€
                     if (nextRoomPos.x < 0 || nextRoomPos.x >= _mapWidth || nextRoomPos.y < 0 || nextRoomPos.y >= _mapHeight)
                     {
                         continue;
                     }
 
-                    // ´ÙÀ½ ¹æÀÌ ÀÌ¹Ì ¹æ¹®ÇÑ ¹æÀÌ¸é °Ç³Ê¶Ü
+                    // ë‹¤ìŒ ë°©ì´ ì´ë¯¸ ë°©ë¬¸í•œ ë°©ì´ë©´ ê±´ë„ˆëœ€
                     if (visited[nextRoomPos.y, nextRoomPos.x])
                     {
                         continue;
                     }
 
-                    // ´ÙÀ½ ¹æÀÌ ºó ¹æÀÌ¸é °Ç³Ê¶Ü
+                    // ë‹¤ìŒ ë°©ì´ ë¹ˆ ë°©ì´ë©´ ê±´ë„ˆëœ€
                     if (_map[nextRoomPos.y, nextRoomPos.x].RoomType == RoomType.None)
                     {
                         continue;
                     }
 
-                    // ´ÙÀ½ ¹æÀ» Å¥¿¡ Ãß°¡ÇÏ°í ¹æ¹® Ã¼Å©
-                    queue.Enqueue(nextRoomPos);
+                    // ë‹¤ìŒ ë°©ì„ íì— ì¶”ê°€í•˜ê³  ë°©ë¬¸ ì²´í¬
+                    queue.Enqueue(new BFSCellData(nextRoomPos,currRoomPos.RoomCount + 1));
                     visited[nextRoomPos.y, nextRoomPos.x] = true;
                 }
             }
 
-            // °¡Àå ¸Õ ¹æµé Áß ·£´ıÀ¸·Î ÇÏ³ª ¼±ÅÃÇÏ¿© ¹İÈ¯ÇÕ´Ï´Ù.
+            // ê°€ì¥ ë¨¼ ë°©ë“¤ ì¤‘ ëœë¤ìœ¼ë¡œ í•˜ë‚˜ ì„ íƒí•˜ì—¬ ë°˜í™˜í•©ë‹ˆë‹¤.
             int randomIndex = UnityEngine.Random.Range(0, farthestRoomPosList.Count);
-            return farthestRoomPosList[randomIndex];
+            return farthestRoomPosList[randomIndex].Position;
         }
 
 
-        
-        
+
         private void RoomCreate(Vector2Int pos)
         {
             _mapNodeList.Add(pos);
@@ -261,7 +271,7 @@ namespace QT.Core.Map
         }
         private async void MapLoad()
         {
-            var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : ÃßÈÄ ·¹ÀÌºí ½ºÅ×ÀÌÁö ¸®½ºÆ®·Î °ü¸®
+            var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : ì¶”í›„ ë ˆì´ë¸” ìŠ¤í…Œì´ì§€ ë¦¬ìŠ¤íŠ¸ë¡œ ê´€ë¦¬
             var ObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
             _mapList = QT.Util.RandomSeed.GetRandomIndexes(ObjectList.ToList(),_maxRoomValue);
         }

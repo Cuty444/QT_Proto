@@ -11,6 +11,7 @@ namespace QT.Map
     {
         [SerializeField] private Transform[] _doorTransforms;
         [SerializeField] private Transform[] _doorExitTransforms;
+        [SerializeField] private Transform _enemySpawnersTransform;
         [Header("문 순서는 상하좌우")]
         [SerializeField] private GameObject[] _door;
         [Header("이 밑은 현재 더미데이터 미적용중")]
@@ -19,6 +20,7 @@ namespace QT.Map
 
         private void Awake()
         {
+            _enemySpawnersTransform.gameObject.SetActive(false);
             for (int i = 0; i < _doorTransforms.Length; i++)
             {
                 _doorTransforms[i].gameObject.SetActive(false);
@@ -57,6 +59,11 @@ namespace QT.Map
             }
 
             Camera.main.GetComponent<PlayerChasingCamera>().SetBeforePosition( new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z));
+        }
+
+        public void RoomPlay()
+        {
+            _enemySpawnersTransform.gameObject.SetActive(true);
         }
     }
 }
