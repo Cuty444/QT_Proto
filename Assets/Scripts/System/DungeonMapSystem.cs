@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using QT.Core;
 using QT.Core.Data;
 using UnityEngine;
@@ -84,7 +85,7 @@ namespace QT.Core.Map
             _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
             GenerateMap(startPos);
             _mapData = new MapData(_map, startPos,GetFarthestRoomFromStart(),_mapNodeList);
-            MapLoad();
+            //MapLoad();
             SystemManager.Instance.PlayerManager.PlayerMapVisitedPosition.AddListener(position =>
             {
                 _map[position.y, position.x].IsVisited = true;
@@ -269,7 +270,7 @@ namespace QT.Core.Map
             _mapNodeList.Add(pos);
             _map[pos.y, pos.x].RoomType = RoomType.Normal;
         }
-        private async void MapLoad()
+        public async UniTask MapLoad()
         {
             var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var ObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
@@ -278,17 +279,7 @@ namespace QT.Core.Map
 
         public GameObject GetMapObject()
         {
-            try
-            {
-                return _mapList[_mapCount++ % _mapList.Count];
-
-            }
-            catch (Exception e)
-            {
-                Debug.Log("MapList Load Error : " + _mapCount);
-                Debug.Log("MapList Load Error : " + _mapList[_mapCount].name);
-                throw;
-            }
+            return _mapList[_mapCount++ % _mapList.Count];
         }
     }
 }
