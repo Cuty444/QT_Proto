@@ -56,7 +56,7 @@ namespace QT.Enemy
         private void OnDamage(Vector2 dir, float power)
         {
             var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
-            ((EnemyProjectileState) state).InitializeState(dir, power);
+            ((EnemyProjectileState) state)?.InitializeState(dir, power);
         }
     }
 }

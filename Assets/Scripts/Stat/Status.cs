@@ -22,7 +22,7 @@ namespace QT
 
         public override void UpdateValue()
         {
-            var ratio = _statusValue / Value;
+            var ratio = Value != 0 ? _statusValue / Value : 1;
             base.UpdateValue();
             
             _statusValue = Value * ratio;

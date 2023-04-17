@@ -40,6 +40,7 @@ namespace QT.Enemy
             
             SetUpStats();
             SetUp(States.Normal);
+            SetGlobalState(new EnemyGlobalState(this));
         }
     }    
 }
