@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using QT.Core;
 using QT.Core.Data;
 using UnityEngine;
@@ -32,12 +33,12 @@ namespace QT.Core.Map
     public class CellData
     {
         public RoomType RoomType;
-        public bool IsClear;
+        public bool IsVisited;
 
         public CellData()
         {
             RoomType = RoomType.None;
-            IsClear = false;
+            IsVisited = false;
         }
     }
 
@@ -84,10 +85,10 @@ namespace QT.Core.Map
             _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
             GenerateMap(startPos);
             _mapData = new MapData(_map, startPos,GetFarthestRoomFromStart(),_mapNodeList);
-            MapLoad();
-            SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
+            //MapLoad();
+            SystemManager.Instance.PlayerManager.PlayerMapVisitedPosition.AddListener(position =>
             {
-                _map[position.y, position.x].IsClear = true;
+                _map[position.y, position.x].IsVisited = true;
             });
             SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((player) =>
             {
@@ -119,7 +120,7 @@ namespace QT.Core.Map
 
             QT.Util.RandomSeed.SeedSetting();
             _map[startPos.y, startPos.x].RoomType = RoomType.Normal;
-            _map[startPos.y, startPos.x].IsClear = true;
+            _map[startPos.y, startPos.x].IsVisited = true;
             _mapNodeList.Add(startPos);
             for (int i = 1; i < _maxRoomValue; i++)
             {
@@ -188,7 +189,7 @@ namespace QT.Core.Map
                     continue;
                 if (_map[nodeValue.y, nodeValue.x].RoomType == RoomType.Normal)
                 {
-                    if (_map[nodeValue.y, nodeValue.x].IsClear)
+                    if (_map[nodeValue.y, nodeValue.x].IsVisited)
                     {
                         return true;
                     }
@@ -269,7 +270,7 @@ namespace QT.Core.Map
             _mapNodeList.Add(pos);
             _map[pos.y, pos.x].RoomType = RoomType.Normal;
         }
-        private async void MapLoad()
+        public async UniTask MapLoad()
         {
             var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var ObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
