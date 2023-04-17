@@ -9,7 +9,8 @@ namespace QT
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-        private const float ReleaseDecayMultiply = 25;
+        private const float ReleaseDecayAddition = 2;
+        private const float MinSpeed = 0.1f;
         
         public int ProjectileId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
@@ -22,6 +23,7 @@ namespace QT
         private float _maxSpeed;
         private float _speed;
         private float _speedDecay;
+        private float _currentSpeedDecay;
 
         private float _size;
 
@@ -34,7 +36,6 @@ namespace QT
 
         private bool _isReleased;
         private float _releaseStartTime;
-        
         private float _releaseDelay;
 
         
@@ -64,6 +65,7 @@ namespace QT
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, float releaseDelay = 0)
         {
             _maxSpeed = _speed = speed;
+            _currentSpeedDecay = _speedDecay;
             _size = data.ColliderRad * 0.5f;
             _damage = data.DirectDmg;
 
@@ -85,6 +87,7 @@ namespace QT
             _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);
             _speed = newSpeed;
+            _currentSpeedDecay = _speedDecay;
             _bounceCount = _maxBounce;
             
             _bounceMask = bounceMask;
@@ -125,16 +128,22 @@ namespace QT
                 {
                     _isReleased = true;
                     _releaseStartTime = Time.time;
+                    
+                    if (_releaseDelay > 0)
+                    {
+                        _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
+                    }
                 }
             }
         }
 
         private void Move()
         {
+            _speed -= _currentSpeedDecay * Time.deltaTime;
+            
             if (_isReleased)
             {
-                _speed -= _speedDecay * ReleaseDecayMultiply * Time.deltaTime;
-                _speed = Mathf.Max(_speed, 0.1f);
+                _speed = Mathf.Max(_speed, MinSpeed);
             }
             else
             {
@@ -145,12 +154,7 @@ namespace QT
                     _isReleased = true;
                     _releaseStartTime = Time.time;
                 
-                    _speed = 0.1f;
-                    
-                    if (_releaseDelay > 0)
-                    {
-                        
-                    }
+                    _speed = MinSpeed;
                 }
             }
 
