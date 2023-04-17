@@ -21,24 +21,24 @@ namespace QT.Player
             _playerManager.ChargeAtkPierce = QT.Data.ChargeAtkPierce.None;
             
             float halfAngle = SwingCentralAngle.Value * 0.5f;
-            float startAngle, EndAngel;
+            float startAngle, endAngel;
             float rotationSpeed = 1;
             
             if (PlayerSwingAngle())
             {
                 startAngle = -90.0f + halfAngle;
-                EndAngel = -90.0f - halfAngle;
+                endAngel = -90.0f - halfAngle;
                 rotationSpeed = - 1;
             }
             else
             {
                 startAngle = -90.0f - halfAngle;
-                EndAngel = -90.0f + halfAngle;
+                endAngel = -90.0f + halfAngle;
             }
             
             _batTransform.transform.localRotation = Quaternion.Euler(0f, 0f, startAngle);
-            rotationSpeed *= Mathf.DeltaAngle(_batTransform.localEulerAngles.z, EndAngel) / 0.1f;
-            StartCoroutine(BatAnimation(_batTransform, rotationSpeed, EndAngel));
+            rotationSpeed *= Mathf.DeltaAngle(_batTransform.localEulerAngles.z, endAngel) / 0.1f;
+            StartCoroutine(BatAnimation(_batTransform, rotationSpeed, endAngel));
             
         }
         
