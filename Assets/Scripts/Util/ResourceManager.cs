@@ -13,7 +13,7 @@ namespace QT
         private Transform _poolRootTransform;
         
         private readonly Dictionary<string, Object> _cache = new ();
-        private readonly Dictionary<Type, Stack<Component>> _pool = new ();
+        private readonly Dictionary<string, Stack<Component>> _pool = new ();
         
         public void Initialize()
         {
@@ -86,7 +86,7 @@ namespace QT
         {
             T obj = null;
 
-            if (_pool.TryGetValue(typeof(T), out var stack))
+            if (_pool.TryGetValue(path, out var stack))
             {
                 if (stack.Count > 0)
                 {
@@ -99,7 +99,7 @@ namespace QT
             }
             else
             {
-                _pool.Add(typeof(T), new Stack<Component>());
+                _pool.Add(path, new Stack<Component>());
                 (await LoadAsset<GameObject>(path, true))?.TryGetComponent(out obj);
             }
 
@@ -112,9 +112,9 @@ namespace QT
             return obj;
         }
 
-        public void ReleaseObject<T>(T obj) where T : Component
+        public void ReleaseObject<T>(string path, T obj) where T : Component
         {
-            if (_pool.TryGetValue(typeof(T), out var pool))
+            if (_pool.TryGetValue(path, out var pool))
             {
                 obj.gameObject.SetActive(false);
                 obj.transform.SetParent(_poolRootTransform);
@@ -124,6 +124,17 @@ namespace QT
             {
                 Object.Destroy(obj.gameObject);
             }
+        }
+
+        public async UniTaskVoid EmitParticle(string path, Vector2 position)
+        {
+            var particle = await GetFromPool<ParticleSystem>(path);
+            
+            particle.transform.position = position;
+            
+            await UniTask.Delay(TimeSpan.FromSeconds(particle.main.duration));
+
+            ReleaseObject(path, particle);
         }
         
         public async UniTask<IList<IResourceLocation>> GetLocations(string assetLabel)

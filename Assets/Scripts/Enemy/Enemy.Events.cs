@@ -26,9 +26,5 @@ namespace QT.Enemy
         {
             return LayerMask.GetMask("Default"); // TODO : 임시 추후 수정 필요
         }
-
-        public void ResetDelayedProjectile(float time)
-        {
-        }
     }
 }
