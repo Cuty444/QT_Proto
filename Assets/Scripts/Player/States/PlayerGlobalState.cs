@@ -101,6 +101,7 @@ namespace QT.Player
                 return;
             _ownerEntity.AttackBallInstate();
             _currentBallStack--;
+            _ownerEntity.SetThrowAnimation();
         }
 
         private void KeyDownAttack()
