@@ -109,7 +109,7 @@ namespace QT.Player
             _chargingBarImage = _chargingBarBackground.GetComponentsInChildren<Image>()[1];
             PlayerHPCanvas playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _ballStackBarImage = playerHpCanvas.PlayerBallStackImage;
-            _ballStackText = playerHpCanvas.PlayerBallStackText;
+            //_ballStackText = playerHpCanvas.PlayerBallStackText;
             _batSpriteRenderer = _batSwing.GetComponent<SpriteRenderer>();
             _batSpriteRenderer.enabled = false;
             _currentBallStack = _ballStackMax;

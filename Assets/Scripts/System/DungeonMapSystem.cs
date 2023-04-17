@@ -87,7 +87,6 @@ namespace QT.Core.Map
             _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
             GenerateMap(startPos);
             _mapData = new MapData(_map, startPos,GetFarthestRoomFromStart(),_mapNodeList);
-            //MapLoad();
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
             {
                 _map[position.y, position.x].IsClear = true;
