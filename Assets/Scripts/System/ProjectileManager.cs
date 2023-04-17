@@ -15,6 +15,8 @@ namespace QT
         public void ResetBounceCount(int maxBounce);
 
         public LayerMask GetLayerMask();
+
+        public void ResetDelayedProjectile(float time); // 플레이어가 소환한공 사라지는 시간 초기화
     }
     
     public class ProjectileManager
