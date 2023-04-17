@@ -36,6 +36,7 @@ namespace QT.Core
         public async void OnPlayerCreate() // 추후 로그라이크맵 절차 생성 SystemManager에서 관리하도록 코드 위치 변경이 필요함
         {
             Player = await SystemManager.Instance.ResourceManager.GetFromPool<Player.Player>(Constant.PlayerPrefabPath);
+            Player.transform.localPosition = new Vector3(0f, 6f, 0f);
             PlayerCreateEvent.Invoke(Player);
         }
     }
