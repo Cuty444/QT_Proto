@@ -14,6 +14,8 @@ namespace QT.UI
         [SerializeField] private GameObject _miniMapOnOff;
         [SerializeField] private GameObject _cellObject;
 
+        private PlayerManager _playerManager;
+        
         private Dictionary<Vector2Int, MapDirection> _pathDirections = new Dictionary<Vector2Int, MapDirection>();
         private MapData _mapData;
 
@@ -30,16 +32,18 @@ namespace QT.UI
             _pathDirections.Add(Vector2Int.left,MapDirection.Right);
             MiniMapDraw();
             _miniMapOnOff.SetActive(false);
-            PlayerManager playerManager = SystemManager.Instance.PlayerManager;
-            playerManager.PlayerDoorEnter.AddListener(NextMapWarp);
-            playerManager.PlayerMapPosition.AddListener((position) =>
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.PlayerDoorEnter.AddListener(NextMapWarp);
+            _playerManager.PlayerMapPosition.AddListener((position) =>
             {
                 _currentPlayerPosition = position;
                 MiniMapCellCenterPositionChagne(position);
             });
-            playerManager.PlayerCreateEvent.AddListener((player) =>
+            _playerManager.PlayerCreateEvent.AddListener((player) =>
             {
-                playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
+                _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
+                _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
+                _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
             });
 
         }
@@ -75,7 +79,6 @@ namespace QT.UI
                 CellCreate(_mapData.MapNodeList[i],direction);
             }
             
-            _cellList[0].StartRoomCellClear();
             MiniMapCellCenterPositionChagne(_currentPlayerPosition);
 
         }
