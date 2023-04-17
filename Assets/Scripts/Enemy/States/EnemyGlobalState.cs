@@ -14,7 +14,6 @@ namespace QT.Enemy
         
         private void OnDamage(Vector2 dir, float power)
         {
-            Debug.LogError($"OnDamage { _ownerEntity.HP.StatusValue} {_ownerEntity.CurrentStateIndex}");
             if (_ownerEntity.CurrentStateIndex >= (int)Enemy.States.Rigid)
             {
                 return;
