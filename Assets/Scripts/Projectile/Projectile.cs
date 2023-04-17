@@ -30,10 +30,11 @@ namespace QT
 
         private float _damage;
 
-        
+        private bool _isDestroyed;
+        private float _throwProjectileDelayedTime;
         private void Awake()
         {
-            _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
+            _speedDecay = 0f;//SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
             _trailRenderer = GetComponentInChildren<TrailRenderer>();
         }
 
@@ -46,6 +47,11 @@ namespace QT
         {
             SystemManager.Instance?.ProjectileManager.UnRegister(this);
             _trailRenderer.Clear();
+            if (_isDestroyed)
+            {
+                _isDestroyed = false;
+                SystemManager.Instance?.PlayerManager.PlayerThrowProjectileReleased.Invoke();
+            }
         }
 
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask)
@@ -85,8 +91,24 @@ namespace QT
             return _bounceMask;
         }
 
+        public void ResetDelayedProjectile(float time)
+        {
+            _throwProjectileDelayedTime = time;
+            _isDestroyed = false;
+            _bounceMask = LayerMask.GetMask("Wall", "Enemy");
+        }
+
         private void Update()
         {
+            if (_throwProjectileDelayedTime > 0f)
+            {
+                PlayerProjectTileUpdate();
+                if (_isDestroyed)
+                {
+                    _throwProjectileDelayedTime -= Time.deltaTime;
+                }
+                return;
+            }
             var moveLength = _speed * Time.deltaTime;
             var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
 
@@ -104,8 +126,7 @@ namespace QT
             _speed -= _speedDecay * Time.deltaTime;
             if (_speed <= 0)
             {
-                _speed = 0.1f;
-                //SystemManager.Instance.ResourceManager.ReleaseObject(this);
+                SystemManager.Instance.ResourceManager.ReleaseObject(this);
             }
 
             // easeInQuad
@@ -115,37 +136,55 @@ namespace QT
             _ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
         }
 
-        //private void PlayerProjectTileUpdate()
-        //{
-        //    if (_isDestroyed)
-        //        return;
-        //    var moveLength = _speed * Time.deltaTime;
-        //    var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
-        //    if (hit.collider != null)
-        //    {
-        //        _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
-        //        if (--_bounceCount < 0)
-        //        {
-        //            _speed = 0f;
-        //            _isDestroyed = true;
-        //            transform.position = hit.point + (hit.normal * _size);
-        //            return;
-        //            _trailRenderer.Clear();
-        //            SystemManager.Instance.ResourceManager.ReleaseObject(this);
-        //        }
-        //    }
+        private void PlayerProjectTileUpdate()
+        {
+            if (_isDestroyed)
+                return;
+            var moveLength = _speed * Time.deltaTime;
+            var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
+            if (hit.collider != null)
+            {
+                _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
+                if (--_bounceCount < 0)
+                {
+                    _speed = 0f;
+                    _isDestroyed = true;
+                    _bounceMask = LayerMask.GetMask("ProjectileThrow");
+                    StartCoroutine(PlayerProjectileDelayed());
+                    transform.position = hit.point + (hit.normal * _size);
+                    return;
+                    _trailRenderer.Clear();
+                    SystemManager.Instance.ResourceManager.ReleaseObject(this);
+                }
+            }
 
-        //    transform.Translate(_direction * moveLength);
+            transform.Translate(_direction * moveLength);
 
-        //    _speed -= _speedDecay * Time.deltaTime;
-        //    return;
-        //    if (_speed <= 0)
-        //    {
-        //        _trailRenderer.Clear();
-        //        SystemManager.Instance.ResourceManager.ReleaseObject(this);
-        //    }
-        //}
+            _speed -= _speedDecay * Time.deltaTime;
+            return;
+            if (_speed <= 0)
+            {
+                _trailRenderer.Clear();
+                SystemManager.Instance.ResourceManager.ReleaseObject(this);
+            }
+        }
+
+        private IEnumerator PlayerProjectileDelayed()
+        {
+            float delayTime = 0f;
+            float distance = 1f * Time.deltaTime;
+            while (delayTime < 0.5f) // TODO : 이 부분 추후 데이터 테이블 불러오기
+            {
+                delayTime += Time.deltaTime;
+                transform.Translate(_direction * distance);
+                yield return null;
+            }
+
+            _bounceMask = LayerMask.GetMask("Wall","ProjectileDelayed");
+            _speed = 0f;
+        }
         
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

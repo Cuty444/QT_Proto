@@ -28,6 +28,8 @@ namespace QT.Core
         public UnityEvent<Vector2Int> PlayerMapClearPosition { get; } = new();
 
         public UnityEvent<Vector2Int> PlayerDoorEnter { get; } = new();
+
+        public UnityEvent PlayerThrowProjectileReleased { get; } = new();
         
         public Player.Player Player { get; private set; }
 
