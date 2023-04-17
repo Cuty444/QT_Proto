@@ -15,7 +15,6 @@ namespace QT
         [SerializeField] private float _ballHeight;
         [SerializeField] private Transform _ballObject;
         [SerializeField] private LayerMask _bounceMask;
-
         private TrailRenderer _trailRenderer;
         
         private float _maxSpeed;
@@ -79,6 +78,11 @@ namespace QT
         public void ResetBounceCount(int maxBounce)
         {
             _bounceCount = _maxBounce = maxBounce;
+        }
+
+        public LayerMask GetLayerMask()
+        {
+            return _bounceMask;
         }
 
         private void Update()

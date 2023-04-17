@@ -17,13 +17,15 @@ namespace QT.Player
 
         private float _chargingStartTime;
         private int _chargeLevel;
+
+        private LayerMask _projectileLayerMask;
         
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
             _ownerEntity.SwingAreaMeshFilter.mesh = CreateSwingAreaMesh(_ownerEntity.SwingRadius, _ownerEntity.SwingCentralAngle);
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
-            
+            _projectileLayerMask = LayerMask.GetMask("Enemy");
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
         }
 
@@ -117,7 +119,7 @@ namespace QT.Player
             Vector2 playerDir = _ownerEntity.EyeTransform.right;
             
             _projectiles.Clear();
-            SystemManager.Instance.ProjectileManager.GetInRange(playerPos, _ownerEntity.SwingRadius, ref _projectiles);
+            SystemManager.Instance.ProjectileManager.GetInRange(playerPos, _ownerEntity.SwingRadius, ref _projectiles,_projectileLayerMask);
 
             for (int i = 0; i < _projectiles.Count; i++)
             {
