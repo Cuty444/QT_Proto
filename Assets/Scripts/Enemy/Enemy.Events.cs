@@ -21,5 +21,10 @@ namespace QT.Enemy
         {
             
         }
+        
+        public LayerMask GetLayerMask()
+        {
+            return LayerMask.GetMask("Default"); // TODO : 임시 추후 수정 필요
+        }
     }
 }
