@@ -7,6 +7,9 @@ namespace QT.Player
 {
     public partial class Player
     {
+        private readonly string AnimationSwingString = "PlayerSwing";
+        private readonly string AnimationIdleString = "PlayerIdle";
+
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
         public void AngleAnimation()
@@ -45,6 +48,15 @@ namespace QT.Player
                     break;
             }
             _animator.transform.rotation = Quaternion.Euler(0f, yAngle,0f);
+        }
+
+        public void SetMoveCheck(bool isCheck)
+        {
+            _animator.SetBool(AnimationIdleString,isCheck);
+        }
+        public void SetSwingAnimation(bool isCheck)
+        {
+            _animator.SetBool(AnimationSwingString,isCheck);
         }
     }
 }
