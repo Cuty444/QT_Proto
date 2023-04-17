@@ -20,7 +20,8 @@ namespace QT.Core
         private FSMState<T> _previousState = null;
         private FSMState<T> _globalState = null;
 
-        public int CurrentState { get; private set; }
+        public int PreviousStateIndex { get; private set; }
+        public int CurrentStateIndex { get; private set; }
 
         protected virtual void Update()
         {
@@ -67,14 +68,18 @@ namespace QT.Core
                 return null;
             }
 
-            CurrentState = (int)enumValue;
+            if (ChangeState(state))
+            {
+                PreviousStateIndex = CurrentStateIndex;
+                CurrentStateIndex = (int)enumValue;
+            }
 
-            return ChangeState(state);
+            return null;
         }
 
-        private FSMState<T> ChangeState(FSMState<T> newState)
+        private bool ChangeState(FSMState<T> newState)
         {
-            if (newState == null || newState == _currentState) return null;
+            if (newState == null || newState == _currentState) return false;
 
             if (_currentState != null)
             {
@@ -90,7 +95,7 @@ namespace QT.Core
 
             Debug.Log($"{this.GetType()} : {newState.GetType()} 상태로 전환");
 
-            return _currentState;
+            return true;
         }
 
         public void SetGlobalState(FSMState<T> state)
@@ -104,7 +109,7 @@ namespace QT.Core
 
         public void RevertToPreviousState()
         {
-            ChangeState(_previousState);
+            ChangeState(PreviousStateIndex);
         }
     }
 }
