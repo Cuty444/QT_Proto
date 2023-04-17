@@ -9,6 +9,8 @@ namespace QT
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
+        private const float ReleaseDecayMultiply = 25;
+        
         public int ProjectileId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
 
@@ -51,6 +53,12 @@ namespace QT
         {
             SystemManager.Instance?.ProjectileManager.UnRegister(this);
             _trailRenderer.Clear();
+            
+            // Todo : 더 확실한 플레이어 투사체 구분필요
+            if (_isReleased && _releaseDelay > 0)
+            {
+                SystemManager.Instance?.PlayerManager.PlayerThrowProjectileReleased.Invoke();
+            }
         }
 
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, float releaseDelay = 0)
@@ -93,10 +101,22 @@ namespace QT
             return _bounceMask;
         }
 
+        
         private void Update()
         {
-            var moveLength = _speed * Time.deltaTime;
-            var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
+            if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
+            {
+                SystemManager.Instance.ResourceManager.ReleaseObject(this);
+            }
+
+            CheckHit();
+            Move();
+        }
+
+        
+        private void CheckHit()
+        {
+            var hit = Physics2D.CircleCast(transform.position, _size, _direction, _speed * Time.deltaTime, _bounceMask);
 
             if (hit.collider != null)
             {
@@ -107,27 +127,35 @@ namespace QT
                     _releaseStartTime = Time.time;
                 }
             }
+        }
 
-            transform.Translate(_direction * moveLength);
-
+        private void Move()
+        {
             if (_isReleased)
             {
-                if (Time.time - _releaseStartTime > _releaseDelay)
-                {
-                    SystemManager.Instance.ResourceManager.ReleaseObject(this);
-                }
-                return;
+                _speed -= _speedDecay * ReleaseDecayMultiply * Time.deltaTime;
+                _speed = Mathf.Max(_speed, 0.1f);
             }
-            
-            _speed -= _speedDecay * Time.deltaTime;
-            if (_speed <= 0)
+            else
             {
-                _isReleased = true;
-                _releaseStartTime = Time.time;
+                _speed -= _speedDecay * Time.deltaTime;
                 
-                _speed = 0.1f;
+                if (_speed <= 0)
+                {
+                    _isReleased = true;
+                    _releaseStartTime = Time.time;
+                
+                    _speed = 0.1f;
+                    
+                    if (_releaseDelay > 0)
+                    {
+                        
+                    }
+                }
             }
 
+            transform.Translate(_direction * (_speed * Time.deltaTime));
+            
             // easeInQuad
             var height = _speed / _maxSpeed;
             height *= height;
