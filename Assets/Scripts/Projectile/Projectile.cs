@@ -9,9 +9,15 @@ namespace QT
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
+        private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
+        private const float ReleaseDecayAddition = 2;
+        private const float MinSpeed = 0.1f;
+        
         public int ProjectileId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
 
+        private string _prefabPath;
+        
         [SerializeField] private float _ballHeight;
         [SerializeField] private Transform _ballObject;
         [SerializeField] private LayerMask _bounceMask;
@@ -20,6 +26,7 @@ namespace QT
         private float _maxSpeed;
         private float _speed;
         private float _speedDecay;
+        private float _currentSpeedDecay;
 
         private float _size;
 
@@ -30,11 +37,14 @@ namespace QT
 
         private float _damage;
 
-        private bool _isDestroyed;
-        private float _throwProjectileDelayedTime;
+        private bool _isReleased;
+        private float _releaseStartTime;
+        private float _releaseDelay;
+
+        
         private void Awake()
         {
-            _speedDecay = 0f;//SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
+            _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
             _trailRenderer = GetComponentInChildren<TrailRenderer>();
         }
 
@@ -47,16 +57,18 @@ namespace QT
         {
             SystemManager.Instance?.ProjectileManager.UnRegister(this);
             _trailRenderer.Clear();
-            if (_isDestroyed)
+            
+            // Todo : ë” í™•ì‹¤í•œ í”Œë ˆì´ì–´ íˆ¬ì‚¬ì²´ êµ¬ë¶„í•„ìš”
+            if (_isReleased && _releaseDelay > 0)
             {
-                _isDestroyed = false;
                 SystemManager.Instance?.PlayerManager.PlayerThrowProjectileReleased.Invoke();
             }
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask)
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, float releaseDelay = 0, string path = "")
         {
             _maxSpeed = _speed = speed;
+            _currentSpeedDecay = _speedDecay;
             _size = data.ColliderRad * 0.5f;
             _damage = data.DirectDmg;
 
@@ -64,6 +76,10 @@ namespace QT
             _bounceCount = _maxBounce = maxBounce;
 
             _bounceMask = bounceMask;
+            _releaseDelay = releaseDelay;
+            _isReleased = false;
+
+            _prefabPath = path;
         }
         
         public void Hit(Vector2 dir, float newSpeed)
@@ -76,9 +92,11 @@ namespace QT
             _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);
             _speed = newSpeed;
+            _currentSpeedDecay = _speedDecay;
             _bounceCount = _maxBounce;
             
             _bounceMask = bounceMask;
+            _isReleased = false;
         }
         
         public void ResetBounceCount(int maxBounce)
@@ -91,44 +109,68 @@ namespace QT
             return _bounceMask;
         }
 
-        public void ResetDelayedProjectile(float time)
-        {
-            _throwProjectileDelayedTime = time;
-            _isDestroyed = false;
-            _bounceMask = LayerMask.GetMask("Wall", "Enemy");
-        }
-
+        
         private void Update()
         {
-            if (_throwProjectileDelayedTime > 0f)
+            if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
             {
-                PlayerProjectTileUpdate();
-                if (_isDestroyed)
-                {
-                    _throwProjectileDelayedTime -= Time.deltaTime;
-                }
-                return;
+                SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
             }
-            var moveLength = _speed * Time.deltaTime;
-            var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
+
+            CheckHit();
+            Move();
+        }
+
+        
+        private void CheckHit()
+        {
+            var hit = Physics2D.CircleCast(transform.position, _size, _direction, _speed * Time.deltaTime, _bounceMask);
 
             if (hit.collider != null)
             {
-                _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
-                if (--_bounceCount < 0)
+                if (hit.collider.TryGetComponent(out IHitable hitable))
                 {
-                    SystemManager.Instance.ResourceManager.ReleaseObject(this);
+                    hitable.Hit(_direction, _damage);
+                    SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
+                }
+                
+                _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
+                if (--_bounceCount == 0)
+                {
+                    _isReleased = true;
+                    _releaseStartTime = Time.time;
+
+                    if (_releaseDelay > 0)
+                    {
+                        _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
+                    }
+                }
+            }
+        }
+
+        private void Move()
+        {
+            _speed -= _currentSpeedDecay * Time.deltaTime;
+            
+            if (_isReleased)
+            {
+                _speed = Mathf.Max(_speed, MinSpeed);
+            }
+            else
+            {
+                _speed -= _speedDecay * Time.deltaTime;
+                
+                if (_speed <= 0)
+                {
+                    _isReleased = true;
+                    _releaseStartTime = Time.time;
+                
+                    _speed = MinSpeed;
                 }
             }
 
-            transform.Translate(_direction * moveLength);
-
-            _speed -= _speedDecay * Time.deltaTime;
-            if (_speed <= 0)
-            {
-                SystemManager.Instance.ResourceManager.ReleaseObject(this);
-            }
-
+            transform.Translate(_direction * (_speed * Time.deltaTime));
+            
             // easeInQuad
             var height = _speed / _maxSpeed;
             height *= height;
@@ -136,55 +178,7 @@ namespace QT
             _ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
         }
 
-        private void PlayerProjectTileUpdate()
-        {
-            if (_isDestroyed)
-                return;
-            var moveLength = _speed * Time.deltaTime;
-            var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
-            if (hit.collider != null)
-            {
-                _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
-                if (--_bounceCount < 0)
-                {
-                    _speed = 0f;
-                    _isDestroyed = true;
-                    _bounceMask = LayerMask.GetMask("ProjectileThrow");
-                    StartCoroutine(PlayerProjectileDelayed());
-                    transform.position = hit.point + (hit.normal * _size);
-                    return;
-                    _trailRenderer.Clear();
-                    SystemManager.Instance.ResourceManager.ReleaseObject(this);
-                }
-            }
-
-            transform.Translate(_direction * moveLength);
-
-            _speed -= _speedDecay * Time.deltaTime;
-            return;
-            if (_speed <= 0)
-            {
-                _trailRenderer.Clear();
-                SystemManager.Instance.ResourceManager.ReleaseObject(this);
-            }
-        }
-
-        private IEnumerator PlayerProjectileDelayed()
-        {
-            float delayTime = 0f;
-            float distance = 1f * Time.deltaTime;
-            while (delayTime < 0.5f) // TODO : ÀÌ ºÎºÐ ÃßÈÄ µ¥ÀÌÅÍ Å×ÀÌºí ºÒ·¯¿À±â
-            {
-                delayTime += Time.deltaTime;
-                transform.Translate(_direction * distance);
-                yield return null;
-            }
-
-            _bounceMask = LayerMask.GetMask("Wall","ProjectileDelayed");
-            _speed = 0f;
-        }
         
-
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

@@ -47,7 +47,7 @@ namespace QT.Player
             _projectiles.Clear();
             foreach (var line in _lines)
             {
-                SystemManager.Instance.ResourceManager.ReleaseObject(line);
+                SystemManager.Instance.ResourceManager.ReleaseObject(HitLinePath, line);
             }
             _lines.Clear();
             
@@ -77,12 +77,11 @@ namespace QT.Player
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
-                projectile.ResetDelayedProjectile(5f);
                 projectile.Hit(GetNewProjectileDir(projectile), power, mask);
             }
             
             _ownerEntity.PlayBatAnimation();
-            
+            _ownerEntity.ChangeState(Player.States.Idle);
         }
 
         private async void SetLineObjects()

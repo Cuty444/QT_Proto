@@ -39,11 +39,12 @@ namespace QT
 
         private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList)
         {
+            _enemy.Animator.SetTrigger(AttackAnimHash);
+            
             foreach (var data in atkList)
             {
                 yield return new WaitForSeconds(data.BeforeDelay);
 
-                _enemy.Animator.SetTrigger(AttackAnimHash);
                 Shoot(data.ShootDataId, data.AimType);
                 
                 yield return new WaitForSeconds(data.AfterDelay);
