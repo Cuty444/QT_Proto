@@ -7,7 +7,7 @@ namespace QT.Enemy
     [FSMState((int) Enemy.States.Rigid)]
     public class EnemyRigidState : FSMState<Enemy>
     {
-        private readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
+        private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         
         private float _rigidStartTime;
         private float _rigidTime;
@@ -25,6 +25,8 @@ namespace QT.Enemy
             {
                 _ownerEntity.OnDamageEvent.AddListener(OnDamage);
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
+                
+                _ownerEntity.MaterialChanger.ChangeMaterial();
             }
             else
             {
@@ -35,6 +37,7 @@ namespace QT.Enemy
         public override void ClearState()
         {
             _ownerEntity.OnDamageEvent.RemoveListener(OnDamage);
+            _ownerEntity.MaterialChanger.ClearMaterial();
         }
 
         public override void UpdateState()
