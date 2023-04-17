@@ -33,7 +33,6 @@ namespace QT.Map
         private DungeonMapSystem _dungeonMapSystem;
         private GameObject _cellMapObject;
         private Image _mapImage;
-        private bool _isClear;   // 맵 클리어여부(몬스터를 죽임)
         private MapDirection _pathOpenDirection;
 
         private MapCellData _mapCellData;
@@ -47,7 +46,6 @@ namespace QT.Map
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
-            _playerManager.PlayerMapClearPosition.AddListener(CellMapClearCheck);
             _mapImage.enabled = false;
             _playerManager.PlayerCreateEvent.AddListener((obj) =>
             {
@@ -67,33 +65,17 @@ namespace QT.Map
             _uiLineRenderers[3].enabled = (mapDirection & MapDirection.Right) != 0;
             _pathOpenDirection = mapDirection;
         }
-
-        public void StartRoomCellClear() // 시작방 클리어 설정
-        {
-            _isClear = true;
-            _playerManager.PlayerMapClearPosition.RemoveListener(CellMapClearCheck);
-        }
+        
 
         public void PlayerEnterDoor(Vector2Int pos)
         {
             _mapCellData.DoorExitDirection(pos);
-            if (!_isClear)
+            if (!_dungeonMapSystem.GetCellData(CellPos).IsClear)
                 _mapCellData.RoomPlay(CellPos);
-            _playerManager.PlayerMapVisitedPosition.Invoke(CellPos); // TODO : 맵 클리어 체크 부분 정리가 필요함
-            //_playerManager.PlayerMapClearPosition.Invoke(CellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
+            _playerManager.PlayerMapVisitedPosition.Invoke(CellPos);
             _playerManager.PlayerMapPosition.Invoke(CellPos);
         }
-        
-        private void CellMapClearCheck(Vector2Int pos)
-        {
-            _isClear = pos == CellPos;
-            if (_isClear)
-            {
-                _playerManager.PlayerMapClearPosition.RemoveListener(CellMapClearCheck);
-                
-            }
-        }
-        
+
         private void CellPosCheck(Vector2Int pos)
         {
             if (pos == CellPos)
@@ -104,7 +86,7 @@ namespace QT.Map
                 _mapImage.color = _mapColors[0];
                 //ColorSetLineRender(_mapColors[0]);
             }
-            else if (_isClear)
+            else if (_dungeonMapSystem.GetCellData(CellPos).IsClear || _dungeonMapSystem.GetCellData(CellPos).IsVisited)
             {
                 _lineRenders.SetActive(true);
                 _mapImage.enabled = true;
