@@ -41,7 +41,18 @@ namespace QT.Player
 
             SetLineObjects();
         }
-
+        
+        public override void ClearState()
+        {
+            _projectiles.Clear();
+            foreach (var line in _lines)
+            {
+                SystemManager.Instance.ResourceManager.ReleaseObject(line);
+            }
+            _lines.Clear();
+            
+            SystemManager.Instance.GetSystem<InputSystem>().OnKeyUpAttackEvent.RemoveListener(OnAtkEnd);
+        }
         public override void UpdateState()
         {
             base.UpdateState();
@@ -57,24 +68,7 @@ namespace QT.Player
             
             SetLines();
         }
-        
-        public override void ClearState()
-        {
-            _projectiles.Clear();
-            foreach (var line in _lines)
-            {
-                SystemManager.Instance.ResourceManager.ReleaseObject(line);
-            }
-            _lines.Clear();
-            
-            SystemManager.Instance.GetSystem<InputSystem>().OnKeyUpAttackEvent.RemoveListener(OnAtkEnd);
-        }
 
-        protected override void MoveDirection(Vector2 direction)
-        {
-            _moveDirection = direction.normalized;
-        }
-        
         private void OnAtkEnd()
         {
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
@@ -89,7 +83,6 @@ namespace QT.Player
             
             _ownerEntity.PlayBatAnimation();
             
-            _ownerEntity.ChangeState(Player.States.Idle);
         }
 
         private async void SetLineObjects()

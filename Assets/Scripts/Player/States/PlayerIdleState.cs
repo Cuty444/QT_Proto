@@ -17,6 +17,8 @@ namespace QT.Player
         {
             _inputSystem.OnKeyMoveEvent.AddListener(ChangeMove);
             _inputSystem.OnKeyDownAttackEvent.AddListener(OnAttackStart);
+            _ownerEntity.SetMoveDirection(Vector2.zero);
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
 
         public override void ClearState()
