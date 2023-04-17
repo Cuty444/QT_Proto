@@ -45,7 +45,7 @@ namespace QT
 
         private void OnDisable()
         {
-            SystemManager.Instance.ProjectileManager.UnRegister(this);
+            SystemManager.Instance?.ProjectileManager.UnRegister(this);
             _trailRenderer.Clear();
         }
 
