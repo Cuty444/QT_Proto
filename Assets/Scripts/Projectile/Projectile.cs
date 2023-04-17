@@ -115,6 +115,37 @@ namespace QT
             _ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
         }
 
+        //private void PlayerProjectTileUpdate()
+        //{
+        //    if (_isDestroyed)
+        //        return;
+        //    var moveLength = _speed * Time.deltaTime;
+        //    var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
+        //    if (hit.collider != null)
+        //    {
+        //        _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
+        //        if (--_bounceCount < 0)
+        //        {
+        //            _speed = 0f;
+        //            _isDestroyed = true;
+        //            transform.position = hit.point + (hit.normal * _size);
+        //            return;
+        //            _trailRenderer.Clear();
+        //            SystemManager.Instance.ResourceManager.ReleaseObject(this);
+        //        }
+        //    }
+
+        //    transform.Translate(_direction * moveLength);
+
+        //    _speed -= _speedDecay * Time.deltaTime;
+        //    return;
+        //    if (_speed <= 0)
+        //    {
+        //        _trailRenderer.Clear();
+        //        SystemManager.Instance.ResourceManager.ReleaseObject(this);
+        //    }
+        //}
+        
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

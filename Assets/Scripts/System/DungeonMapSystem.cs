@@ -278,7 +278,17 @@ namespace QT.Core.Map
 
         public GameObject GetMapObject()
         {
-            return _mapList[_mapCount++ % _mapList.Count];
+            try
+            {
+                return _mapList[_mapCount++ % _mapList.Count];
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log("MapList Load Error : " + _mapCount);
+                Debug.Log("MapList Load Error : " + _mapList[_mapCount].name);
+                throw;
+            }
         }
     }
 }
