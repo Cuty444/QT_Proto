@@ -4,12 +4,11 @@ using UnityEngine;
 
 namespace QT
 {
-    public interface IProjectile
+    public interface IProjectile : IHitable
     {
         public int ProjectileId { get; }
         public Vector2 Position { get; }
         
-        public void Hit(Vector2 dir, float power);
         public void Hit(Vector2 dir, float power, LayerMask bounceMask);
 
         public void ResetBounceCount(int maxBounce);
