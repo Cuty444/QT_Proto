@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using QT.Core;
 using QT.Core.Input;
+using QT.UI;
+using UnityEngine.UI;
 
 namespace QT.Player
 {
@@ -15,6 +17,8 @@ namespace QT.Player
 
         private int _currentBallStack;
 
+
+        private Image _throwProjectileUI;
         
         private bool _isMouseDownCheck;
         
@@ -25,10 +29,12 @@ namespace QT.Player
             _inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             _inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
             _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
-
+            SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().gameObject.SetActive(true);
+            _throwProjectileUI = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().PlayerBallStackImage;
 
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
             {
+                _throwProjectileUI.enabled = true;
                 _currentBallStack++;
             });
             _currentBallStack = (int)_ownerEntity.BallStackMax.Value;
@@ -98,10 +104,14 @@ namespace QT.Player
         private void KeyEThrow()
         {
             if (_currentBallStack == 0)
+            {
                 return;
+            }
             _ownerEntity.AttackBallInstate();
             _currentBallStack--;
             _ownerEntity.SetThrowAnimation();
+            if(_currentBallStack == 0)
+                _throwProjectileUI.enabled = false;
         }
 
         private void KeyDownAttack()
