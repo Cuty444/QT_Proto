@@ -63,7 +63,7 @@ namespace QT.Player
             _projectiles.Clear();
             foreach (var line in _lines)
             {
-                SystemManager.Instance.ResourceManager.ReleaseObject(line);
+                SystemManager.Instance.ResourceManager.ReleaseObject(HitLinePath, line);
             }
             _lines.Clear();
             

@@ -9,12 +9,15 @@ namespace QT
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
+        private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
         public int ProjectileId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
 
+        private string _prefabPath;
+        
         [SerializeField] private float _ballHeight;
         [SerializeField] private Transform _ballObject;
         [SerializeField] private LayerMask _bounceMask;
@@ -62,7 +65,7 @@ namespace QT
             }
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, float releaseDelay = 0)
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, float releaseDelay = 0, string path = "")
         {
             _maxSpeed = _speed = speed;
             _currentSpeedDecay = _speedDecay;
@@ -75,6 +78,8 @@ namespace QT
             _bounceMask = bounceMask;
             _releaseDelay = releaseDelay;
             _isReleased = false;
+
+            _prefabPath = path;
         }
         
         public void Hit(Vector2 dir, float newSpeed)
@@ -109,7 +114,7 @@ namespace QT
         {
             if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
             {
-                SystemManager.Instance.ResourceManager.ReleaseObject(this);
+                SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
             }
 
             CheckHit();
@@ -123,12 +128,18 @@ namespace QT
 
             if (hit.collider != null)
             {
+                if (hit.collider.TryGetComponent(out IHitable hitable))
+                {
+                    hitable.Hit(_direction, _damage);
+                    SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
+                }
+                
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
                 if (--_bounceCount == 0)
                 {
                     _isReleased = true;
                     _releaseStartTime = Time.time;
-                    
+
                     if (_releaseDelay > 0)
                     {
                         _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;

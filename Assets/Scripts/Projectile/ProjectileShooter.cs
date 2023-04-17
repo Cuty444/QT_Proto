@@ -51,7 +51,7 @@ public class ProjectileShooter : MonoBehaviour
         var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
         projectile.transform.position = _shootPoint.position;
             
-        projectile.Init(projectileData, dir, speed, bounceCount, BounceMask, releaseDelay);
+        projectile.Init(projectileData, dir, speed, bounceCount, BounceMask, releaseDelay, projectileData.PrefabPath);
     }
 
     protected Vector2 GetDirection(float angle, AimTypes aimType)
