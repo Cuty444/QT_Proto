@@ -68,6 +68,7 @@ public class ProjectileShooter : MonoBehaviour
                 break;
         }
 
+        angle *= Mathf.Deg2Rad;
         return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
     }
     
