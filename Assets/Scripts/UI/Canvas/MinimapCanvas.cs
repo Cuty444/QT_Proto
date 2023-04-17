@@ -75,7 +75,7 @@ namespace QT.UI
                 CellCreate(_mapData.MapNodeList[i],direction);
             }
             
-            _cellList[0].CellClearCheck();
+            _cellList[0].StartRoomCellClear();
             MiniMapCellCenterPositionChagne(_currentPlayerPosition);
 
         }

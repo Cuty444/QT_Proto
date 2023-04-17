@@ -17,9 +17,10 @@ namespace QT.Map
         [Header("이 밑은 현재 더미데이터 미적용중")]
         [SerializeField] private RoomType _roomType;
         private PlayerManager _playerManager;
-
+        private MapEnemySpawner _mapEnemySpawner;
         private void Awake()
         {
+            _mapEnemySpawner = _enemySpawnersTransform.GetComponent<MapEnemySpawner>();
             _enemySpawnersTransform.gameObject.SetActive(false);
             for (int i = 0; i < _doorTransforms.Length; i++)
             {
@@ -61,8 +62,9 @@ namespace QT.Map
             Camera.main.GetComponent<PlayerChasingCamera>().SetBeforePosition( new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z));
         }
 
-        public void RoomPlay()
+        public void RoomPlay(Vector2Int position)
         {
+            _mapEnemySpawner.SetPos(position);
             _enemySpawnersTransform.gameObject.SetActive(true);
         }
     }

@@ -11,8 +11,7 @@ namespace QT.Player
         private const string _animatorValue = "MouseRotate";
         public void AngleAnimation()
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, mousePos);
+            float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, MousePos);
             float yAngle = 0f;
             switch (playerAngleDegree)
             {

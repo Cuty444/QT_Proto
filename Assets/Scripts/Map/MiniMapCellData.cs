@@ -68,7 +68,7 @@ namespace QT.Map
             _pathOpenDirection = mapDirection;
         }
 
-        public void CellClearCheck()
+        public void StartRoomCellClear() // 시작방 클리어 설정
         {
             _isClear = true;
             _playerManager.PlayerMapClearPosition.RemoveListener(CellMapClearCheck);
@@ -78,8 +78,9 @@ namespace QT.Map
         {
             _mapCellData.DoorExitDirection(pos);
             if (!_isClear)
-                _mapCellData.RoomPlay();
-            _playerManager.PlayerMapClearPosition.Invoke(CellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
+                _mapCellData.RoomPlay(CellPos);
+            _playerManager.PlayerMapVisitedPosition.Invoke(CellPos); // TODO : 맵 클리어 체크 부분 정리가 필요함
+            //_playerManager.PlayerMapClearPosition.Invoke(CellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
             _playerManager.PlayerMapPosition.Invoke(CellPos);
         }
         
