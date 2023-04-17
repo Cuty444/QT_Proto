@@ -25,7 +25,7 @@ namespace QT.Player
         {
             _ownerEntity.SwingAreaMeshFilter.mesh = CreateSwingAreaMesh(_ownerEntity.SwingRadius, _ownerEntity.SwingCentralAngle);
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
-            _projectileLayerMask = LayerMask.GetMask("Enemy");
+            _projectileLayerMask = LayerMask.GetMask("Enemy","ProjectileDelayed");
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
         }
 
@@ -83,6 +83,7 @@ namespace QT.Player
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
+                projectile.ResetDelayedProjectile(5f);
                 projectile.Hit(GetNewProjectileDir(projectile), power, mask);
             }
             
@@ -96,6 +97,7 @@ namespace QT.Player
             for (int i = 0; i < MaxLineCount; i++)
             {
                 var line = await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(HitLinePath);
+                line.positionCount = 0;
                 _lines.Add(line);
             }
         }
@@ -120,7 +122,6 @@ namespace QT.Player
             
             _projectiles.Clear();
             SystemManager.Instance.ProjectileManager.GetInRange(playerPos, _ownerEntity.SwingRadius, ref _projectiles,_projectileLayerMask);
-
             for (int i = 0; i < _projectiles.Count; i++)
             {
                 var dot = Vector2.Dot((_projectiles[i].Position - playerPos).normalized, playerDir);

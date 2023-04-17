@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using QT.Core;
+using QT.Core.Map;
 using UnityEngine;
 
 namespace QT.Map
@@ -12,17 +13,18 @@ namespace QT.Map
         private List<Enemy.Enemy> _enemyList;
 
         private Vector2Int _cellPos;
-        
-        private bool _isClear;
+
+        private DungeonMapSystem _dungeonMapSystem;
 
         private void Awake()
         {
             _enemyList = GetComponentsInChildren<Enemy.Enemy>().ToList();
+            _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
         }
 
         private void Update()
         {
-            if (_isClear)
+            if (_dungeonMapSystem.GetCellData(_cellPos).IsClear)
                 return;
             MapClearCheck();
         }
@@ -41,7 +43,6 @@ namespace QT.Map
             if (_enemyList.Count == 0)
             {
                 SystemManager.Instance.PlayerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
-                _isClear = true;
             }
         }
 

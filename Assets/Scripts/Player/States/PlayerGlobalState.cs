@@ -25,7 +25,11 @@ namespace QT.Player
             _inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             _inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
 
-            _currentBallStack = (int)_ownerEntity.BallStackMax.Value + 100;
+            SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
+            {
+                _currentBallStack++;
+            });
+            _currentBallStack = (int)_ownerEntity.BallStackMax.Value;
             _currentSwingCoolTime = _ownerEntity.SwingCooldown.Value;
             _ownerEntity.SetBatActive(false);
         }
@@ -104,7 +108,6 @@ namespace QT.Player
             _isMouseDownCheck = false;
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
         }
-
         
 
         #endregion
