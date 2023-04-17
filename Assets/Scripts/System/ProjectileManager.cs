@@ -4,15 +4,16 @@ using UnityEngine;
 
 namespace QT
 {
-    public interface IProjectile
+    public interface IProjectile : IHitable
     {
         public int ProjectileId { get; }
         public Vector2 Position { get; }
         
-        public void Hit(Vector2 dir, float power);
         public void Hit(Vector2 dir, float power, LayerMask bounceMask);
 
         public void ResetBounceCount(int maxBounce);
+
+        public LayerMask GetLayerMask();
     }
     
     public class ProjectileManager
@@ -29,13 +30,16 @@ namespace QT
             _projectiles.Remove(projectile.ProjectileId);
         }
         
-        public void GetInRange(Vector2 origin, float range, ref List<IProjectile> outList)
+        public void GetInRange(Vector2 origin, float range, ref List<IProjectile> outList, int layerMask)
         {
             foreach (var projectile in _projectiles.Values)
             {
-                if ((origin - projectile.Position).sqrMagnitude < range * range)
+                if ((projectile.GetLayerMask() & layerMask) != 0)
                 {
-                    outList.Add(projectile);
+                    if ((origin - projectile.Position).sqrMagnitude < range * range)
+                    {
+                        outList.Add(projectile);
+                    }
                 }
             }
         }

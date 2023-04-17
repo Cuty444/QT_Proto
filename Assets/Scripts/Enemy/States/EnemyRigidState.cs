@@ -7,6 +7,8 @@ namespace QT.Enemy
     [FSMState((int) Enemy.States.Rigid)]
     public class EnemyRigidState : FSMState<Enemy>
     {
+        private readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
+        
         private float _rigidStartTime;
         private float _rigidTime;
 
@@ -16,6 +18,7 @@ namespace QT.Enemy
 
         public override void InitializeState()
         {
+            _ownerEntity.Animator.SetBool(RigidAnimHash, true);
             _rigidStartTime = Time.time;
 
             if (_ownerEntity.HP <= 0)
@@ -44,6 +47,7 @@ namespace QT.Enemy
                 }
                 else
                 {
+                    _ownerEntity.Animator.SetBool(RigidAnimHash, false);
                     _ownerEntity.RevertToPreviousState();
                 }
             }

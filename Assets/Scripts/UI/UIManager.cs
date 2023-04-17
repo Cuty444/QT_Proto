@@ -37,11 +37,11 @@ namespace QT.UI
             }
         }
 
-        public void Open(string panelName)
+        public void Open(string panelName) // TODO : 이 함수는 리팩토링 필요
         {
-            _currentPanel.OnClose();
-            _currentPanel = _Panels[panelName];
-            _currentPanel.OnOpen();
+            //_currentPanel.OnClose();
+            //_currentPanel = _Panels[panelName];
+            //_currentPanel.OnOpen();
         }
 
         public T GetUIPanel<T>() where T : UIPanel
