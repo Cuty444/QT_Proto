@@ -41,6 +41,7 @@ namespace QT.Player
             Rigidbody = GetComponent<Rigidbody2D>();
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
+            SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.2f);
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             _animator = GetComponentInChildren<Animator>();
             SetUpStats();

@@ -18,8 +18,6 @@ namespace QT.Player
         private float _chargingStartTime;
         private int _chargeLevel;
         
-        private Vector2 _mousePos;
-        private float _mouseDistance;
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
@@ -46,7 +44,6 @@ namespace QT.Player
         {
             base.UpdateState();
 
-            SetDirection();
         }
 
         public override void FixedUpdateState()
@@ -101,14 +98,6 @@ namespace QT.Player
             }
         }
         
-        private void SetDirection()
-        {
-            _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            _mouseDistance = Vector2.Distance(_mousePos, _ownerEntity.transform.position);
-            
-            var angle = Util.Math.GetDegree(_ownerEntity.transform.position, _mousePos);
-            _ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle);
-        }
         
         private void GetChargeLevel()
         {
@@ -186,11 +175,11 @@ namespace QT.Player
         
         private Vector2 GetNewProjectileDir(IProjectile projectile)
         {
-            var dir = (_mousePos - projectile.Position);
+            var dir = (_ownerEntity.MousePos - projectile.Position);
             
-            if(dir.magnitude < _mouseDistance)
+            if(dir.magnitude < _ownerEntity.MouseDistance)
             {
-                return (_mousePos - (Vector2)_ownerEntity.transform.position).normalized;
+                return (_ownerEntity.MousePos - (Vector2)_ownerEntity.transform.position).normalized;
             }
             return dir.normalized;
         }

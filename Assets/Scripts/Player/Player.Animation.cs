@@ -9,7 +9,7 @@ namespace QT.Player
     {
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
-        public void AngleAnimation() //각도 계산
+        public void AngleAnimation()
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, mousePos);
@@ -46,15 +46,6 @@ namespace QT.Player
                     break;
             }
             _animator.transform.rotation = Quaternion.Euler(0f, yAngle,0f);
-            //if (_playerAttack == null)
-            //{
-            //    _playerEyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
-            //
-            //}
-            //else
-            //{
-            //    _playerAttack.EyeTransform.rotation = Quaternion.Euler(0, 0, playerAngleDegree);
-            //}
         }
     }
 }
