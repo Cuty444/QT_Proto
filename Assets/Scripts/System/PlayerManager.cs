@@ -23,6 +23,8 @@ namespace QT.Core
 
         public UnityEvent<Vector2Int> PlayerMapPosition { get; } = new();
 
+        public UnityEvent<Vector2Int> PlayerMapVisitedPosition { get; } = new();
+        
         public UnityEvent<Vector2Int> PlayerMapClearPosition { get; } = new();
 
         public UnityEvent<Vector2Int> PlayerDoorEnter { get; } = new();

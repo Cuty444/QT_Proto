@@ -32,12 +32,12 @@ namespace QT.Core.Map
     public class CellData
     {
         public RoomType RoomType;
-        public bool IsClear;
+        public bool IsVisited;
 
         public CellData()
         {
             RoomType = RoomType.None;
-            IsClear = false;
+            IsVisited = false;
         }
     }
 
@@ -85,9 +85,9 @@ namespace QT.Core.Map
             GenerateMap(startPos);
             _mapData = new MapData(_map, startPos,GetFarthestRoomFromStart(),_mapNodeList);
             MapLoad();
-            SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
+            SystemManager.Instance.PlayerManager.PlayerMapVisitedPosition.AddListener(position =>
             {
-                _map[position.y, position.x].IsClear = true;
+                _map[position.y, position.x].IsVisited = true;
             });
             SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((player) =>
             {
@@ -119,7 +119,7 @@ namespace QT.Core.Map
 
             QT.Util.RandomSeed.SeedSetting();
             _map[startPos.y, startPos.x].RoomType = RoomType.Normal;
-            _map[startPos.y, startPos.x].IsClear = true;
+            _map[startPos.y, startPos.x].IsVisited = true;
             _mapNodeList.Add(startPos);
             for (int i = 1; i < _maxRoomValue; i++)
             {
@@ -188,7 +188,7 @@ namespace QT.Core.Map
                     continue;
                 if (_map[nodeValue.y, nodeValue.x].RoomType == RoomType.Normal)
                 {
-                    if (_map[nodeValue.y, nodeValue.x].IsClear)
+                    if (_map[nodeValue.y, nodeValue.x].IsVisited)
                     {
                         return true;
                     }
