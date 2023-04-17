@@ -31,7 +31,7 @@ namespace QT.Player
             _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
             SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().gameObject.SetActive(true);
             _throwProjectileUI = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().PlayerBallStackImage;
-
+            _inputSystem.OnKeySpaceDodgeEvent.AddListener(KeySpaceDodge);
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
             {
                 _throwProjectileUI.enabled = true;
@@ -132,8 +132,14 @@ namespace QT.Player
             _isMouseDownCheck = false;
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
         }
-        
 
+
+        private void KeySpaceDodge()
+        {
+            _ownerEntity.ChangeState(Player.States.Dodge);
+        }
+        
+        
         #endregion
         
         #region BallCollisionMathFunc
