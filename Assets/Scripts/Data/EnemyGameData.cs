@@ -38,6 +38,8 @@ namespace QT
         
         public int GoldDropMin { get; set; }
         public int GoldDropMax { get; set; }
+        
+        public string PrefabPath { get; set; }
     }
 
 

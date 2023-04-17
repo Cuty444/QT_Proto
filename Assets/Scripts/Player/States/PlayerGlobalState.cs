@@ -36,6 +36,7 @@ namespace QT.Player
 
         public override void UpdateState()
         {
+            SetDirection();
             AttackCoolTime();
         }
 
@@ -68,6 +69,13 @@ namespace QT.Player
                     //    _chargingMaxTimes[_chargingMaxTimes.Length - 1], _chargingMaxTimes[0]);
                 }
             }
+        }
+        
+        private void SetDirection()
+        {
+            _ownerEntity.MouseValueSet();
+            var angle = Util.Math.GetDegree(_ownerEntity.transform.position, _ownerEntity.MousePos);
+            _ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle);
         }
 
         private void KeyEThrow()

@@ -33,7 +33,7 @@ namespace QT.Map
         private DungeonMapSystem _dungeonMapSystem;
         private GameObject _cellMapObject;
         private Image _mapImage;
-        private bool _isClear;   // ¸Ê Å¬¸®¾î¿©ºÎ(¸ó½ºÅÍ¸¦ Á×ÀÓ)
+        private bool _isClear;   // ë§µ í´ë¦¬ì–´ì—¬ë¶€(ëª¬ìŠ¤í„°ë¥¼ ì£½ì„)
         private MapDirection _pathOpenDirection;
 
         private MapCellData _mapCellData;
@@ -77,7 +77,9 @@ namespace QT.Map
         public void PlayerEnterDoor(Vector2Int pos)
         {
             _mapCellData.DoorExitDirection(pos);
-            _playerManager.PlayerMapClearPosition.Invoke(CellPos); // TODO : ÃßÈÄ Àû Ã³Ä¡½Ã ¸Ê Å¬¸®¾î ºÎºĞ¿¡ ¿Å°Ü¾ßÇÔ
+            if (!_isClear)
+                _mapCellData.RoomPlay();
+            _playerManager.PlayerMapClearPosition.Invoke(CellPos); // TODO : ì¶”í›„ ì  ì²˜ì¹˜ì‹œ ë§µ í´ë¦¬ì–´ ë¶€ë¶„ì— ì˜®ê²¨ì•¼í•¨
             _playerManager.PlayerMapPosition.Invoke(CellPos);
         }
         
@@ -116,7 +118,7 @@ namespace QT.Map
             }
         }
 
-        private void ColorSetLineRender(Color color) // TODO : ¶óÀÎ·»´õ°¡ ÈÃÄ¼­ ¼îÆÃ¿À·ù°¡ »ı±è ¼öÁ¤ ÇÊ¿ä
+        private void ColorSetLineRender(Color color) // TODO : ë¼ì¸ë Œë”ê°€ ê³‚ì¹¨ì— ë”°ë¥¸ ì‡¼íŒ…ì˜¤ë¥˜ê°€ ìƒê¹€ ìˆ˜ì • í•„ìš”
         {
             for (int i = 0; i < _uiLineRenderers.Length; i++)
             {
