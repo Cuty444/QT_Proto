@@ -83,7 +83,6 @@ namespace QT.Player
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
-                projectile.ResetDelayedProjectile(5f);
                 projectile.Hit(GetNewProjectileDir(projectile), power, mask);
             }
             
