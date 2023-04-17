@@ -7,6 +7,9 @@ namespace QT.Enemy
     [FSMState((int) Enemy.States.Normal)]
     public class EnemyNormalState : FSMState<Enemy>
     {
+        private readonly int DirXAnimHash = Animator.StringToHash("DirX");
+        private readonly int DirYAnimHash = Animator.StringToHash("DirY");
+        
         private readonly EnemyGameData _data;
 
         private float _lastMoveTargetUpdateTime;
@@ -64,17 +67,20 @@ namespace QT.Enemy
                     dir = SpacingMove(targetDistance, true);
                     break;
             }
+
             
+            var currentDir = Vector2.zero;
+
             if (dir != Vector2.zero)
             {
-                var currentDir = _ownerEntity.Rigidbody.velocity.normalized;
+                currentDir = _ownerEntity.Rigidbody.velocity.normalized;
                 currentDir = Vector2.Lerp(currentDir, dir, 0.4f);
-                _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd);
             }
-            else
-            {
-                _ownerEntity.Rigidbody.velocity = Vector2.zero;
-            }
+
+            _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd);
+            
+            _ownerEntity.Animator.SetFloat(DirXAnimHash, currentDir.x);
+            _ownerEntity.Animator.SetFloat(DirYAnimHash, currentDir.y);
         }
 
         private Vector2 SpacingMove(float targetDistance, bool isRotate = false)
