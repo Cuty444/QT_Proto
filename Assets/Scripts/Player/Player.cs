@@ -14,6 +14,7 @@ namespace QT.Player
             Idle,
             Move,
             Swing,
+            Dodge,
             Dead,
         }
 

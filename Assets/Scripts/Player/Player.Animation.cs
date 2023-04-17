@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -7,8 +8,9 @@ namespace QT.Player
 {
     public partial class Player
     {
-        private readonly string AnimationSwingString = "PlayerSwing";
         private readonly string AnimationIdleString = "PlayerIdle";
+        private readonly int AnimationSwingHash = Animator.StringToHash("PlayerSwing");
+        private readonly int AnimationThrowHash = Animator.StringToHash("PlayerThrow");
 
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
@@ -54,9 +56,28 @@ namespace QT.Player
         {
             _animator.SetBool(AnimationIdleString,isCheck);
         }
-        public void SetSwingAnimation(bool isCheck)
+        public void SetSwingAnimation()
         {
-            _animator.SetBool(AnimationSwingString,isCheck);
+            _animator.SetTrigger(AnimationSwingHash);
+            StartCoroutine(WaitForSecond(0.2f, () =>
+            {
+                _animator.ResetTrigger(AnimationThrowHash);
+            }));
+        }
+
+        public void SetThrowAnimation()
+        {
+            _animator.SetTrigger(AnimationThrowHash);
+            StartCoroutine(WaitForSecond(0.5f, () =>
+            {
+                _animator.ResetTrigger(AnimationThrowHash);
+            }));
+        }
+
+        IEnumerator WaitForSecond(float time,Action func)
+        {
+            yield return new WaitForSeconds(time);
+            func.Invoke();
         }
     }
 }

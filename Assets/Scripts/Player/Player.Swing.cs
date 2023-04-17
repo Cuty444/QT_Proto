@@ -48,7 +48,7 @@ namespace QT.Player
         {
             _trailRenderer.emitting = true;
             _batSpriteRenderer.enabled = true;
-            SetSwingAnimation(true);
+            SetSwingAnimation();
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
             float currentRotationTime = 0.0f;
             while (0.1f > currentRotationTime) // TODO : 0.1f = RotationTime 공속 부분 동기화 필요
@@ -66,7 +66,6 @@ namespace QT.Player
             
             _trailRenderer.emitting = false;
             _batSpriteRenderer.enabled = false;
-            SetSwingAnimation(false);
         }
         
         private bool PlayerSwingAngle()
