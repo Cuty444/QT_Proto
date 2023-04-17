@@ -36,11 +36,11 @@ public class ProjectileShooter : MonoBehaviour
         foreach (var shoot in shootData)
         {
             var dir = GetDirection(shoot.ShootAngle, aimType);
-            ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, shoot.MaxBounceCount,false);
+            ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, shoot.MaxBounceCount);
         }
     }
 
-    public virtual async void ShootProjectile(int projectileDataId, Vector2 dir, float speed, int bounceCount,bool isPlayerThrow)
+    public virtual async void ShootProjectile(int projectileDataId, Vector2 dir, float speed, int bounceCount, float releaseDelay = 0)
     {
         var projectileData = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>().GetData(projectileDataId);
         if (projectileData == null)
@@ -50,9 +50,8 @@ public class ProjectileShooter : MonoBehaviour
             
         var projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
         projectile.transform.position = _shootPoint.position;
-        projectile.Init(projectileData, dir, speed, bounceCount, BounceMask);
-        if(isPlayerThrow)
-            projectile.ResetDelayedProjectile(5f);
+            
+        projectile.Init(projectileData, dir, speed, bounceCount, BounceMask, releaseDelay, projectileData.PrefabPath);
     }
 
     protected Vector2 GetDirection(float angle, AimTypes aimType)
