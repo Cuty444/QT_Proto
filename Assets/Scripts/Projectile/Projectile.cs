@@ -16,6 +16,8 @@ namespace QT
         [SerializeField] private Transform _ballObject;
         [SerializeField] private LayerMask _bounceMask;
 
+        private TrailRenderer _trailRenderer;
+        
         private float _maxSpeed;
         private float _speed;
         private float _speedDecay;
@@ -33,6 +35,7 @@ namespace QT
         private void Awake()
         {
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
+            _trailRenderer = GetComponentInChildren<TrailRenderer>();
         }
 
         private void OnEnable()
@@ -43,6 +46,7 @@ namespace QT
         private void OnDisable()
         {
             SystemManager.Instance.ProjectileManager.UnRegister(this);
+            _trailRenderer.Clear();
         }
 
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask)

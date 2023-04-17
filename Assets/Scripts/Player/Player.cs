@@ -47,7 +47,6 @@ namespace QT.Player
             SetUpStats();
             SetUp(States.Idle);
             SetGlobalState(new PlayerGlobalState(this));
-
             _playerManager = SystemManager.Instance.PlayerManager;
         }
 
