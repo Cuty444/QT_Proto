@@ -26,14 +26,16 @@ namespace QT.Player
             
             if (PlayerSwingAngle())
             {
-                startAngle = -90.0f + halfAngle;
-                endAngel = -90.0f - halfAngle;
-                rotationSpeed = - 1;
+                startAngle = -90.0f - halfAngle;
+                endAngel = -90.0f + halfAngle;
+                _batSpriteRenderer.flipX = true;
             }
             else
             {
-                startAngle = -90.0f - halfAngle;
-                endAngel = -90.0f + halfAngle;
+                startAngle = -90.0f + halfAngle;
+                endAngel = -90.0f - halfAngle;
+                rotationSpeed = - 1;
+                _batSpriteRenderer.flipX = false;
             }
             
             _batTransform.transform.localRotation = Quaternion.Euler(0f, 0f, startAngle);
@@ -46,6 +48,7 @@ namespace QT.Player
         {
             _trailRenderer.emitting = true;
             _batSpriteRenderer.enabled = true;
+            SetSwingAnimation(true);
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
             float currentRotationTime = 0.0f;
             while (0.1f > currentRotationTime) // TODO : 0.1f = RotationTime 공속 부분 동기화 필요
@@ -63,6 +66,7 @@ namespace QT.Player
             
             _trailRenderer.emitting = false;
             _batSpriteRenderer.enabled = false;
+            SetSwingAnimation(false);
         }
         
         private bool PlayerSwingAngle()

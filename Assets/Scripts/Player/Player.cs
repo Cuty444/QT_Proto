@@ -32,6 +32,7 @@ namespace QT.Player
         
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
 
+        public Vector2 MoveDirection { get; private set; }
 
         private PlayerManager _playerManager;
         private void Awake()
@@ -50,5 +51,9 @@ namespace QT.Player
             _playerManager = SystemManager.Instance.PlayerManager;
         }
 
+        public void SetMoveDirection(Vector2 direction)
+        {
+            MoveDirection = direction;
+        }
     }
 }

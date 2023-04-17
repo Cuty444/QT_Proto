@@ -24,6 +24,8 @@ namespace QT.Player
             _inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
             _inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             _inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
+            _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
+
 
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
             {
@@ -42,16 +44,27 @@ namespace QT.Player
         {
             SetDirection();
             AttackCoolTime();
+            _ownerEntity.AngleAnimation();
         }
 
         public override void FixedUpdateState()
         {
-            _ownerEntity.AngleAnimation();
             //if (_currentSwingCoolTime > _ownerEntity.SwingCooldown)
             //{
             //    _isUpDown = _ownerEntity.PlayerSwingAngle();
             //}
 
+        }
+        
+        protected virtual void MoveDirection(Vector2 direction)
+        {
+            _ownerEntity.SetMoveDirection(direction.normalized);
+            //if (_ownerEntity.MoveDirection == Vector2.zero)
+            //{
+            //    _ownerEntity.ChangeState(Player.States.Idle);
+            //}
+
+            _ownerEntity.SetMoveCheck(_ownerEntity.MoveDirection == Vector2.zero);
         }
         
         #region AttackFunc
