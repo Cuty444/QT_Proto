@@ -34,11 +34,13 @@ namespace QT.Core.Map
     {
         public RoomType RoomType;
         public bool IsVisited;
+        public bool IsClear;
 
         public CellData()
         {
             RoomType = RoomType.None;
             IsVisited = false;
+            IsClear = false;
         }
     }
 
@@ -86,6 +88,10 @@ namespace QT.Core.Map
             GenerateMap(startPos);
             _mapData = new MapData(_map, startPos,GetFarthestRoomFromStart(),_mapNodeList);
             //MapLoad();
+            SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
+            {
+                _map[position.y, position.x].IsClear = true;
+            });
             SystemManager.Instance.PlayerManager.PlayerMapVisitedPosition.AddListener(position =>
             {
                 _map[position.y, position.x].IsVisited = true;
@@ -280,6 +286,11 @@ namespace QT.Core.Map
         public GameObject GetMapObject()
         {
             return _mapList[_mapCount++ % _mapList.Count];
+        }
+
+        public CellData GetCellData(Vector2Int pos)
+        {
+            return _map[pos.y, pos.x];
         }
     }
 }
