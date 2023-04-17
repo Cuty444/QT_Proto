@@ -30,6 +30,11 @@ namespace QT
 
         private float _damage;
 
+        private bool _isReleased;
+        private float _releaseStartTime;
+        
+        private float _releaseDelay;
+
         
         private void Awake()
         {
@@ -48,7 +53,7 @@ namespace QT
             _trailRenderer.Clear();
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask)
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, float releaseDelay = 0)
         {
             _maxSpeed = _speed = speed;
             _size = data.ColliderRad * 0.5f;
@@ -58,6 +63,8 @@ namespace QT
             _bounceCount = _maxBounce = maxBounce;
 
             _bounceMask = bounceMask;
+            _releaseDelay = releaseDelay;
+            _isReleased = false;
         }
         
         public void Hit(Vector2 dir, float newSpeed)
@@ -73,6 +80,7 @@ namespace QT
             _bounceCount = _maxBounce;
             
             _bounceMask = bounceMask;
+            _isReleased = false;
         }
         
         public void ResetBounceCount(int maxBounce)
@@ -93,19 +101,31 @@ namespace QT
             if (hit.collider != null)
             {
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
-                if (--_bounceCount < 0)
+                if (--_bounceCount == 0)
                 {
-                    SystemManager.Instance.ResourceManager.ReleaseObject(this);
+                    _isReleased = true;
+                    _releaseStartTime = Time.time;
                 }
             }
 
             transform.Translate(_direction * moveLength);
 
+            if (_isReleased)
+            {
+                if (Time.time - _releaseStartTime > _releaseDelay)
+                {
+                    SystemManager.Instance.ResourceManager.ReleaseObject(this);
+                }
+                return;
+            }
+            
             _speed -= _speedDecay * Time.deltaTime;
             if (_speed <= 0)
             {
+                _isReleased = true;
+                _releaseStartTime = Time.time;
+                
                 _speed = 0.1f;
-                //SystemManager.Instance.ResourceManager.ReleaseObject(this);
             }
 
             // easeInQuad
@@ -115,36 +135,6 @@ namespace QT
             _ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
         }
 
-        //private void PlayerProjectTileUpdate()
-        //{
-        //    if (_isDestroyed)
-        //        return;
-        //    var moveLength = _speed * Time.deltaTime;
-        //    var hit = Physics2D.CircleCast(transform.position, _size, _direction, moveLength, _bounceMask);
-        //    if (hit.collider != null)
-        //    {
-        //        _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
-        //        if (--_bounceCount < 0)
-        //        {
-        //            _speed = 0f;
-        //            _isDestroyed = true;
-        //            transform.position = hit.point + (hit.normal * _size);
-        //            return;
-        //            _trailRenderer.Clear();
-        //            SystemManager.Instance.ResourceManager.ReleaseObject(this);
-        //        }
-        //    }
-
-        //    transform.Translate(_direction * moveLength);
-
-        //    _speed -= _speedDecay * Time.deltaTime;
-        //    return;
-        //    if (_speed <= 0)
-        //    {
-        //        _trailRenderer.Clear();
-        //        SystemManager.Instance.ResourceManager.ReleaseObject(this);
-        //    }
-        //}
         
 #if UNITY_EDITOR
         private void OnDrawGizmos()
