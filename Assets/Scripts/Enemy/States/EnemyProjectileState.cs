@@ -28,16 +28,20 @@ namespace QT.Enemy
             _transform = _ownerEntity.transform;
         }
 
-        public void InitializeState(Vector2 dir, float power)
+        public void InitializeState(Vector2 dir, float power, LayerMask bounceMask)
         {
             _direction = dir;
             _speed = power;
-            
-            SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
+            _bounceMask = bounceMask;
+            _bounceCount = _maxBounce = 2;
+            _size = 2;
+
+            _ownerEntity.SetPhysics(false);
         }
 
         public override void UpdateState()
         {
+            
             var moveLength = _speed * Time.deltaTime;
             var hit = Physics2D.CircleCast(_transform.position, _size, _direction, moveLength, _bounceMask);
 
@@ -62,7 +66,7 @@ namespace QT.Enemy
 
         public override void ClearState()
         {
-            SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
+            SystemManager.Instance.ProjectileManager.UnRegister(_ownerEntity);
         }
     }
 }

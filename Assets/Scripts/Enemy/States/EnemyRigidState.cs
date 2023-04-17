@@ -23,10 +23,12 @@ namespace QT.Enemy
 
             if (_ownerEntity.HP <= 0)
             {
-                _ownerEntity.OnDamageEvent.AddListener(OnDamage);
+                _ownerEntity.OnHitEvent.AddListener(OnDamage);
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
                 
                 _ownerEntity.MaterialChanger.ChangeMaterial();
+                
+                SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
             }
             else
             {
@@ -36,7 +38,7 @@ namespace QT.Enemy
 
         public override void ClearState()
         {
-            _ownerEntity.OnDamageEvent.RemoveListener(OnDamage);
+            _ownerEntity.OnHitEvent.RemoveListener(OnDamage);
             _ownerEntity.MaterialChanger.ClearMaterial();
         }
 
@@ -47,6 +49,7 @@ namespace QT.Enemy
                 if (_ownerEntity.HP <= 0)
                 {
                     _ownerEntity.ChangeState(Enemy.States.Dead);
+                    SystemManager.Instance.ProjectileManager.UnRegister(_ownerEntity);
                 }
                 else
                 {
@@ -56,10 +59,10 @@ namespace QT.Enemy
             }
         }
 
-        private void OnDamage(Vector2 dir, float power)
+        private void OnDamage(Vector2 dir, float power, LayerMask bounceMask)
         {
             var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
-            ((EnemyProjectileState) state)?.InitializeState(dir, power);
+            ((EnemyProjectileState) state)?.InitializeState(dir, power, bounceMask);
         }
     }
 }
