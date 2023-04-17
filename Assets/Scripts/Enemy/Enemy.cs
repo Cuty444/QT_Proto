@@ -45,6 +45,17 @@ namespace QT.Enemy
             SetGlobalState(new EnemyGlobalState(this));
         }
         
-        
+        public void SetPhysics(bool enable)
+        {
+            Rigidbody.simulated = enable;
+
+            var colliders = new Collider2D[Rigidbody.attachedColliderCount];
+            Rigidbody.GetAttachedColliders(colliders);
+            
+            foreach (var collider in colliders)
+            {
+                collider.enabled = enable;
+            }
+        }
     }    
 }

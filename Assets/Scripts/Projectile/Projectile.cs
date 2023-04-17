@@ -84,10 +84,10 @@ namespace QT
         
         public void Hit(Vector2 dir, float newSpeed)
         {
-            Hit(dir, newSpeed, _bounceMask);
+            ProjectileHit(dir, newSpeed, _bounceMask);
         }
         
-        public void Hit(Vector2 dir, float newSpeed, LayerMask bounceMask)
+        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask)
         {
             _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);

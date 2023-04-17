@@ -72,6 +72,8 @@ namespace QT.Core
             {
                 PreviousStateIndex = CurrentStateIndex;
                 CurrentStateIndex = (int)enumValue;
+                
+                return _currentState;
             }
 
             return null;
