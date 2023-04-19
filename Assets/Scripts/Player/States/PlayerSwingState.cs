@@ -159,13 +159,11 @@ namespace QT.Player
         
         private Vector2 GetNewProjectileDir(IProjectile projectile)
         {
-            var dir = (_ownerEntity.MousePos - projectile.Position);
-            
-            if(dir.magnitude < _ownerEntity.MouseDistance)
+            if(Vector2.Distance(projectile.Position , _ownerEntity.transform.position) > Vector2.Distance(_ownerEntity.MousePos, _ownerEntity.transform.position))
             {
                 return (_ownerEntity.MousePos - (Vector2)_ownerEntity.transform.position).normalized;
             }
-            return dir.normalized;
+            return (_ownerEntity.MousePos - projectile.Position).normalized;
         }
         
 
