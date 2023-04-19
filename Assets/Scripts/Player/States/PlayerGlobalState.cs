@@ -14,11 +14,15 @@ namespace QT.Player
         
         private float _currentSwingCoolTime;
         private float _currentChargingTime;
+        private float _currentDodgeCoolTime;
 
         private int _currentBallStack;
 
 
         private Image _throwProjectileUI;
+
+        private Image _dodgeCoolBackgroundImage;
+        private Image _dodgeCoolBarImage;
         
         private bool _isMouseDownCheck;
         
@@ -29,8 +33,11 @@ namespace QT.Player
             _inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             _inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
             _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
-            SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().gameObject.SetActive(true);
-            _throwProjectileUI = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().PlayerBallStackImage;
+            PlayerHPCanvas playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
+            playerHpCanvas.gameObject.SetActive(true);
+            _throwProjectileUI = playerHpCanvas.PlayerBallStackImage;
+            _dodgeCoolBackgroundImage = playerHpCanvas.PlayerDodgeCoolBackgroundImage;
+            _dodgeCoolBarImage = playerHpCanvas.PlayerDodgeCoolBarImage;
             _inputSystem.OnKeySpaceDodgeEvent.AddListener(KeySpaceDodge);
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
             {
@@ -39,6 +46,7 @@ namespace QT.Player
             });
             _currentBallStack = (int)_ownerEntity.BallStackMax.Value;
             _currentSwingCoolTime = _ownerEntity.SwingCooldown.Value;
+            _currentDodgeCoolTime = _ownerEntity.DodgeCooldown.Value;
             _ownerEntity.SetBatActive(false);
         }
 
@@ -48,8 +56,11 @@ namespace QT.Player
 
         public override void UpdateState()
         {
-            SetDirection();
             AttackCoolTime();
+            DodgeCoolTime();
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+                return;
+            SetDirection();
             _ownerEntity.AngleAnimation();
         }
 
@@ -64,11 +75,13 @@ namespace QT.Player
         
         protected virtual void MoveDirection(Vector2 direction)
         {
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+                return;
             _ownerEntity.SetMoveDirection(direction.normalized);
-            //if (_ownerEntity.MoveDirection == Vector2.zero)
-            //{
-            //    _ownerEntity.ChangeState(Player.States.Idle);
-            //}
+            if (_ownerEntity.MoveDirection == Vector2.zero && _isMouseDownCheck == false)
+            {
+                _ownerEntity.ChangeState(Player.States.Idle);
+            }
 
             _ownerEntity.SetMoveCheck(_ownerEntity.MoveDirection == Vector2.zero);
         }
@@ -93,6 +106,13 @@ namespace QT.Player
                 }
             }
         }
+
+        private void DodgeCoolTime()
+        {
+            _currentDodgeCoolTime += Time.deltaTime;
+            _dodgeCoolBarImage.fillAmount = Util.Math.Remap(_currentDodgeCoolTime,_ownerEntity.DodgeCooldown.Value,0f);
+            _dodgeCoolBackgroundImage.gameObject.SetActive(_currentDodgeCoolTime < _ownerEntity.DodgeCooldown.Value);
+        }
         
         private void SetDirection()
         {
@@ -103,6 +123,8 @@ namespace QT.Player
 
         private void KeyEThrow()
         {
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+                return;
             if (_currentBallStack == 0)
             {
                 return;
@@ -116,6 +138,8 @@ namespace QT.Player
 
         private void KeyDownAttack()
         {
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+                return;
             if (_currentSwingCoolTime < _ownerEntity.SwingCooldown.Value)
             {
                 return;
@@ -129,6 +153,8 @@ namespace QT.Player
 
         private void KeyUpAttack()
         {
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+                return;
             _isMouseDownCheck = false;
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
         }
@@ -136,7 +162,12 @@ namespace QT.Player
 
         private void KeySpaceDodge()
         {
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+                return;
+            if (_currentDodgeCoolTime < _ownerEntity.DodgeCooldown.Value)
+                return;
             _ownerEntity.ChangeState(Player.States.Dodge);
+            _currentDodgeCoolTime = 0f;
         }
         
         
