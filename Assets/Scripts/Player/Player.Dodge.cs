@@ -6,6 +6,8 @@ namespace QT.Player
 {
     public partial class Player
     {
-        
+        public void Get()
+        {
+        }
     }
 }

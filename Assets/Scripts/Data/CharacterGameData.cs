@@ -15,6 +15,10 @@ namespace QT.Player
         public float MercyInvincibleTime { get; set; }
         public float DodgeCooldown { get; set; }
         public float DodgeInvincibleTime { get; set; }
+        
+        public float DodgeDurationTime { get; set; }
+        
+        public float DodgeAddForce { get; set; }
         public int ItemSlotMax { get; set; }
         public int BallStackMax { get; set; }
         public int GoldGain { get; set; }

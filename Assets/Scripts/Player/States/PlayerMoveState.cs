@@ -41,13 +41,15 @@ namespace QT.Player
         
         private void OnAttackStart()
         {
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+                return;
             _ownerEntity.ChangeState(Player.States.Swing);
         }
         
 
         private void Move()
         {
-            _ownerEntity.Rigidbody.velocity = _ownerEntity.MoveDirection * (_ownerEntity.MovementSpd.Value * Time.fixedDeltaTime);
+            _ownerEntity.Rigidbody.velocity = _ownerEntity.MoveDirection * _ownerEntity.MovementSpd.Value;
         }
     }
 }
