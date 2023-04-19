@@ -8,6 +8,7 @@ namespace QT
     {
         public int ProjectileId { get; }
         public Vector2 Position { get; }
+        public float ColliderRad { get; }
         
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask);
 
@@ -30,17 +31,28 @@ namespace QT
             _projectiles.Remove(projectile.ProjectileId);
         }
         
-        public void GetInRange(Vector2 origin, float range, ref List<IProjectile> outList, int layerMask)
+        public void GetInRange(Vector2 origin, float range, float angle, Vector2 dir, ref List<IProjectile> outList, int layerMask)
         {
             foreach (var projectile in _projectiles.Values)
             {
                 if ((projectile.GetLayerMask() & layerMask) != 0)
                 {
-                    if ((origin - projectile.Position).sqrMagnitude < range * range)
+                    var checkRange = range + projectile.ColliderRad;
+                    var targetDir = projectile.Position - origin;
+                    
+                    if (targetDir.sqrMagnitude < checkRange * checkRange)
                     {
-                        outList.Add(projectile);
+                        var dot = Vector2.Dot((targetDir).normalized, dir);
+                        var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
+
+                        if (degrees < angle)
+                        {
+                            outList.Add(projectile);
+                        }
                     }
+                    
                 }
+                
             }
         }
     }
