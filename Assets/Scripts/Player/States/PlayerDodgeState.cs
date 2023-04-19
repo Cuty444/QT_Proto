@@ -14,13 +14,26 @@ namespace QT.Player
         }
         public override void InitializeState()
         {
+            _ownerEntity.SetDodgeAnimation();
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
+            _ownerEntity.Rigidbody.AddForce((_ownerEntity.MousePos - (Vector2) _ownerEntity.transform.position)
+                .normalized * _ownerEntity.DodgeAddForce.Value,ForceMode2D.Impulse);
+            _ownerEntity.StartCoroutine(WaitSecond(_ownerEntity.DodgeDurationTime.Value));
         }
         
         public override void ClearState()
         {
+            _ownerEntity.SetDodgeEndAnimation();
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
         public override void FixedUpdateState()
         {
+        }
+
+        IEnumerator WaitSecond(float time)
+        {
+            yield return new WaitForSeconds(time);
+            _ownerEntity.ChangeState(Player.States.Idle);
         }
         
     }

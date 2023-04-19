@@ -32,6 +32,10 @@ namespace QT.Player
         public Stat MercyInvincibleTime { get; private set; }
         public Stat DodgeCooldown { get; private set; }
         public Stat DodgeInvincibleTime { get; private set; }
+        
+        public Stat DodgeDurationTime { get; private set; }
+        
+        public Stat DodgeAddForce { get; private set; }
         public Stat ItemSlotMax { get; private set; }
         public Stat BallStackMax { get; private set; }
         public Stat GoldGain { get; private set; }
@@ -92,8 +96,10 @@ namespace QT.Player
             MovementSpd = new Stat(Data.MovementSpd);
             ChargeMovementSpd = new Stat(Data.ChargeMovementSpd);
             MercyInvincibleTime = new Stat(Data.MercyInvincibleTime);
-            DodgeCooldown = new Stat(Data.DodgeInvincibleTime);
+            DodgeCooldown = new Stat(Data.DodgeCooldown);
             DodgeInvincibleTime = new Stat(Data.DodgeInvincibleTime);
+            DodgeDurationTime = new Stat(Data.DodgeDurationTime);
+            DodgeAddForce = new Stat(Data.DodgeAddForce);
             ItemSlotMax = new Stat(Data.ItemSlotMax);
             BallStackMax = new Stat(Data.BallStackMax);
             GoldGain = new Stat(Data.GoldGain);

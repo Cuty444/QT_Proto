@@ -36,6 +36,8 @@ namespace QT.Player
         
         private void OnAttackStart()
         {
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+                return;
             _ownerEntity.ChangeState(Player.States.Swing);
         }
     }

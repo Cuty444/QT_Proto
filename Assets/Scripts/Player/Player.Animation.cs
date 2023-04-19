@@ -11,6 +11,8 @@ namespace QT.Player
         private readonly string AnimationIdleString = "PlayerIdle";
         private readonly int AnimationSwingHash = Animator.StringToHash("PlayerSwing");
         private readonly int AnimationThrowHash = Animator.StringToHash("PlayerThrow");
+        private readonly int AnimationDodgeHash = Animator.StringToHash("PlayerDodge");
+        private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
 
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
@@ -71,6 +73,24 @@ namespace QT.Player
             StartCoroutine(WaitForSecond(0.5f, () =>
             {
                 _animator.ResetTrigger(AnimationThrowHash);
+            }));
+        }
+
+        public void SetDodgeAnimation()
+        {
+            _animator.SetTrigger(AnimationDodgeHash);
+            StartCoroutine(WaitForSecond(0.5f, () =>
+            {
+                _animator.ResetTrigger(AnimationDodgeHash);
+            }));
+        }
+
+        public void SetDodgeEndAnimation()
+        {
+            _animator.SetTrigger(AnimationDodgeEndHash);
+            StartCoroutine(WaitForSecond(0.5f, () =>
+            {
+                _animator.ResetTrigger(AnimationDodgeEndHash);
             }));
         }
 
