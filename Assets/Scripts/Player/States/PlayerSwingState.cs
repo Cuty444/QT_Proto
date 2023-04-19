@@ -116,7 +116,7 @@ namespace QT.Player
             SystemManager.Instance.ProjectileManager.GetInRange(playerPos, _ownerEntity.SwingRadius, ref _projectiles,_projectileLayerMask);
             for (int i = 0; i < _projectiles.Count; i++)
             {
-                var dot = Vector2.Dot((_projectiles[i].Position - playerPos).normalized, playerDir);
+                var dot = Vector2.Dot((_projectiles[i].Position - playerPos), playerDir);
                 var angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
 
                 if (angle > _ownerEntity.SwingCentralAngle * 0.5f)

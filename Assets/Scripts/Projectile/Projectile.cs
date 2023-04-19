@@ -18,9 +18,11 @@ namespace QT
 
         private string _prefabPath;
         
+        [SerializeField] private LayerMask _bounceMask;
+        
         [SerializeField] private float _ballHeight;
         [SerializeField] private Transform _ballObject;
-        [SerializeField] private LayerMask _bounceMask;
+        
         private TrailRenderer _trailRenderer;
         
         private float _maxSpeed;
@@ -56,7 +58,7 @@ namespace QT
         private void OnDisable()
         {
             SystemManager.Instance?.ProjectileManager.UnRegister(this);
-            _trailRenderer.Clear();
+            _trailRenderer?.Clear();
             
             // Todo : 더 확실한 플레이어 투사체 구분필요
             if (_isReleased && _releaseDelay > 0)
