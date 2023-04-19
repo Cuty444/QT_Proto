@@ -75,9 +75,18 @@ namespace QT
             _damage = data.DirectDmg;
             ColliderRad = data.ColliderRad * 0.5f;
 
-            _bounceCount = _maxBounce = maxBounce;
+            if (data.IsBounce)
+            {
+                _bounceCount = _maxBounce = maxBounce;
+                _releaseDelay = releaseDelay;
+            }
+            else
+            {
+                _bounceCount = _maxBounce = 0;
+                _releaseDelay = 0;
+            }
+            
             _bounceMask = bounceMask;
-            _releaseDelay = releaseDelay;
             _isReleased = false;
 
             _prefabPath = path;
