@@ -15,6 +15,7 @@ namespace QT
         
         public int ProjectileId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
+        public float ColliderRad { get; private set; }
 
         private string _prefabPath;
         
@@ -29,8 +30,6 @@ namespace QT
         private float _speed;
         private float _speedDecay;
         private float _currentSpeedDecay;
-
-        private float _size;
 
         private int _maxBounce;
         private int _bounceCount;
@@ -69,14 +68,14 @@ namespace QT
 
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, float releaseDelay = 0, string path = "")
         {
+            _direction = dir;
             _maxSpeed = _speed = speed;
             _currentSpeedDecay = _speedDecay;
-            _size = data.ColliderRad * 0.5f;
+            
             _damage = data.DirectDmg;
+            ColliderRad = data.ColliderRad * 0.5f;
 
-            _direction = dir;
             _bounceCount = _maxBounce = maxBounce;
-
             _bounceMask = bounceMask;
             _releaseDelay = releaseDelay;
             _isReleased = false;
@@ -95,8 +94,8 @@ namespace QT
             _maxSpeed = Mathf.Max(_speed, newSpeed);
             _speed = newSpeed;
             _currentSpeedDecay = _speedDecay;
-            _bounceCount = _maxBounce;
             
+            _bounceCount = _maxBounce;
             _bounceMask = bounceMask;
             _isReleased = false;
         }
@@ -116,7 +115,7 @@ namespace QT
         {
             if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
             {
-                SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
+                //SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
             }
 
             CheckHit();
@@ -126,7 +125,7 @@ namespace QT
         
         private void CheckHit()
         {
-            var hit = Physics2D.CircleCast(transform.position, _size, _direction, _speed * Time.deltaTime, _bounceMask);
+            var hit = Physics2D.CircleCast(transform.position, ColliderRad, _direction, _speed * Time.deltaTime, _bounceMask);
 
             if (hit.collider != null)
             {
@@ -185,10 +184,10 @@ namespace QT
         private void OnDrawGizmos()
         {
             UnityEditor.Handles.color = Color.red;
-            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.back, _size);
+            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.back, ColliderRad);
 
-            UnityEditor.Handles.Label(transform.position, (_size * 2).ToString());
-            Gizmos.DrawRay(transform.position, Vector2.right * _size);
+            UnityEditor.Handles.Label(transform.position, (ColliderRad * 2).ToString());
+            Gizmos.DrawRay(transform.position, Vector2.right * ColliderRad);
         }
 #endif
         
