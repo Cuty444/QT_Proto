@@ -20,6 +20,7 @@ namespace QT.Enemy
         
         public int ProjectileId => gameObject.GetInstanceID();
         public  Vector2 Position => transform.position;
+        public float ColliderRad { get; private set; }
 
         [SerializeField] private int _enemyId;
         
@@ -38,6 +39,9 @@ namespace QT.Enemy
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
 
+            ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
+                .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
+            
             Shooter.Initialize(this);
             
             SetUpStats();

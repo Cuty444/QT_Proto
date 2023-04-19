@@ -109,22 +109,11 @@ namespace QT.Player
         
         private void GetProjectiles()
         {
-            Vector2 playerPos = _ownerEntity.EyeTransform.position;
-            Vector2 playerDir = _ownerEntity.EyeTransform.right;
+            Transform eye = _ownerEntity.EyeTransform;
             
             _projectiles.Clear();
-            SystemManager.Instance.ProjectileManager.GetInRange(playerPos, _ownerEntity.SwingRadius, ref _projectiles,_projectileLayerMask);
-            for (int i = 0; i < _projectiles.Count; i++)
-            {
-                var dot = Vector2.Dot((_projectiles[i].Position - playerPos), playerDir);
-                var angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-
-                if (angle > _ownerEntity.SwingCentralAngle * 0.5f)
-                {
-                    _projectiles.RemoveAt(i);
-                    i--;
-                }
-            }
+            SystemManager.Instance.ProjectileManager.GetInRange(eye.position, _ownerEntity.SwingRadius,
+                _ownerEntity.SwingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
         }
 
         private void SetLines()
