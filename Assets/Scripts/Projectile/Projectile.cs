@@ -115,7 +115,7 @@ namespace QT
         {
             if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
             {
-                //SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
+                SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
             }
 
             CheckHit();
@@ -136,7 +136,7 @@ namespace QT
                 }
                 
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
-                if (--_bounceCount == 0)
+                if (!_isReleased && --_bounceCount <= 0)
                 {
                     _isReleased = true;
                     _releaseStartTime = Time.time;
