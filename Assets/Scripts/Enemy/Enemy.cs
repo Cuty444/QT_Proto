@@ -31,6 +31,11 @@ namespace QT.Enemy
         public Animator Animator { get; private set; }
         public SkeletalMaterialChanger MaterialChanger { get; private set; }
 
+
+        [field: SerializeField] public Transform BallObject { get; private set; }
+        [field: SerializeField] public float BallHeight { get; private set; }
+        [field: SerializeField] public float BallHeightMin { get; private set; }
+
         private void Awake()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);

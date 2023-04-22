@@ -18,6 +18,7 @@ namespace QT.Enemy
         {
             _ownerEntity.Animator.SetTrigger(DeadAnimHash);
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
+            _ownerEntity.BallObject.localPosition = Vector3.up * _ownerEntity.BallHeightMin;
         }
     }
 }

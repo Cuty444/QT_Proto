@@ -134,8 +134,7 @@ namespace QT.Enemy
             var height = _speed / _maxSpeed;
             height *= height;
 
-            //_ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
-            
+            _ownerEntity.BallObject.localPosition = Vector3.up * (_ownerEntity.BallHeightMin + height * _ownerEntity.BallHeight);
             _ownerEntity.Animator.SetFloat(ProjectileSpeedAnimHash, height);
         }
     }
