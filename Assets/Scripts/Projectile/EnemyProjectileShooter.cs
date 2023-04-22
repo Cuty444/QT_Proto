@@ -39,7 +39,7 @@ namespace QT
 
         private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList)
         {
-            _enemy.Animator.SetTrigger(AttackAnimHash);
+            _enemy.Animator.SetBool(AttackAnimHash, true);
             
             foreach (var data in atkList)
             {
@@ -49,6 +49,8 @@ namespace QT
                 
                 yield return new WaitForSeconds(data.AfterDelay);
             }
+            
+            _enemy.Animator.SetBool(AttackAnimHash, false);
         }
     }
 }
