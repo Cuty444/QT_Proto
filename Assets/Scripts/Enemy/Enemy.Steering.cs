@@ -38,7 +38,6 @@ namespace QT.Enemy
                 interest.Weights[i] = Mathf.Clamp01(interest.Weights[i] - danger.Weights[i]);
                 dir += DirectionWeights.Directions[i] * interest.Weights[i];
             }
-            dir.Normalize();
             
             //Debug
 #if UNITY_EDITOR

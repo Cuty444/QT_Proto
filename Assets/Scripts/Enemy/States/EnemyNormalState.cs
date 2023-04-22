@@ -7,6 +7,7 @@ namespace QT.Enemy
     [FSMState((int) Enemy.States.Normal)]
     public class EnemyNormalState : FSMState<Enemy>
     {
+        private const float TurnoverLimitSpeed = 0.75f * 0.75f;
         private readonly int DirXAnimHash = Animator.StringToHash("DirX");
         private readonly int DirYAnimHash = Animator.StringToHash("DirY");
         
@@ -16,6 +17,8 @@ namespace QT.Enemy
         private Vector2 _moveTarget;
 
         private float _lastAtkCheckTime;
+
+        private bool _rotateSide;
 
         public EnemyNormalState(IFSMEntity owner) : base(owner)
         {
@@ -104,10 +107,17 @@ namespace QT.Enemy
             
             if (isRotate)
             {
-                interest.AddWeight(new Vector2(dir.y, -dir.x), 1);
+                interest.AddWeight(_rotateSide ? new Vector2(dir.y, -dir.x) : new Vector2(-dir.y, dir.x), 1);
             }
 
-            return _ownerEntity.CalculateContexts(danger, interest);
+            var result = _ownerEntity.CalculateContexts(danger, interest);
+            
+            if(isRotate && result.sqrMagnitude < TurnoverLimitSpeed)
+            {
+                _rotateSide = !_rotateSide;
+            }
+            
+            return result.normalized;
         }
 
         private bool CheckAttackStart(float targetDistance)
