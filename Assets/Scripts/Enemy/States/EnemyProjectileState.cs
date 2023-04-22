@@ -9,6 +9,9 @@ namespace QT.Enemy
     [FSMState((int)Enemy.States.Projectile)]
     public class EnemyProjectileState : FSMState<Enemy>
     {
+        private static readonly int ProjectileAnimHash = Animator.StringToHash("Projectile");
+        private static readonly int ProjectileSpeedAnimHash = Animator.StringToHash("ProjectileSpeed");
+        
         private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
@@ -50,7 +53,7 @@ namespace QT.Enemy
         public void InitializeState(Vector2 dir, float power, LayerMask bounceMask)
         {
             _direction = dir;
-            _speed = power;
+            _maxSpeed = _speed = power;
             _bounceMask = bounceMask;
             
             _bounceCount = _maxBounce = 2;
@@ -58,6 +61,8 @@ namespace QT.Enemy
             _isReleased = false;
 
             _ownerEntity.SetPhysics(false);
+            
+            _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
         }
         
         public override void ClearState()
@@ -130,6 +135,8 @@ namespace QT.Enemy
             height *= height;
 
             //_ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
+            
+            _ownerEntity.Animator.SetFloat(ProjectileSpeedAnimHash, height);
         }
     }
 }
