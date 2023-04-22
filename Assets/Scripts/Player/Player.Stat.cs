@@ -17,6 +17,7 @@ namespace QT.Player
         public Stat[] ChargeBounceCount { get; private set; }
         public Stat[] ChargeRigidDmg { get; private set; }
         public Stat[] ChargeProjectileDmg { get; private set; }
+        public Stat ReflectCorrection { get; private set; }
         public Stat AtkDmgPer { get; private set; }
         public Stat SwingRadius { get; private set; }
         public Stat SwingCentralAngle { get; private set; }
@@ -54,6 +55,7 @@ namespace QT.Player
             ThrowBounceCount = new Stat(AtkData.ThrowBounceCount);
             SwingCooldown = new Stat(AtkData.SwingCooldown * 0.01f);
             SwingAfterDelay = new Stat(AtkData.SwingAfterDelay);
+            ReflectCorrection = new Stat(AtkData.ReflectCorrection);
             AtkDmgPer = new Stat(AtkData.AtkDmgPer);
             ChargeAtkPierce = AtkData.ChargeAtkPierce;
             ChargeTimes = new Stat[]
