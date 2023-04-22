@@ -17,7 +17,7 @@ namespace QT.Enemy
         public override void InitializeState()
         {
             _ownerEntity.Animator.SetTrigger(DeadAnimHash);
-            _ownerEntity.Rigidbody.velocity = Vector2.zero;
+            _ownerEntity.SetPhysics(false);
             _ownerEntity.BallObject.localPosition = Vector3.up * _ownerEntity.BallHeightMin;
         }
     }
