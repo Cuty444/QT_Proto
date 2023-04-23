@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 namespace QT.Player
 {
-    public partial class Player : FSMPlayer<Player>, IFSMEntity
+    public partial class Player : FSMPlayer<Player>, IFSMEntity, IHitable
     {
         public enum States : int
         {
@@ -15,6 +15,7 @@ namespace QT.Player
             Move,
             Swing,
             Dodge,
+            Rigid,
             Dead,
         }
 

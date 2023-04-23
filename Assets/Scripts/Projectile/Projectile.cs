@@ -9,7 +9,7 @@ namespace QT
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-        private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
+        private const string HitEffectPath = "Effect/Prefabs/Legacy/FX_Yagubat_Hit.prefab";
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         

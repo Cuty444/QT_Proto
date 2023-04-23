@@ -8,6 +8,6 @@ namespace QT
 {
     public class PlayerProjectileShooter : ProjectileShooter
     {
-        public override LayerMask BounceMask => LayerMask.GetMask("Wall", "Enemy");
+        public override LayerMask BounceMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Enemy");
     }
 }
