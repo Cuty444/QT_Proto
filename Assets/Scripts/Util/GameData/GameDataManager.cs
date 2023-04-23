@@ -86,9 +86,8 @@ namespace QT.Core
             await SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(); // TODO : 마찬가지로 수정 필요
             
             Debug.Log("로드완료"); //TODO 데이터 로드 후 씬 불러오기 부분 수정 필요
-            if (SceneManager.GetActiveScene().buildIndex != 0)
-                return;
-            SceneManager.LoadScene(1);
+            
+            SystemManager.Instance.LoadingManager.DataAllLoadCompletedEvent.Invoke();
         }
 
         private async UniTask<JArray> GetJson(GameDataBaseAttribute attribute)
