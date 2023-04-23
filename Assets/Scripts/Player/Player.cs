@@ -37,6 +37,8 @@ namespace QT.Player
         public Vector2 MoveDirection { get; private set; }
 
         private PlayerManager _playerManager;
+
+        private bool _isEnterDoor;
         private void Awake()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
@@ -51,6 +53,15 @@ namespace QT.Player
             SetUp(States.Idle);
             SetGlobalState(new PlayerGlobalState(this));
             _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.CurrentRoomEnemyRegister.AddListener((enemyList) =>
+            {
+                _enemyList = enemyList;
+            });
+            _playerManager.PlayerMapPass.AddListener((isBool) =>
+            {
+                _isEnterDoor = isBool;
+            });
+            _isEnterDoor = true;
         }
 
         public void SetMoveDirection(Vector2 direction)
