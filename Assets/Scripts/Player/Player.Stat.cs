@@ -52,7 +52,7 @@ namespace QT.Player
             ThrowAfterDelay = new Stat(AtkData.ThrowAfterDelay);
             ThrowSpd = new Stat(AtkData.ThrowSpd);
             ThrowBounceCount = new Stat(AtkData.ThrowBounceCount);
-            SwingCooldown = new Stat(AtkData.SwingCooldown * 0.01f);
+            SwingCooldown = new Stat(AtkData.SwingCooldown);
             SwingAfterDelay = new Stat(AtkData.SwingAfterDelay);
             AtkDmgPer = new Stat(AtkData.AtkDmgPer);
             ChargeAtkPierce = AtkData.ChargeAtkPierce;

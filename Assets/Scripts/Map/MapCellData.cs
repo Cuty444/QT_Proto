@@ -65,6 +65,7 @@ namespace QT.Map
         public void RoomPlay(Vector2Int position)
         {
             _mapEnemySpawner.SetPos(position);
+            _playerManager.PlayerMapPass.Invoke(false);
             _enemySpawnersTransform.gameObject.SetActive(true);
         }
     }
