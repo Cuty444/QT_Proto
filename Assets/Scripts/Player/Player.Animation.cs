@@ -17,6 +17,7 @@ namespace QT.Player
 
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
+        private bool _isRigid;
         public void AngleAnimation()
         {
             float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, MousePos);
@@ -98,11 +99,18 @@ namespace QT.Player
         public void SetRigidAninimation()
         {
             _animator.SetTrigger(AnimationRigidHash);
+            ChangeState(Player.States.Move);
+            _isRigid = true;
             StartCoroutine(WaitForSecond(0.33f, () =>
             {
                 _animator.ResetTrigger(AnimationRigidHash);
-                ChangeState(Player.States.Idle);
+                _isRigid = false;
             }));
+        }
+
+        public bool GetRigidTrigger()
+        {
+            return _isRigid;
         }
 
         IEnumerator WaitForSecond(float time,Action func)

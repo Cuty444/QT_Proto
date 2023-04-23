@@ -190,6 +190,8 @@ namespace QT.Player
                 return;
             if (_currentDodgeCoolTime < _ownerEntity.DodgeCooldown.Value)
                 return;
+            if (_ownerEntity.GetRigidTrigger())
+                return;
             _ownerEntity.ChangeState(Player.States.Dodge);
             _currentDodgeCoolTime = 0f;
             _startDodgeTime = Time.time;
