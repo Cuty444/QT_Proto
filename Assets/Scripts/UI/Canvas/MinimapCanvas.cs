@@ -12,8 +12,10 @@ namespace QT.UI
     {
         [SerializeField] private Transform _miniMapCellTransform;
         [SerializeField] private GameObject _miniMapOnOff;
-        [SerializeField] private GameObject _cellObject;
-
+        
+        
+        private const string CellPath = "Prefabs/Map/MiniMap/Cell.prefab";
+        
         private PlayerManager _playerManager;
         
         private Dictionary<Vector2Int, MapDirection> _pathDirections = new Dictionary<Vector2Int, MapDirection>();
@@ -24,13 +26,12 @@ namespace QT.UI
         private Vector2Int _currentPlayerPosition; // TODO : DungeonMapSystem으로 옮겨야함
         public override void Initialize()
         {
-            _mapData = SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData;
-            _currentPlayerPosition = _mapData.StartPosition;
             _pathDirections.Add(Vector2Int.up,MapDirection.Up);
             _pathDirections.Add(Vector2Int.down,MapDirection.Down);
             _pathDirections.Add(Vector2Int.right,MapDirection.Left);
             _pathDirections.Add(Vector2Int.left,MapDirection.Right);
-            MiniMapDraw();
+            SystemManager.Instance.ResourceManager.CacheAsset(CellPath);
+            MinimapSetting();
             _miniMapOnOff.SetActive(false);
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerDoorEnter.AddListener(NextMapWarp);
@@ -45,9 +46,26 @@ namespace QT.UI
                 _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
             });
+        }
+
+        public void MinimapSetting()
+        {
+            _mapData = SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData;
+            _currentPlayerPosition = _mapData.StartPosition;
+            MiniMapDraw();
 
         }
 
+        public void CellClear()
+        {
+            foreach (var cell in _cellList)
+            {
+                cell.ListenerClear();
+                SystemManager.Instance.ResourceManager.ReleaseObject(CellPath, cell);
+            }
+            _cellList.Clear();
+        }
+        
         public override void PostSystemInitialize()
         {
             gameObject.SetActive(true);
@@ -76,24 +94,28 @@ namespace QT.UI
             for (int i = 0; i< _mapData.MapNodeList.Count; i++)
             {
                 MapDirection direction = DirectionCheck(_mapData.MapNodeList[i]);
-                CellCreate(_mapData.MapNodeList[i],direction);
+                CellCreate(_mapData.MapNodeList[i],direction,i);
             }
             
             MiniMapCellCenterPositionChagne(_currentPlayerPosition);
 
         }
-
-        private void CellCreate(Vector2Int createPos,MapDirection direction)
+        
+        private async void CellCreate(Vector2Int createPos,MapDirection direction,int index)
         {
             Vector3 pos = new Vector3(createPos.x * 200f, createPos.y * -200f, 0f);
-            var cell = Instantiate(_cellObject,_miniMapCellTransform).GetComponent<MiniMapCellData>();
+            var cell = await SystemManager.Instance.ResourceManager.GetFromPool<MiniMapCellData>(CellPath,_miniMapCellTransform);
+            cell.name = cell.name +"_"+ index.ToString();
+            cell.transform.localScale = Vector3.one;
             cell.transform.localPosition = pos;
             cell.SetRouteDirection(direction);
             cell.CellPos = createPos;
             if (createPos == _mapData.BossRoomPosition)
             {
+                cell.name = cell.name + "_Boss";
                 cell.SetRoomType(RoomType.Boss);
             }
+            cell.Setting();
             _cellList.Add(cell);
         }
 

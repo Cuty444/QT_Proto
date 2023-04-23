@@ -11,7 +11,6 @@ namespace QT
     {
         [SerializeField] private Image _image;
         [SerializeField] private SkeletonGraphic _skeletonGraphic;
-        private readonly int AnimationLossHpHash = Animator.StringToHash("LossHp");
         private bool _isFirstAnimation;
 
         public void StartAni()
@@ -20,7 +19,6 @@ namespace QT
                 return;
             _skeletonGraphic.enabled = true;
             _image.enabled = false;
-            _skeletonGraphic.AnimationState.SetAnimation(0, "animation",false);
             
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {

@@ -94,5 +94,11 @@ namespace QT.Util
                 return;
             ChangeSprite(DefualtSprite);
         }
+
+        public void Clear()
+        {
+            _isInteractable = true;
+            targetImage.sprite = DefualtSprite;
+        }
     }
 }

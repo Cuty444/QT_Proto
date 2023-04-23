@@ -28,7 +28,11 @@ namespace QT.UI
 
         public void SetHp(Status hp)
         {
-            for (int i = 0; i < hp.Value; i += 25)
+            for (int i = 0; i < _playerHpList.Count; i++)
+            {
+                ImageChange(_playerHpList[i],0);
+            }
+            for (int i = _playerHpList.Count * 25; i < hp.Value; i += 25)
             {
                 _playerHpList.Add(Instantiate(_playerHpObject,_playerHpTransform).GetComponent<Image>());
             }

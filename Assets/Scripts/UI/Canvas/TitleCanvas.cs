@@ -20,11 +20,7 @@ namespace QT.UI
 
         public void GameEnd()
         {
-            #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-            #else
-                Application.Quit();
-            #endif
+            QT.Util.UnityUtil.ProgramExit();
         }
     }
 }

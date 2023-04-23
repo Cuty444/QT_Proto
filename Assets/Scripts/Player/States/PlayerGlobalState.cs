@@ -64,6 +64,8 @@ namespace QT.Player
 
         public override void UpdateState()
         {
+            if (_ownerEntity.CurrentStateIndex == (int) Player.States.Dead)
+                return;
             ThrowCoolTime();
             AttackCoolTime();
             DodgeCoolTime();
@@ -72,15 +74,7 @@ namespace QT.Player
             SetDirection();
             _ownerEntity.AngleAnimation();
         }
-
-        public override void FixedUpdateState()
-        {
-            //if (_currentSwingCoolTime > _ownerEntity.SwingCooldown)
-            //{
-            //    _isUpDown = _ownerEntity.PlayerSwingAngle();
-            //}
-
-        }
+        
         
         protected virtual void MoveDirection(Vector2 direction)
         {
@@ -215,6 +209,22 @@ namespace QT.Player
             _ownerEntity.ChangeState(Player.States.Rigid);
             _ownerEntity.HP.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(_ownerEntity.HP);
+            if (_ownerEntity.HP.StatusValue <= 0)
+            {
+                PlayerDead();
+            }
+        }
+
+        private void PlayerDead()
+        {
+            _inputSystem.OnKeyDownAttackEvent.RemoveAllListeners();
+            _inputSystem.OnKeyUpAttackEvent.RemoveAllListeners();
+            _inputSystem.OnKeyEThrowEvent.RemoveAllListeners();
+            _inputSystem.OnKeyMoveEvent.RemoveAllListeners();
+            _inputSystem.OnKeySpaceDodgeEvent.RemoveAllListeners();
+            SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
+            _ownerEntity.OnDamageEvent.RemoveAllListeners();
+            _ownerEntity.ChangeState(Player.States.Dead);
         }
         
     }

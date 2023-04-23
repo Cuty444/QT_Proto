@@ -14,6 +14,7 @@ namespace QT.Player
         private readonly int AnimationDodgeHash = Animator.StringToHash("PlayerDodge");
         private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
         private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
+        private readonly int AnimationDeadHash = Animator.StringToHash("PlayerDead");
 
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
@@ -96,7 +97,7 @@ namespace QT.Player
             }));
         }
 
-        public void SetRigidAninimation()
+        public void SetRigidAnimation()
         {
             _animator.SetTrigger(AnimationRigidHash);
             ChangeState(Player.States.Move);
@@ -106,6 +107,11 @@ namespace QT.Player
                 _animator.ResetTrigger(AnimationRigidHash);
                 _isRigid = false;
             }));
+        }
+        
+        public void SetDeadAnimation()
+        {
+            _animator.SetTrigger(AnimationDeadHash);
         }
 
         public bool GetRigidTrigger()
