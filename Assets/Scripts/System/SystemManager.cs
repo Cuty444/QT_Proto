@@ -13,6 +13,8 @@ namespace QT.Core
         public GameDataManager DataManager { get; } = new ();
         public PlayerManager PlayerManager { get; } = new();
         public ProjectileManager ProjectileManager { get; } = new();
+
+        public LoadingManager LoadingManager { get; } = new();
         
         [field:SerializeField]public UIManager UIManager { get; private set; }
         
@@ -28,6 +30,8 @@ namespace QT.Core
             InitializeSystems();
 
             UIManager?.Initialize();
+            
+            LoadingManager.Initialize();
             
             _PostInitializeSystems();
             

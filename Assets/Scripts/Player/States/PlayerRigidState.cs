@@ -14,7 +14,7 @@ namespace QT.Player
 
         public override void InitializeState()
         {
-            _ownerEntity.SetRigidAninimation();
+            _ownerEntity.SetRigidAnimation();
         }
         
         public override void ClearState()

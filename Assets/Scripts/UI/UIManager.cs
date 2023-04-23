@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 namespace QT.UI
 {
     public class UIManager : MonoBehaviour
     {
-        private Dictionary<string, UIPanel> _Panels = new Dictionary<string, UIPanel>();
+        private readonly Dictionary<Type, UIPanel> _Panels = new Dictionary<Type, UIPanel>();
         private UIPanel _currentPanel;
 
         public void Initialize()
@@ -19,11 +19,11 @@ namespace QT.UI
                     continue;
 
                 panel.Initialize();
-                if(!_Panels.ContainsKey(panel.GetType().ToString()))
-                    _Panels.Add(panel.GetType().ToString(), panel);
+                if(!_Panels.ContainsKey(panel.GetType()))
+                    _Panels.Add(panel.GetType(), panel);
             }
             
-            foreach(KeyValuePair<string,UIPanel> panel in _Panels)
+            foreach(KeyValuePair<Type,UIPanel> panel in _Panels)
             {
                 panel.Value.OnClose();
             }
@@ -46,14 +46,12 @@ namespace QT.UI
 
         public T GetUIPanel<T>() where T : UIPanel
         {
-            T uiPanel = null;
-            string childUIPanelTypeNmae = typeof(T).ToString();
-            if (_Panels.ContainsKey(childUIPanelTypeNmae))
+            if (_Panels.TryGetValue(typeof(T), out var system))
             {
-                uiPanel = _Panels[childUIPanelTypeNmae] as T;
+                return (T)system;
             }
 
-            return uiPanel;
+            return null;
         }
     }
 }
