@@ -28,6 +28,7 @@ namespace QT.Player
         [SerializeField] private Transform _lineRendersTransform;
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [SerializeField] private TrailRenderer _trailRenderer;
+        [SerializeField] private ParticleSystem[] _dashParticle;
         
         public Rigidbody2D Rigidbody { get; private set; }
         public CharacterGameData Data { get; private set; }

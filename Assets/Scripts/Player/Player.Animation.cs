@@ -19,6 +19,7 @@ namespace QT.Player
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
         private bool _isRigid;
+        private int _dodgeDirection;
         public void AngleAnimation()
         {
             float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, MousePos);
@@ -28,30 +29,38 @@ namespace QT.Player
                 case > 22.5f and < 67.5f:
                     yAngle = 180f;
                     _animator.SetFloat(_animatorValue,3f);
+                    _dodgeDirection = 1;
                     break;
                 case > 67.5f and < 112.5f:
                     _animator.SetFloat(_animatorValue,4f);
+                    _dodgeDirection = 0;
                     break;
                 case > 112.5f and < 157.5f:
                     _animator.SetFloat(_animatorValue,3f);
+                    _dodgeDirection = 1;
                     break;
                 case > -157.5f and < -112.5f:
                     _animator.SetFloat(_animatorValue,1f);
+                    _dodgeDirection = 1;
                     break;
                 case > -112.5f and < -67.5f:
                     _animator.SetFloat(_animatorValue,0f);
+                    _dodgeDirection = 0;
                     break;
                 case > -67.5f and < -22.5f:
                     yAngle = 180f;
                     _animator.SetFloat(_animatorValue,1f);
+                    _dodgeDirection = 1;
                     break;
                 case > 157.5f:
                 case < -157.5f:
                     _animator.SetFloat(_animatorValue,2f);
+                    _dodgeDirection = 1;
                     break;
                 default:
                     yAngle = 180f;
                     _animator.SetFloat(_animatorValue,2f);
+                    _dodgeDirection = 1;
                     break;
             }
             _animator.transform.rotation = Quaternion.Euler(0f, yAngle,0f);
@@ -82,8 +91,11 @@ namespace QT.Player
         public void SetDodgeAnimation()
         {
             _animator.SetTrigger(AnimationDodgeHash);
+            _dashParticle[_dodgeDirection].gameObject.SetActive(true);
+            _dashParticle[_dodgeDirection].Play();
             StartCoroutine(WaitForSecond(0.5f, () =>
             {
+                _dashParticle[_dodgeDirection].gameObject.SetActive(false);
                 _animator.ResetTrigger(AnimationDodgeHash);
             }));
         }
