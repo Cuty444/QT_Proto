@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using QT.UI;
+using QT.Util;
+using Spine.Unity;
 
 namespace QT.UI
 {
@@ -10,17 +12,15 @@ namespace QT.UI
     {
         [SerializeField] private Image _playerHPImage;
         [SerializeField] private Image _playerInvicibleImage;
-        [SerializeField] private Image _playerBallStackImage;
+        [SerializeField] private GameObject _playerBallStackObject;
         [SerializeField] private Image _playerDodgeCoolBarImage;
         [SerializeField] private Image _playerDodgeCoolBackgroundImage;
         [SerializeField] private Transform _playerHpTransform;
         [SerializeField] private GameObject _playerHpObject;
         [SerializeField] private Sprite[] _playerHpImage;
+        [SerializeField] private SkeletonGraphic _skeletonGraphicRecharge;
         public Image PlayerHPImage => _playerHPImage;
         public Image PlayerInvicibleImage => _playerInvicibleImage;
-
-        public Image PlayerBallStackImage => _playerBallStackImage;
-
         public Image PlayerDodgeCoolBarImage => _playerDodgeCoolBarImage;
         public Image PlayerDodgeCoolBackgroundImage => _playerDodgeCoolBackgroundImage;
 
@@ -73,6 +73,20 @@ namespace QT.UI
             image.sprite = _playerHpImage[value];
             if(value == 2)
                 image.GetComponentInChildren<HpAnimation>()?.StartAni();
+        }
+
+        public void ThrowProjectileGauge(bool isActive)
+        {
+            if (isActive)
+            {
+                _skeletonGraphicRecharge.enabled = true;
+                _skeletonGraphicRecharge.AnimationState.SetAnimation(1, "animation",false);
+                StartCoroutine(UnityUtil.WaitForFunc(() =>
+                {
+                    _skeletonGraphicRecharge.enabled = false;
+                },0.43f));
+            }
+            _playerBallStackObject.SetActive(isActive);
         }
         
 
