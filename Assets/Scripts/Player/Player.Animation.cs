@@ -19,7 +19,6 @@ namespace QT.Player
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
         private bool _isRigid;
-        private int _dodgeDirection;
         public void AngleAnimation()
         {
             float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, MousePos);
@@ -91,11 +90,8 @@ namespace QT.Player
         public void SetDodgeAnimation()
         {
             _animator.SetTrigger(AnimationDodgeHash);
-            _dashParticle[_dodgeDirection].gameObject.SetActive(true);
-            _dashParticle[_dodgeDirection].Play();
             StartCoroutine(WaitForSecond(0.5f, () =>
             {
-                _dashParticle[_dodgeDirection].gameObject.SetActive(false);
                 _animator.ResetTrigger(AnimationDodgeHash);
             }));
         }

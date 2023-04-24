@@ -9,7 +9,8 @@ namespace QT
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-        private const string HitEffectPath = "Effect/Prefabs/Legacy/FX_Yagubat_Hit.prefab";
+        private const string HitEffectPath = "Effect/Prefabs/FX_M_Hit.prefab";
+        private const string ColliderDustEffectPath = "Effect/Prefabs/FX_Collider_Dust.prefab";
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
@@ -142,6 +143,10 @@ namespace QT
                 {
                     hitable.Hit(_direction, _damage);
                     SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
+                }
+                else
+                {
+                    SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
                 }
                 
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
