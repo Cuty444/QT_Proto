@@ -1,66 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3651697150460517973
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 113847188975321557}
-  - component: {fileID: 1152951289710222517}
-  m_Layer: 18
-  m_Name: ProjectileCollider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &113847188975321557
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3651697150460517973}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6450647722498664028}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!68 &1152951289710222517
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3651697150460517973}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.07, y: 1.82}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.4, y: -0.52}
-  - {x: -0.67, y: -0.7}
-  - {x: -0.67, y: -0.868}
-  - {x: -0.42, y: -1.05}
-  - {x: -0.04, y: -1.05}
-  - {x: 0.19, y: -0.87}
-  - {x: 0.19, y: -0.71}
-  - {x: -0.04, y: -0.52}
-  - {x: -0.4, y: -0.52}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!1 &4559109865560168797
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,8 +106,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8171453172002098160}
   - component: {fileID: 4287736279118771402}
-  m_Layer: 14
-  m_Name: CharacterCollider
+  m_Layer: 15
+  m_Name: HardCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -187,7 +126,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6450647722498664028}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!68 &4287736279118771402
 EdgeCollider2D:
@@ -248,7 +187,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8425250219734994435}
-  - {fileID: 113847188975321557}
   - {fileID: 8171453172002098160}
   m_Father: {fileID: 0}
   m_RootOrder: 0
