@@ -9,6 +9,7 @@ namespace QT.Player
     public class PlayerSwingState : PlayerMoveState
     {
         private const string HitLinePath = "Prefabs/HitLine.prefab";
+        private const string SwingProjectileHitPath = "Effect/Prefabs/FX_Ball_Attack.prefab";
         private const int Segments = 32;
         private const int MaxLineCount = 10;
 
@@ -21,7 +22,9 @@ namespace QT.Player
 
         private LayerMask _projectileLayerMask;
 
+        private bool[] _chargingEffectCheck;
 
+        
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
             _ownerEntity.SwingAreaMeshFilter.mesh =
@@ -29,6 +32,7 @@ namespace QT.Player
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
             _projectileLayerMask = LayerMask.GetMask("Enemy", "ProjectileDelayed");
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
+            _chargingEffectCheck = new bool[3];
         }
 
 
@@ -82,13 +86,22 @@ namespace QT.Player
             {
                 projectile.ResetBounceCount(bounce);
                 projectile.ProjectileHit(GetNewProjectileDir(projectile), power,damage, mask);
+                SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position); 
+
             }
 
             foreach (var hitEnemy in _enemyInRange)
             {
                 hitEnemy.Hit((hitEnemy.Position - (Vector2)_ownerEntity.transform.position).normalized,_ownerEntity.ChargeRigidDmg[_chargeLevel]);
+                SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, hitEnemy.Position); 
             }
 
+            for (int i = 0; i < _chargingEffectCheck.Length; i++)
+            {
+                _chargingEffectCheck[i] = false;
+            }
+            _ownerEntity.swingSlashEffectPlay();
+            _ownerEntity.FullChargingEffectStop();
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Idle);
         }
@@ -118,6 +131,20 @@ namespace QT.Player
                 {
                     _chargeLevel = 0;
                 }
+            }
+
+            for (int i = 0; i < _chargingEffectCheck.Length; i++)
+            {
+                if (_chargeLevel > i && !_chargingEffectCheck[i])
+                {
+                    _ownerEntity.ChargingEffectPlay(i);
+                    _chargingEffectCheck[i] = true;
+                }
+            }
+            
+            if (_chargeLevel > 2)
+            {
+                _ownerEntity.FullChargingEffectPlay();
             }
         }
 

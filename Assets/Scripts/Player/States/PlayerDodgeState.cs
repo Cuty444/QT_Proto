@@ -15,6 +15,7 @@ namespace QT.Player
         public override void InitializeState()
         {
             _ownerEntity.SetDodgeAnimation();
+            _ownerEntity.DodgeEffectPlay();
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.AddForce((_ownerEntity.MousePos - (Vector2) _ownerEntity.transform.position)
                 .normalized * _ownerEntity.DodgeAddForce.Value,ForceMode2D.Impulse);

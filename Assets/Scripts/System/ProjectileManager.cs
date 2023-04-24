@@ -15,12 +15,13 @@ namespace QT
         public void ResetBounceCount(int maxBounce);
 
         public LayerMask GetLayerMask();
+        
     }
     
     public class ProjectileManager
     {
         private Dictionary<int, IProjectile> _projectiles = new();
-        
+
         public void Register(IProjectile projectile)
         {
             _projectiles.Add(projectile.ProjectileId, projectile);

@@ -205,6 +205,7 @@ namespace QT.Player
             }
             _startInvincibleTime = Time.time;
             _ownerEntity.ChangeState(Player.States.Rigid);
+            _ownerEntity.PlayerHitEffectPlay();
             _ownerEntity.HP.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(_ownerEntity.HP);
             if (_ownerEntity.HP.StatusValue <= 0)
