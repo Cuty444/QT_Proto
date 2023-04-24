@@ -24,7 +24,6 @@ namespace QT.Player
         private int _currentBallStack;
 
 
-        private Image _throwProjectileUI;
 
         private Image _dodgeCoolBackgroundImage;
         private Image _dodgeCoolBarImage;
@@ -40,14 +39,13 @@ namespace QT.Player
             _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
-            _throwProjectileUI = _playerHpCanvas.PlayerBallStackImage;
             _dodgeCoolBackgroundImage = _playerHpCanvas.PlayerDodgeCoolBackgroundImage;
             _dodgeCoolBarImage = _playerHpCanvas.PlayerDodgeCoolBarImage;
             _playerHpCanvas.SetHp(_ownerEntity.HP);
             _inputSystem.OnKeySpaceDodgeEvent.AddListener(KeySpaceDodge);
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
             {
-                _throwProjectileUI.enabled = true;
+                _playerHpCanvas.ThrowProjectileGauge(true);
                 _currentBallStack++;
             });
             _currentBallStack = (int)_ownerEntity.BallStackMax.Value;
@@ -145,7 +143,7 @@ namespace QT.Player
             _currentThrowCoolTime = 0f;
             _ownerEntity.SetThrowAnimation();
             if(_currentBallStack == 0)
-                _throwProjectileUI.enabled = false;
+                _playerHpCanvas.ThrowProjectileGauge(false);
         }
 
         private void KeyDownAttack()

@@ -17,7 +17,7 @@ namespace QT.UI
         public override void OnOpen()
         {
             base.OnOpen();
-            _skeletonGraphic.AnimationState.SetAnimation(0, "S_GameOver",false);
+            _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver",false);
             _canvasGroup.alpha = 0f;
             _canvasGroup.interactable = false;
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
