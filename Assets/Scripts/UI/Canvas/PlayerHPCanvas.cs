@@ -79,12 +79,12 @@ namespace QT.UI
         {
             if (isActive)
             {
-                _skeletonGraphicRecharge.enabled = true;
-                _skeletonGraphicRecharge.AnimationState.SetAnimation(1, "animation",false);
-                StartCoroutine(UnityUtil.WaitForFunc(() =>
-                {
-                    _skeletonGraphicRecharge.enabled = false;
-                },0.43f));
+                //skeletonGraphicRecharge.enabled = true;
+                //_skeletonGraphicRecharge.AnimationState.SetAnimation(1, "animation",false);
+                //StartCoroutine(UnityUtil.WaitForFunc(() =>
+                //{
+                //    _skeletonGraphicRecharge.enabled = false;
+                //},0.667f));
             }
             _playerBallStackObject.SetActive(isActive);
         }
