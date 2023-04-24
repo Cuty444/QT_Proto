@@ -14,6 +14,27 @@ namespace QT.Util
             yield return new WaitForSeconds(delay);
             func.Invoke();
         }
+
+        public static void ProgramExit()
+        {
+            #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+            #else
+                Application.Quit();
+            #endif
+        }
+        
+        public static IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float duration,Action func = null)
+        {
+            float startTime = Time.time;
+            while (Time.time - startTime < duration)
+            {
+                cg.alpha = Mathf.Lerp(start, end, (Time.time - startTime) / duration);
+                yield return null;
+            }
+            cg.alpha = end;
+            func?.Invoke();
+        }
     }
 
     public static class Math

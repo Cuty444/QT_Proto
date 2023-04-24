@@ -11,15 +11,19 @@ namespace QT.Player
     public class PlayerGlobalState : FSMState<Player>
     {
         private InputSystem _inputSystem;
-        
+        private PlayerHPCanvas _playerHpCanvas;
+
+        private float _currentThrowCoolTime;
         private float _currentSwingCoolTime;
         private float _currentChargingTime;
         private float _currentDodgeCoolTime;
 
+        private float _startDodgeTime;
+        private float _startInvincibleTime;
+        
         private int _currentBallStack;
 
 
-        private Image _throwProjectileUI;
 
         private Image _dodgeCoolBackgroundImage;
         private Image _dodgeCoolBarImage;
@@ -33,21 +37,23 @@ namespace QT.Player
             _inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             _inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
             _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
-            PlayerHPCanvas playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
-            playerHpCanvas.gameObject.SetActive(true);
-            _throwProjectileUI = playerHpCanvas.PlayerBallStackImage;
-            _dodgeCoolBackgroundImage = playerHpCanvas.PlayerDodgeCoolBackgroundImage;
-            _dodgeCoolBarImage = playerHpCanvas.PlayerDodgeCoolBarImage;
+            _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
+            _playerHpCanvas.gameObject.SetActive(true);
+            _dodgeCoolBackgroundImage = _playerHpCanvas.PlayerDodgeCoolBackgroundImage;
+            _dodgeCoolBarImage = _playerHpCanvas.PlayerDodgeCoolBarImage;
+            _playerHpCanvas.SetHp(_ownerEntity.HP);
             _inputSystem.OnKeySpaceDodgeEvent.AddListener(KeySpaceDodge);
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
             {
-                _throwProjectileUI.enabled = true;
+                _playerHpCanvas.ThrowProjectileGauge(true);
                 _currentBallStack++;
             });
             _currentBallStack = (int)_ownerEntity.BallStackMax.Value;
             _currentSwingCoolTime = _ownerEntity.SwingCooldown.Value;
             _currentDodgeCoolTime = _ownerEntity.DodgeCooldown.Value;
+            _currentThrowCoolTime = _ownerEntity.ThrowCooldown.Value;
             _ownerEntity.SetBatActive(false);
+            _ownerEntity.OnDamageEvent.AddListener(OnDamage);
         }
 
         public override void InitializeState()
@@ -56,6 +62,9 @@ namespace QT.Player
 
         public override void UpdateState()
         {
+            if (_ownerEntity.CurrentStateIndex == (int) Player.States.Dead)
+                return;
+            ThrowCoolTime();
             AttackCoolTime();
             DodgeCoolTime();
             if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
@@ -63,15 +72,7 @@ namespace QT.Player
             SetDirection();
             _ownerEntity.AngleAnimation();
         }
-
-        public override void FixedUpdateState()
-        {
-            //if (_currentSwingCoolTime > _ownerEntity.SwingCooldown)
-            //{
-            //    _isUpDown = _ownerEntity.PlayerSwingAngle();
-            //}
-
-        }
+        
         
         protected virtual void MoveDirection(Vector2 direction)
         {
@@ -113,6 +114,11 @@ namespace QT.Player
             _dodgeCoolBarImage.fillAmount = Util.Math.Remap(_currentDodgeCoolTime,_ownerEntity.DodgeCooldown.Value,0f);
             _dodgeCoolBackgroundImage.gameObject.SetActive(_currentDodgeCoolTime < _ownerEntity.DodgeCooldown.Value);
         }
+
+        private void ThrowCoolTime()
+        {
+            _currentThrowCoolTime += Time.deltaTime;
+        }
         
         private void SetDirection()
         {
@@ -129,11 +135,15 @@ namespace QT.Player
             {
                 return;
             }
+
+            if (_currentThrowCoolTime < _ownerEntity.ThrowCooldown.Value)
+                return;
             _ownerEntity.AttackBallInstate();
             _currentBallStack--;
+            _currentThrowCoolTime = 0f;
             _ownerEntity.SetThrowAnimation();
             if(_currentBallStack == 0)
-                _throwProjectileUI.enabled = false;
+                _playerHpCanvas.ThrowProjectileGauge(false);
         }
 
         private void KeyDownAttack()
@@ -148,6 +158,7 @@ namespace QT.Player
             {
                 _isMouseDownCheck = true;
                 _ownerEntity.SwingAreaMeshRenderer.enabled = true;
+                _ownerEntity.ChangeState(Player.States.Swing);
             }
         }
 
@@ -155,8 +166,13 @@ namespace QT.Player
         {
             if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
                 return;
+            if (!_isMouseDownCheck)
+            {
+                return;
+            }
             _isMouseDownCheck = false;
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
+            _currentSwingCoolTime = 0f;
         }
 
 
@@ -166,20 +182,48 @@ namespace QT.Player
                 return;
             if (_currentDodgeCoolTime < _ownerEntity.DodgeCooldown.Value)
                 return;
+            if (_ownerEntity.GetRigidTrigger())
+                return;
             _ownerEntity.ChangeState(Player.States.Dodge);
             _currentDodgeCoolTime = 0f;
+            _startDodgeTime = Time.time;
         }
         
         
         #endregion
-        
-        #region BallCollisionMathFunc
-        
-        
-        
 
+        private void OnDamage(Vector2 dir, float damage)
+        {
+            if (Time.time - _startInvincibleTime < _ownerEntity.MercyInvincibleTime)
+            { 
+                return;
+            }
 
-        #endregion
+            if (Time.time - _startDodgeTime < _ownerEntity.DodgeInvincibleTime)
+            {
+                return;
+            }
+            _startInvincibleTime = Time.time;
+            _ownerEntity.ChangeState(Player.States.Rigid);
+            _ownerEntity.HP.AddStatus(-damage);
+            _playerHpCanvas.CurrentHpImageChange(_ownerEntity.HP);
+            if (_ownerEntity.HP.StatusValue <= 0)
+            {
+                PlayerDead();
+            }
+        }
+
+        private void PlayerDead()
+        {
+            _inputSystem.OnKeyDownAttackEvent.RemoveAllListeners();
+            _inputSystem.OnKeyUpAttackEvent.RemoveAllListeners();
+            _inputSystem.OnKeyEThrowEvent.RemoveAllListeners();
+            _inputSystem.OnKeyMoveEvent.RemoveAllListeners();
+            _inputSystem.OnKeySpaceDodgeEvent.RemoveAllListeners();
+            SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
+            _ownerEntity.OnDamageEvent.RemoveAllListeners();
+            _ownerEntity.ChangeState(Player.States.Dead);
+        }
         
     }
 

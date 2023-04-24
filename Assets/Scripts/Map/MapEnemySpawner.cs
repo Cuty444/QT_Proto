@@ -16,10 +16,14 @@ namespace QT.Map
 
         private DungeonMapSystem _dungeonMapSystem;
 
+        private PlayerManager _playerManager;
+
         private void Awake()
         {
             _enemyList = GetComponentsInChildren<Enemy.Enemy>().ToList();
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.CurrentRoomEnemyRegister.Invoke(_enemyList);
         }
 
         private void Update()
@@ -42,7 +46,8 @@ namespace QT.Map
 
             if (_enemyList.Count == 0)
             {
-                SystemManager.Instance.PlayerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
+                _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
+                _playerManager.PlayerMapPass.Invoke(true);
             }
         }
 

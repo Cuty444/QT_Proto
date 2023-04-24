@@ -83,10 +83,7 @@ namespace QT.Core.Map
         
         public override void OnInitialized()
         {
-            Vector2Int startPos = new Vector2Int(_mapWidth / 2, _mapHeight / 2);
-            _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
-            GenerateMap(startPos);
-            _mapData = new MapData(_map, startPos,GetFarthestRoomFromStart(),_mapNodeList);
+            DungenMapGenerate();
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
             {
                 _map[position.y, position.x].IsClear = true;
@@ -100,6 +97,15 @@ namespace QT.Core.Map
                 _mapCellsTransform = GameObject.FindWithTag("MapCells").transform;
             });
         }
+
+        public void DungenMapGenerate()
+        {
+            Vector2Int startPos = new Vector2Int(_mapWidth / 2, _mapHeight / 2);
+            _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
+            GenerateMap(startPos);
+            _mapData = new MapData(_map, startPos,GetFarthestRoomFromStart(),_mapNodeList);
+        }
+        
 
         public Vector2 GetMiniMapSizeToMapSize()
         {
@@ -126,6 +132,7 @@ namespace QT.Core.Map
             QT.Util.RandomSeed.SeedSetting();
             _map[startPos.y, startPos.x].RoomType = RoomType.Normal;
             _map[startPos.y, startPos.x].IsVisited = true;
+            _mapNodeList.Clear();
             _mapNodeList.Add(startPos);
             for (int i = 1; i < _maxRoomValue; i++)
             {

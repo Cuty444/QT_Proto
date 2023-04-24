@@ -13,9 +13,12 @@ namespace QT.Player
         private readonly int AnimationThrowHash = Animator.StringToHash("PlayerThrow");
         private readonly int AnimationDodgeHash = Animator.StringToHash("PlayerDodge");
         private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
+        private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
+        private readonly int AnimationDeadHash = Animator.StringToHash("PlayerDead");
 
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
+        private bool _isRigid;
         public void AngleAnimation()
         {
             float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, MousePos);
@@ -92,6 +95,28 @@ namespace QT.Player
             {
                 _animator.ResetTrigger(AnimationDodgeEndHash);
             }));
+        }
+
+        public void SetRigidAnimation()
+        {
+            _animator.SetTrigger(AnimationRigidHash);
+            ChangeState(Player.States.Move);
+            _isRigid = true;
+            StartCoroutine(WaitForSecond(0.33f, () =>
+            {
+                _animator.ResetTrigger(AnimationRigidHash);
+                _isRigid = false;
+            }));
+        }
+        
+        public void SetDeadAnimation()
+        {
+            _animator.SetTrigger(AnimationDeadHash);
+        }
+
+        public bool GetRigidTrigger()
+        {
+            return _isRigid;
         }
 
         IEnumerator WaitForSecond(float time,Action func)

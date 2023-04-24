@@ -14,6 +14,8 @@ namespace QT.Player
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Door"))
             {
+                if (!_isEnterDoor)
+                    return;
                 switch (other.gameObject.name)
                 {
                     case "Up":

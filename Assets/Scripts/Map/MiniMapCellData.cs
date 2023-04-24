@@ -26,8 +26,9 @@ namespace QT.Map
         [SerializeField] private UILineRenderer[] _uiLineRenderers;
         [SerializeField] private Sprite[] _mapIconSprite;
         [SerializeField] private Transform _iconsTransform;
-        [SerializeField] private GameObject _miniMapIconObject;
         [HideInInspector]public Vector2Int CellPos;
+
+        private const string IconPath = "Prefabs/Map/MiniMap/MiniMapIcon.prefab";
 
         private PlayerManager _playerManager;
         private DungeonMapSystem _dungeonMapSystem;
@@ -38,7 +39,10 @@ namespace QT.Map
         private MapCellData _mapCellData;
 
         private RoomType _roomType;
-        private void Awake()
+
+        private Image _iconObject;
+
+        public void Setting()
         {
             _lineRenders.SetActive(false);
             _mapImage = GetComponent<Image>();
@@ -47,14 +51,44 @@ namespace QT.Map
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
             _mapImage.enabled = false;
-            _playerManager.PlayerCreateEvent.AddListener((obj) =>
-            {
-                _cellMapObject = _dungeonMapSystem.GetMapObject();
-                _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();
-                _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
-                _mapCellData.OpenDoorDirection(_pathOpenDirection);
-            });
+            _playerManager.PlayerCreateEvent.AddListener(PlayerCreateEvent);
             _iconsTransform.gameObject.SetActive(false);
+            _iconObject = null;
+            var image = _iconsTransform.GetComponentInChildren<Image>();
+            if (image != null)
+            {
+                image.enabled = false;
+                image.gameObject.SetActive(false);
+                SystemManager.Instance.ResourceManager.ReleaseObject(IconPath, image);
+            }
+        }
+
+        private void PlayerCreateEvent(Player.Player obj)
+        {
+            _cellMapObject = _dungeonMapSystem.GetMapObject();
+            _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();
+            _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
+            _mapCellData.OpenDoorDirection(_pathOpenDirection);
+        }
+        
+        public void ListenerClear()
+        {
+            _playerManager.PlayerCreateEvent.RemoveListener(PlayerCreateEvent);
+            _playerManager.PlayerMapPosition.RemoveListener(CellPosCheck);
+            if (_iconObject != null)
+            {
+                _iconObject.gameObject.SetActive(false);
+                SystemManager.Instance.ResourceManager.ReleaseObject(IconPath, _iconObject);
+                _iconObject = null;
+            }
+
+            for (int i = 0; i < _uiLineRenderers.Length; i++)
+            {
+                _uiLineRenderers[i].enabled = false;
+            }
+            _mapImage.enabled = false;
+            _mapImage.color = _mapColors[2];
+            _lineRenders.SetActive(false);
         }
 
         public void SetRouteDirection(MapDirection mapDirection)
@@ -109,11 +143,14 @@ namespace QT.Map
             }
         }
 
-        public void SetRoomType(RoomType roomType)
+        public async void SetRoomType(RoomType roomType)
         {
             _roomType = roomType;
-            GameObject iconObject = Instantiate(_miniMapIconObject, _iconsTransform);
-            iconObject.GetComponent<Image>().sprite = _mapIconSprite?[(int) RoomType.Boss];
+            _iconObject = await SystemManager.Instance.ResourceManager.GetFromPool<Image>(IconPath,_iconsTransform);
+            _iconObject.transform.localPosition = Vector3.zero;
+            _iconObject.transform.localScale = Vector3.one;
+            _iconObject.gameObject.SetActive(true);
+            _iconObject.sprite = _mapIconSprite?[(int) RoomType.Boss];
         }
     }
 }

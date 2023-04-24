@@ -13,7 +13,7 @@ public enum AimTypes
 
 public class ProjectileShooter : MonoBehaviour
 {
-    public virtual LayerMask BounceMask => LayerMask.GetMask("Wall");
+    public virtual LayerMask BounceMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider");
     
     [SerializeField] protected Transform _shootPoint;
 

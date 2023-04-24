@@ -9,7 +9,7 @@ namespace QT
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-        private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
+        private const string HitEffectPath = "Effect/Prefabs/Legacy/FX_Yagubat_Hit.prefab";
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
@@ -94,16 +94,16 @@ namespace QT
         
         public void Hit(Vector2 dir, float newSpeed)
         {
-            ProjectileHit(dir, newSpeed, _bounceMask);
+            ProjectileHit(dir, newSpeed,_damage, _bounceMask);
         }
         
-        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask)
+        public void ProjectileHit(Vector2 dir, float newSpeed,float damage, LayerMask bounceMask)
         {
             _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);
             _speed = newSpeed;
             _currentSpeedDecay = _speedDecay;
-            
+            _damage = damage;
             _bounceCount = _maxBounce;
             _bounceMask = bounceMask;
             _isReleased = false;

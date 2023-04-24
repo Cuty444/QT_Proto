@@ -11,6 +11,8 @@ namespace QT.Player
         public MeshFilter SwingAreaMeshFilter { get; private set; }
         public MeshRenderer SwingAreaMeshRenderer { get; private set; }
 
+        public List<Enemy.Enemy> _enemyList;
+        
         public void SetBatActive(bool isActive)
         {
             _batSpriteRenderer.enabled = isActive;
