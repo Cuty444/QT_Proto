@@ -14,7 +14,7 @@ namespace QT.Player
         private const int MaxLineCount = 10;
 
         private List<IProjectile> _projectiles = new();
-        private List<Enemy.Enemy> _enemyInRange = new List<Enemy.Enemy>();
+        private List<Enemy.Enemy> _enemyInRange = new ();
         private List<LineRenderer> _lines = new();
 
         private float _chargingStartTime;
@@ -92,7 +92,7 @@ namespace QT.Player
 
             foreach (var hitEnemy in _enemyInRange)
             {
-                hitEnemy.Hit((hitEnemy.Position - (Vector2)_ownerEntity.transform.position).normalized,_ownerEntity.ChargeRigidDmg[_chargeLevel]);
+                hitEnemy.Hit(((Vector2)_ownerEntity.transform.position - hitEnemy.Position).normalized,_ownerEntity.ChargeRigidDmg[_chargeLevel]);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, hitEnemy.Position); 
             }
 

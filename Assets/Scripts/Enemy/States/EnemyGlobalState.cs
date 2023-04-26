@@ -21,6 +21,7 @@ namespace QT.Enemy
 
             _ownerEntity.HP.AddStatus(-power);
             
+            _ownerEntity.Rigidbody.velocity = Vector2.zero; 
             _ownerEntity.Rigidbody.AddForce(-dir, ForceMode2D.Impulse);
             _ownerEntity.ChangeState(Enemy.States.Rigid);
         }
