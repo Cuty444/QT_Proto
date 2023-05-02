@@ -13,9 +13,9 @@ namespace QT.Enemy
             OnDamageEvent.Invoke(dir, power);
         }
         
-        public void ProjectileHit(Vector2 dir, float power,float damage, LayerMask bounceMask)
+        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, float reflectCorrection)
         {
-            OnDamageEvent.Invoke(dir, damage);
+            OnDamageEvent.Invoke(dir, power);
             OnHitEvent.Invoke(dir, power, bounceMask);
         }
         
