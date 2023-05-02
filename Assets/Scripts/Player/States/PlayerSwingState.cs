@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
+using QT.Core.Data;
 using QT.Core.Input;
 
 namespace QT.Player
@@ -30,7 +31,16 @@ namespace QT.Player
             _ownerEntity.SwingAreaMeshFilter.mesh =
                 CreateSwingAreaMesh(_ownerEntity.SwingRadius, _ownerEntity.SwingCentralAngle);
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
-            _projectileLayerMask = LayerMask.GetMask("Enemy", "ProjectileDelayed");
+            GlobalDataSystem _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            if (_globalDataSystem.GlobalData.IsPlayerParrying)
+            {
+                _projectileLayerMask = LayerMask.GetMask("Wall");
+                
+            }
+            else
+            {
+                _projectileLayerMask = LayerMask.GetMask("Enemy");
+            }
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
             _chargingEffectCheck = new bool[3];
         }
