@@ -6,8 +6,11 @@ namespace QT.Player
 {
     public partial class Player
     {
-        public void Get()
+        public Vector2 BefereDodgeDirecton { get; private set; }
+        
+        public void SetBefereDodgeDirecton()
         {
+            BefereDodgeDirecton = MoveDirection;
         }
     }
 }

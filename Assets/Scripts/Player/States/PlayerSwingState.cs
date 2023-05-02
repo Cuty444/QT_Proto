@@ -25,13 +25,15 @@ namespace QT.Player
 
         private bool[] _chargingEffectCheck;
 
+        private GlobalDataSystem _globalDataSystem;
+
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
             _ownerEntity.SwingAreaMeshFilter.mesh =
                 CreateSwingAreaMesh(_ownerEntity.SwingRadius, _ownerEntity.SwingCentralAngle);
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
-            GlobalDataSystem _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
             {
                 _projectileLayerMask = LayerMask.GetMask("Wall");
@@ -86,6 +88,10 @@ namespace QT.Player
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
             var power = _ownerEntity.ChargeShootSpd[_chargeLevel];
             var bounce = (int) _ownerEntity.ChargeBounceCount[_chargeLevel];
+            if (_globalDataSystem.GlobalData.IsPlayerParrying)
+            {
+                bounce = 0;
+            }
             var damage = _ownerEntity.ChargeProjectileDmg[_chargeLevel];
             foreach (var projectile in _projectiles)
             {
@@ -168,6 +174,10 @@ namespace QT.Player
         private void SetLines()
         {
             var bounceCount = (int) _ownerEntity.ChargeBounceCount[_chargeLevel];
+            if (_globalDataSystem.GlobalData.IsPlayerParrying)
+            {
+                bounceCount = 0;
+            }
             for (int i = 0; i < _lines.Count; i++)
             {
                 if (_projectiles.Count > i)
@@ -186,9 +196,17 @@ namespace QT.Player
             var dir = GetNewProjectileDir(projectile);
 
             lineRenderer.enabled = true;
-            lineRenderer.positionCount = bounceCount;
+            lineRenderer.positionCount = 0;
+            lineRenderer.positionCount = bounceCount + 2;
 
             lineRenderer.SetPosition(0, projectile.Position);
+            var hit2 = Physics2D.CircleCast(lineRenderer.GetPosition((0)), 0.5f, dir, Mathf.Infinity,
+                _ownerEntity.ProjectileShooter.BounceMask);
+
+            if (hit2.collider)
+            {
+                lineRenderer.SetPosition(1, hit2.point + (hit2.normal * 0.5f));
+            }
             for (int i = 1; i < bounceCount; i++)
             {
                 var hit = Physics2D.CircleCast(lineRenderer.GetPosition((i - 1)), 0.5f, dir, Mathf.Infinity,

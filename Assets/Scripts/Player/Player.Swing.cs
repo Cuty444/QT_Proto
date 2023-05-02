@@ -20,7 +20,6 @@ namespace QT.Player
         
         public void PlayBatAnimation()
         {
-            _playerManager.ChargeAtkPierce = QT.Data.ChargeAtkPierce.None;
             
             float halfAngle = SwingCentralAngle.Value * 0.5f;
             float startAngle, endAngel;

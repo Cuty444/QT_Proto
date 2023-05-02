@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using QT.Data;
 using QT.Map;
 
 namespace QT.Core
 {
     public class PlayerManager
     {
-        public ChargeAtkPierce ChargeAtkPierce { get; set; }
-        
         public UnityEvent<Player.Player> PlayerCreateEvent  { get; } = new();
         public UnityEvent<bool> BatSwingTimeScaleEvent { get; } = new();
 

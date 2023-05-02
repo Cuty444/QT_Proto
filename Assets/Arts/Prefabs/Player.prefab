@@ -171,7 +171,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4447057237876525153}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1296418718855042971
 MeshFilter:
@@ -256,6 +256,8 @@ Transform:
   - {fileID: 477050622724583470}
   - {fileID: 8999934521663252063}
   - {fileID: 2173837526168683701}
+  - {fileID: 8709857997587833822}
+  - {fileID: 8372018800310822414}
   m_Father: {fileID: 7781006472481742598}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -478,8 +480,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8709857997587833822}
-  - {fileID: 8372018800310822414}
   - {fileID: 2211568899829918506}
   - {fileID: 7781006472145116645}
   m_Father: {fileID: 7781006472481742598}
@@ -601,7 +601,7 @@ Transform:
   - {fileID: 7781006471382150581}
   - {fileID: 1285986913872672294}
   m_Father: {fileID: 4447057237876525153}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 120}
 --- !u!1 &7781006472481742594
 GameObject:
@@ -699,6 +699,7 @@ MonoBehaviour:
   _lineRendersTransform: {fileID: 8939179115026055153}
   _batSpriteRenderer: {fileID: 7781006471382150582}
   _trailRenderer: {fileID: 1174900424466493601}
+  _dashLRTransform: {fileID: 8372018800310822414}
   _dashParticle:
   - {fileID: 8709857997587833817}
   - {fileID: 8372018800310822409}
@@ -944,7 +945,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 4447057237876525153}
+    m_TransformParent: {fileID: 3339723719357565326}
     m_Modifications:
     - target: {fileID: 647332004749009361, guid: d6b420552a28dad4c825aa44d8a8cd73, type: 3}
       propertyPath: m_Name
@@ -964,7 +965,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 647332004749009364, guid: d6b420552a28dad4c825aa44d8a8cd73, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 647332004749009364, guid: d6b420552a28dad4c825aa44d8a8cd73, type: 3}
       propertyPath: m_LocalPosition.x
@@ -972,7 +973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 647332004749009364, guid: d6b420552a28dad4c825aa44d8a8cd73, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 647332004749009364, guid: d6b420552a28dad4c825aa44d8a8cd73, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1094,11 +1095,11 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 4447057237876525153}
+    m_TransformParent: {fileID: 3339723719357565326}
     m_Modifications:
     - target: {fileID: 995399113394222561, guid: 4ef1cdc009fdd2348a4cb1e874015117, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 995399113394222561, guid: 4ef1cdc009fdd2348a4cb1e874015117, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1106,7 +1107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 995399113394222561, guid: 4ef1cdc009fdd2348a4cb1e874015117, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 995399113394222561, guid: 4ef1cdc009fdd2348a4cb1e874015117, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1143,10 +1144,6 @@ PrefabInstance:
     - target: {fileID: 995399113394222564, guid: 4ef1cdc009fdd2348a4cb1e874015117, type: 3}
       propertyPath: m_Name
       value: FX_P_Dash_Trail
-      objectReference: {fileID: 0}
-    - target: {fileID: 995399113394222564, guid: 4ef1cdc009fdd2348a4cb1e874015117, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 995399113394222566, guid: 4ef1cdc009fdd2348a4cb1e874015117, type: 3}
       propertyPath: looping

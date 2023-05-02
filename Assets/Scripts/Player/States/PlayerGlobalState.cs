@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using QT.Core;
+using QT.Core.Data;
 using QT.Core.Input;
 using QT.UI;
+using Unity.VisualScripting;
 using UnityEngine.UI;
 
 namespace QT.Player
@@ -10,6 +12,7 @@ namespace QT.Player
     [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>
     {
+        private GlobalDataSystem _globalDataSystem;
         private InputSystem _inputSystem;
         private PlayerHPCanvas _playerHpCanvas;
 
@@ -37,12 +40,14 @@ namespace QT.Player
             _inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
             _inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
             _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
+            _inputSystem.OnKeySpaceDodgeEvent.AddListener(KeySpaceDodge);
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
             _dodgeCoolBackgroundImage = _playerHpCanvas.PlayerDodgeCoolBackgroundImage;
             _dodgeCoolBarImage = _playerHpCanvas.PlayerDodgeCoolBarImage;
             _playerHpCanvas.SetHp(_ownerEntity.HP);
-            _inputSystem.OnKeySpaceDodgeEvent.AddListener(KeySpaceDodge);
+
+            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
             {
                 _playerHpCanvas.ThrowProjectileGauge(true);
@@ -129,6 +134,8 @@ namespace QT.Player
 
         private void KeyEThrow()
         {
+            if (_globalDataSystem.GlobalData.IsPlayerParrying)
+                return;
             if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
                 return;
             if (_currentBallStack == 0)
@@ -184,6 +191,9 @@ namespace QT.Player
                 return;
             if (_ownerEntity.GetRigidTrigger())
                 return;
+            if (_ownerEntity.MoveDirection == Vector2.zero)
+                return;
+            _ownerEntity.SetBefereDodgeDirecton();
             _ownerEntity.ChangeState(Player.States.Dodge);
             _currentDodgeCoolTime = 0f;
             _startDodgeTime = Time.time;

@@ -6,6 +6,7 @@ namespace QT.Player
 {
     public partial class Player
     {
+        [SerializeField] private Transform _dashLRTransform;
         [SerializeField] private ParticleSystem[] _dashParticle;
         [SerializeField] private ParticleSystem _playerHitParticle;
         [SerializeField] private ParticleSystem _chargingMaintainParticle;
@@ -27,6 +28,11 @@ namespace QT.Player
         public void DodgeEffectPlay()
         {
             _dashParticle[_dodgeDirection].Play();
+        }
+
+        public void DodgeEffectRotation(float rotation) // TODO : Particle System 좌우 반전 미적용 추후 패치 필요
+        {
+            _dashLRTransform.rotation = Quaternion.Euler(0f, rotation,0f);
         }
 
         public void PlayerHitEffectPlay()
