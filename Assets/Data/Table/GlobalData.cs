@@ -67,4 +67,11 @@ public class GlobalData : ScriptableObject
     [field: SerializeField]
     [Tooltip("[기절] 상태 진입 후 사망처리 되는데 까지 걸리는 시간")]
     public float DeadAfterStunTime { get; private set; } =5;
+    
+    /// <summary>
+    /// [기절] 상태 진입 후 사망처리 되는데 까지 걸리는 시간
+    /// </summary>
+    [field: SerializeField]
+    [Tooltip("플레이어가 적 투사체를 패링 가능한 여부")]
+    public bool IsPlayerParrying { get; private set; } = false;
 }

@@ -26,7 +26,7 @@ namespace QT.Enemy
         
         public LayerMask GetLayerMask()
         {
-            return LayerMask.GetMask("Enemy"); // TODO : 임시 추후 수정 필요
+            return LayerMask.GetMask("Wall") | LayerMask.GetMask("Enemy"); // TODO : 임시 추후 수정 필요
         }
     }
 }
