@@ -17,8 +17,7 @@ namespace QT.Player
             _ownerEntity.SetDodgeAnimation();
             _ownerEntity.DodgeEffectPlay();
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
-            _ownerEntity.Rigidbody.AddForce((_ownerEntity.MousePos - (Vector2) _ownerEntity.transform.position)
-                .normalized * _ownerEntity.DodgeAddForce.Value,ForceMode2D.Impulse);
+            _ownerEntity.Rigidbody.AddForce(_ownerEntity.BefereDodgeDirecton * _ownerEntity.DodgeAddForce.Value,ForceMode2D.Impulse);
             _ownerEntity.StartCoroutine(WaitSecond(_ownerEntity.DodgeDurationTime.Value));
         }
         

@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace QT.Player
@@ -15,10 +13,13 @@ namespace QT.Player
         private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
         private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
         private readonly int AnimationDeadHash = Animator.StringToHash("PlayerDead");
+        private readonly int AnimationDirectionXHash = Animator.StringToHash("DirectionX");
+        private readonly int AnimationDirectionYHash = Animator.StringToHash("DirectionY");
 
         private Animator _animator;
         private const string _animatorValue = "MouseRotate";
         private bool _isRigid;
+        private bool _isDodge = false;
         public void AngleAnimation()
         {
             float playerAngleDegree = QT.Util.Math.GetDegree(transform.position, MousePos);
@@ -28,40 +29,33 @@ namespace QT.Player
                 case > 22.5f and < 67.5f:
                     yAngle = 180f;
                     _animator.SetFloat(_animatorValue,3f);
-                    _dodgeDirection = 1;
                     break;
                 case > 67.5f and < 112.5f:
                     _animator.SetFloat(_animatorValue,4f);
-                    _dodgeDirection = 0;
                     break;
                 case > 112.5f and < 157.5f:
                     _animator.SetFloat(_animatorValue,3f);
-                    _dodgeDirection = 1;
                     break;
                 case > -157.5f and < -112.5f:
                     _animator.SetFloat(_animatorValue,1f);
-                    _dodgeDirection = 1;
                     break;
                 case > -112.5f and < -67.5f:
                     _animator.SetFloat(_animatorValue,0f);
-                    _dodgeDirection = 0;
                     break;
                 case > -67.5f and < -22.5f:
                     yAngle = 180f;
                     _animator.SetFloat(_animatorValue,1f);
-                    _dodgeDirection = 1;
                     break;
                 case > 157.5f:
                 case < -157.5f:
                     _animator.SetFloat(_animatorValue,2f);
-                    _dodgeDirection = 1;
                     break;
                 default:
                     yAngle = 180f;
                     _animator.SetFloat(_animatorValue,2f);
-                    _dodgeDirection = 1;
                     break;
             }
+            
             _animator.transform.rotation = Quaternion.Euler(0f, yAngle,0f);
         }
 
@@ -90,15 +84,39 @@ namespace QT.Player
         public void SetDodgeAnimation()
         {
             _animator.SetTrigger(AnimationDodgeHash);
+            _animator.SetFloat(AnimationDirectionXHash,BefereDodgeDirecton.x);
+            _animator.SetFloat(AnimationDirectionYHash,BefereDodgeDirecton.y);
+            float yAngle = 0f;
+            if (BefereDodgeDirecton.x < -0.5f)
+            {
+                _dodgeDirection = 1;
+
+            }
+            else if (BefereDodgeDirecton.x > 0.5f)
+            {
+                _dodgeDirection = 1;
+                yAngle = 180f;
+            }
+            else
+            {
+                if (BefereDodgeDirecton.y == -1f || BefereDodgeDirecton.y == 1f)
+                {
+                    _dodgeDirection = 0;
+                        
+                }
+            }
             StartCoroutine(WaitForSecond(0.5f, () =>
             {
                 _animator.ResetTrigger(AnimationDodgeHash);
             }));
+            _animator.transform.rotation = Quaternion.Euler(0f, yAngle,0f);
+            DodgeEffectRotation(yAngle);
         }
 
         public void SetDodgeEndAnimation()
         {
             _animator.SetTrigger(AnimationDodgeEndHash);
+            _isDodge = false;
             StartCoroutine(WaitForSecond(0.5f, () =>
             {
                 _animator.ResetTrigger(AnimationDodgeEndHash);
