@@ -35,7 +35,8 @@ namespace QT
         public int ChargeProjectileDmg1 { get; set; }
         public int ChargeProjectileDmg2 { get; set; }
         public int ChargeProjectileDmg3 { get; set; }
-        public int ChargeProjectileDmg4 { get; set; }
+        public int ChargeProjectileDmg4 { get; set; }        
+        public float ReflectCorrection { get; set; }
         public int AtkDmgPer { get; set; }
     }
 

@@ -43,10 +43,13 @@ namespace QT
         private float _releaseStartTime;
         private float _releaseDelay;
 
+        private float _reflectCorrection;
+        private Transform _playerTransform;
         
         private void Awake()
         {
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
+            _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
             _trailRenderer = GetComponentInChildren<TrailRenderer>();
         }
 
@@ -67,7 +70,7 @@ namespace QT
             }
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, float releaseDelay = 0, string path = "")
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, float releaseDelay = 0, string path = "")
         {
             _direction = dir;
             _maxSpeed = _speed = speed;
@@ -86,7 +89,8 @@ namespace QT
                 _bounceCount = _maxBounce = 0;
                 _releaseDelay = 0;
             }
-            
+
+            _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _bounceMask = bounceMask;
             _isReleased = false;
 
@@ -95,18 +99,19 @@ namespace QT
         
         public void Hit(Vector2 dir, float newSpeed)
         {
-            ProjectileHit(dir, newSpeed,_damage, _bounceMask);
+            ProjectileHit(dir, newSpeed, _bounceMask, _reflectCorrection);
         }
         
-        public void ProjectileHit(Vector2 dir, float newSpeed,float damage, LayerMask bounceMask)
+        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, float reflectCorrection = 0)
         {
             _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);
             _speed = newSpeed;
             _currentSpeedDecay = _speedDecay;
-            _damage = damage;
+            
             _bounceCount = _maxBounce;
             _bounceMask = bounceMask;
+            _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _isReleased = false;
         }
         
@@ -144,12 +149,17 @@ namespace QT
                     hitable.Hit(_direction, _damage);
                     SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
-                else
+                
+                _direction = Vector2.Reflect(_direction, hit.normal);
+
+                SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
+                
+                if (_reflectCorrection != 0)
                 {
-                    SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
+                    var targetDir = ((Vector2) _playerTransform.transform.position - hit.point).normalized;
+                    _direction = Vector3.RotateTowards(_direction, targetDir, _reflectCorrection, 0);
                 }
                 
-                _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
                 if (!_isReleased && --_bounceCount <= 0)
                 {
                     _isReleased = true;

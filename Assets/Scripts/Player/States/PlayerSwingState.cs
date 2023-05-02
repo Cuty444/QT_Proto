@@ -61,11 +61,6 @@ namespace QT.Player
             SystemManager.Instance.GetSystem<InputSystem>().OnKeyUpAttackEvent.RemoveListener(OnAtkEnd);
         }
 
-        public override void UpdateState()
-        {
-            base.UpdateState();
-        }
-
         public override void FixedUpdateState()
         {
             base.FixedUpdateState();
@@ -85,7 +80,7 @@ namespace QT.Player
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
-                projectile.ProjectileHit(GetNewProjectileDir(projectile), power,damage, mask);
+                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, _ownerEntity.ReflectCorrection);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position); 
 
             }
@@ -197,6 +192,12 @@ namespace QT.Player
 
                 lineRenderer.SetPosition(i, hit.point + (hit.normal * 0.5f));
                 dir = Vector2.Reflect(dir, hit.normal);
+                
+                if (_ownerEntity.ReflectCorrection != 0)
+                {
+                    var targetDir = ((Vector2) _ownerEntity.transform.position - hit.point).normalized;
+                    dir = Vector3.RotateTowards(dir, targetDir, _ownerEntity.ReflectCorrection * Mathf.Deg2Rad, 0);
+                }
             }
         }
 
