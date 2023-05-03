@@ -86,7 +86,7 @@ namespace QT.Core
                     var cell = headerRow.GetCell(cellNum);
                     cell?.SetCellType(CellType.String);
 
-                    var name = cell?.ToString().Trim() ?? null;
+                    var name = cell?.ToString().Trim();
 
                     // #으로 시작하는 column 걸러내기
                     if (string.IsNullOrWhiteSpace(name) || name[0] == '#')
@@ -123,11 +123,8 @@ namespace QT.Core
                             continue;
                         }
                         
-                        var cell = row.GetCell(cellNum);
-                        cell?.SetCellType(CellType.String);
-
-                        var data = cell?.ToString() ?? null;
-
+                        string data = GetCellString(row.GetCell(cellNum));
+                        
                         if (!string.IsNullOrWhiteSpace(data))
                         {
                             // #으로 시작하는 row 걸러내기
@@ -156,6 +153,30 @@ namespace QT.Core
             }
 
             return result.ToString();
+        }
+
+        private static string GetCellString(ICell cell)
+        {
+            if (cell == null || cell.CellType == CellType.Blank)
+            {
+                return null;
+            }
+            
+            if (cell.CellType == CellType.Formula) 
+            {
+                switch (cell.CachedFormulaResultType) 
+                {
+                    case CellType.Boolean:
+                        return cell.BooleanCellValue.ToString();
+                    case CellType.Numeric:
+                        return cell.NumericCellValue.ToString();
+                    case CellType.String:
+                        return cell.StringCellValue;
+                }
+            }
+            
+            cell.SetCellType(CellType.String);
+            return cell?.ToString();
         }
     }
 }
