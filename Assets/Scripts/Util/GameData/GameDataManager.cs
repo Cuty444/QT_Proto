@@ -83,6 +83,12 @@ namespace QT.Core
                 _databases.Add(database.Item1, database.Item2);
             }
 
+            if (SystemManager.Instance.GetSystem<DungeonMapSystem>() == null)
+            {
+                SystemManager.Instance.LoadingManager.DataAllLoadCompletedEvent.Invoke();
+                return;
+            }
+            
             await SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(); // TODO : 마찬가지로 수정 필요
             
             Debug.Log("로드완료"); //TODO 데이터 로드 후 씬 불러오기 부분 수정 필요

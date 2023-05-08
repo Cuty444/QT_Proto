@@ -21,9 +21,13 @@ namespace QT
         private bool _isAllLoad = false;
         public void Initialize()
         {
-            _loadingCanvas = SystemManager.Instance.UIManager.GetUIPanel<LoadingCanvas>();
-            _gameOverCanvas = SystemManager.Instance.UIManager.GetUIPanel<GameOverCanvas>();
-            _fadeCanvas = SystemManager.Instance.UIManager.GetUIPanel<FadeCanvas>();
+            if (SystemManager.Instance.UIManager != null)
+            {
+                _loadingCanvas = SystemManager.Instance.UIManager.GetUIPanel<LoadingCanvas>();
+                _gameOverCanvas = SystemManager.Instance.UIManager.GetUIPanel<GameOverCanvas>();
+                _fadeCanvas = SystemManager.Instance.UIManager.GetUIPanel<FadeCanvas>();
+            }
+
             DataAllLoadCompletedEvent.AddListener(() => _isAllLoad = true);
         }
 
