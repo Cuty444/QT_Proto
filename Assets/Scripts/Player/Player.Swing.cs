@@ -20,8 +20,7 @@ namespace QT.Player
         
         public void PlayBatAnimation()
         {
-            
-            float halfAngle = SwingCentralAngle.Value * 0.5f;
+            float halfAngle = GetStat(PlayerStats.SwingCentralAngle) * 0.5f;
             float startAngle, endAngel;
             float rotationSpeed = 1;
             

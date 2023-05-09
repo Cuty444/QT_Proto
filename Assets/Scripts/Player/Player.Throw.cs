@@ -8,8 +8,11 @@ namespace QT.Player
     {
 
         public void AttackBallInstate()
-        { 
-            ProjectileShooter.ShootProjectile(200, Util.Math.ZAngleToGetDirection(EyeTransform), ThrowSpd, 0, (int)ThrowBounceCount, 2.5f);
+        {
+            float throwSpd = GetStat(PlayerStats.ThrowSpd);
+            int throwBounceCount = (int)GetStat(PlayerStats.ThrowBounceCount);
+            
+            ProjectileShooter.ShootProjectile(200, Util.Math.ZAngleToGetDirection(EyeTransform), throwSpd, 0, throwBounceCount, 2.5f);
         }
     }
 }

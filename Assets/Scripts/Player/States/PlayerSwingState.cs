@@ -31,7 +31,7 @@ namespace QT.Player
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
             _ownerEntity.SwingAreaMeshFilter.mesh =
-                CreateSwingAreaMesh(_ownerEntity.SwingRadius, _ownerEntity.SwingCentralAngle);
+                CreateSwingAreaMesh(_ownerEntity.GetStat(PlayerStats.SwingRad), _ownerEntity.GetStat(PlayerStats.SwingCentralAngle));
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
@@ -86,24 +86,24 @@ namespace QT.Player
         private void OnAtkEnd()
         {
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
-            var power = _ownerEntity.ChargeShootSpd[_chargeLevel];
-            var bounce = (int) _ownerEntity.ChargeBounceCount[_chargeLevel];
+            var power = _ownerEntity.ChargeShootSpds[_chargeLevel];
+            var bounce = (int) _ownerEntity.ChargeBounceCounts[_chargeLevel];
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
             {
                 bounce = 0;
             }
-            var damage = _ownerEntity.ChargeProjectileDmg[_chargeLevel];
+            var damage = _ownerEntity.ChargeProjectileDmgs[_chargeLevel];
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
-                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, _ownerEntity.ReflectCorrection);
+                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position); 
 
             }
 
             foreach (var hitEnemy in _enemyInRange)
             {
-                hitEnemy.Hit(((Vector2)_ownerEntity.transform.position - hitEnemy.Position).normalized,_ownerEntity.ChargeRigidDmg[_chargeLevel]);
+                hitEnemy.Hit(((Vector2)_ownerEntity.transform.position - hitEnemy.Position).normalized,_ownerEntity.ChargeRigidDmgs[_chargeLevel]);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, hitEnemy.Position); 
             }
 
@@ -165,15 +165,17 @@ namespace QT.Player
 
             _projectiles.Clear();
             _enemyInRange.Clear();
-            SystemManager.Instance.ProjectileManager.GetInRange(eye.position, _ownerEntity.SwingRadius,
-                _ownerEntity.SwingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
-            GetInEnemyRange(eye.position, _ownerEntity.SwingRadius, _ownerEntity.SwingCentralAngle * 0.5f, eye.right,
-                ref _enemyInRange);
+            
+            float swingRad = _ownerEntity.GetStat(PlayerStats.SwingRad);
+            float swingCentralAngle = _ownerEntity.GetStat(PlayerStats.SwingCentralAngle);
+            
+            SystemManager.Instance.ProjectileManager.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
+            GetInEnemyRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _enemyInRange);
         }
 
         private void SetLines()
         {
-            var bounceCount = (int) _ownerEntity.ChargeBounceCount[_chargeLevel];
+            var bounceCount = (int) _ownerEntity.ChargeBounceCounts[_chargeLevel];
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
             {
                 bounceCount = 0;
@@ -220,11 +222,13 @@ namespace QT.Player
 
                 lineRenderer.SetPosition(i, hit.point + (hit.normal * 0.5f));
                 dir = Vector2.Reflect(dir, hit.normal);
+
+                float reflectCorrection = _ownerEntity.GetStat(PlayerStats.ReflectCorrection);
                 
-                if (_ownerEntity.ReflectCorrection != 0)
+                if (reflectCorrection != 0)
                 {
                     var targetDir = ((Vector2) _ownerEntity.transform.position - hit.point).normalized;
-                    dir = Vector3.RotateTowards(dir, targetDir, _ownerEntity.ReflectCorrection * Mathf.Deg2Rad, 0);
+                    dir = Vector3.RotateTowards(dir, targetDir, reflectCorrection * Mathf.Deg2Rad, 0);
                 }
             }
         }

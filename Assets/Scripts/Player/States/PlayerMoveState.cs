@@ -49,7 +49,7 @@ namespace QT.Player
 
         private void Move()
         {
-            _ownerEntity.Rigidbody.velocity = _ownerEntity.MoveDirection * _ownerEntity.MovementSpd.Value;
+            _ownerEntity.Rigidbody.velocity = _ownerEntity.MoveDirection * _ownerEntity.GetStat(PlayerStats.MovementSpd).Value;
         }
     }
 }
