@@ -27,7 +27,7 @@ namespace QT.Level
 
     public enum ToolMode
     {
-        Cell,
+        Tile,
         Range,
     }
 
@@ -94,7 +94,7 @@ namespace QT.Level
             _tiles.Add(tileData);
         }
         
-        public void AddTileRange(Vector2Int leftTop, Vector2Int rightBottom)
+        public void TileRange(Vector2Int leftTop, Vector2Int rightBottom,bool isAddRemove)
         {
             Vector2Int min = new Vector2Int(Mathf.Min(leftTop.x, rightBottom.x), Mathf.Min(leftTop.y, rightBottom.y));
             Vector2Int max = new Vector2Int(Mathf.Max(leftTop.x, rightBottom.x), Mathf.Max(leftTop.y, rightBottom.y));
@@ -103,7 +103,14 @@ namespace QT.Level
             {
                 for(int y = min.y; y <= max.y; y++)
                 {
-                    AddTile(new Vector2Int(x, y));
+                    if (isAddRemove)
+                    {
+                        AddTile(new Vector2Int(x, y));
+                    }
+                    else
+                    {
+                        RemoveTile(new Vector2Int(x, y));
+                    }
                 }
             }
         }
@@ -118,20 +125,6 @@ namespace QT.Level
             }
 
             _tiles.Remove(removeCell);
-        }
-
-        public void RemoveTileRange(Vector2Int leftTop, Vector2Int rightBottom)
-        {
-            Vector2Int min = new Vector2Int(Mathf.Min(leftTop.x, rightBottom.x), Mathf.Min(leftTop.y, rightBottom.y));
-            Vector2Int max = new Vector2Int(Mathf.Max(leftTop.x, rightBottom.x), Mathf.Max(leftTop.y, rightBottom.y));
-
-            for(int x = min.x; x <= max.x; x++)
-            {
-                for(int y = min.y; y <= max.y; y++)
-                {
-                    RemoveTile(new Vector2Int(x, y));
-                }
-            }
         }
 
         public void Save()

@@ -23,7 +23,7 @@ namespace QT.Level
             
             
             
-            if (_levelTool.Option.Mode == ToolMode.Cell)
+            if (_levelTool.Option.Mode == ToolMode.Tile)
             {
                 CellEditMode();
             }
@@ -100,9 +100,9 @@ namespace QT.Level
             int currentId = GUIUtility.GetControlID(FocusType.Passive);
             Event current = Event.current;
 
-            if (Event.current.button == 0)
+            if (Event.current.button == 0 || Event.current.button == 1)
             {
-                if(Event.current.type == EventType.MouseDown)
+                if (Event.current.type == EventType.MouseDown)
                 {
                     GUIUtility.hotControl = currentId;
                     current.Use();
@@ -110,7 +110,7 @@ namespace QT.Level
                     _startGenerateWorldPos = GetMousePosToWorldPos();
                 }
 
-                if(Event.current.type == EventType.MouseDrag)
+                if (Event.current.type == EventType.MouseDrag)
                 {
                     _isRangeDrawing = true;
                     GUIUtility.hotControl = currentId;
@@ -118,40 +118,12 @@ namespace QT.Level
                     _endGenerateWorldPos = GetMousePosToWorldPos();
                 }
 
-                if(Event.current.type == EventType.MouseUp)
+                if (Event.current.type == EventType.MouseUp)
                 {
                     _isRangeDrawing = false;
                     GUIUtility.hotControl = currentId;
                     current.Use();
-                    _levelTool.AddTileRange(_startGeneratePosition, GetMousePosToTilePos());
-
-                    _startGenerateWorldPos = _endGenerateWorldPos = Vector3.zero;
-                }
-            }
-            else if (Event.current.button == 1)
-            {
-                if(Event.current.type == EventType.MouseDown)
-                {
-                    GUIUtility.hotControl = currentId;
-                    current.Use();
-                    _startGeneratePosition = GetMousePosToTilePos();
-                    _startGenerateWorldPos = GetMousePosToWorldPos();
-                }
-
-                if(Event.current.type == EventType.MouseDrag)
-                {
-                    _isRangeDrawing = true;
-                    GUIUtility.hotControl = currentId;
-                    current.Use();
-                    _endGenerateWorldPos = GetMousePosToWorldPos();
-                }
-
-                if(Event.current.type == EventType.MouseUp)
-                {
-                    _isRangeDrawing = false;
-                    GUIUtility.hotControl = currentId;
-                    current.Use();
-                    _levelTool.RemoveTileRange(_startGeneratePosition, GetMousePosToTilePos());
+                    _levelTool.TileRange(_startGeneratePosition, GetMousePosToTilePos(), Event.current.button == 0);
 
                     _startGenerateWorldPos = _endGenerateWorldPos = Vector3.zero;
                 }
