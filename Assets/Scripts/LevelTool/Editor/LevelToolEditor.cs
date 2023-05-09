@@ -7,7 +7,8 @@ namespace QT.Level
     [CustomEditor(typeof(LevelTool))]
     public class LevelToolEditor : Editor
     {
-        private Plane _plane;
+        private Plane _plane  = new Plane(Quaternion.Euler(-90.0f, 0.0f, 0.0f) * Vector3.up, 0);
+
         private LevelTool _levelTool;
         private bool _isRangeDrawing = false;
         private Vector2Int _startGeneratePosition;
@@ -17,9 +18,6 @@ namespace QT.Level
         {
             if(_levelTool == null)
             {
-                Quaternion rotation = Quaternion.Euler(-90.0f, 0.0f, 0.0f);
-                Vector3 rotatedNormal = rotation * Vector3.up;
-                _plane = new Plane(rotatedNormal, 0);
                 _levelTool = (LevelTool)target;
             }
             
@@ -181,7 +179,6 @@ namespace QT.Level
             Vector3 worldPos = Vector3.zero;
             Vector3 mousePos = Event.current.mousePosition;
             Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
-
             if (_plane.Raycast(ray, out var distance))
             {
                 worldPos = ray.GetPoint(distance);
