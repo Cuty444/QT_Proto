@@ -1,9 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.TerrainUtils;
 
 namespace QT.Level
 {
@@ -23,6 +22,7 @@ namespace QT.Level
         public Color CharacterCollider;
         public Color ProjectileCollider;
         public Color HardCollider;
+        public Color PlayerSpawnPoint;
     }
 
     public enum ToolMode
@@ -38,12 +38,16 @@ namespace QT.Level
         CharacterCollider = 1 << 14,
         ProjectileCollider = 1 << 18,
         HardCollider = 1 << 15,
+        PlayerSpawnPoint = 1 << 8,
     }
 
     [ExecuteInEditMode]
     public class LevelTool : MonoBehaviour
     {
+        [Header("옵션")]
         [SerializeField] private ToolOption _option;
+        [Header("")]
+        [Header("데이터")]
         [SerializeField] private LevelTestingData _data;
 
 
@@ -64,6 +68,7 @@ namespace QT.Level
         private void OnDisable()
         {
             Save();
+            EditorUtility.SetDirty(Data);
         }
 
         private void OnDrawGizmos()
@@ -82,12 +87,24 @@ namespace QT.Level
         
         public void AddTile(Vector2Int pos)
         {
-            if (_tiles.Find((cell) => { return cell.Position.Equals(pos); }) != null)
+            if (_tiles.Find((tile) => { return tile.Position.Equals(pos); }) != null)
             {
                 return;
             }
 
             LevelTestingData.TileData tileData = new LevelTestingData.TileData();
+
+            if (_option.DrawLayer == DrawLayer.PlayerSpawnPoint)
+            {
+                foreach (var tile in _tiles)
+                {
+                    if (tile.LayerMask == (int) DrawLayer.PlayerSpawnPoint)
+                    {
+                        _tiles.Remove(tile);
+                        break;
+                    }
+                }
+            }
 
             tileData.Position = pos;
             tileData.LayerMask = (int)_option.DrawLayer;
@@ -117,7 +134,7 @@ namespace QT.Level
         
         public void RemoveTile(Vector2Int pos)
         {
-            var removeCell = _tiles.Find((cell) => { return cell.Position.Equals(pos); });
+            var removeCell = _tiles.Find((tile) => { return tile.Position.Equals(pos); });
 
             if(removeCell == null)
             {
@@ -166,6 +183,10 @@ namespace QT.Level
             else if (layerMask == LayerMask.GetMask("HardCollider"))
             {
                 return Option.ColorOption.HardCollider;
+            }
+            else if (layerMask == LayerMask.GetMask("Player"))
+            {
+                return Option.ColorOption.PlayerSpawnPoint;
             }
 
             return Option.ColorOption.Tile;
