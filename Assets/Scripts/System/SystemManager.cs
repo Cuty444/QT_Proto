@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using QT.Player;
 using QT.UI;
 using UnityEngine;
 
@@ -76,6 +77,61 @@ namespace QT.Core
         {
             return Instance.GetSystem<T>();
         }
+
+
+#if Testing
+        
+        bool isStatShow = false;
+        private void OnGUI()
+        {
+            PlayerStat();
+        }
+
+        private void PlayerStat()
+        {
+            if (GUI.Button(new Rect(10, Screen.height - 25, 160, 20), "플레이어 스탯 표시"))
+            {
+                isStatShow = !isStatShow;
+            }
+
+            if (!isStatShow || PlayerManager.Player == null)
+            {
+                return;
+            }
+            
+            float startY = 40;
+            float cellHeight = 20;
+
+            var height = startY + cellHeight * (int) PlayerStats.AtkDmgPer + 45;
+            
+            GUI.Box(new Rect(10,Screen.height - height,210,height), "플레이어 스탯");
+
+            for (int i = 0; i <= (int) PlayerStats.AtkDmgPer; i++)
+            {
+                var statKey = (PlayerStats) i;
+                var stat = PlayerManager.Player.GetStat(statKey);
+
+                var y = (Screen.height - height + startY) + cellHeight * i;
+
+                var style = new GUIStyle {fontStyle = FontStyle.Bold};
+                style.normal.textColor = Color.white;
+                
+                GUI.Label(new Rect(10, y, 160, 20), statKey.ToString(), style);
+
+                style.fontStyle = FontStyle.Normal;
+                GUI.Label(new Rect(160, y, 20, 20), $"{stat.BaseValue}", style);
+
+                var plusStat = stat.Value - stat.BaseValue;
+
+                //if (plusStat != 0)
+                {
+                    style.normal.textColor = plusStat < 0 ? Color.red : Color.cyan;
+                    GUI.Label(new Rect(190, y, 20, 20), $"{stat.Value - stat.BaseValue}", style);
+                }
+            }
+        }
+#endif
+        
     }
 }
 
