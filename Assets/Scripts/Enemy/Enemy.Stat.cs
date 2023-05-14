@@ -1,6 +1,6 @@
 
 
-namespace QT.Enemy
+namespace QT.InGame
 {
     public partial class Enemy
     {

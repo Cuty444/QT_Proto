@@ -7,7 +7,7 @@ using QT.UI;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 
-namespace QT.Player
+namespace QT.InGame
 {
     [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>

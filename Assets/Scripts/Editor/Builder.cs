@@ -11,7 +11,7 @@ class Builder
     private const string ScriptingDefine = "AMPLIFY_SHADER_EDITOR;Testing";
     private const string TestScriptingDefine = "AMPLIFY_SHADER_EDITOR;Testing";
     
-    private static string BuildSettingPath = $"{Directory.GetCurrentDirectory()}/BuildSetting.config";
+    private static readonly string BuildSettingPath = $"{Directory.GetCurrentDirectory()}/BuildSetting.config";
 
     [MenuItem("Build/빌드하기")]
     public static void Build()

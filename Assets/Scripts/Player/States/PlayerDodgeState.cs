@@ -4,7 +4,7 @@ using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
 
-namespace QT.Player
+namespace QT.InGame
 {
     [FSMState((int)Player.States.Dodge)]
     public class PlayerDodgeState : FSMState<Player>

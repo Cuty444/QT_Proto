@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using QT.Player;
+using QT.InGame;
 using QT.UI;
 using UnityEngine;
 

@@ -5,7 +5,7 @@ using QT.Core;
 using QT.Core.Data;
 using UnityEngine;
 
-namespace QT
+namespace QT.InGame
 {
     public class Projectile : MonoBehaviour, IProjectile
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
-namespace QT.Player
+namespace QT.InGame
 {
     [FSMState((int)Player.States.Rigid)]
     public class PlayerRigidState : FSMState<Player>

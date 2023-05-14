@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 
-namespace QT.Player
+namespace QT.InGame
 {
     public class CharacterGameData : IGameData
     {

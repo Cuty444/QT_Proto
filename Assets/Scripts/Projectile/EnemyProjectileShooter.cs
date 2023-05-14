@@ -2,10 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
-using QT.Enemy;
+using QT.InGame;
 using UnityEngine;
 
-using Enemy = QT.Enemy.Enemy;
 
 namespace QT
 {
@@ -14,9 +13,9 @@ namespace QT
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
         public override LayerMask BounceMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player");
 
-        private Enemy.Enemy _enemy;
+        private Enemy _enemy;
         
-        public void Initialize(Enemy.Enemy enemy)
+        public void Initialize(Enemy enemy)
         {
             _enemy = enemy;
         }

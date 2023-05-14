@@ -4,7 +4,7 @@ using QT.Core;
 using QT.Core.Data;
 using QT.Core.Input;
 
-namespace QT.Player
+namespace QT.InGame
 {
     [FSMState((int) Player.States.Swing)]
     public class PlayerSwingState : PlayerMoveState
@@ -15,7 +15,7 @@ namespace QT.Player
         private const int MaxLineCount = 10;
 
         private List<IProjectile> _projectiles = new();
-        private List<Enemy.Enemy> _enemyInRange = new ();
+        private List<Enemy> _enemyInRange = new ();
         private List<LineRenderer> _lines = new();
 
         private float _chargingStartTime;
@@ -279,11 +279,11 @@ namespace QT.Player
         }
 
         private void GetInEnemyRange(Vector2 origin, float range, float angle, Vector2 dir,
-            ref List<Enemy.Enemy> outList)
+            ref List<Enemy> outList)
         {
             foreach (var enemy in _ownerEntity._enemyList)
             {
-                if (enemy.CurrentStateIndex > (int) Enemy.Enemy.States.Rigid)
+                if (enemy.CurrentStateIndex > (int) Enemy.States.Rigid)
                     continue;
                 var checkRange = range + enemy.ColliderRad;
                 var targetDir = enemy.Position - origin;

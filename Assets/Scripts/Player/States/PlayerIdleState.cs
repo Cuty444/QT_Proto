@@ -2,7 +2,7 @@ using UnityEngine;
 using QT.Core;
 using QT.Core.Input;
 
-namespace QT.Player
+namespace QT.InGame
 {
     [FSMState((int)Player.States.Idle)]
     public class PlayerIdleState : FSMState<Player>

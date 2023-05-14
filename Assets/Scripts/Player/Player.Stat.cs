@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace QT.Player
+namespace QT.InGame
 {
     public enum PlayerStatus
     { 

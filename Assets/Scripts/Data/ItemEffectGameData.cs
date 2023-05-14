@@ -7,8 +7,9 @@ namespace QT
     { 
         public enum ApplyTypes
         {
+            None,
             ResourceChange,
-            Stat,
+            PlayerStat,
         }
         
         public enum ValueOperatorTypes
@@ -31,7 +32,11 @@ namespace QT
         public int Index { get; set; }
         
         public ApplyTypes ApplyType { get; set; }
+        
+        public string ApplyStat { get; set; }
         public string ApplyValue { get; set; }
+        public string Param { get; set; }
+        
         public ValueOperatorTypes ValueOperatorType { get; set; }
         public ApplyPoints ApplyPoint { get; set; }
     }
