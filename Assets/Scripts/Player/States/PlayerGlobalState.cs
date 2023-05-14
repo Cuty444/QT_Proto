@@ -45,7 +45,7 @@ namespace QT.InGame
             _playerHpCanvas.gameObject.SetActive(true);
             _dodgeCoolBackgroundImage = _playerHpCanvas.PlayerDodgeCoolBackgroundImage;
             _dodgeCoolBarImage = _playerHpCanvas.PlayerDodgeCoolBarImage;
-            _playerHpCanvas.SetHp(_ownerEntity.GetStatus(PlayerStatus.HP));
+            _playerHpCanvas.SetHp(_ownerEntity.GetStat(PlayerStats.HP) as Status);
 
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
@@ -210,7 +210,7 @@ namespace QT.InGame
             _ownerEntity.ChangeState(Player.States.Rigid);
             _ownerEntity.PlayerHitEffectPlay();
 
-            var hp = _ownerEntity.GetStatus(PlayerStatus.HP);
+            var hp = _ownerEntity.GetStat(PlayerStats.HP) as Status;
             
             hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);

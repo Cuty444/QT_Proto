@@ -3,13 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace QT.InGame
 {
-    public enum PlayerStatus
-    { 
-        HP,
-    }
-        
     public enum PlayerStats
     {
+        HP,
+        
         PCHitboxRad,
         MovementSpd,
         ChargeMovementSpd,
@@ -66,7 +63,6 @@ namespace QT.InGame
     {
         public const int MaxChargeLevel = 4;
         
-        private readonly Dictionary<PlayerStatus, Status> _status = new();
         private readonly Dictionary<PlayerStats, Stat> _stats = new();
 
         private readonly Stat[] _chargeTimes = new Stat[MaxChargeLevel - 1];
@@ -83,10 +79,9 @@ namespace QT.InGame
 
         private void SetUpStats()
         {
-            _status.Clear();
-            _status.Add(PlayerStatus.HP, new(Data.MaxHP));
-
             _stats.Clear();
+            _stats.Add(PlayerStats.HP, new Status(Data.MaxHP));
+            
             _stats.Add(PlayerStats.PCHitboxRad, new(Data.PCHitboxRad));
             _stats.Add(PlayerStats.MovementSpd, new(Data.MovementSpd));
             _stats.Add(PlayerStats.ChargeMovementSpd, new(Data.ChargeMovementSpd));
@@ -166,11 +161,6 @@ namespace QT.InGame
         public Stat GetStat(PlayerStats stat)
         {
             return _stats[stat];
-        }
-
-        public Status GetStatus(PlayerStatus status)
-        {
-            return _status[status];
         }
     }
 }
