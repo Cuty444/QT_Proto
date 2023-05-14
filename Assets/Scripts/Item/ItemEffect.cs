@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using QT.Core;
-using UnityEngine;
+using System.Data;
+using System.Text;
 using QT.InGame;
 
 using ApplyTypes = QT.ItemEffectGameData.ApplyTypes;
-using ValueOperatorTypes = QT.ItemEffectGameData.ValueOperatorTypes;
+using ModifierType = QT.StatModifier.ModifierType;
 using ApplyPoints = QT.ItemEffectGameData.ApplyPoints;
 
 namespace QT
@@ -32,7 +31,49 @@ namespace QT
 
         protected abstract bool Process(ItemEffectGameData effectData);
         
-        public abstract void ApplyEffect(Player player);
+        public abstract void ApplyEffect(Player player, object source);
+        
+        protected static List<string> ParseApplyValue(ref string applyValue)
+        {
+            var param = new List<string>();
+
+            StringBuilder value = new StringBuilder(applyValue.Length);
+            StringBuilder temp = new StringBuilder(20);
+            
+            for (int i = 0; i < applyValue.Length; i++)
+            {
+                char c = applyValue[i];
+
+                bool isAlpha = c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
+                
+                if (!isAlpha && c != '.')
+                {
+                    if (temp.Length > 0)
+                    {
+                        param.Add(temp.ToString());
+                        value.Append($"[{param.Count - 1}]");
+                        
+                        temp.Clear();
+                    }
+
+                    value.Append(c);
+                }
+                else
+                {
+                    temp.Append(c);
+                }
+            }
+
+            if (temp.Length > 0)
+            {
+                param.Add(temp.ToString());
+                value.Append($"[{param.Count - 1}]");
+            }
+
+            applyValue = value.ToString();
+            
+            return param;
+        }
     }
     
     
@@ -44,30 +85,30 @@ namespace QT
             Base
         }
         
-        private static readonly char[] seperator = {' ', '+', '-', '*', '/', '(', ')'};
-        
         public override ApplyTypes ApplyType => ApplyTypes.PlayerStat;
 
         private PlayerStats _applyStat;
         private string _applyValue;
         private (PlayerStats, StatValueType)[] _param;
-        private ValueOperatorTypes _valueOperatorType;
+        private ModifierType _valueOperatorType;
         
         public ItemEffectStat(ItemEffectGameData effectData) : base(effectData) { }
-        
+
         protected override bool Process(ItemEffectGameData effectData)
         {
             if (!Enum.TryParse(effectData.ApplyStat, out _applyStat))
             {
                 return false;
             }
+
+            _valueOperatorType = effectData.ValueOperatorType;
             
             _applyValue = effectData.ApplyValue;
+            var paramString = ParseApplyValue(ref _applyValue);
 
+            var temp = new List<(PlayerStats, StatValueType)>();
             
-            var param = new List<(PlayerStats, StatValueType)>();
-
-            foreach (var str in _applyValue.Split(seperator, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var str in paramString)
             {
                 var parts = str.Split('.');
 
@@ -91,15 +132,44 @@ namespace QT
                     }
                 }
                 
-                param.Add((stat, type));
+                temp.Add((stat, type));
             }
 
+            _param = temp.ToArray();
+            
             return true;
         }
 
-        public override void ApplyEffect(Player player)
+
+        public override void ApplyEffect(Player player, object source)
         {
+            var target = player.GetStat(_applyStat);
+
+            string expression = _applyValue;
             
+            for (var i = 0; i < _param.Length; i++)
+            {
+                var param = _param[i];
+                float value = 0;
+                
+                Stat stat = player.GetStat(param.Item1);
+
+                if(stat is Status)
+                {
+                    value = param.Item2 == StatValueType.Base ? (stat as Status).Value : stat;
+                }
+                else
+                {
+                    value =  stat;
+                }
+
+                expression = expression.Replace($"[{i}]", value.ToString());
+            }
+
+            var dt = new DataTable();
+            var result = Convert.ToSingle(dt.Compute(expression, null));
+            
+            target.AddModifier(new StatModifier(result, _valueOperatorType, source));
         }
     }
 }

@@ -12,15 +12,7 @@ namespace QT
             ResourceChange,
             PlayerStat,
         }
-        
-        public enum ValueOperatorTypes
-        {
-            None,
-            Hard,
-            Addition,
-            Multiply
-        }
-        
+
         public enum ApplyPoints
         {
             Equip,
@@ -38,7 +30,7 @@ namespace QT
         public string ApplyValue { get; set; }
         public string Param { get; set; }
         
-        public ValueOperatorTypes ValueOperatorType { get; set; }
+        public StatModifier.ModifierType ValueOperatorType { get; set; }
         public ApplyPoints ApplyPoint { get; set; }
     }
 
