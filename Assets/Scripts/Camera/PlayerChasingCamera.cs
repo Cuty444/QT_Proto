@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Map;
-using QT.Player;
+using QT.InGame;
 using UnityEngine;
 
 public class PlayerChasingCamera : MonoBehaviour

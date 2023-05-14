@@ -2,7 +2,7 @@ using System.Timers;
 using QT.Core;
 using UnityEngine;
 
-namespace QT.Enemy
+namespace QT.InGame
 {
     [FSMState((int) Enemy.States.Normal)]
     public class EnemyNormalState : FSMState<Enemy>

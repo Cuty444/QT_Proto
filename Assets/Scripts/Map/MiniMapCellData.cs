@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
 using QT.Core;
 using QT.Core.Map;
+using QT.InGame;
 
 namespace QT.Map
 {
@@ -63,7 +64,7 @@ namespace QT.Map
             }
         }
 
-        private void PlayerCreateEvent(Player.Player obj)
+        private void PlayerCreateEvent(Player obj)
         {
             _cellMapObject = _dungeonMapSystem.GetMapObject();
             _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();

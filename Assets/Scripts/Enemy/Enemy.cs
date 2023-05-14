@@ -1,7 +1,7 @@
 using QT.Core;
 using UnityEngine;
 
-namespace QT.Enemy
+namespace QT.InGame
 {
     public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IProjectile
     {

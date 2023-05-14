@@ -7,7 +7,7 @@ using QT.UI;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 
-namespace QT.Player
+namespace QT.InGame
 {
     [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>
@@ -45,7 +45,7 @@ namespace QT.Player
             _playerHpCanvas.gameObject.SetActive(true);
             _dodgeCoolBackgroundImage = _playerHpCanvas.PlayerDodgeCoolBackgroundImage;
             _dodgeCoolBarImage = _playerHpCanvas.PlayerDodgeCoolBarImage;
-            _playerHpCanvas.SetHp(_ownerEntity.HP);
+            _playerHpCanvas.SetHp(_ownerEntity.GetStat(PlayerStats.HP) as Status);
 
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
@@ -53,10 +53,10 @@ namespace QT.Player
                 _playerHpCanvas.ThrowProjectileGauge(true);
                 _currentBallStack++;
             });
-            _currentBallStack = (int)_ownerEntity.BallStackMax.Value;
-            _currentSwingCoolTime = _ownerEntity.SwingCooldown.Value;
-            _currentDodgeCoolTime = _ownerEntity.DodgeCooldown.Value;
-            _currentThrowCoolTime = _ownerEntity.ThrowCooldown.Value;
+            _currentBallStack = (int)_ownerEntity.GetStat(PlayerStats.BallStackMax);
+            _currentSwingCoolTime = _ownerEntity.GetStat(PlayerStats.SwingCooldown);
+            _currentDodgeCoolTime = _ownerEntity.GetStat(PlayerStats.DodgeCooldown);
+            _currentThrowCoolTime = _ownerEntity.GetStat(PlayerStats.ThrowCooldown);
             _ownerEntity.SetBatActive(false);
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
         }
@@ -97,27 +97,15 @@ namespace QT.Player
         private void AttackCoolTime()
         {
             _currentSwingCoolTime += Time.deltaTime;
-            if (_isMouseDownCheck)
-            {
-                _currentChargingTime += Time.deltaTime;
-                //_ownerEntity.PlayerCurrentChargingTimeEvent.Invoke(_currentChargingTime);
-                if (_currentChargingTime > _ownerEntity.ChargeTimes[0].Value)
-                {
-                    //if (!_chargingBarBackground.gameObject.activeSelf)
-                    //{
-                    //    _chargingBarBackground.gameObject.SetActive(true);
-                    //}
-                    //_chargingBarImage.fillAmount = QT.Util.Math.Remap(_currentChargingTime,
-                    //    _chargingMaxTimes[_chargingMaxTimes.Length - 1], _chargingMaxTimes[0]);
-                }
-            }
         }
 
         private void DodgeCoolTime()
         {
+            float dodgeCoolTime = _ownerEntity.GetStat(PlayerStats.DodgeCooldown);
+            
             _currentDodgeCoolTime += Time.deltaTime;
-            _dodgeCoolBarImage.fillAmount = Util.Math.Remap(_currentDodgeCoolTime,_ownerEntity.DodgeCooldown.Value,0f);
-            _dodgeCoolBackgroundImage.gameObject.SetActive(_currentDodgeCoolTime < _ownerEntity.DodgeCooldown.Value);
+            _dodgeCoolBarImage.fillAmount = Util.Math.Remap(_currentDodgeCoolTime,dodgeCoolTime,0f);
+            _dodgeCoolBackgroundImage.gameObject.SetActive(_currentDodgeCoolTime < dodgeCoolTime);
         }
 
         private void ThrowCoolTime()
@@ -135,16 +123,23 @@ namespace QT.Player
         private void KeyEThrow()
         {
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
+            {
                 return;
-            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
+            }
+            if (_ownerEntity.CurrentStateIndex == (int) Player.States.Dodge)
+            {
                 return;
+            }
             if (_currentBallStack == 0)
             {
                 return;
             }
 
-            if (_currentThrowCoolTime < _ownerEntity.ThrowCooldown.Value)
+            if (_currentThrowCoolTime < _ownerEntity.GetStat(PlayerStats.ThrowCooldown))
+            {
                 return;
+            }
+
             _ownerEntity.AttackBallInstate();
             _currentBallStack--;
             _currentThrowCoolTime = 0f;
@@ -155,13 +150,11 @@ namespace QT.Player
 
         private void KeyDownAttack()
         {
-            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
-                return;
-            if (_currentSwingCoolTime < _ownerEntity.SwingCooldown.Value)
+            if (_ownerEntity.CurrentStateIndex == (int) Player.States.Dodge)
             {
                 return;
             }
-            else
+            if (_currentSwingCoolTime >_ownerEntity.GetStat(PlayerStats.SwingCooldown))
             {
                 _isMouseDownCheck = true;
                 _ownerEntity.SwingAreaMeshRenderer.enabled = true;
@@ -187,7 +180,7 @@ namespace QT.Player
         {
             if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
                 return;
-            if (_currentDodgeCoolTime < _ownerEntity.DodgeCooldown.Value)
+            if (_currentDodgeCoolTime < _ownerEntity.GetStat(PlayerStats.DodgeCooldown))
                 return;
             if (_ownerEntity.GetRigidTrigger())
                 return;
@@ -204,21 +197,25 @@ namespace QT.Player
 
         private void OnDamage(Vector2 dir, float damage)
         {
-            if (Time.time - _startInvincibleTime < _ownerEntity.MercyInvincibleTime)
+            if (Time.time - _startInvincibleTime < _ownerEntity.GetStat(PlayerStats.MercyInvincibleTime))
             { 
                 return;
             }
 
-            if (Time.time - _startDodgeTime < _ownerEntity.DodgeInvincibleTime)
+            if (Time.time - _startDodgeTime < _ownerEntity.GetStat(PlayerStats.DodgeInvincibleTime))
             {
                 return;
             }
             _startInvincibleTime = Time.time;
             _ownerEntity.ChangeState(Player.States.Rigid);
             _ownerEntity.PlayerHitEffectPlay();
-            _ownerEntity.HP.AddStatus(-damage);
-            _playerHpCanvas.CurrentHpImageChange(_ownerEntity.HP);
-            if (_ownerEntity.HP.StatusValue <= 0)
+
+            var hp = _ownerEntity.GetStat(PlayerStats.HP) as Status;
+            
+            hp.AddStatus(-damage);
+            _playerHpCanvas.CurrentHpImageChange(hp);
+            
+            if (hp <= 0)
             {
                 PlayerDead();
             }

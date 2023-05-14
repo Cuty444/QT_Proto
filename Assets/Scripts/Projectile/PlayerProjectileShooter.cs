@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using QT.Core;
+using QT.InGame;
 
 namespace QT
 {

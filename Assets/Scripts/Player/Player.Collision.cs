@@ -6,7 +6,7 @@ using QT.Core.Map;
 using QT.Map;
 using UnityEngine;
 
-namespace QT.Player
+namespace QT.InGame
 {
     public partial class Player
     {

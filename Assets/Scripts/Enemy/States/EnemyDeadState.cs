@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 
-namespace QT.Enemy
+namespace QT.InGame
 {
     [FSMState((int)Enemy.States.Dead)]
     public class EnemyDeadState : FSMState<Enemy>

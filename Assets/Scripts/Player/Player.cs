@@ -5,7 +5,7 @@ using QT.UI;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace QT.Player
+namespace QT.InGame
 {
     public partial class Player : FSMPlayer<Player>, IFSMEntity, IHitable
     {

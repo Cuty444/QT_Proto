@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 
-namespace QT.Player
+namespace QT.InGame
 {
     public partial class Player
     {
         public MeshFilter SwingAreaMeshFilter { get; private set; }
         public MeshRenderer SwingAreaMeshRenderer { get; private set; }
 
-        public List<Enemy.Enemy> _enemyList;
+        public List<Enemy> _enemyList;
         
         public void SetBatActive(bool isActive)
         {
@@ -20,8 +20,7 @@ namespace QT.Player
         
         public void PlayBatAnimation()
         {
-            
-            float halfAngle = SwingCentralAngle.Value * 0.5f;
+            float halfAngle = GetStat(PlayerStats.SwingCentralAngle) * 0.5f;
             float startAngle, endAngel;
             float rotationSpeed = 1;
             
