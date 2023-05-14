@@ -46,6 +46,8 @@ namespace QT.Level
     {
         [Header("옵션")]
         [SerializeField] private ToolOption _option;
+        [Header("크기")]
+        [SerializeField] private Vector2Int _generateSize;
         [Header("")]
         [Header("데이터")]
         [SerializeField] private LevelTestingData _data;
@@ -164,6 +166,11 @@ namespace QT.Level
         public void ResetTile()
         {
             _tiles.Clear();
+        }
+
+        public void GenerateSizeCheck(Vector2Int pos)
+        {
+            _generateSize = pos;
         }
 
         public Color GetTileColor(LayerMask layerMask)
