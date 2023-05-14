@@ -28,7 +28,6 @@ namespace QT
         
         public string ApplyStat { get; set; }
         public string ApplyValue { get; set; }
-        public string Param { get; set; }
         
         public StatModifier.ModifierType ValueOperatorType { get; set; }
         public ApplyPoints ApplyPoint { get; set; }
