@@ -70,7 +70,9 @@ namespace QT.Level
         private void OnDisable()
         {
             Save();
-            EditorUtility.SetDirty(Data);
+            #if UNITY_EDITOR
+                EditorUtility.SetDirty(Data);
+            #endif
         }
 
         private void OnDrawGizmos()

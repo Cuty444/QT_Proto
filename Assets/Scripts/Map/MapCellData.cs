@@ -14,6 +14,8 @@ namespace QT.Map
         [SerializeField] private Transform _enemySpawnersTransform;
         [Header("문 순서는 상하좌우")]
         [SerializeField] private GameObject[] _door;
+        [Header("카메라 외곽 제한 콜라이더")]
+        [SerializeField] private Collider2D _collider2D;
         [Header("이 밑은 현재 더미데이터 미적용중")]
         [SerializeField] private RoomType _roomType;
         private PlayerManager _playerManager;
@@ -67,6 +69,11 @@ namespace QT.Map
             _mapEnemySpawner.SetPos(position);
             _playerManager.PlayerMapPass.Invoke(false);
             _enemySpawnersTransform.gameObject.SetActive(true);
+        }
+
+        public void SetCameraCollider2D()
+        {
+            _playerManager.PlayerDoorEnterCameraShapeChange.Invoke(_collider2D);
         }
     }
 }

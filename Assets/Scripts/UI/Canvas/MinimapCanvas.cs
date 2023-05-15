@@ -61,7 +61,8 @@ namespace QT.UI
             foreach (var cell in _cellList)
             {
                 cell.ListenerClear();
-                SystemManager.Instance.ResourceManager.ReleaseObject(CellPath, cell);
+                //SystemManager.Instance.ResourceManager.ReleaseObject(CellPath, cell);
+                Destroy(cell.gameObject);
             }
             _cellList.Clear();
         }
