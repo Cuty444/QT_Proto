@@ -7,6 +7,7 @@ using UnityEngine.UI.Extensions;
 using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
+using UnityEngine.Events;
 
 namespace QT.Map
 {
@@ -43,6 +44,8 @@ namespace QT.Map
 
         private Image _iconObject;
 
+        private UnityEvent _startColliderShapeSetting = new UnityEvent();
+
         public void Setting()
         {
             _lineRenders.SetActive(false);
@@ -50,9 +53,9 @@ namespace QT.Map
             _mapImage.color = _mapColors[2];
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.PlayerCreateEvent.AddListener(PlayerCreateEvent);
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
             _mapImage.enabled = false;
-            _playerManager.PlayerCreateEvent.AddListener(PlayerCreateEvent);
             _iconsTransform.gameObject.SetActive(false);
             _iconObject = null;
             var image = _iconsTransform.GetComponentInChildren<Image>();
@@ -70,6 +73,7 @@ namespace QT.Map
             _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();
             _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
             _mapCellData.OpenDoorDirection(_pathOpenDirection);
+            _startColliderShapeSetting.Invoke();
         }
         
         public void ListenerClear()
@@ -79,7 +83,8 @@ namespace QT.Map
             if (_iconObject != null)
             {
                 _iconObject.gameObject.SetActive(false);
-                SystemManager.Instance.ResourceManager.ReleaseObject(IconPath, _iconObject);
+                //SystemManager.Instance.ResourceManager.ReleaseObject(IconPath, _iconObject);
+                Destroy(_iconObject.gameObject);
                 _iconObject = null;
             }
 
@@ -119,6 +124,17 @@ namespace QT.Map
                 _mapImage.enabled = true;
                 _iconsTransform.gameObject.SetActive(true);
                 _mapImage.color = _mapColors[0];
+                if (_mapCellData == null)
+                {
+                    _startColliderShapeSetting.AddListener(() =>
+                    {
+                        _mapCellData.SetCameraCollider2D();
+                    });
+                }
+                else
+                {
+                    _mapCellData.SetCameraCollider2D();
+                }
                 //ColorSetLineRender(_mapColors[0]);
             }
             else if (_dungeonMapSystem.GetCellData(CellPos).IsClear || _dungeonMapSystem.GetCellData(CellPos).IsVisited)

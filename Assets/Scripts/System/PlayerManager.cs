@@ -25,6 +25,8 @@ namespace QT.Core
 
         public UnityEvent<List<Enemy>> CurrentRoomEnemyRegister { get; } = new();
 
+        public UnityEvent<Collider2D> PlayerDoorEnterCameraShapeChange { get; } = new();
+
         public Player Player { get; private set; }
 
         public async void OnPlayerCreate() // 추후 로그라이크맵 절차 생성 SystemManager에서 관리하도록 코드 위치 변경이 필요함
