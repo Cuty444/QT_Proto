@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using QT.Core;
+using QT.InGame;
 
 namespace QT
 {

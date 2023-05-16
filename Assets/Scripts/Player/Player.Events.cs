@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace QT.Player
+namespace QT.InGame
 {
     public partial class Player
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace QT.Player
+namespace QT.InGame
 {
     public partial class Player
     {

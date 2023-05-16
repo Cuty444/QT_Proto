@@ -2,7 +2,7 @@ using System;
 using QT.Core;
 using UnityEngine;
 
-namespace QT.Enemy
+namespace QT.InGame
 {
     [FSMState((int)Enemy.States.Global, false)]
     public class EnemyGlobalState : FSMState<Enemy>

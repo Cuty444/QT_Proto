@@ -4,7 +4,7 @@ using QT.Core;
 using QT.Core.Data;
 using UnityEngine;
 
-namespace QT.Enemy
+namespace QT.InGame
 {
     [FSMState((int)Enemy.States.Projectile)]
     public class EnemyProjectileState : FSMState<Enemy>

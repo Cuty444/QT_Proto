@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using QT.Core;
 using QT.Core.Map;
-using QT.Player;
+using QT.InGame;
 using UnityEngine;
 
 public class PlayerChasingCamera : MonoBehaviour
@@ -15,6 +16,9 @@ public class PlayerChasingCamera : MonoBehaviour
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _cameraSakeDiameter = 1f;
     [SerializeField] private bool _isChasing;
+
+    [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
+    [SerializeField] private CinemachineConfiner _cinemachineConfiner;
     #endregion
 
     #region Global_Declaration
@@ -30,7 +34,15 @@ public class PlayerChasingCamera : MonoBehaviour
     {
         _player = null;
         PlayerManager playerManager = SystemManager.Instance.PlayerManager;
-        playerManager.PlayerCreateEvent.AddListener((obj) => { _player = obj.transform;});
+        playerManager.PlayerDoorEnterCameraShapeChange.AddListener((colliderTemp) =>
+        {
+            _cinemachineConfiner.m_BoundingShape2D = colliderTemp;
+        });
+        playerManager.PlayerCreateEvent.AddListener((obj) =>
+        {
+            _player = obj.transform;
+            _cinemachineVirtualCamera.Follow = _player;
+        });
         SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonStart();
         playerManager.BatSwingTimeScaleEvent.AddListener(CameraShaking);
         _beforePosition = transform.position;
@@ -44,7 +56,7 @@ public class PlayerChasingCamera : MonoBehaviour
         }
         
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        ChasingCamera(mousePos);
+        //ChasingCamera(mousePos);
     }
 
      private void LateUpdate()

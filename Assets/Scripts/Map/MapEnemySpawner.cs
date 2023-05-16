@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using QT.Core;
 using QT.Core.Map;
+using QT.InGame;
 using UnityEngine;
 
 namespace QT.Map
 {
     public class MapEnemySpawner : MonoBehaviour
     {
-        private List<Enemy.Enemy> _enemyList;
+        private List<Enemy> _enemyList;
 
         private Vector2Int _cellPos;
 
@@ -20,7 +21,7 @@ namespace QT.Map
 
         private void Awake()
         {
-            _enemyList = GetComponentsInChildren<Enemy.Enemy>().ToList();
+            _enemyList = GetComponentsInChildren<Enemy>().ToList();
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.CurrentRoomEnemyRegister.Invoke(_enemyList);
@@ -37,7 +38,7 @@ namespace QT.Map
         {
             for (int i = 0; i < _enemyList.Count; i++)
             {
-                if (_enemyList[i].CurrentStateIndex > (int) Enemy.Enemy.States.Rigid)
+                if (_enemyList[i].CurrentStateIndex > (int) Enemy.States.Rigid)
                 {
                     _enemyList.RemoveAt(i);
                     i = 0;

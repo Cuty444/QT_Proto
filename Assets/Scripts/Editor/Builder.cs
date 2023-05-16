@@ -2,12 +2,16 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using UnityEditor.Build.Reporting;
 
 class Builder
 {
-    private static string BuildSettingPath = $"{Directory.GetCurrentDirectory()}/BuildSetting.config";
+    private const string ScriptingDefine = "AMPLIFY_SHADER_EDITOR";
+    private const string TestScriptingDefine = "AMPLIFY_SHADER_EDITOR;Testing";
+    
+    private static readonly string BuildSettingPath = $"{Directory.GetCurrentDirectory()}/BuildSetting.config";
 
     [MenuItem("Build/빌드하기")]
     public static void Build()
@@ -19,10 +23,27 @@ class Builder
 
         reader.Close();
 
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, ScriptingDefine);
+        
+        GenericBuild(FindEnabledEditorScenes(), dir, BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows, BuildOptions.None);
+    }
+    
+    [MenuItem("Build/테스트 빌드하기")]
+    public static void TestBuild()
+    {
+        var stream = new FileStream(BuildSettingPath,FileMode.Open);
+        var reader = new StreamReader(stream);
+
+        var dir = $"{reader.ReadLine()}/{PlayerSettings.productName}_Develop_{DateTime.Now.ToString("MMddHHmm")}/{PlayerSettings.productName}.exe";
+        
+        reader.Close();
+
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, TestScriptingDefine);
+        
         GenericBuild(FindEnabledEditorScenes(), dir, BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows, BuildOptions.None);
     }
 
-    public static void GenericBuild(string[] scenes, string target_dir, BuildTargetGroup build_group, BuildTarget build_target, BuildOptions build_options)
+    public static void GenericBuild(string[] scenes, string target_dir, BuildTargetGroup build_group, BuildTarget build_target, BuildOptions build_options, bool isTesting = true)
     {
         EditorUserBuildSettings.SwitchActiveBuildTarget(build_group, build_target);
         var res = BuildPipeline.BuildPlayer(scenes, target_dir, build_target, build_options);

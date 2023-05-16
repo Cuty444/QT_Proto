@@ -113,8 +113,7 @@ namespace QT.Core
             
             foreach (var fieldName in info)
             {
-                GUILayout.Label($"{fieldName}", EditorStyles.largeLabel);
-                GUILayout.Space(5);
+                EditorGUILayout.SelectableLabel($"{fieldName}", EditorStyles.largeLabel, GUILayout.Height(20));
                 DrawLine();
             }
             

@@ -62,7 +62,6 @@ namespace QT.Level
             {
                 levelTool.ResetTile();
             }
-            
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -167,7 +166,9 @@ namespace QT.Level
             }
 
             Vector3 size = _endGenerateWorldPos - _startGenerateWorldPos;
-
+            int x = Mathf.Abs(_startGeneratePosition.x - GetMousePosToTilePos().x);
+            int y = Mathf.Abs(_startGeneratePosition.y - GetMousePosToTilePos().y);
+            _levelTool.GenerateSizeCheck(new Vector2Int(x + 1, y + 1));
             Handles.DrawWireCube(_startGenerateWorldPos + size * 0.5f, size);
         }
     }
