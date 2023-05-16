@@ -8,7 +8,7 @@ using UnityEditor.Build.Reporting;
 
 class Builder
 {
-    private const string ScriptingDefine = "AMPLIFY_SHADER_EDITOR;Testing";
+    private const string ScriptingDefine = "AMPLIFY_SHADER_EDITOR";
     private const string TestScriptingDefine = "AMPLIFY_SHADER_EDITOR;Testing";
     
     private static readonly string BuildSettingPath = $"{Directory.GetCurrentDirectory()}/BuildSetting.config";
