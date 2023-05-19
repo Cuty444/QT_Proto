@@ -75,7 +75,7 @@ namespace QT.InGame
                 angle += 360;
             }
             
-            _ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle);
+            _ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle + 270);
 
             if (angle > 180)
             {

@@ -57,7 +57,7 @@ namespace QT.InGame
         {
             if (isOn)
             {
-                _ownerEntity.ChangeState(Player.States.Dodge);
+                (_ownerEntity.ChangeState(Player.States.Dodge) as PlayerDodgeState).InitializeState(_moveDirection);
             }
         }
     }

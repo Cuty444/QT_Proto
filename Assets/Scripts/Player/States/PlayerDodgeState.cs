@@ -8,25 +8,36 @@ namespace QT.InGame
     [FSMState((int)Player.States.Dodge)]
     public class PlayerDodgeState : FSMState<Player>
     {
+        private readonly int AnimationDodgeHash = Animator.StringToHash("PlayerDodge");
+        private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
+        private readonly int AnimationDirectionXHash = Animator.StringToHash("DirectionX");
+        private readonly int AnimationDirectionYHash = Animator.StringToHash("DirectionY");
+        
         public PlayerDodgeState(IFSMEntity owner) : base(owner)
         {
         }
         
-        public override void InitializeState()
+        public void InitializeState(Vector2 dir)
         {
-            _ownerEntity.SetDodgeAnimation();
-            _ownerEntity.DodgeEffectPlay();
+            _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
+            _ownerEntity.Animator.SetFloat(AnimationDirectionXHash, dir.x);
+            _ownerEntity.Animator.SetFloat(AnimationDirectionYHash, dir.y);
+            
+            _ownerEntity.DodgeEffectPlay(dir);
 
             var force = _ownerEntity.GetStat(PlayerStats.DodgeAddForce).Value;
 
-            _ownerEntity.Rigidbody.velocity = _ownerEntity.BefereDodgeDirecton * force;
+            _ownerEntity.Rigidbody.velocity = dir * force;
 
-            _ownerEntity.StartCoroutine(WaitSecond(force));
+            var duration = _ownerEntity.GetStat(PlayerStats.DodgeDurationTime).Value;
+
+            _ownerEntity.StartCoroutine(WaitSecond(duration));
         }
         
         public override void ClearState()
         {
-            _ownerEntity.SetDodgeEndAnimation();
+            _ownerEntity.Animator.SetTrigger(AnimationDodgeEndHash);
+            
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
         
