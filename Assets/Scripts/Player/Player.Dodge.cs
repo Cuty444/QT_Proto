@@ -7,10 +7,5 @@ namespace QT.InGame
     public partial class Player
     {
         public Vector2 BefereDodgeDirecton { get; private set; }
-        
-        public void SetBefereDodgeDirecton()
-        {
-            BefereDodgeDirecton = MoveDirection;
-        }
     }
 }

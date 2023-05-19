@@ -77,7 +77,7 @@ namespace QT.InGame
         public Stat[] ChargeRigidDmgs => _chargeRigidDmgs;
         public Stat[] ChargeProjectileDmgs => _chargeProjectileDmgs;
 
-        private void SetUpStats()
+        private void InitStats()
         {
             _stats.Clear();
             _stats.Add(PlayerStats.HP, new Status(Data.MaxHP));

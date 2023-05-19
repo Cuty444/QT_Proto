@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
-using QT.Core.Input;
 
 namespace QT.InGame
 {
@@ -17,11 +16,12 @@ namespace QT.InGame
         {
             _ownerEntity.SetDodgeAnimation();
             _ownerEntity.DodgeEffectPlay();
-            
-            _ownerEntity.Rigidbody.velocity = Vector2.zero;
-            _ownerEntity.Rigidbody.AddForce(_ownerEntity.BefereDodgeDirecton * _ownerEntity.GetStat(PlayerStats.DodgeAddForce).Value,ForceMode2D.Impulse);
-            
-            _ownerEntity.StartCoroutine(WaitSecond(_ownerEntity.GetStat(PlayerStats.DodgeDurationTime).Value));
+
+            var force = _ownerEntity.GetStat(PlayerStats.DodgeAddForce).Value;
+
+            _ownerEntity.Rigidbody.velocity = _ownerEntity.BefereDodgeDirecton * force;
+
+            _ownerEntity.StartCoroutine(WaitSecond(force));
         }
         
         public override void ClearState()
@@ -33,7 +33,8 @@ namespace QT.InGame
         IEnumerator WaitSecond(float time)
         {
             yield return new WaitForSeconds(time);
-            _ownerEntity.ChangeState(Player.States.Idle);
+            
+            _ownerEntity.RevertToPreviousState();
         }
     }
 }

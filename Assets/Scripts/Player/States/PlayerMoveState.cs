@@ -1,55 +1,64 @@
 using UnityEngine;
 using QT.Core;
-using QT.Core.Input;
 
 namespace QT.InGame
 {
     [FSMState((int)Player.States.Move)]
     public class PlayerMoveState : FSMState<Player>
     {
-        private InputSystem _inputSystem;
+        private Vector2 _moveDirection;
+        
         public PlayerMoveState(IFSMEntity owner) : base(owner)
         {
-            _inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
         }
 
         public override void InitializeState()
         {
-            _inputSystem.OnKeyMoveEvent.AddListener(ChangeMove);
-            _inputSystem.OnKeyDownAttackEvent.AddListener(OnAttackStart);
+            _ownerEntity.OnMove = OnMove;
+            _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing);
+            _ownerEntity.SetAction(Player.ButtonActions.Dodge, OnDodge);
+
+            _moveDirection = Vector2.zero;
         }
 
         public override void ClearState()
         {
-            _inputSystem.OnKeyMoveEvent.RemoveListener(ChangeMove);
-            _inputSystem.OnKeyDownAttackEvent.RemoveListener(OnAttackStart);
-            _ownerEntity.SetMoveDirection(Vector2.zero);
+            _ownerEntity.OnMove = null;
+            _ownerEntity.ClearAction(Player.ButtonActions.Swing);
+            _ownerEntity.ClearAction(Player.ButtonActions.Dodge);
+            
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
 
         public override void FixedUpdateState()
         {
-            Move();
+            _ownerEntity.Rigidbody.velocity = _moveDirection * _ownerEntity.GetStat(PlayerStats.MovementSpd).Value;
         }
 
-        private void ChangeMove(Vector2 direction)
+        protected virtual void OnMove(Vector2 direction)
         {
-            if (direction != Vector2.zero)
-                return;
-            //_ownerEntity.ChangeState(Player.States.Idle);
-        }
-        
-        private void OnAttackStart()
-        {
-            //if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
-            //    return;
-            //_ownerEntity.ChangeState(Player.States.Swing);
-        }
-        
+            if (direction == Vector2.zero)
+            {
+                _ownerEntity.ChangeState(Player.States.Idle);
+            }
 
-        private void Move()
+            _moveDirection = direction;
+        }
+
+        protected virtual void OnSwing(bool isOn)
         {
-            _ownerEntity.Rigidbody.velocity = _ownerEntity.MoveDirection * _ownerEntity.GetStat(PlayerStats.MovementSpd).Value;
+            if (isOn)
+            {
+                _ownerEntity.ChangeState(Player.States.Swing);
+            }
+        }
+        
+        protected virtual void OnDodge(bool isOn)
+        {
+            if (isOn)
+            {
+                _ownerEntity.ChangeState(Player.States.Dodge);
+            }
         }
     }
 }

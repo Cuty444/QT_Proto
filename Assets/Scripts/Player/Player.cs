@@ -25,7 +25,6 @@ namespace QT.InGame
         
         [field:SerializeField] public Transform EyeTransform { get; private set; }
         [SerializeField] private Transform _batTransform;
-        [SerializeField] private Transform _lineRendersTransform;
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [SerializeField] private TrailRenderer _trailRenderer;
         
@@ -35,24 +34,29 @@ namespace QT.InGame
         
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
 
-        public Vector2 MoveDirection { get; private set; }
-
         private PlayerManager _playerManager;
 
         private bool _isEnterDoor;
+        
+        
         private void Awake()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
             AtkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
+            
             Rigidbody = GetComponent<Rigidbody2D>();
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
-            SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.2f);
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
-            _animator = GetComponentInChildren<Animator>();
-            SetUpStats();
+            Animator = GetComponentInChildren<Animator>();
+            
+            InitInputs();
+            InitStats();
+            EffectSetup();
+            
             SetUp(States.Idle);
             SetGlobalState(new PlayerGlobalState(this));
+            
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.CurrentRoomEnemyRegister.AddListener((enemyList) =>
             {
@@ -63,12 +67,11 @@ namespace QT.InGame
                 _isEnterDoor = isBool;
             });
             _isEnterDoor = true;
-            EffectSetup();
         }
 
-        public void SetMoveDirection(Vector2 direction)
+        private void Update()
         {
-            MoveDirection = direction;
+            UpdateInputs();
         }
     }
 }

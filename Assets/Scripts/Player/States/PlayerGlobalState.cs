@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using QT.Core;
 using QT.Core.Data;
-using QT.Core.Input;
 using QT.UI;
 using Unity.VisualScripting;
 using UnityEngine.UI;
@@ -12,8 +11,9 @@ namespace QT.InGame
     [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>
     {
+        private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
+        
         private GlobalDataSystem _globalDataSystem;
-        private InputSystem _inputSystem;
         private PlayerHPCanvas _playerHpCanvas;
 
         private float _currentThrowCoolTime;
@@ -26,8 +26,6 @@ namespace QT.InGame
         
         private int _currentBallStack;
 
-
-
         private Image _dodgeCoolBackgroundImage;
         private Image _dodgeCoolBarImage;
         
@@ -35,12 +33,6 @@ namespace QT.InGame
         
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
-            _inputSystem = SystemManager.Instance.GetSystem<InputSystem>();
-            _inputSystem.OnKeyDownAttackEvent.AddListener(KeyDownAttack);
-            _inputSystem.OnKeyUpAttackEvent.AddListener(KeyUpAttack);
-            _inputSystem.OnKeyEThrowEvent.AddListener(KeyEThrow);
-            _inputSystem.OnKeyMoveEvent.AddListener(MoveDirection);
-            _inputSystem.OnKeySpaceDodgeEvent.AddListener(KeySpaceDodge);
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
             _dodgeCoolBackgroundImage = _playerHpCanvas.PlayerDodgeCoolBackgroundImage;
@@ -59,11 +51,10 @@ namespace QT.InGame
             _currentThrowCoolTime = _ownerEntity.GetStat(PlayerStats.ThrowCooldown);
             _ownerEntity.SetBatActive(false);
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
+            
+            _ownerEntity.OnLook.AddListener(OnLook);
         }
 
-        public override void InitializeState()
-        {
-        }
 
         public override void UpdateState()
         {
@@ -72,27 +63,32 @@ namespace QT.InGame
             ThrowCoolTime();
             AttackCoolTime();
             DodgeCoolTime();
-            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
-                return;
-            SetDirection();
-            _ownerEntity.AngleAnimation();
         }
         
-        
-        protected virtual void MoveDirection(Vector2 direction)
+        private void OnLook(Vector2 lookDir)
         {
-            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
-                return;
-            _ownerEntity.SetMoveDirection(direction.normalized);
-            if (_ownerEntity.MoveDirection == Vector2.zero && _isMouseDownCheck == false)
+            var angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90;
+            float flip = 180;
+            
+            if (angle < 0)
             {
-                _ownerEntity.ChangeState(Player.States.Idle);
+                angle += 360;
             }
+            
+            _ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle);
 
-            _ownerEntity.SetMoveCheck(_ownerEntity.MoveDirection == Vector2.zero);
+            if (angle > 180)
+            {
+                angle = 360 - angle;
+                flip = 0;
+            }
+            
+            _ownerEntity.Animator.SetFloat(AnimationMouseRotateHash, angle / 180 * 4);
+            _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
         }
         
-        #region AttackFunc
+        
+        #region CoolDown
 
         private void AttackCoolTime()
         {
@@ -113,12 +109,7 @@ namespace QT.InGame
             _currentThrowCoolTime += Time.deltaTime;
         }
         
-        private void SetDirection()
-        {
-            _ownerEntity.MouseValueSet();
-            var angle = Util.Math.GetDegree(_ownerEntity.transform.position, _ownerEntity.MousePos);
-            _ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle);
-        }
+        #endregion
 
         private void KeyEThrow()
         {
@@ -148,52 +139,7 @@ namespace QT.InGame
                 _playerHpCanvas.ThrowProjectileGauge(false);
         }
 
-        private void KeyDownAttack()
-        {
-            if (_ownerEntity.CurrentStateIndex == (int) Player.States.Dodge)
-            {
-                return;
-            }
-            if (_currentSwingCoolTime >_ownerEntity.GetStat(PlayerStats.SwingCooldown))
-            {
-                _isMouseDownCheck = true;
-                _ownerEntity.SwingAreaMeshRenderer.enabled = true;
-                _ownerEntity.ChangeState(Player.States.Swing);
-            }
-        }
-
-        private void KeyUpAttack()
-        {
-            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
-                return;
-            if (!_isMouseDownCheck)
-            {
-                return;
-            }
-            _isMouseDownCheck = false;
-            _ownerEntity.SwingAreaMeshRenderer.enabled = false;
-            _currentSwingCoolTime = 0f;
-        }
-
-
-        private void KeySpaceDodge()
-        {
-            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Dodge)
-                return;
-            if (_currentDodgeCoolTime < _ownerEntity.GetStat(PlayerStats.DodgeCooldown))
-                return;
-            if (_ownerEntity.GetRigidTrigger())
-                return;
-            if (_ownerEntity.MoveDirection == Vector2.zero)
-                return;
-            _ownerEntity.SetBefereDodgeDirecton();
-            _ownerEntity.ChangeState(Player.States.Dodge);
-            _currentDodgeCoolTime = 0f;
-            _startDodgeTime = Time.time;
-        }
         
-        
-        #endregion
 
         private void OnDamage(Vector2 dir, float damage)
         {
@@ -223,11 +169,6 @@ namespace QT.InGame
 
         private void PlayerDead()
         {
-            _inputSystem.OnKeyDownAttackEvent.RemoveAllListeners();
-            _inputSystem.OnKeyUpAttackEvent.RemoveAllListeners();
-            _inputSystem.OnKeyEThrowEvent.RemoveAllListeners();
-            _inputSystem.OnKeyMoveEvent.RemoveAllListeners();
-            _inputSystem.OnKeySpaceDodgeEvent.RemoveAllListeners();
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
             _ownerEntity.OnDamageEvent.RemoveAllListeners();
             _ownerEntity.ChangeState(Player.States.Dead);
