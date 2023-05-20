@@ -123,7 +123,7 @@ namespace QT.InGame
             _ownerEntity.swingSlashEffectPlay();
             _ownerEntity.FullChargingEffectStop();
             _ownerEntity.PlayBatAnimation();
-            _ownerEntity.ChangeState(Player.States.Idle);
+            _ownerEntity.ChangeState(Player.States.Move);
         }
 
         private async void SetLineObjects()

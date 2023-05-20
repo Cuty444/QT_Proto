@@ -12,7 +12,6 @@ namespace QT.InGame
         public enum States : int
         {
             Global,
-            Idle,
             Move,
             Swing,
             Dodge,
@@ -54,7 +53,7 @@ namespace QT.InGame
             InitStats();
             EffectSetup();
             
-            SetUp(States.Idle);
+            SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
             
             _playerManager = SystemManager.Instance.PlayerManager;

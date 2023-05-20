@@ -6,6 +6,8 @@ namespace QT.InGame
     [FSMState((int)Player.States.Move)]
     public class PlayerMoveState : FSMState<Player>
     {
+        private readonly int AnimationIdleHash = Animator.StringToHash("PlayerIdle");
+        
         private Vector2 _moveDirection;
         
         public PlayerMoveState(IFSMEntity owner) : base(owner)
@@ -37,11 +39,8 @@ namespace QT.InGame
 
         protected virtual void OnMove(Vector2 direction)
         {
-            if (direction == Vector2.zero)
-            {
-                _ownerEntity.ChangeState(Player.States.Idle);
-            }
-
+            _ownerEntity.Animator.SetBool(AnimationIdleHash, direction == Vector2.zero);
+            
             _moveDirection = direction;
         }
 
