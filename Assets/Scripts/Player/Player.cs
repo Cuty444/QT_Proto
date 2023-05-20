@@ -15,7 +15,6 @@ namespace QT.InGame
             Move,
             Swing,
             Dodge,
-            Rigid,
             Dead,
         }
 

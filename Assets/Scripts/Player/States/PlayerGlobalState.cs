@@ -11,6 +11,7 @@ namespace QT.InGame
     [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>
     {
+        private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
         private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
         
         private GlobalDataSystem _globalDataSystem;
@@ -153,9 +154,10 @@ namespace QT.InGame
                 return;
             }
             _startInvincibleTime = Time.time;
-            _ownerEntity.ChangeState(Player.States.Rigid);
-            _ownerEntity.PlayerHitEffectPlay();
 
+            _ownerEntity.Animator.SetTrigger(AnimationRigidHash);
+            _ownerEntity.PlayerHitEffectPlay();
+            
             var hp = _ownerEntity.GetStat(PlayerStats.HP) as Status;
             
             hp.AddStatus(-damage);

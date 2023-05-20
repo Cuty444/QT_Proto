@@ -8,16 +8,9 @@ namespace QT.InGame
     {
         private readonly int AnimationSwingHash = Animator.StringToHash("PlayerSwing");
         private readonly int AnimationThrowHash = Animator.StringToHash("PlayerThrow");
-        private readonly int AnimationDodgeHash = Animator.StringToHash("PlayerDodge");
-        private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
-        private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
         private readonly int AnimationDeadHash = Animator.StringToHash("PlayerDead");
 
         public Animator Animator { get; private set; }
-        
-        private bool _isRigid;
-        private bool _isDodge = false;
-        
         
         public void SetSwingAnimation()
         {
@@ -36,20 +29,8 @@ namespace QT.InGame
                 Animator.ResetTrigger(AnimationThrowHash);
             }));
         }
-
-
-        public void SetRigidAnimation()
-        {
-            Animator.SetTrigger(AnimationRigidHash);
-            ChangeState(Player.States.Move);
-            _isRigid = true;
-            StartCoroutine(WaitForSecond(0.33f, () =>
-            {
-                Animator.ResetTrigger(AnimationRigidHash);
-                _isRigid = false;
-            }));
-        }
         
+
         public void SetDeadAnimation()
         {
             Animator.SetTrigger(AnimationDeadHash);
