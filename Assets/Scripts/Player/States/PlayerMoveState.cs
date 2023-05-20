@@ -7,6 +7,7 @@ namespace QT.InGame
     public class PlayerMoveState : FSMState<Player>
     {
         private readonly int AnimationIdleHash = Animator.StringToHash("PlayerIdle");
+        private readonly int AnimationMoveSpeedHash = Animator.StringToHash("MoveSpeed");
         
         private Vector2 _moveDirection;
         
@@ -34,13 +35,17 @@ namespace QT.InGame
 
         public override void FixedUpdateState()
         {
-            _ownerEntity.Rigidbody.velocity = _moveDirection * _ownerEntity.GetStat(PlayerStats.MovementSpd).Value;
+            var speed = _ownerEntity.GetStat(PlayerStats.MovementSpd).Value;
+            var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
+            
+            _ownerEntity.Animator.SetFloat(AnimationMoveSpeedHash, currentNormalizedSpeed);
+            _ownerEntity.Animator.SetBool(AnimationIdleHash, currentNormalizedSpeed <= 0.1f);
+            
+            _ownerEntity.Rigidbody.velocity = _moveDirection * speed;
         }
 
         protected virtual void OnMove(Vector2 direction)
         {
-            _ownerEntity.Animator.SetBool(AnimationIdleHash, direction == Vector2.zero);
-            
             _moveDirection = direction;
         }
 
