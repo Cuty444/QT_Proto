@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using QT.Core;
-using QT.UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace QT.InGame
 {
@@ -26,6 +24,7 @@ namespace QT.InGame
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [SerializeField] private TrailRenderer _trailRenderer;
         
+        public Animator Animator { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
         public CharacterGameData Data { get; private set; }
         public CharacterAtkGameData AtkData { get; private set; }

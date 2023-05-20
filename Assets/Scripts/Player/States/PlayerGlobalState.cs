@@ -13,6 +13,7 @@ namespace QT.InGame
     {
         private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
         private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
+        private readonly int AnimationThrowHash = Animator.StringToHash("PlayerThrow");
         
         private GlobalDataSystem _globalDataSystem;
         private PlayerHPCanvas _playerHpCanvas;
@@ -135,7 +136,8 @@ namespace QT.InGame
             _ownerEntity.AttackBallInstate();
             _currentBallStack--;
             _currentThrowCoolTime = 0f;
-            _ownerEntity.SetThrowAnimation();
+            _ownerEntity.Animator.SetTrigger(AnimationThrowHash);
+            
             if(_currentBallStack == 0)
                 _playerHpCanvas.ThrowProjectileGauge(false);
         }

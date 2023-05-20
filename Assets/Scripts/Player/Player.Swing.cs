@@ -8,6 +8,8 @@ namespace QT.InGame
 {
     public partial class Player
     {
+        private readonly int AnimationSwingHash = Animator.StringToHash("PlayerSwing");
+        
         public MeshFilter SwingAreaMeshFilter { get; private set; }
         public MeshRenderer SwingAreaMeshRenderer { get; private set; }
 
@@ -48,7 +50,10 @@ namespace QT.InGame
         {
             _trailRenderer.emitting = true;
             _batSpriteRenderer.enabled = true;
-            SetSwingAnimation();
+            
+            
+            Animator.SetTrigger(AnimationSwingHash);
+            
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
             float currentRotationTime = 0.0f;
             while (0.1f > currentRotationTime) // TODO : 0.1f = RotationTime 공속 부분 동기화 필요
