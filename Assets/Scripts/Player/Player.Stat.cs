@@ -6,6 +6,7 @@ namespace QT.InGame
     public enum PlayerStats
     {
         HP,
+        BallStack,
         
         PCHitboxRad,
         MovementSpd,
@@ -16,7 +17,6 @@ namespace QT.InGame
         DodgeDurationTime,
         DodgeAddForce,
         ItemSlotMax,
-        BallStackMax,
         GoldGain,
             
         ThrowCooldown,
@@ -81,6 +81,7 @@ namespace QT.InGame
         {
             _stats.Clear();
             _stats.Add(PlayerStats.HP, new Status(Data.MaxHP));
+            _stats.Add(PlayerStats.BallStack, new Status(Data.BallStackMax));
             
             _stats.Add(PlayerStats.PCHitboxRad, new(Data.PCHitboxRad));
             _stats.Add(PlayerStats.MovementSpd, new(Data.MovementSpd));
@@ -91,7 +92,6 @@ namespace QT.InGame
             _stats.Add(PlayerStats.DodgeDurationTime, new(Data.DodgeDurationTime));
             _stats.Add(PlayerStats.DodgeAddForce, new(Data.DodgeAddForce));
             _stats.Add(PlayerStats.ItemSlotMax, new(Data.ItemSlotMax));
-            _stats.Add(PlayerStats.BallStackMax, new(Data.BallStackMax));
             _stats.Add(PlayerStats.GoldGain, new(Data.GoldGain));
 
             _stats.Add(PlayerStats.ThrowCooldown, new(AtkData.ThrowCooldown));

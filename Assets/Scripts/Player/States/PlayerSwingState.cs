@@ -64,6 +64,8 @@ namespace QT.InGame
 
         public override void ClearState()
         {
+            base.ClearState();
+            
             _projectiles.Clear();
             foreach (var line in _lines)
             {

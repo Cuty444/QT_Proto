@@ -11,9 +11,9 @@ namespace QT.InGame
     [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>
     {
-        private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
         private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
-        private readonly int AnimationThrowHash = Animator.StringToHash("PlayerThrow");
+        private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
+        
         
         private GlobalDataSystem _globalDataSystem;
         private PlayerHPCanvas _playerHpCanvas;
@@ -28,26 +28,15 @@ namespace QT.InGame
         
         private int _currentBallStack;
 
-        private Image _dodgeCoolBackgroundImage;
-        private Image _dodgeCoolBarImage;
-        
-        private bool _isMouseDownCheck;
-        
+
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
-            _dodgeCoolBackgroundImage = _playerHpCanvas.PlayerDodgeCoolBackgroundImage;
-            _dodgeCoolBarImage = _playerHpCanvas.PlayerDodgeCoolBarImage;
             _playerHpCanvas.SetHp(_ownerEntity.GetStat(PlayerStats.HP) as Status);
 
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
-            SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.AddListener(() =>
-            {
-                _playerHpCanvas.ThrowProjectileGauge(true);
-                _currentBallStack++;
-            });
-            _currentBallStack = (int)_ownerEntity.GetStat(PlayerStats.BallStackMax);
+            
             _currentSwingCoolTime = _ownerEntity.GetStat(PlayerStats.SwingCooldown);
             _currentDodgeCoolTime = _ownerEntity.GetStat(PlayerStats.DodgeCooldown);
             _currentThrowCoolTime = _ownerEntity.GetStat(PlayerStats.ThrowCooldown);
@@ -62,6 +51,7 @@ namespace QT.InGame
         {
             if (_ownerEntity.CurrentStateIndex == (int) Player.States.Dead)
                 return;
+            
             ThrowCoolTime();
             AttackCoolTime();
             DodgeCoolTime();
@@ -99,11 +89,10 @@ namespace QT.InGame
 
         private void DodgeCoolTime()
         {
-            float dodgeCoolTime = _ownerEntity.GetStat(PlayerStats.DodgeCooldown);
-            
             _currentDodgeCoolTime += Time.deltaTime;
-            _dodgeCoolBarImage.fillAmount = Util.Math.Remap(_currentDodgeCoolTime,dodgeCoolTime,0f);
-            _dodgeCoolBackgroundImage.gameObject.SetActive(_currentDodgeCoolTime < dodgeCoolTime);
+            
+            float dodgeCoolTime = _ownerEntity.GetStat(PlayerStats.DodgeCooldown);
+            _playerHpCanvas.SetDodgeCoolTime(Util.Math.Remap(_currentDodgeCoolTime,dodgeCoolTime,0f));
         }
 
         private void ThrowCoolTime()
@@ -112,37 +101,6 @@ namespace QT.InGame
         }
         
         #endregion
-
-        private void KeyEThrow()
-        {
-            if (_globalDataSystem.GlobalData.IsPlayerParrying)
-            {
-                return;
-            }
-            if (_ownerEntity.CurrentStateIndex == (int) Player.States.Dodge)
-            {
-                return;
-            }
-            if (_currentBallStack == 0)
-            {
-                return;
-            }
-
-            if (_currentThrowCoolTime < _ownerEntity.GetStat(PlayerStats.ThrowCooldown))
-            {
-                return;
-            }
-
-            _ownerEntity.AttackBallInstate();
-            _currentBallStack--;
-            _currentThrowCoolTime = 0f;
-            _ownerEntity.Animator.SetTrigger(AnimationThrowHash);
-            
-            if(_currentBallStack == 0)
-                _playerHpCanvas.ThrowProjectileGauge(false);
-        }
-
-        
 
         private void OnDamage(Vector2 dir, float damage)
         {

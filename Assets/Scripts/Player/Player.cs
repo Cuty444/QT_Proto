@@ -12,6 +12,7 @@ namespace QT.InGame
             Global,
             Move,
             Swing,
+            Throw,
             Dodge,
             Dead,
         }
