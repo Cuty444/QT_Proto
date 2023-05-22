@@ -19,6 +19,8 @@ namespace QT.InGame
         
         public void InitializeState(Vector2 dir)
         {
+            _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
+            
             _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
             _ownerEntity.Animator.SetFloat(AnimationDirectionXHash, dir.x);
             _ownerEntity.Animator.SetFloat(AnimationDirectionYHash, dir.y);

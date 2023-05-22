@@ -26,6 +26,8 @@ namespace QT.InGame
         {
             base.InitializeState();
             
+            _ownerEntity.GetStatus(PlayerStats.ThrowCooldown).SetStatus(0);
+            
             var stack = _ownerEntity.GetStatus(PlayerStats.BallStack);
 
             if (stack <= 0)

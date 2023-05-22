@@ -53,7 +53,7 @@ namespace QT.InGame
 
         protected virtual void OnSwing(bool isOn)
         {
-            if (isOn)
+            if (isOn && _ownerEntity.GetStatus(PlayerStats.SwingCooldown).IsFull())
             {
                 _ownerEntity.ChangeState(Player.States.Swing);
             }
@@ -61,7 +61,7 @@ namespace QT.InGame
         
         protected virtual void OnThrow(bool isOn)
         {
-            if (isOn)
+            if (isOn&& _ownerEntity.GetStatus(PlayerStats.ThrowCooldown).IsFull())
             {
                 _ownerEntity.ChangeState(Player.States.Throw);
             }
@@ -69,7 +69,7 @@ namespace QT.InGame
         
         protected virtual void OnDodge(bool isOn)
         {
-            if (isOn)
+            if (isOn && _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).IsFull())
             {
                 (_ownerEntity.ChangeState(Player.States.Dodge) as PlayerDodgeState).InitializeState(_moveDirection);
             }

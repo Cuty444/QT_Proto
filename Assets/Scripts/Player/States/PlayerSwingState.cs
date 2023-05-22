@@ -126,6 +126,8 @@ namespace QT.InGame
             _ownerEntity.FullChargingEffectStop();
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Move);
+            
+            _ownerEntity.GetStatus(PlayerStats.SwingCooldown).SetStatus(0);
         }
 
         private async void SetLineObjects()

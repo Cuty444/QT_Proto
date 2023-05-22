@@ -10,9 +10,7 @@ namespace QT.InGame
     {
         private void UpdateCoolTime()
         {
-            Debug.LogWarning($"{ GetStatus(PlayerStats.MercyInvincibleTime).StatusValue}");
-
-            if (CurrentStateIndex == (int) Player.States.Dead)
+            if (CurrentStateIndex == (int) States.Dead)
             {
                 return;
             }
