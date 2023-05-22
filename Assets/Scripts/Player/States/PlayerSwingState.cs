@@ -111,7 +111,7 @@ namespace QT.InGame
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
-                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask,
+                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
                     _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
                 hitCount++;

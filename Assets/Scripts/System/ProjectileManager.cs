@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace QT
-{
+{    
+    public enum ProjectileOwner
+    {
+        Player,
+        Enemy
+    }
+    
     public interface IProjectile : IHitable
     {
         public int ProjectileId { get; }
         public Vector2 Position { get; }
         public float ColliderRad { get; }
         
-        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, float reflectCorrection);
+        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection);
 
         public void ResetBounceCount(int maxBounce);
 

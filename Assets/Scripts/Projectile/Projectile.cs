@@ -20,15 +20,23 @@ namespace QT.InGame
 
         private string _prefabPath;
         
+        [SerializeField] private ProjectileOwner _owner;
         [SerializeField] private LayerMask _bounceMask;
         
+        [Space]
         [SerializeField] private float _ballHeight;
         [SerializeField] private Transform _ballTransform;
         [SerializeField] private Transform _ballObject;
+        
+        [Space]
         [SerializeField] private float _maxSquashLength;
         [SerializeField] private float _maxStretchLength;
         [SerializeField] private float _dampSpeed;
         [SerializeField] private float _rotateSpeed;
+        
+        [Space]
+        [SerializeField] private GameObject _player;
+        [SerializeField] private GameObject _enemy;
         
         private TrailRenderer _trailRenderer;
         
@@ -80,7 +88,7 @@ namespace QT.InGame
             }
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, float releaseDelay = 0, string path = "")
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, ProjectileOwner owner, float releaseDelay = 0, string path = "")
         {
             _ballTransform.up = _direction = dir;
             _maxSpeed = _speed = speed;
@@ -105,14 +113,17 @@ namespace QT.InGame
             _isReleased = false;
 
             _prefabPath = path;
+
+            _owner = owner;
+            SetOwnerColor();
         }
         
         public void Hit(Vector2 dir, float newSpeed)
         {
-            ProjectileHit(dir, newSpeed, _bounceMask, _reflectCorrection);
+            ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
         }
         
-        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, float reflectCorrection = 0)
+        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection = 0)
         {
             _ballTransform.up  = _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);
@@ -120,9 +131,12 @@ namespace QT.InGame
             _currentSpeedDecay = _speedDecay;
             
             _bounceCount = _maxBounce;
+            _owner = owner;
             _bounceMask = bounceMask;
             _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _isReleased = false;
+            
+            SetOwnerColor();
         }
         
         public void ResetBounceCount(int maxBounce)
@@ -133,6 +147,12 @@ namespace QT.InGame
         public LayerMask GetLayerMask()
         {
             return _bounceMask;
+        }
+        
+        private void SetOwnerColor()
+        {
+            _player?.SetActive(_owner == ProjectileOwner.Player);
+            _enemy?.SetActive(_owner == ProjectileOwner.Enemy);
         }
 
         
