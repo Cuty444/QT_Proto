@@ -1,5 +1,6 @@
 using QT.Core;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QT.InGame
 {
@@ -23,7 +24,7 @@ namespace QT.InGame
         public float ColliderRad { get; private set; }
 
         [SerializeField] private int _enemyId;
-        
+        [field: SerializeField] public Canvas HpCanvas { get; private set; }
         public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
         
@@ -35,6 +36,8 @@ namespace QT.InGame
         [field: SerializeField] public Transform BallObject { get; private set; }
         [field: SerializeField] public float BallHeight { get; private set; }
         [field: SerializeField] public float BallHeightMin { get; private set; }
+        
+        [HideInInspector] public Image HpImage;
 
         private void Start()
         {
@@ -52,6 +55,9 @@ namespace QT.InGame
             SetUpStats();
             SetUp(States.Normal);
             SetGlobalState(new EnemyGlobalState(this));
+            HpCanvas.worldCamera = Camera.main;
+            HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+            HpCanvas.gameObject.SetActive(false);
         }
         
         public void SetPhysics(bool enable)

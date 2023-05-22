@@ -19,6 +19,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(DeadAnimHash);
             _ownerEntity.SetPhysics(false);
             _ownerEntity.BallObject.localPosition = Vector3.up * _ownerEntity.BallHeightMin;
+            _ownerEntity.HpCanvas.gameObject.SetActive(false);
         }
     }
 }
