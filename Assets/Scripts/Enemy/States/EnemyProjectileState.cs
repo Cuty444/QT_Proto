@@ -90,7 +90,7 @@ namespace QT.InGame
                 if (hit.collider.TryGetComponent(out IHitable hitable))
                 {
                     hitable.Hit(_direction, _damage);
-                    SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
+                    //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
                 
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));

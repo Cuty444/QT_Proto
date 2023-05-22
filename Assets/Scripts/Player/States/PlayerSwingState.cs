@@ -10,6 +10,7 @@ namespace QT.InGame
     {
         private const string HitLinePath = "Prefabs/HitLine.prefab";
         private const string SwingProjectileHitPath = "Effect/Prefabs/FX_Ball_Attack.prefab";
+        private const string SwingBatHitPath = "Effect/Prefabs/FX_Bat_Hit.prefab";
         private const int Segments = 32;
         private const int MaxLineCount = 10;
 
@@ -115,7 +116,7 @@ namespace QT.InGame
             foreach (var hitEnemy in _enemyInRange)
             {
                 hitEnemy.Hit(((Vector2)_ownerEntity.transform.position - hitEnemy.Position).normalized,_ownerEntity.ChargeRigidDmgs[_chargeLevel]);
-                SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, hitEnemy.Position); 
+                SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position); 
             }
 
             for (int i = 0; i < _chargingEffectCheck.Length; i++)
