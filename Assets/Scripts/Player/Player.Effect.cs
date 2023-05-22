@@ -39,18 +39,21 @@ namespace QT.InGame
 
         public void FullChargingEffectPlay()
         {
-            if (_chargingMaintainParticle.isPlaying)
-                return;
+            //if (_chargingMaintainParticle.isPlaying)
+            //    return;
             _chargingMaintainParticle.Play();
         }
 
         public void FullChargingEffectStop()
         {
-            _chargingMaintainParticle.Stop();
+            _chargingLevelParticle[0].Stop();
+            //_chargingMaintainParticle.Stop();
         }
 
         public void ChargingEffectPlay(int index)
         {
+            if (index > 0)
+                return;
             _chargingLevelParticle[index].Play();
         }
 
