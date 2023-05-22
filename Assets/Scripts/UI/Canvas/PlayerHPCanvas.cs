@@ -74,10 +74,12 @@ namespace QT.UI
             _playerBallStackObject.SetActive(isActive);
         }
 
-        public void SetDodgeCoolTime(float coolTime)
+        public void SetDodgeCoolTime(Status dodge)
         {
-            _playerDodgeCoolBackgroundImage.enabled = coolTime > 0;
-            _playerDodgeCoolBarImage.fillAmount = coolTime;
+            var value = Util.Math.Remap(dodge.StatusValue, dodge.Value, 0f);
+            
+            _playerDodgeCoolBackgroundImage.enabled = value > 0;
+            _playerDodgeCoolBarImage.fillAmount = value;
         }
 
     }

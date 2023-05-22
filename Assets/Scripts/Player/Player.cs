@@ -70,10 +70,17 @@ namespace QT.InGame
         private void Update()
         {
             UpdateInputs();
+            UpdateCoolTime();
         }
         
         public void Hit(Vector2 dir, float power)
         {
+            if (IsInvincible())
+            {
+                return;
+            }
+            GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
+ 
             _playerManager.OnDamageEvent.Invoke(dir, power);
         }
     }
