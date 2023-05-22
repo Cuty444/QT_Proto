@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
+using Cinemachine;
 
 namespace QT.InGame
 {
@@ -24,6 +25,9 @@ namespace QT.InGame
         [SerializeField] private Transform _batTransform;
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [SerializeField] private TrailRenderer _trailRenderer;
+        
+        [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
+        [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
         
         public Animator Animator { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
