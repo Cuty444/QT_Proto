@@ -42,6 +42,9 @@ namespace QT.InGame
         
         private Camera _camera;
 
+        [HideInInspector] public bool IsDodge;
+        [HideInInspector] public bool IsFlip;
+        
         private void InitInputs()
         {
             buttonActions = new Dictionary<ButtonActions, InputAction>();
