@@ -249,7 +249,7 @@ namespace QT.InGame
 
         private Vector2 GetNewProjectileDir(IProjectile projectile)
         {
-            return Vector2.zero;
+            return -_ownerEntity.LookDir;
             // if (Vector2.Distance(projectile.Position, _ownerEntity.transform.position) >
             //     Vector2.Distance(_ownerEntity.MousePos, _ownerEntity.transform.position))
             // {
