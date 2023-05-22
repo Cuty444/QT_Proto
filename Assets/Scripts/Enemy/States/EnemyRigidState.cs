@@ -26,12 +26,13 @@ namespace QT.InGame
                 _ownerEntity.OnHitEvent.AddListener(OnDamage);
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
                 
-                _ownerEntity.MaterialChanger.ChangeMaterial();
+                _ownerEntity.MaterialChanger.SetRigidMaterial();
                 
                 SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
             }
             else
             {
+                _ownerEntity.MaterialChanger.SetHitMaterial();
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
             }
         }
