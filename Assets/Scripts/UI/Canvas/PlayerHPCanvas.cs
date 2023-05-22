@@ -56,8 +56,8 @@ namespace QT.UI
         public void ImageChange(Image image,int value)
         {
             image.sprite = _playerHpImage[value];
-            if(value == 2)
-                image.GetComponentInChildren<HpAnimation>()?.StartAni();
+            //if(value == 2)
+            //    image.GetComponentInChildren<HpAnimation>()?.StartAni();
         }
 
         public void ThrowProjectileGauge(bool isActive)
