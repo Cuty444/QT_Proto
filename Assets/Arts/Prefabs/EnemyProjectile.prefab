@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4031096124977331720
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1038477311709535813}
+  m_Layer: 0
+  m_Name: BallTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1038477311709535813
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031096124977331720}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4417902253488565075}
+  m_Father: {fileID: 9054224182170156286}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4739556359036921218
 GameObject:
   m_ObjectHideFlags: 0
@@ -25,12 +57,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4739556359036921218}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
-  m_LocalScale: {x: 1.429, y: 1.429, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.4290004, y: 1.4290004, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2996694689170404483}
-  m_Father: {fileID: 9054224182170156286}
+  m_Father: {fileID: 1038477311709535813}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3777270652219885151
@@ -111,7 +143,7 @@ Transform:
   m_GameObject: {fileID: 8292683858384144843}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2541157, y: 0.10890673, z: 0.36302242}
+  m_LocalScale: {x: 0.35, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9054224182170156286}
@@ -199,7 +231,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4417902253488565075}
+  - {fileID: 1038477311709535813}
   - {fileID: 7648417556698399759}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -219,8 +251,13 @@ MonoBehaviour:
   _bounceMask:
     serializedVersion: 2
     m_Bits: 296192
-  _ballHeight: 0.2
+  _ballHeight: 0.5
+  _ballTransform: {fileID: 1038477311709535813}
   _ballObject: {fileID: 4417902253488565075}
+  _maxSquashLength: 0.6
+  _maxStretchLength: 1.3
+  _dampSpeed: 6
+  _rotateSpeed: 300
 --- !u!210 &1986756428296105485
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -239,10 +276,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4417902253488565075}
     m_Modifications:
-    - target: {fileID: 2606908009099922752, guid: 7fb4e0b82c61a1c46ba2476d608cc29c, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2606908009119159660, guid: 7fb4e0b82c61a1c46ba2476d608cc29c, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -290,22 +323,6 @@ PrefabInstance:
     - target: {fileID: 2606908009119159661, guid: 7fb4e0b82c61a1c46ba2476d608cc29c, type: 3}
       propertyPath: m_Name
       value: FX_Monster_Trail
-      objectReference: {fileID: 0}
-    - target: {fileID: 2606908009954704905, guid: 7fb4e0b82c61a1c46ba2476d608cc29c, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: d5f352ee16aec55478f979fb5fdc8396, type: 2}
-    - target: {fileID: 2606908009954704905, guid: 7fb4e0b82c61a1c46ba2476d608cc29c, type: 3}
-      propertyPath: m_Parameters.widthMultiplier
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2606908009954704905, guid: 7fb4e0b82c61a1c46ba2476d608cc29c, type: 3}
-      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2606908009954704905, guid: 7fb4e0b82c61a1c46ba2476d608cc29c, type: 3}
-      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].value
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7fb4e0b82c61a1c46ba2476d608cc29c, type: 3}
