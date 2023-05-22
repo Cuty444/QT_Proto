@@ -26,7 +26,7 @@ namespace QT.InGame
         
         public void DodgeEffectPlay(Vector2 dir)
         {
-            bool isSide = Mathf.Abs(dir.x) > Mathf.Abs(dir.y);
+            bool isSide = Mathf.Abs(dir.x) >= Mathf.Abs(dir.y);
             
             _dashParticle[isSide ? 1 : 0].Play();
             _dashLRTransform.localScale = new Vector3((dir.x > 0 ? -1 : 1), 1, 1);

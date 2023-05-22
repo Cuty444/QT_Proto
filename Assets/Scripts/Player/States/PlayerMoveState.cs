@@ -69,7 +69,7 @@ namespace QT.InGame
         
         protected virtual void OnDodge(bool isOn)
         {
-            if (isOn && _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).IsFull())
+            if (isOn && _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).IsFull() && _moveDirection != Vector2.zero)
             {
                 (_ownerEntity.ChangeState(Player.States.Dodge) as PlayerDodgeState).InitializeState(_moveDirection);
             }

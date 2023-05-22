@@ -33,8 +33,14 @@ namespace QT.InGame
 
         private void OnLook(Vector2 lookDir)
         {
-            var angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90;
             float flip = 180;
+            if (_ownerEntity.IsDodge)
+            {
+                flip = _ownerEntity.IsFlip ? 180f : 0f;
+                _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
+                return;
+            }
+            var angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90;
             
             if (angle < 0)
             {
