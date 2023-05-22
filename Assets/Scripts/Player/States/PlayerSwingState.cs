@@ -88,47 +88,59 @@ namespace QT.InGame
             SetLines();
         }
 
-        
-        
+
+
         protected override void OnSwing(bool isOn)
         {
             if (isOn)
             {
                 return;
             }
-            
+
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
             var power = _ownerEntity.ChargeShootSpds[_chargeLevel];
             var bounce = (int) _ownerEntity.ChargeBounceCounts[_chargeLevel];
+            int hitCount = 0;
+
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
             {
                 bounce = 0;
             }
+
             var damage = _ownerEntity.ChargeProjectileDmgs[_chargeLevel];
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
-                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
-                SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position); 
-
+                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask,
+                    _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
+                SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
+                hitCount++;
             }
 
             foreach (var hitEnemy in _enemyInRange)
             {
-                hitEnemy.Hit(((Vector2)_ownerEntity.transform.position - hitEnemy.Position).normalized,_ownerEntity.ChargeRigidDmgs[_chargeLevel]);
-                SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position); 
+                hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized,
+                    _ownerEntity.ChargeRigidDmgs[_chargeLevel]);
+                SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position);
+                hitCount++;
             }
 
             for (int i = 0; i < _chargingEffectCheck.Length; i++)
             {
                 _chargingEffectCheck[i] = false;
             }
+
             _ownerEntity.swingSlashEffectPlay();
             _ownerEntity.FullChargingEffectStop();
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Move);
-            
+
             _ownerEntity.GetStatus(PlayerStats.SwingCooldown).SetStatus(0);
+
+            if (hitCount > 0)
+            {
+                _ownerEntity.AttackImpulseSource.GenerateImpulse(_ownerEntity.LookDir * 0.5f);
+            }
         }
 
         private async void SetLineObjects()
