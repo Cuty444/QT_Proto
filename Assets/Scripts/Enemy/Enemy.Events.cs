@@ -13,7 +13,7 @@ namespace QT.InGame
             OnDamageEvent.Invoke(dir, power);
         }
         
-        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, float reflectCorrection)
+        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection)
         {
             OnDamageEvent.Invoke(dir, power);
             OnHitEvent.Invoke(dir, power, bounceMask);

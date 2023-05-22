@@ -20,10 +20,23 @@ namespace QT.InGame
 
         private string _prefabPath;
         
+        [SerializeField] private ProjectileOwner _owner;
         [SerializeField] private LayerMask _bounceMask;
         
+        [Space]
         [SerializeField] private float _ballHeight;
+        [SerializeField] private Transform _ballTransform;
         [SerializeField] private Transform _ballObject;
+        
+        [Space]
+        [SerializeField] private float _maxSquashLength;
+        [SerializeField] private float _maxStretchLength;
+        [SerializeField] private float _dampSpeed;
+        [SerializeField] private float _rotateSpeed;
+        
+        [Space]
+        [SerializeField] private GameObject _player;
+        [SerializeField] private GameObject _enemy;
         
         private TrailRenderer _trailRenderer;
         
@@ -47,7 +60,9 @@ namespace QT.InGame
         private Transform _playerTransform;
 
         private LayerMask _enemyLayerMask;
-        
+
+        private float _currentStretch;
+
         private void Awake()
         {
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
@@ -73,9 +88,9 @@ namespace QT.InGame
             }
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, float releaseDelay = 0, string path = "")
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, ProjectileOwner owner, float releaseDelay = 0, string path = "")
         {
-            _direction = dir;
+            _ballTransform.up = _direction = dir;
             _maxSpeed = _speed = speed;
             _currentSpeedDecay = _speedDecay;
             
@@ -98,24 +113,30 @@ namespace QT.InGame
             _isReleased = false;
 
             _prefabPath = path;
+
+            _owner = owner;
+            SetOwnerColor();
         }
         
         public void Hit(Vector2 dir, float newSpeed)
         {
-            ProjectileHit(dir, newSpeed, _bounceMask, _reflectCorrection);
+            ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
         }
         
-        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, float reflectCorrection = 0)
+        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection = 0)
         {
-            _direction = dir;
+            _ballTransform.up  = _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);
             _speed = newSpeed;
             _currentSpeedDecay = _speedDecay;
             
             _bounceCount = _maxBounce;
+            _owner = owner;
             _bounceMask = bounceMask;
             _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _isReleased = false;
+            
+            SetOwnerColor();
         }
         
         public void ResetBounceCount(int maxBounce)
@@ -126,6 +147,12 @@ namespace QT.InGame
         public LayerMask GetLayerMask()
         {
             return _bounceMask;
+        }
+        
+        private void SetOwnerColor()
+        {
+            _player?.SetActive(_owner == ProjectileOwner.Player);
+            _enemy?.SetActive(_owner == ProjectileOwner.Enemy);
         }
 
         
@@ -156,8 +183,13 @@ namespace QT.InGame
                     }
                 }
                 
+                _ballTransform.up = hit.normal;
+                _currentStretch = -1;
+                _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
+                
                 _direction = Vector2.Reflect(_direction, hit.normal);
-
+                
+                
                 SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
                 
                 if (_reflectCorrection != 0)
@@ -206,9 +238,29 @@ namespace QT.InGame
             var height = _speed / _maxSpeed;
             height *= height;
 
-            _ballObject.transform.localPosition = Vector3.up * (height * _ballHeight);
+            _ballTransform.transform.localPosition = Vector3.up * (height * _ballHeight);
+            _ballObject.Rotate(Vector3.forward, _speed * Time.deltaTime * _rotateSpeed);
+
+            _currentStretch = Mathf.Lerp(_currentStretch, height, _dampSpeed * Time.deltaTime);
+            _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
+            
+            _ballTransform.up = Vector2.Lerp(_ballTransform.up, _direction, _dampSpeed * Time.deltaTime);
         }
 
+        private Vector2 GetSquashSquashValue(float power)
+        {
+            if (power > 0)
+            {
+                power = Mathf.Lerp(1, _maxStretchLength, power);
+            }
+            else if (power < 0)
+            {
+                power = Mathf.Lerp(_maxSquashLength, 1, 1 + power);
+            }
+
+            return new Vector2(2 - power, power);
+        }
+        
         
 #if UNITY_EDITOR
         private void OnDrawGizmos()
