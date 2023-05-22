@@ -62,6 +62,10 @@ namespace QT.InGame
 
             _ownerEntity.SetPhysics(false);
             
+            if (_ownerEntity.HP <= 0)
+            { 
+                _ownerEntity.HpCanvas.gameObject.SetActive(false);
+            }
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
         }
         
