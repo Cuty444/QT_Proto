@@ -12,7 +12,6 @@ namespace QT.InGame
         [SerializeField] private ParticleSystem _chargingMaintainParticle;
         [SerializeField] private ParticleSystem[] _chargingLevelParticle;
         [SerializeField] private ParticleSystem _swingSlashParticle;
-        private int _dodgeDirection;
 
         private void EffectSetup()
         {
@@ -25,16 +24,14 @@ namespace QT.InGame
             }
         }
         
-        public void DodgeEffectPlay()
+        public void DodgeEffectPlay(Vector2 dir)
         {
-            _dashParticle[_dodgeDirection].Play();
+            bool isSide = Mathf.Abs(dir.x) > Mathf.Abs(dir.y);
+            
+            _dashParticle[isSide ? 1 : 0].Play();
+            _dashLRTransform.localScale = new Vector3((dir.x > 0 ? -1 : 1), 1, 1);
         }
-
-        public void DodgeEffectRotation(float rotation) // TODO : Particle System 좌우 반전 미적용 추후 패치 필요
-        {
-            _dashLRTransform.rotation = Quaternion.Euler(0f, rotation,0f);
-        }
-
+        
         public void PlayerHitEffectPlay()
         {
             _playerHitParticle.Play();

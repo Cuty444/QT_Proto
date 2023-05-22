@@ -2,38 +2,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
-using QT.Core.Input;
 
 namespace QT.InGame
 {
     [FSMState((int)Player.States.Dodge)]
     public class PlayerDodgeState : FSMState<Player>
     {
+        private readonly int AnimationDodgeHash = Animator.StringToHash("PlayerDodge");
+        private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
+        private readonly int AnimationDirectionXHash = Animator.StringToHash("DirectionX");
+        private readonly int AnimationDirectionYHash = Animator.StringToHash("DirectionY");
+        
         public PlayerDodgeState(IFSMEntity owner) : base(owner)
         {
         }
         
-        public override void InitializeState()
+        public void InitializeState(Vector2 dir)
         {
-            _ownerEntity.SetDodgeAnimation();
-            _ownerEntity.DodgeEffectPlay();
+            _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
             
-            _ownerEntity.Rigidbody.velocity = Vector2.zero;
-            _ownerEntity.Rigidbody.AddForce(_ownerEntity.BefereDodgeDirecton * _ownerEntity.GetStat(PlayerStats.DodgeAddForce).Value,ForceMode2D.Impulse);
+            _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
+            _ownerEntity.Animator.SetFloat(AnimationDirectionXHash, dir.x);
+            _ownerEntity.Animator.SetFloat(AnimationDirectionYHash, dir.y);
             
-            _ownerEntity.StartCoroutine(WaitSecond(_ownerEntity.GetStat(PlayerStats.DodgeDurationTime).Value));
+            _ownerEntity.DodgeEffectPlay(dir);
+
+            var force = _ownerEntity.GetStat(PlayerStats.DodgeAddForce).Value;
+
+            _ownerEntity.Rigidbody.velocity = dir * force;
+
+            var duration = _ownerEntity.GetStat(PlayerStats.DodgeDurationTime).Value;
+
+            _ownerEntity.StartCoroutine(WaitSecond(duration));
         }
         
         public override void ClearState()
         {
-            _ownerEntity.SetDodgeEndAnimation();
+            _ownerEntity.Animator.SetTrigger(AnimationDodgeEndHash);
+            
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
         
         IEnumerator WaitSecond(float time)
         {
             yield return new WaitForSeconds(time);
-            _ownerEntity.ChangeState(Player.States.Idle);
+            
+            _ownerEntity.RevertToPreviousState();
         }
     }
 }

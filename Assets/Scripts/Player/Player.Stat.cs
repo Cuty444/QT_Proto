@@ -5,25 +5,31 @@ namespace QT.InGame
 {
     public enum PlayerStats
     {
+        // Status
+        
         HP,
+        BallStack,
+        
+        DodgeCooldown,
+        ThrowCooldown,
+        SwingCooldown,
+        
+        DodgeInvincibleTime,
+        MercyInvincibleTime,
+        
+        // Stat
         
         PCHitboxRad,
         MovementSpd,
         ChargeMovementSpd,
-        MercyInvincibleTime,
-        DodgeCooldown,
-        DodgeInvincibleTime,
         DodgeDurationTime,
         DodgeAddForce,
         ItemSlotMax,
-        BallStackMax,
         GoldGain,
             
-        ThrowCooldown,
         ThrowAfterDelay,
         ThrowSpd,
         ThrowBounceCount,
-        SwingCooldown,
         SwingAfterDelay,
         SwingRad,
         SwingCentralAngle,
@@ -77,28 +83,35 @@ namespace QT.InGame
         public Stat[] ChargeRigidDmgs => _chargeRigidDmgs;
         public Stat[] ChargeProjectileDmgs => _chargeProjectileDmgs;
 
-        private void SetUpStats()
+        private void InitStats()
         {
             _stats.Clear();
+            
+            // Status
+            
             _stats.Add(PlayerStats.HP, new Status(Data.MaxHP));
+            _stats.Add(PlayerStats.BallStack, new Status(Data.BallStackMax));
+            
+            _stats.Add(PlayerStats.DodgeCooldown, new Status(Data.DodgeCooldown));
+            _stats.Add(PlayerStats.ThrowCooldown, new Status(AtkData.ThrowCooldown));
+            _stats.Add(PlayerStats.SwingCooldown, new Status(AtkData.SwingCooldown));
+            
+            _stats.Add(PlayerStats.MercyInvincibleTime, new Status(Data.MercyInvincibleTime));
+            _stats.Add(PlayerStats.DodgeInvincibleTime, new Status(Data.DodgeInvincibleTime));
+            
+            // Stat
             
             _stats.Add(PlayerStats.PCHitboxRad, new(Data.PCHitboxRad));
             _stats.Add(PlayerStats.MovementSpd, new(Data.MovementSpd));
             _stats.Add(PlayerStats.ChargeMovementSpd, new(Data.ChargeMovementSpd));
-            _stats.Add(PlayerStats.MercyInvincibleTime, new(Data.MercyInvincibleTime));
-            _stats.Add(PlayerStats.DodgeCooldown, new(Data.DodgeCooldown));
-            _stats.Add(PlayerStats.DodgeInvincibleTime, new(Data.DodgeInvincibleTime));
             _stats.Add(PlayerStats.DodgeDurationTime, new(Data.DodgeDurationTime));
             _stats.Add(PlayerStats.DodgeAddForce, new(Data.DodgeAddForce));
             _stats.Add(PlayerStats.ItemSlotMax, new(Data.ItemSlotMax));
-            _stats.Add(PlayerStats.BallStackMax, new(Data.BallStackMax));
             _stats.Add(PlayerStats.GoldGain, new(Data.GoldGain));
 
-            _stats.Add(PlayerStats.ThrowCooldown, new(AtkData.ThrowCooldown));
             _stats.Add(PlayerStats.ThrowAfterDelay, new(AtkData.ThrowAfterDelay));
             _stats.Add(PlayerStats.ThrowSpd, new(AtkData.ThrowSpd));
             _stats.Add(PlayerStats.ThrowBounceCount, new(AtkData.ThrowBounceCount));
-            _stats.Add(PlayerStats.SwingCooldown, new(AtkData.SwingCooldown));
             _stats.Add(PlayerStats.SwingAfterDelay, new(AtkData.SwingAfterDelay));
             _stats.Add(PlayerStats.SwingRad, new(AtkData.SwingRad));
             _stats.Add(PlayerStats.SwingCentralAngle, new(AtkData.SwingCentralAngle));
@@ -161,6 +174,11 @@ namespace QT.InGame
         public Stat GetStat(PlayerStats stat)
         {
             return _stats[stat];
+        }
+        
+        public Status GetStatus(PlayerStats stat)
+        {
+            return _stats[stat] as Status;
         }
     }
 }

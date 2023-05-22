@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
 using QT.Core.Data;
-using QT.Core.Input;
 
 namespace QT.InGame
 {
@@ -33,7 +32,9 @@ namespace QT.InGame
             _ownerEntity.SwingAreaMeshFilter.mesh =
                 CreateSwingAreaMesh(_ownerEntity.GetStat(PlayerStats.SwingRad), _ownerEntity.GetStat(PlayerStats.SwingCentralAngle));
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
+            
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
             {
                 _projectileLayerMask = LayerMask.GetMask("Wall");
@@ -43,6 +44,7 @@ namespace QT.InGame
             {
                 _projectileLayerMask = LayerMask.GetMask("Enemy");
             }
+            
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
             _chargingEffectCheck = new bool[3];
         }
@@ -54,14 +56,16 @@ namespace QT.InGame
 
             _chargingStartTime = Time.time;
             _chargeLevel = 0;
-
-            SystemManager.Instance.GetSystem<InputSystem>().OnKeyUpAttackEvent.AddListener(OnAtkEnd);
-
+            
             SetLineObjects();
+            
+            _ownerEntity.SwingAreaMeshRenderer.enabled = true;
         }
 
         public override void ClearState()
         {
+            base.ClearState();
+            
             _projectiles.Clear();
             foreach (var line in _lines)
             {
@@ -69,8 +73,8 @@ namespace QT.InGame
             }
 
             _lines.Clear();
-
-            SystemManager.Instance.GetSystem<InputSystem>().OnKeyUpAttackEvent.RemoveListener(OnAtkEnd);
+            
+            _ownerEntity.SwingAreaMeshRenderer.enabled = false;
         }
 
         public override void FixedUpdateState()
@@ -83,8 +87,15 @@ namespace QT.InGame
             SetLines();
         }
 
-        private void OnAtkEnd()
+        
+        
+        protected override void OnSwing(bool isOn)
         {
+            if (isOn)
+            {
+                return;
+            }
+            
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
             var power = _ownerEntity.ChargeShootSpds[_chargeLevel];
             var bounce = (int) _ownerEntity.ChargeBounceCounts[_chargeLevel];
@@ -114,7 +125,9 @@ namespace QT.InGame
             _ownerEntity.swingSlashEffectPlay();
             _ownerEntity.FullChargingEffectStop();
             _ownerEntity.PlayBatAnimation();
-            _ownerEntity.ChangeState(Player.States.Idle);
+            _ownerEntity.ChangeState(Player.States.Move);
+            
+            _ownerEntity.GetStatus(PlayerStats.SwingCooldown).SetStatus(0);
         }
 
         private async void SetLineObjects()
@@ -236,13 +249,14 @@ namespace QT.InGame
 
         private Vector2 GetNewProjectileDir(IProjectile projectile)
         {
-            if (Vector2.Distance(projectile.Position, _ownerEntity.transform.position) >
-                Vector2.Distance(_ownerEntity.MousePos, _ownerEntity.transform.position))
-            {
-                return (_ownerEntity.MousePos - (Vector2) _ownerEntity.transform.position).normalized;
-            }
-
-            return (_ownerEntity.MousePos - projectile.Position).normalized;
+            return -_ownerEntity.LookDir;
+            // if (Vector2.Distance(projectile.Position, _ownerEntity.transform.position) >
+            //     Vector2.Distance(_ownerEntity.MousePos, _ownerEntity.transform.position))
+            // {
+            //     return (_ownerEntity.MousePos - (Vector2) _ownerEntity.transform.position).normalized;
+            // }
+            //
+            // return (_ownerEntity.MousePos - projectile.Position).normalized;
         }
 
 

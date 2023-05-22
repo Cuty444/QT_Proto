@@ -19,6 +19,16 @@ namespace QT
         {
             _statusValue = Mathf.Clamp(_statusValue + amount, 0, Value);
         }
+        
+        public void SetStatus(float value)
+        {
+            _statusValue = Mathf.Clamp(value, 0, Value);;
+        }
+        
+        public bool IsFull()
+        {
+            return _statusValue >= Value;
+        }
 
         public override void UpdateValue()
         {

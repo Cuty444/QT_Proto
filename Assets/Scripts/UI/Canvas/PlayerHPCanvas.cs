@@ -51,21 +51,6 @@ namespace QT.UI
                 ImageChange(_playerHpList[i], value);
                 checkHp += 25;
             }
-            //int checkHp = 50;
-            //for (int i = 0; i < _playerHpList.Count; i++)
-            //{
-            //    int value = 0;
-            //    if (checkHp > hp.StatusValue)
-            //    {
-            //        value = 2;
-            //        if (checkHp - 25 <= hp.StatusValue)
-            //        {
-            //            value = 1;
-            //        }
-            //    }
-            //    ImageChange(_playerHpList[i], value);
-            //    checkHp += 50;
-            //}
         }
 
         public void ImageChange(Image image,int value)
@@ -88,7 +73,14 @@ namespace QT.UI
             }
             _playerBallStackObject.SetActive(isActive);
         }
-        
+
+        public void SetDodgeCoolTime(Status dodge)
+        {
+            var value = Util.Math.Remap(dodge.StatusValue, dodge.Value, 0f);
+            
+            _playerDodgeCoolBackgroundImage.enabled = value > 0;
+            _playerDodgeCoolBarImage.fillAmount = value;
+        }
 
     }
 
