@@ -162,14 +162,15 @@ namespace QT.InGame
                 if (_chargeLevel > i && !_chargingEffectCheck[i])
                 {
                     _ownerEntity.ChargingEffectPlay(i);
+                    if (_chargeLevel > 2)
+                    {
+                        _ownerEntity.FullChargingEffectPlay();
+                        _ownerEntity.FullChargingEffectStop();
+                    }
                     _chargingEffectCheck[i] = true;
                 }
             }
             
-            if (_chargeLevel > 2)
-            {
-                _ownerEntity.FullChargingEffectPlay();
-            }
         }
 
         private void GetProjectiles()
