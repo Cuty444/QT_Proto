@@ -57,7 +57,7 @@ namespace QT.InGame
         private void OnDamage(Vector2 dir, float damage)
         {
             _ownerEntity.Animator.SetTrigger(AnimationRigidHash);
-            _ownerEntity.PlayerHitEffectPlay();
+            //_ownerEntity.PlayerHitEffectPlay();
             
             var hp = _ownerEntity.GetStatus(PlayerStats.HP);
             
