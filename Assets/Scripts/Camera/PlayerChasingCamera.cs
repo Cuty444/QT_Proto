@@ -6,6 +6,8 @@ using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerChasingCamera : MonoBehaviour
 {
@@ -19,6 +21,9 @@ public class PlayerChasingCamera : MonoBehaviour
 
     [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
     [SerializeField] private CinemachineConfiner _cinemachineConfiner;
+
+    [SerializeField] private Volume _globalVolume;
+    [SerializeField] private float _vignetteTimeScale;
     #endregion
 
     #region Global_Declaration
@@ -28,6 +33,12 @@ public class PlayerChasingCamera : MonoBehaviour
     private Vector3 _beforePosition;
 
     private bool _isCameraShaking;
+
+    private float _maxIntensity;
+
+    private Vignette _vignette;
+
+    private Coroutine _vignetteCoroutine = null;
     #endregion
 
     private void Start()
@@ -42,10 +53,13 @@ public class PlayerChasingCamera : MonoBehaviour
         {
             _player = obj.transform;
             _cinemachineVirtualCamera.Follow = _player;
+            playerManager.OnDamageEvent.AddListener(VignetteOn);
         });
         SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonStart();
         playerManager.BatSwingTimeScaleEvent.AddListener(CameraShaking);
         _beforePosition = transform.position;
+        _globalVolume.profile.TryGet(out _vignette);
+        _maxIntensity = _vignette.intensity.value;
     }
 
     private void FixedUpdate()
@@ -115,6 +129,41 @@ public class PlayerChasingCamera : MonoBehaviour
     private void CameraShaking(bool isCheck)
     {
         _isCameraShaking = isCheck;
+    }
+
+    private void VignetteOn(Vector2 dir, float damage)
+    {
+        if (_vignetteCoroutine != null)
+        {
+            return;
+        }
+        _vignette.active = true;
+        _vignetteCoroutine = StartCoroutine(VignetteOff(_vignette,_vignetteTimeScale));
+    }
+
+    private IEnumerator VignetteOff(Vignette vignette,float time)
+    {
+        float currentTime = 0f;
+        vignette.intensity.value = 0f;
+        float halfTime = time * 0.5f;
+        while (halfTime > currentTime)
+        {
+            currentTime += Time.deltaTime;
+            vignette.intensity.value = Unity.Mathematics.math.remap(0f, halfTime, 0f, _maxIntensity, currentTime);
+            yield return null;
+        }
+
+        currentTime = halfTime;
+        
+        while (0f <= currentTime)
+        {
+            currentTime -= Time.deltaTime;
+            vignette.intensity.value = Unity.Mathematics.math.remap(0f, halfTime, 0f, _maxIntensity, currentTime);
+            yield return null;
+        }
+
+        _vignette.active = false;
+        _vignetteCoroutine = null;
     }
 
 }
