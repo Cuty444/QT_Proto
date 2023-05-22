@@ -78,5 +78,21 @@ namespace QT.Core.Data
         [field: SerializeField]
         [Tooltip("플레이어가 적 투사체를 패링 가능한 여부")]
         public bool IsPlayerParrying { get; private set; } = false;
+        
+        
+        /// <summary>
+        /// 적 피격 시 깜박임 효과 지속시간
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("적 피격 시 깜박임 효과 지속시간")]
+        public float EnemyHitEffectDuration { get; private set; } = 0.1f;
+        
+        
+        /// <summary>
+        /// 적 피격 시 깜박임 효과 그래프
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("적 피격 시 깜박임 효과 그래프")]
+        public AnimationCurve EnemyHitEffectCurve { get; private set; } = new ();
     }
 }

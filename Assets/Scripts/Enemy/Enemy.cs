@@ -29,7 +29,7 @@ namespace QT.InGame
         
         public EnemyProjectileShooter Shooter { get; private set; }
         public Animator Animator { get; private set; }
-        public SkeletalMaterialChanger MaterialChanger { get; private set; }
+        public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
 
 
         [field: SerializeField] public Transform BallObject { get; private set; }
@@ -42,7 +42,7 @@ namespace QT.InGame
             Rigidbody = GetComponent<Rigidbody2D>();
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
-            MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
+            MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
 
             ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
                 .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;

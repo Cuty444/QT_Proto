@@ -65,6 +65,8 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: cd60057032264e44994014c8bc33b55c, type: 2}
+  - {fileID: 2100000, guid: 95d9d0eadf3ccb247b0839b9bd5304ec, type: 2}
+  - {fileID: 2100000, guid: cd60057032264e44994014c8bc33b55c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -160,7 +162,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _baseMaterial: {fileID: 2100000, guid: cd60057032264e44994014c8bc33b55c, type: 2}
-  _targetMaterial: {fileID: 2100000, guid: dfabde552acaf4316893acc1bc196010, type: 2}
+  _hitMaterial: {fileID: 2100000, guid: dfabde552acaf4316893acc1bc196010, type: 2}
+  _rigidMaterial: {fileID: 2100000, guid: ac741a52c64994d6d94cc5bbbe86bc69, type: 2}
+  _hitDuration: 0.1
+  _hitCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.99366724
+      value: 0.003342586
+      inSlope: -2.0445108
+      outSlope: -2.0445108
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.052711193
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &6119265654750196061
 GameObject:
   m_ObjectHideFlags: 0
