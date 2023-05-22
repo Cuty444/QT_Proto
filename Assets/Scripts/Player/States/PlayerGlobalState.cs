@@ -67,7 +67,7 @@ namespace QT.InGame
             
             var hp = _ownerEntity.GetStatus(PlayerStats.HP);
             
-            //hp.AddStatus(-damage);
+            hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);
 
             _ownerEntity.DamageImpulseSource.GenerateImpulse(dir);
