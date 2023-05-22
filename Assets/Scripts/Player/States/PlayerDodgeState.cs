@@ -20,6 +20,7 @@ namespace QT.InGame
         public void InitializeState(Vector2 dir)
         {
             _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
+            _ownerEntity.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
             _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
 
             float tempX = dir.x;

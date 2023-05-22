@@ -19,7 +19,7 @@ namespace QT.InGame
         {
             _ownerEntity.OnMove = OnMove;
             _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing);
-            _ownerEntity.SetAction(Player.ButtonActions.Throw, OnThrow);
+            //_ownerEntity.SetAction(Player.ButtonActions.Throw, OnThrow);
             _ownerEntity.SetAction(Player.ButtonActions.Dodge, OnDodge);
 
             _moveDirection = Vector2.zero;
@@ -29,7 +29,7 @@ namespace QT.InGame
         {
             _ownerEntity.OnMove = null;
             _ownerEntity.ClearAction(Player.ButtonActions.Swing);
-            _ownerEntity.ClearAction(Player.ButtonActions.Throw);
+            //_ownerEntity.ClearAction(Player.ButtonActions.Throw);
             _ownerEntity.ClearAction(Player.ButtonActions.Dodge);
             
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
