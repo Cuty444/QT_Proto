@@ -115,7 +115,7 @@ namespace QT.Core.Map
         
         public void DungeonStart()
         {
-            SystemManager.Instance.PlayerManager.OnPlayerCreate();
+            SystemManager.Instance.PlayerManager.CreatePlayer();
         }
 
         private void GenerateMap(Vector2Int startPos)

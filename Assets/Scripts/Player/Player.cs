@@ -71,5 +71,10 @@ namespace QT.InGame
         {
             UpdateInputs();
         }
+        
+        public void Hit(Vector2 dir, float power)
+        {
+            _playerManager.OnDamageEvent.Invoke(dir, power);
+        }
     }
 }

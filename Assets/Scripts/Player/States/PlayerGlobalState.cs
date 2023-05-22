@@ -14,8 +14,6 @@ namespace QT.InGame
         private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
         private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
         
-        
-        private GlobalDataSystem _globalDataSystem;
         private PlayerHPCanvas _playerHpCanvas;
 
         private float _currentThrowCoolTime;
@@ -33,15 +31,15 @@ namespace QT.InGame
         {
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
+            
             _playerHpCanvas.SetHp(_ownerEntity.GetStat(PlayerStats.HP) as Status);
 
-            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
-            
             _currentSwingCoolTime = _ownerEntity.GetStat(PlayerStats.SwingCooldown);
             _currentDodgeCoolTime = _ownerEntity.GetStat(PlayerStats.DodgeCooldown);
             _currentThrowCoolTime = _ownerEntity.GetStat(PlayerStats.ThrowCooldown);
+            
             _ownerEntity.SetBatActive(false);
-            _ownerEntity.OnDamageEvent.AddListener(OnDamage);
+            SystemManager.Instance.PlayerManager.OnDamageEvent.AddListener(OnDamage);
             
             _ownerEntity.OnLook.AddListener(OnLook);
         }
@@ -132,7 +130,7 @@ namespace QT.InGame
         private void PlayerDead()
         {
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
-            _ownerEntity.OnDamageEvent.RemoveAllListeners();
+            SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             _ownerEntity.ChangeState(Player.States.Dead);
         }
         

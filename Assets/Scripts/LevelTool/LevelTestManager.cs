@@ -26,7 +26,7 @@ namespace QT
             PlayerManager _playerManager = SystemManager.Instance.PlayerManager;
             SystemManager.Instance.LoadingManager.DataAllLoadCompletedEvent.AddListener(() =>
             {
-                _playerManager.OnPlayerCreate();
+                _playerManager.CreatePlayer();
             });
             _playerManager.PlayerCreateEvent.AddListener(PlayerCreateCheck);
         }
