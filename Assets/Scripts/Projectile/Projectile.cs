@@ -45,12 +45,15 @@ namespace QT.InGame
 
         private float _reflectCorrection;
         private Transform _playerTransform;
+
+        private LayerMask _enemyLayerMask;
         
         private void Awake()
         {
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
             _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
             _trailRenderer = GetComponentInChildren<TrailRenderer>();
+            _enemyLayerMask = LayerMask.GetMask("Enemy");
         }
 
         private void OnEnable()
@@ -147,7 +150,10 @@ namespace QT.InGame
                 if (hit.collider.TryGetComponent(out IHitable hitable))
                 {
                     hitable.Hit(_direction, _damage);
-                    SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
+                    if((_bounceMask &_enemyLayerMask) != 0)
+                    {
+                        SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
+                    }
                 }
                 
                 _direction = Vector2.Reflect(_direction, hit.normal);
