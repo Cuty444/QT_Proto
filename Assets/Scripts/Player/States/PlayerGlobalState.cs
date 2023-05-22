@@ -20,11 +20,10 @@ namespace QT.InGame
         private float _currentSwingCoolTime;
         private float _currentChargingTime;
         private float _currentDodgeCoolTime;
-
+        
         private float _startDodgeTime;
         private float _startInvincibleTime;
         
-        private int _currentBallStack;
 
 
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
@@ -32,7 +31,7 @@ namespace QT.InGame
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
             
-            _playerHpCanvas.SetHp(_ownerEntity.GetStat(PlayerStats.HP) as Status);
+            _playerHpCanvas.SetHp(_ownerEntity.GetStatus(PlayerStats.HP));
 
             _currentSwingCoolTime = _ownerEntity.GetStat(PlayerStats.SwingCooldown);
             _currentDodgeCoolTime = _ownerEntity.GetStat(PlayerStats.DodgeCooldown);
@@ -116,7 +115,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(AnimationRigidHash);
             _ownerEntity.PlayerHitEffectPlay();
             
-            var hp = _ownerEntity.GetStat(PlayerStats.HP) as Status;
+            var hp = _ownerEntity.GetStatus(PlayerStats.HP);
             
             hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);

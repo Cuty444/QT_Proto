@@ -162,5 +162,10 @@ namespace QT.InGame
         {
             return _stats[stat];
         }
+        
+        public Status GetStatus(PlayerStats stat)
+        {
+            return _stats[stat] as Status;
+        }
     }
 }

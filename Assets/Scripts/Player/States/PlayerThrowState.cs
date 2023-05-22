@@ -18,7 +18,7 @@ namespace QT.InGame
             {
                 SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().ThrowProjectileGauge(true);
                 
-                (_ownerEntity.GetStat(PlayerStats.BallStack) as Status).AddStatus(1);
+                _ownerEntity.GetStatus(PlayerStats.BallStack).AddStatus(1);
             });
         }
 
@@ -26,7 +26,7 @@ namespace QT.InGame
         {
             base.InitializeState();
             
-            var stack = _ownerEntity.GetStat(PlayerStats.BallStack) as Status;
+            var stack = _ownerEntity.GetStatus(PlayerStats.BallStack);
 
             if (stack <= 0)
             {
