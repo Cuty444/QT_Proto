@@ -43,5 +43,13 @@ namespace QT.InGame
         {
             
         }
+
+        public Item[] GetItemList()
+        {
+            var result = new Item[_items.Count];
+            _items.CopyTo(result);
+            
+            return result;
+        }
     }
 }
