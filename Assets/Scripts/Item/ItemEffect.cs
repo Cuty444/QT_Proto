@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using QT.InGame;
-
+using UnityEngine;
 using ApplyTypes = QT.ItemEffectGameData.ApplyTypes;
 using ModifierType = QT.StatModifier.ModifierType;
 using ApplyPoints = QT.ItemEffectGameData.ApplyPoints;
@@ -47,7 +47,7 @@ namespace QT
 
                 bool isAlpha = c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
                 
-                if (!isAlpha && c != '.')
+                if (!isAlpha && c != '_')
                 {
                     if (temp.Length > 0)
                     {
@@ -101,6 +101,7 @@ namespace QT
         {
             if (!Enum.TryParse(effectData.ApplyStat, out _applyStat))
             {
+                Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 스탯을 찾을 수 없음 : {effectData.ApplyStat}");
                 return false;
             }
 
@@ -113,15 +114,17 @@ namespace QT
             
             foreach (var str in paramString)
             {
-                var parts = str.Split('.');
+                var parts = str.Split('_');
 
                 if (parts.Length <= 0 || parts.Length > 2)
                 {
+                    Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
                     return false;
                 }
                 
                 if (!Enum.TryParse(parts[0], out PlayerStats stat))
                 {
+                    Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
                     return false;
                 }
 
@@ -131,6 +134,7 @@ namespace QT
                 {
                     if (!Enum.TryParse(parts[1], out type))
                     {
+                        Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
                         return false;
                     }
                 }

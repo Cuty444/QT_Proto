@@ -10,7 +10,7 @@ namespace QT
     {
         private readonly int _itemDataId;
         public ItemGameData ItemGameData { get; private set; }
-        public List<ItemEffect> ItemEffectData { get; private set; }
+        public List<ItemEffect> ItemEffectData { get; private set; } = new ();
 
         public Item(int itemDataId)
         {
@@ -22,6 +22,10 @@ namespace QT
             {
                 ItemEffectData = dataManager.GetDataBase<ItemEffectGameDataBase>()
                     .GetData(ItemGameData.ItemEffectDataId);
+            }
+            else
+            {
+                Debug.LogError($"존재하지 않는 아이템 아이디 : {itemDataId}");
             }
         }
 
