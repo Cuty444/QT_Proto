@@ -4,7 +4,15 @@ namespace QT
 {
     public class Status : Stat
     {
-        public float StatusValue => _statusValue;
+        public float StatusValue
+        {
+            get
+            {
+                if (_isDirty) UpdateValue();
+
+                return _statusValue;
+            }
+        }
         
         private float _statusValue;
         
@@ -32,9 +40,9 @@ namespace QT
 
         public override void UpdateValue()
         {
-            var ratio = Value != 0 ? _statusValue / Value : 1;
             base.UpdateValue();
             
+            var ratio = Value != 0 ? _statusValue / Value : 1;
             _statusValue = Value * ratio;
         }
         
