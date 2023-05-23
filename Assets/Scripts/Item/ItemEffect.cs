@@ -183,11 +183,8 @@ namespace QT
 
         public override void RemoveEffect(Player player, object source)
         {
-            foreach (var param in _param)
-            {
-                Stat stat = player.GetStat(param.Item1);
-                stat.RemoveAllModifiersFromSource(source);
-            }
+            Stat stat = player.GetStat(_applyStat);
+            stat.RemoveAllModifiersFromSource(source);
         }
     }
 }
