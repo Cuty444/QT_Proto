@@ -17,8 +17,8 @@ namespace QT
         {
             Equip,
             OnCharging,
-            GoldChanged,
-            HpChanged,
+            OnGoldChanged,
+            OnHpChanged,
             OnSwing
         }
         

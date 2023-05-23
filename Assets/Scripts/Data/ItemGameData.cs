@@ -18,7 +18,7 @@ namespace QT
         public int Index { get; set; }
         
         public string Name { get; set; }
-        public int Desc { get; set; }
+        public string Desc { get; set; }
         public GradeTypes GradeType { get; set; }
         public int Value { get; set; }
         public int CostHp { get; set; }

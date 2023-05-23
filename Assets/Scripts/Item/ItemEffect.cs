@@ -32,6 +32,7 @@ namespace QT
         protected abstract bool Process(ItemEffectGameData effectData);
         
         public abstract void ApplyEffect(Player player, object source);
+        public abstract void RemoveEffect(Player player, object source);
         
         protected static List<string> ParseApplyValue(ref string applyValue)
         {
@@ -91,6 +92,8 @@ namespace QT
         private string _applyValue;
         private (PlayerStats, StatValueType)[] _param;
         private ModifierType _valueOperatorType;
+
+        private StatModifier _modifier;
         
         public ItemEffectStat(ItemEffectGameData effectData) : base(effectData) { }
 
@@ -154,9 +157,11 @@ namespace QT
                 
                 Stat stat = player.GetStat(param.Item1);
 
+                stat.RemoveAllModifiersFromSource(source);
+                
                 if(stat is Status)
                 {
-                    value = param.Item2 == StatValueType.Base ? (stat as Status).Value : stat;
+                    value = param.Item2 == StatValueType.Base ? (stat as Status).Value : (stat as Status).StatusValue;
                 }
                 else
                 {
@@ -170,6 +175,15 @@ namespace QT
             var result = Convert.ToSingle(dt.Compute(expression, null));
             
             target.AddModifier(new StatModifier(result, _valueOperatorType, source));
+        }
+
+        public override void RemoveEffect(Player player, object source)
+        {
+            foreach (var param in _param)
+            {
+                Stat stat = player.GetStat(param.Item1);
+                stat.RemoveAllModifiersFromSource(source);
+            }
         }
     }
 }

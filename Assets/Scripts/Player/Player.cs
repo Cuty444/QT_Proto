@@ -29,6 +29,8 @@ namespace QT.InGame
         [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
         [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
         
+        
+        public Inventory Inventory { get; private set; }
         public Animator Animator { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
         public CharacterGameData Data { get; private set; }
@@ -51,6 +53,7 @@ namespace QT.InGame
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
+            Inventory = new Inventory(this);
             
             InitInputs();
             InitStats();
@@ -69,6 +72,9 @@ namespace QT.InGame
                 _isEnterDoor = isBool;
             });
             _isEnterDoor = true;
+            
+            
+            Inventory.AddItem(2000);
         }
 
         private void Update()
