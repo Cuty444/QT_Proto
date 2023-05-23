@@ -73,8 +73,6 @@ namespace QT.InGame
             });
             _isEnterDoor = true;
             
-            
-            Inventory.AddItem(2000);
         }
 
         private void Update()
