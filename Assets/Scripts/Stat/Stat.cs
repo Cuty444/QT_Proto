@@ -20,7 +20,7 @@ namespace QT
         private readonly List<StatModifier> _statModifiers = new();
 
         private float _value;
-        private bool _isDirty;
+        protected bool _isDirty;
 
         public static implicit operator float(Stat stat) => stat.Value;
         

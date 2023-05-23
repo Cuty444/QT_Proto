@@ -150,7 +150,7 @@ namespace QT.Core
                         }
                         else
                         {
-                            //Debug.LogError($"{dataBaseType} : 지원되지 않는 형식의 변환입니다. Type : {type} Value : {value}");
+                            Debug.LogError($"{dataBaseType} : 지원되지 않는 형식의 변환입니다. Type : {type.Key} Value : {value}");
                         }
                     }
                 }

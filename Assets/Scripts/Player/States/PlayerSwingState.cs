@@ -27,11 +27,14 @@ namespace QT.InGame
 
         private GlobalDataSystem _globalDataSystem;
 
+        private float _currentSwingRad = 0;
+        private float _currentSwingCentralAngle = 0;
+
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
-            _ownerEntity.SwingAreaMeshFilter.mesh =
-                CreateSwingAreaMesh(_ownerEntity.GetStat(PlayerStats.SwingRad), _ownerEntity.GetStat(PlayerStats.SwingCentralAngle));
+            CheckSwingAreaMesh();
+            
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
             
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
@@ -55,6 +58,8 @@ namespace QT.InGame
         {
             base.InitializeState();
 
+            CheckSwingAreaMesh();
+            
             _chargingStartTime = Time.time;
             _chargeLevel = 0;
             
@@ -271,6 +276,21 @@ namespace QT.InGame
             // }
             //
             // return (_ownerEntity.MousePos - projectile.Position).normalized;
+        }
+
+        private void CheckSwingAreaMesh()
+        {
+            float swingRad = _ownerEntity.GetStat(PlayerStats.SwingRad);
+            float swingAngle = _ownerEntity.GetStat(PlayerStats.SwingCentralAngle);
+
+            if (_currentSwingRad != swingRad || _currentSwingCentralAngle != swingAngle)
+            {
+                _ownerEntity.SwingAreaMeshFilter.mesh =
+                    CreateSwingAreaMesh(swingRad, swingAngle);
+
+                _currentSwingRad = swingRad;
+                _currentSwingCentralAngle = swingAngle;
+            }
         }
 
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using QT.InGame;
-
+using UnityEngine;
 using ApplyTypes = QT.ItemEffectGameData.ApplyTypes;
 using ModifierType = QT.StatModifier.ModifierType;
 using ApplyPoints = QT.ItemEffectGameData.ApplyPoints;
@@ -32,6 +32,7 @@ namespace QT
         protected abstract bool Process(ItemEffectGameData effectData);
         
         public abstract void ApplyEffect(Player player, object source);
+        public abstract void RemoveEffect(Player player, object source);
         
         protected static List<string> ParseApplyValue(ref string applyValue)
         {
@@ -46,7 +47,7 @@ namespace QT
 
                 bool isAlpha = c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
                 
-                if (!isAlpha && c != '.')
+                if (!isAlpha && c != '_')
                 {
                     if (temp.Length > 0)
                     {
@@ -91,6 +92,8 @@ namespace QT
         private string _applyValue;
         private (PlayerStats, StatValueType)[] _param;
         private ModifierType _valueOperatorType;
+
+        private StatModifier _modifier;
         
         public ItemEffectStat(ItemEffectGameData effectData) : base(effectData) { }
 
@@ -98,6 +101,7 @@ namespace QT
         {
             if (!Enum.TryParse(effectData.ApplyStat, out _applyStat))
             {
+                Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 스탯을 찾을 수 없음 : {effectData.ApplyStat}");
                 return false;
             }
 
@@ -110,15 +114,17 @@ namespace QT
             
             foreach (var str in paramString)
             {
-                var parts = str.Split('.');
+                var parts = str.Split('_');
 
                 if (parts.Length <= 0 || parts.Length > 2)
                 {
+                    Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
                     return false;
                 }
                 
                 if (!Enum.TryParse(parts[0], out PlayerStats stat))
                 {
+                    Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
                     return false;
                 }
 
@@ -128,6 +134,7 @@ namespace QT
                 {
                     if (!Enum.TryParse(parts[1], out type))
                     {
+                        Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
                         return false;
                     }
                 }
@@ -154,9 +161,11 @@ namespace QT
                 
                 Stat stat = player.GetStat(param.Item1);
 
+                stat.RemoveAllModifiersFromSource(source);
+                
                 if(stat is Status)
                 {
-                    value = param.Item2 == StatValueType.Base ? (stat as Status).Value : stat;
+                    value = param.Item2 == StatValueType.Base ? (stat as Status).Value : (stat as Status).StatusValue;
                 }
                 else
                 {
@@ -170,6 +179,12 @@ namespace QT
             var result = Convert.ToSingle(dt.Compute(expression, null));
             
             target.AddModifier(new StatModifier(result, _valueOperatorType, source));
+        }
+
+        public override void RemoveEffect(Player player, object source)
+        {
+            Stat stat = player.GetStat(_applyStat);
+            stat.RemoveAllModifiersFromSource(source);
         }
     }
 }
