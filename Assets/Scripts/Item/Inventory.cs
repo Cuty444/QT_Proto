@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace QT.InGame
 {
@@ -12,6 +14,21 @@ namespace QT.InGame
         public Inventory(Player target)
         {
             _targetPlayer = target;
+            SetApplyPointEvents();
+        }
+
+        private void SetApplyPointEvents()
+        {
+            var playerManager = SystemManager.Instance.PlayerManager;
+            playerManager.OnDamageEvent.AddListener((dir, power) => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnHpChanged));
+        }
+
+        private void InvokeApplyPoint(ItemEffectGameData.ApplyPoints applyPoints)
+        {
+            foreach (var item in _items)
+            {
+                item.InvokeApplyPoint(applyPoints);
+            }
         }
         
         public void AddItem(int itemDataId)
@@ -38,12 +55,7 @@ namespace QT.InGame
             _items[index].RemoveItemEffect(_targetPlayer);
             _items.RemoveAt(index);
         }
-
-        private void SetApplyPoint()
-        {
-            
-        }
-
+        
         public Item[] GetItemList()
         {
             var result = new Item[_items.Count];
