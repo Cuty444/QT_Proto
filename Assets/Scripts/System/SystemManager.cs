@@ -18,6 +18,7 @@ namespace QT.Core
         public LoadingManager LoadingManager { get; } = new();
         
         [field:SerializeField]public UIManager UIManager { get; private set; }
+        [SerializeField] private GameObject _debugConsole;
         
         private readonly Dictionary<Type, SystemBase> _systems = new ();
 
@@ -37,6 +38,8 @@ namespace QT.Core
             _PostInitializeSystems();
             
             UIManager?.PostSystemInitialize();
+            
+            _debugConsole.SetActive(Debug.isDebugBuild);
         }
 
         private void InitializeSystems()
