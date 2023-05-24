@@ -23,7 +23,6 @@ namespace QT.InGame
 
         // 벡터넘겨주는 액션은 따로 처리
         public UnityAction<Vector2> OnMove { get; set; }
-        private InputVector2Damper moveInputDamper = new ();
 
         public UnityEvent<Vector2> OnLook { get; private set; } = new();
         public Vector2 LookDir { get; private set; } = Vector2.zero;
@@ -74,7 +73,7 @@ namespace QT.InGame
 
         private void UpdateInputs()
         {
-            var moveInput = moveInputDamper.GetDampedValue(moveInputAction.ReadValue<Vector2>(), Time.deltaTime);
+            var moveInput = moveInputAction.ReadValue<Vector2>();
             var lookInput = lookInputAction.ReadValue<Vector2>();
             
             Vector2 mousePos = _camera.ScreenToWorldPoint(lookInput);
