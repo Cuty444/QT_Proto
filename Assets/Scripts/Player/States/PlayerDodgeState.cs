@@ -12,7 +12,8 @@ namespace QT.InGame
         private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
         private readonly int AnimationDirectionXHash = Animator.StringToHash("DirectionX");
         private readonly int AnimationDirectionYHash = Animator.StringToHash("DirectionY");
-        
+        private const string DodgeSoundPath = "Assets/Sound/QT/Assets/Player_Dash.wav";
+
         public PlayerDodgeState(IFSMEntity owner) : base(owner)
         {
         }
@@ -22,7 +23,7 @@ namespace QT.InGame
             _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
             _ownerEntity.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
             _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
-
+            SystemManager.Instance.SoundManager.PlayOneShot(DodgeSoundPath);
             float tempX = dir.x;
             if (dir.y is <= 0.2f and >= -0.2f)
             {

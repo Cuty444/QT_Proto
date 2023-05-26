@@ -13,6 +13,8 @@ namespace QT.InGame
         private static readonly int ProjectileSpeedAnimHash = Animator.StringToHash("ProjectileSpeed");
         
         private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
+        private const string MonsterFlySoundPath = "Assets/Sound/QT/Assets/Monster_Fly.wav";
+
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
@@ -67,6 +69,8 @@ namespace QT.InGame
                 _ownerEntity.HpCanvas.gameObject.SetActive(false);
             }
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
+            
+            SystemManager.Instance.SoundManager.PlayOneShot(MonsterFlySoundPath);
         }
         
         public override void ClearState()

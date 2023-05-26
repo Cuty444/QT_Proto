@@ -11,6 +11,11 @@ namespace QT.InGame
         private const string HitLinePath = "Prefabs/HitLine.prefab";
         private const string SwingProjectileHitPath = "Effect/Prefabs/FX_Ball_Attack.prefab";
         private const string SwingBatHitPath = "Effect/Prefabs/FX_Bat_Hit.prefab";
+        private const string SwingBatBallHitSoundPath = "Assets/Sound/QT/Assets/Player_Ball_Attack_2.wav";
+        private const string SwingBatEnemyHitSoundPath = "Assets/Sound/QT/Assets/Player_Swing_Hit.wav";
+        private const string SwingMissSoundPath = "Assets/Sound/QT/Assets/Player_Swing_Swing_";
+        private const string ChargeSoundPath = "Assets/Sound/QT/Assets/Player_Charge.wav";
+        private const string ChargeEndSoundPath = "Assets/Sound/QT/Assets/GameCharge_End_";
         private const int Segments = 32;
         private const int MaxLineCount = 10;
 
@@ -30,6 +35,8 @@ namespace QT.InGame
         private float _currentSwingRad = 0;
         private float _currentSwingCentralAngle = 0;
 
+
+        private SoundManager _soundManager;
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
@@ -38,6 +45,8 @@ namespace QT.InGame
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
             
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+
+            _soundManager = SystemManager.Instance.SoundManager;
             
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
             {
@@ -59,7 +68,7 @@ namespace QT.InGame
             base.InitializeState();
 
             CheckSwingAreaMesh();
-            
+            _soundManager.ControlAudioPlay(ChargeSoundPath);
             _chargingStartTime = Time.time;
             _chargeLevel = 0;
             
@@ -71,7 +80,7 @@ namespace QT.InGame
         public override void ClearState()
         {
             base.ClearState();
-            
+            _soundManager.ControlAudioStop(ChargeSoundPath);
             _projectiles.Clear();
             foreach (var line in _lines)
             {
@@ -106,6 +115,8 @@ namespace QT.InGame
             var power = _ownerEntity.ChargeShootSpds[_chargeLevel];
             var bounce = (int) _ownerEntity.ChargeBounceCounts[_chargeLevel];
             int hitCount = 0;
+            int ballHitCount = 0;
+            int enemyHitCount = 0;
 
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
             {
@@ -120,6 +131,7 @@ namespace QT.InGame
                     _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
                 hitCount++;
+                ballHitCount++;
             }
 
             foreach (var hitEnemy in _enemyInRange)
@@ -128,6 +140,7 @@ namespace QT.InGame
                     _ownerEntity.ChargeRigidDmgs[_chargeLevel]);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position);
                 hitCount++;
+                enemyHitCount++;
             }
 
             for (int i = 0; i < _chargingEffectCheck.Length; i++)
@@ -145,6 +158,20 @@ namespace QT.InGame
             if (hitCount > 0)
             {
                 _ownerEntity.AttackImpulseSource.GenerateImpulse(_ownerEntity.LookDir * 0.5f);
+            }
+
+            if (ballHitCount > 0)
+            {
+                _soundManager.PlayOneShot(SwingBatBallHitSoundPath);
+            }
+
+            if (enemyHitCount > 0)
+            {
+                _soundManager.PlayOneShot(SwingBatEnemyHitSoundPath);
+            }
+            if(ballHitCount == 0 && enemyHitCount == 0)
+            {
+                _soundManager.RandomSoundOneShot(SwingMissSoundPath,4);
             }
         }
 
@@ -183,6 +210,8 @@ namespace QT.InGame
                     if (_chargeLevel > 2)
                     {
                         _ownerEntity.FullChargingEffectPlay();
+                        _soundManager.ControlAudioStop(ChargeSoundPath);
+                        _soundManager.RandomSoundOneShot(ChargeEndSoundPath,3);
                         _ownerEntity.FullChargingEffectStop();
                     }
                     _chargingEffectCheck[i] = true;
