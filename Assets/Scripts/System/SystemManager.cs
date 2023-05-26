@@ -16,6 +16,8 @@ namespace QT.Core
         public ProjectileManager ProjectileManager { get; } = new();
 
         public LoadingManager LoadingManager { get; } = new();
+
+        public SoundManager SoundManager { get; } = new();
         
         [field:SerializeField]public UIManager UIManager { get; private set; }
         [SerializeField] private GameObject _debugConsole;
@@ -34,6 +36,8 @@ namespace QT.Core
             UIManager?.Initialize();
             
             LoadingManager.Initialize();
+            
+            SoundManager.Initialize(GetComponent<AudioSource>());
             
             _PostInitializeSystems();
             

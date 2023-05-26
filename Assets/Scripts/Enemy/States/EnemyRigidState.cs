@@ -8,7 +8,8 @@ namespace QT.InGame
     public class EnemyRigidState : FSMState<Enemy>
     {
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
-        
+        private const string MonsterStunSoundPath = "Assets/Sound/QT/Assets/Monster1_Stun.wav";
+
         private float _rigidStartTime;
         private float _rigidTime;
 
@@ -25,7 +26,7 @@ namespace QT.InGame
             {
                 _ownerEntity.OnHitEvent.AddListener(OnDamage);
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
-                
+                SystemManager.Instance.SoundManager.PlayOneShot(MonsterStunSoundPath);
                 _ownerEntity.MaterialChanger.SetRigidMaterial();
                 
                 SystemManager.Instance.ProjectileManager.Register(_ownerEntity);

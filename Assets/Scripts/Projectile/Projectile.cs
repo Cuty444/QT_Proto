@@ -11,6 +11,8 @@ namespace QT.InGame
     {
         private const string HitEffectPath = "Effect/Prefabs/FX_M_Hit.prefab";
         private const string ColliderDustEffectPath = "Effect/Prefabs/FX_Collider_Dust.prefab";
+        private const string BallBounceSoundPath = "Assets/Sound/QT/Assets/Ball_Bounce_";
+        private const string BallThrowHitSoundPath = "Assets/Sound/QT/Assets/Player_Throw_Hit_";
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
@@ -180,7 +182,12 @@ namespace QT.InGame
                     if((_bounceMask &_enemyLayerMask) != 0)
                     {
                         SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
+                        SystemManager.Instance.SoundManager.RandomSoundOneShot(BallThrowHitSoundPath,3);
                     }
+                }
+                else
+                {
+                    SystemManager.Instance.SoundManager.RandomSoundOneShot(BallBounceSoundPath,5);
                 }
                 
                 _ballTransform.up = hit.normal;
