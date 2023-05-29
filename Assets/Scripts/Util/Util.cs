@@ -5,6 +5,18 @@ using UnityEngine;
 
 namespace QT.Util
 {
+    public static class AddressablesDataPath
+    {
+        
+        public static readonly string[] DoorPaths = {"Map/Sculpture/Stage1/Door/Normal/NormalUp.prefab",
+            "Map/Sculpture/Stage1/Door/Normal/NormalDown.prefab",
+            "Map/Sculpture/Stage1/Door/Normal/NormalLeft.prefab",
+            "Map/Sculpture/Stage1/Door/Normal/NormalRight.prefab"};
+        public static readonly string[] StoreDoorPaths = {"Map/Sculpture/Stage1/Door/Store/StoreUp.prefab",
+            "Map/Sculpture/Stage1/Door/Store/StoreDown.prefab",
+            "Map/Sculpture/Stage1/Door/Store/StoreLeft.prefab",
+            "Map/Sculpture/Stage1/Door/Store/StoreRight.prefab"};
+    }
     public static class UnityUtil
     {
         public static readonly Vector2Int[] PathDirections = new Vector2Int[4] {Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right};

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 using Cinemachine;
+using QT.UI;
 
 namespace QT.InGame
 {
@@ -41,6 +42,9 @@ namespace QT.InGame
         private PlayerManager _playerManager;
 
         private bool _isEnterDoor;
+
+        private int _goldCost = 0;
+        private PlayerHPCanvas _playerHpCanvas;
         
         
         private void Awake()
@@ -73,6 +77,11 @@ namespace QT.InGame
             });
             _isEnterDoor = true;
             
+            _playerManager.GoldValueChanged.Invoke(_goldCost);
+            _playerManager.GoldValueChanged.AddListener((value) =>
+            {
+                _goldCost = value;
+            });
         }
 
         private void Update()
@@ -91,5 +100,16 @@ namespace QT.InGame
  
             _playerManager.OnDamageEvent.Invoke(dir, power);
         }
+
+        public int GetGoldCost()
+        {
+            return _goldCost;
+        }
+
+        public bool GetGoldComparison(int cost)
+        {
+            return _goldCost > cost;
+        }
+        
     }
 }

@@ -70,10 +70,25 @@ namespace QT.Map
 
         private void PlayerCreateEvent(Player obj)
         {
-            _cellMapObject = _dungeonMapSystem.GetMapObject();
+            switch (_roomType)
+            {
+                case RoomType.GoldShop:
+                case RoomType.HpShop:
+                    _cellMapObject = _dungeonMapSystem.ShopMapObject();
+                    break;
+                case RoomType.Start:
+                    _cellMapObject = _dungeonMapSystem.StartMapObject();
+                    break;
+                case RoomType.Boss:
+                case RoomType.None:
+                case RoomType.Normal:
+                default:
+                    _cellMapObject = _dungeonMapSystem.GetMapObject();
+                    break;
+            }
             _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();
             _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
-            _mapCellData.OpenDoorDirection(_pathOpenDirection);
+            _mapCellData.CellDataSet(_pathOpenDirection,CellPos,_roomType);
             _startColliderShapeSetting.Invoke();
         }
         
@@ -181,7 +196,7 @@ namespace QT.Map
             _iconObject.transform.localPosition = Vector3.zero;
             _iconObject.transform.localScale = Vector3.one;
             _iconObject.gameObject.SetActive(true);
-            _iconObject.sprite = _mapIconSprite?[(int) RoomType.Boss];
+            _iconObject.sprite = _mapIconSprite?[(int) _roomType];
         }
     }
 }
