@@ -143,6 +143,11 @@ namespace QT
             return handle;
         }
         
+        public async UniTaskVoid LoadSprite(string spritePath,SpriteRenderer spriteRenderer)
+        {
+            var loadSprite = await Addressables.LoadAssetAsync<Sprite>(spritePath);
+            spriteRenderer.sprite = loadSprite;
+        }
 
     }
 }

@@ -37,6 +37,9 @@ namespace QT.InGame
 
 
         private SoundManager _soundManager;
+
+        private bool isChargeSound = false;
+        private bool isChargeTime = false;
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
@@ -68,9 +71,18 @@ namespace QT.InGame
             base.InitializeState();
 
             CheckSwingAreaMesh();
-            _soundManager.ControlAudioPlay(ChargeSoundPath);
-            _chargingStartTime = Time.time;
-            _chargeLevel = 0;
+            if (!isChargeSound)
+            {
+                _soundManager.ControlAudioPlay(ChargeSoundPath);
+            }
+
+            if (!isChargeTime)
+            {
+                _chargeLevel = 0;
+                _chargingStartTime = 0f;
+                isChargeTime = true;
+            }
+
             
             SetLineObjects();
             
@@ -95,7 +107,7 @@ namespace QT.InGame
         public override void FixedUpdateState()
         {
             base.FixedUpdateState();
-
+            
             GetChargeLevel();
             GetProjectiles();
 
@@ -173,6 +185,9 @@ namespace QT.InGame
             {
                 _soundManager.RandomSoundOneShot(SwingMissSoundPath,4);
             }
+
+            isChargeSound = false;
+            isChargeTime = false;
         }
 
         private async void SetLineObjects()
@@ -188,9 +203,10 @@ namespace QT.InGame
 
         private void GetChargeLevel()
         {
+            _chargingStartTime += Time.deltaTime;
             for (int level = _ownerEntity.ChargeTimes.Length - 1; level >= 0; level--)
             {
-                if (_ownerEntity.ChargeTimes[level] < Time.time - _chargingStartTime)
+                if (_ownerEntity.ChargeTimes[level] < _chargingStartTime)
                 {
                     _chargeLevel = level + 1;
                     break;
@@ -209,6 +225,7 @@ namespace QT.InGame
                     _ownerEntity.ChargingEffectPlay(i);
                     if (_chargeLevel > 2)
                     {
+                        isChargeSound = true;
                         _ownerEntity.FullChargingEffectPlay();
                         _soundManager.ControlAudioStop(ChargeSoundPath);
                         _soundManager.RandomSoundOneShot(ChargeEndSoundPath,3);

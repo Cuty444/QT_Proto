@@ -72,5 +72,10 @@ namespace QT.InGame
                 collider.enabled = enable;
             }
         }
+
+        public int RandomGoldDrop()
+        {
+            return UnityEngine.Random.Range(Data.GoldDropMin, Data.GoldDropMax + 1);
+        }
     }    
 }

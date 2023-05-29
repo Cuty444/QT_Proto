@@ -1,10 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
 using UnityEngine;
 using UnityEngine.UI;
 using QT.UI;
 using QT.Util;
 using Spine.Unity;
+using TMPro;
+using UnityEngine.Events;
 
 namespace QT.UI
 {
@@ -19,12 +23,18 @@ namespace QT.UI
         [SerializeField] private GameObject _playerHpObject;
         [SerializeField] private Sprite[] _playerHpImage;
         [SerializeField] private SkeletonGraphic _skeletonGraphicRecharge;
+        [SerializeField] private TextMeshProUGUI _goldCostText;
         public Image PlayerHPImage => _playerHPImage;
         public Image PlayerInvicibleImage => _playerInvicibleImage;
         public Image PlayerDodgeCoolBarImage => _playerDodgeCoolBarImage;
         public Image PlayerDodgeCoolBackgroundImage => _playerDodgeCoolBackgroundImage;
-
+        
         private List<Image> _playerHpList = new List<Image>();
+
+        private void Start()
+        {
+            SystemManager.Instance.PlayerManager.GoldValueChanged.AddListener(SetGoldText);
+        }
 
         public void SetHp(Status hp)
         {
@@ -80,6 +90,11 @@ namespace QT.UI
             
             _playerDodgeCoolBackgroundImage.enabled = value > 0;
             _playerDodgeCoolBarImage.fillAmount = value;
+        }
+
+        private void SetGoldText(int goldText)
+        {
+            _goldCostText.text = goldText.ToString();
         }
 
     }

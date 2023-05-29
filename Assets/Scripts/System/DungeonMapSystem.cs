@@ -5,7 +5,9 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using QT.Core;
 using QT.Core.Data;
+using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace QT.Core.Map
 {
@@ -16,6 +18,7 @@ namespace QT.Core.Map
         Boss,
         GoldShop,
         HpShop,
+        Start,
     }
 
     public class BFSCellData
@@ -49,13 +52,15 @@ namespace QT.Core.Map
         public CellData[,] Map;
         public Vector2Int StartPosition;
         public Vector2Int BossRoomPosition;
+        public Vector2Int ShopRoomPosition;
         public List<Vector2Int> MapNodeList;
 
-        public MapData(CellData[,] map, Vector2Int startPosition,Vector2Int bossRoomPosition,List<Vector2Int> mapNodeList)
+        public MapData(CellData[,] map, Vector2Int startPosition,Vector2Int bossRoomPosition,Vector2Int shopRoomPosition,List<Vector2Int> mapNodeList)
         {
             Map = map;
             StartPosition = startPosition;
             BossRoomPosition = bossRoomPosition;
+            ShopRoomPosition = shopRoomPosition;
             MapNodeList = mapNodeList;
         }
     }
@@ -79,6 +84,8 @@ namespace QT.Core.Map
         private Vector2 _mapSizePosition;
 
         private List<GameObject> _mapList;
+        private List<GameObject> _startList;
+        private List<GameObject> _shopMapList;
         private int _mapCount;
         
         public override void OnInitialized()
@@ -102,8 +109,11 @@ namespace QT.Core.Map
         {
             Vector2Int startPos = new Vector2Int(_mapWidth / 2, _mapHeight / 2);
             _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
+            if(_mapList != null)
+                _mapCount = Random.Range(0,_mapList.Count);
             GenerateMap(startPos);
-            _mapData = new MapData(_map, startPos,GetFarthestRoomFromStart(),_mapNodeList);
+            var roomPositionValues = GetFarthestRoomFromStart();
+            _mapData = new MapData(_map, startPos,roomPositionValues.Item1,roomPositionValues.Item2,_mapNodeList);
         }
         
 
@@ -211,72 +221,132 @@ namespace QT.Core.Map
             return false;
         }
         
-        private Vector2Int GetFarthestRoomFromStart()
+        private (Vector2Int,Vector2Int) GetFarthestRoomFromStart()
         {
             // 시작방의 좌표
             Vector2Int startRoomPos = _mapNodeList[0];
-
-            // BFS 알고리즘에 사용할 큐와 방문 여부를 체크할 배열
-            Queue<BFSCellData> queue = new Queue<BFSCellData>();
-            bool[,] visited = new bool[_mapHeight, _mapWidth];
-
-            // 시작 방을 큐에 추가하고 방문 체크
-            queue.Enqueue(new BFSCellData(startRoomPos,0));
-            visited[startRoomPos.y, startRoomPos.x] = true;
-
-            // BFS 알고리즘을 사용하여 시작 방으로부터 가장 먼 방들의 좌표를 찾습니다.
             List<BFSCellData> farthestRoomPosList = new List<BFSCellData>();
-            int farthestDistance = 0;
-            while (queue.Count > 0)
+            int countCheck = 0;
+            do
             {
-                BFSCellData currRoomPos = queue.Dequeue();
-
-                if (currRoomPos.RoomCount > farthestDistance)
+                Debug.Log("맵 생성 : " + countCheck++ + "회 생성");
+                if (countCheck > 0)
                 {
-                    farthestDistance = currRoomPos.RoomCount;
-                    farthestRoomPosList.Clear();
-                    farthestRoomPosList.Add(currRoomPos);
+                    GenerateMap(new Vector2Int(_mapWidth / 2, _mapHeight / 2));
                 }
-                else if (currRoomPos.RoomCount == farthestDistance)
-                {
-                    farthestRoomPosList.Add(currRoomPos);
-                }
+                // BFS 알고리즘에 사용할 큐와 방문 여부를 체크할 배열
+                Queue<BFSCellData> queue = new Queue<BFSCellData>();
+                bool[,] visited = new bool[_mapHeight, _mapWidth];
 
-                foreach (Vector2Int dir in QT.Util.UnityUtil.PathDirections)
+                // 시작 방을 큐에 추가하고 방문 체크
+                queue.Enqueue(new BFSCellData(startRoomPos, 0));
+                visited[startRoomPos.y, startRoomPos.x] = true;
+                
+                farthestRoomPosList.Clear();
+                int farthestDistance = 0;
+                while (queue.Count > 0)
                 {
-                    Vector2Int nextRoomPos = currRoomPos.Position - dir;
+                    BFSCellData currRoomPos = queue.Dequeue();
 
-                    // 다음 방이 맵을 벗어나면 건너뜀
-                    if (nextRoomPos.x < 0 || nextRoomPos.x >= _mapWidth || nextRoomPos.y < 0 || nextRoomPos.y >= _mapHeight)
+                    if (currRoomPos.RoomCount > farthestDistance)
                     {
-                        continue;
+                        farthestDistance = currRoomPos.RoomCount;
+                        farthestRoomPosList.Clear();
+                        farthestRoomPosList.Add(currRoomPos);
+                    }
+                    else if (currRoomPos.RoomCount == farthestDistance)
+                    {
+                        farthestRoomPosList.Add(currRoomPos);
                     }
 
-                    // 다음 방이 이미 방문한 방이면 건너뜀
-                    if (visited[nextRoomPos.y, nextRoomPos.x])
+                    foreach (Vector2Int dir in QT.Util.UnityUtil.PathDirections)
                     {
-                        continue;
-                    }
+                        Vector2Int nextRoomPos = currRoomPos.Position - dir;
 
-                    // 다음 방이 빈 방이면 건너뜀
-                    if (_map[nextRoomPos.y, nextRoomPos.x].RoomType == RoomType.None)
-                    {
-                        continue;
-                    }
+                        // 다음 방이 맵을 벗어나면 건너뜀
+                        if (nextRoomPos.x < 0 || nextRoomPos.x >= _mapWidth || nextRoomPos.y < 0 ||
+                            nextRoomPos.y >= _mapHeight)
+                        {
+                            continue;
+                        }
 
-                    // 다음 방을 큐에 추가하고 방문 체크
-                    queue.Enqueue(new BFSCellData(nextRoomPos,currRoomPos.RoomCount + 1));
-                    visited[nextRoomPos.y, nextRoomPos.x] = true;
+                        // 다음 방이 이미 방문한 방이면 건너뜀
+                        if (visited[nextRoomPos.y, nextRoomPos.x])
+                        {
+                            continue;
+                        }
+
+                        // 다음 방이 빈 방이면 건너뜀
+                        if (_map[nextRoomPos.y, nextRoomPos.x].RoomType == RoomType.None)
+                        {
+                            continue;
+                        }
+
+                        // 다음 방을 큐에 추가하고 방문 체크
+                        queue.Enqueue(new BFSCellData(nextRoomPos, currRoomPos.RoomCount + 1));
+                        visited[nextRoomPos.y, nextRoomPos.x] = true;
+                    }
                 }
-            }
+
+                List<BFSCellData> removeData = new List<BFSCellData>(); // 경로 2개 이상인 방은 제외 처리
+                foreach (var roomData in farthestRoomPosList)
+                {
+                    if (RoomPathCount(roomData.Position) != 1)
+                    {
+                        removeData.Add(roomData);
+                    }
+                }
+
+                foreach (var roomData in removeData)
+                {
+                    farthestRoomPosList.Remove(roomData);
+                }
+            } while (farthestRoomPosList.Count < 2);
 
             // 가장 먼 방들 중 랜덤으로 하나 선택하여 반환합니다.
             int randomIndex = UnityEngine.Random.Range(0, farthestRoomPosList.Count);
-            return farthestRoomPosList[randomIndex].Position;
+            var bossRoom = farthestRoomPosList[randomIndex].Position;
+            farthestRoomPosList.RemoveAt(randomIndex);
+            randomIndex = UnityEngine.Random.Range(0, farthestRoomPosList.Count);
+            var shopRoom = farthestRoomPosList[randomIndex].Position;
+            return (bossRoom,shopRoom);
         }
 
 
+        private int RoomPathCount(Vector2Int roomPosition)
+        {
+            int roomPathCount = 0;
+            foreach (Vector2Int dir in QT.Util.UnityUtil.PathDirections)
+            {
+                Vector2Int nextRoomPos = roomPosition - dir;
+                if (nextRoomPos.x < 0 || nextRoomPos.x >= _mapWidth || nextRoomPos.y < 0 ||
+                    nextRoomPos.y >= _mapHeight)
+                {
+                    continue;
+                }
+                if (_map[nextRoomPos.y, nextRoomPos.x].RoomType != RoomType.None)
+                {
+                    roomPathCount++;
+                }
+            }
+            return roomPathCount;
+        }
 
+        public RoomType RoomCheck(Vector2Int roomPosition)
+        {
+            if (roomPosition.x < 0 || roomPosition.x >= _mapWidth || roomPosition.y < 0 ||
+                roomPosition.y >= _mapHeight)
+            {
+                return RoomType.None;
+            }
+
+            if (roomPosition == _mapData.ShopRoomPosition) // TODO : 추후 룸타입 갱신하기
+            {
+                return RoomType.GoldShop;
+            }
+            return _map[roomPosition.y, roomPosition.x].RoomType;
+        }
+        
         private void RoomCreate(Vector2Int pos)
         {
             _mapNodeList.Add(pos);
@@ -285,8 +355,14 @@ namespace QT.Core.Map
         public async UniTask MapLoad()
         {
             var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : 추후 레이블 스테이지 리스트로 관리
-            var ObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
-            _mapList = QT.Util.RandomSeed.GetRandomIndexes(ObjectList.ToList(),_maxRoomValue);
+            var objectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
+            _mapList = QT.Util.RandomSeed.GetRandomIndexes(objectList.ToList(),_maxRoomValue);
+            var stageShopLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Shop"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var shopObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageShopLocationList);
+            _shopMapList = shopObjectList.ToList();
+            var stageStartLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Start"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var startObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageStartLocationList);
+            _startList = startObjectList.ToList();
         }
 
         public GameObject GetMapObject()
@@ -294,6 +370,16 @@ namespace QT.Core.Map
             return _mapList[_mapCount++ % _mapList.Count];
         }
 
+        public GameObject ShopMapObject()
+        {
+            return _shopMapList[Random.Range(0,_shopMapList.Count)];
+        }
+
+        public GameObject StartMapObject()
+        {
+            return _startList[Random.Range(0, _startList.Count)];
+        }
+        
         public CellData GetCellData(Vector2Int pos)
         {
             return _map[pos.y, pos.x];

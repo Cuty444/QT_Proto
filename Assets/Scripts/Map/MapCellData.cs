@@ -12,14 +12,19 @@ namespace QT.Map
         [SerializeField] private Transform[] _doorTransforms;
         [SerializeField] private Transform[] _doorExitTransforms;
         [SerializeField] private Transform _enemySpawnersTransform;
-        [Header("문 순서는 상하좌우")]
-        [SerializeField] private GameObject[] _door;
-        [Header("카메라 외곽 제한 콜라이더")]
-        [SerializeField] private Collider2D _collider2D;
-        [Header("이 밑은 현재 더미데이터 미적용중")]
-        [SerializeField] private RoomType _roomType;
+
+        [Header("카메라 외곽 제한 콜라이더")] [SerializeField]
+        private Collider2D _collider2D;
+
+        private RoomType _roomType;
+
         private PlayerManager _playerManager;
         private MapEnemySpawner _mapEnemySpawner;
+        private List<DoorAnimator> _doorAnimators;
+        private Vector2Int _position;
+
+        private bool isDoorCreate;
+
         private void Awake()
         {
             _mapEnemySpawner = _enemySpawnersTransform.GetComponent<MapEnemySpawner>();
@@ -27,19 +32,23 @@ namespace QT.Map
             for (int i = 0; i < _doorTransforms.Length; i++)
             {
                 _doorTransforms[i].gameObject.SetActive(false);
-                var door = Instantiate(_door[i], _doorTransforms[i]);
-                door.transform.localPosition = Vector3.zero;
+                //var door = Instantiate(_door[i], _doorTransforms[i]);
+                //door.transform.localPosition = Vector3.zero;
             }
-            
+
             _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.PlayerMapClearPosition.AddListener(RoomClear);
         }
 
-        public void OpenDoorDirection(MapDirection mapDirection)
+        public void CellDataSet(MapDirection mapDirection,Vector2Int position,RoomType roomType)
         {
             _doorTransforms[0].gameObject.SetActive((mapDirection & MapDirection.Up) != 0);
             _doorTransforms[1].gameObject.SetActive((mapDirection & MapDirection.Down) != 0);
             _doorTransforms[2].gameObject.SetActive((mapDirection & MapDirection.Left) != 0);
             _doorTransforms[3].gameObject.SetActive((mapDirection & MapDirection.Right) != 0);
+            _position = position;
+            _roomType = roomType;
+            NormalDoorCreate();
         }
 
         public void DoorExitDirection(Vector2Int enterDirection)
@@ -61,7 +70,8 @@ namespace QT.Map
                 _playerManager.Player.transform.position = _doorExitTransforms[3].position;
             }
 
-            Camera.main.GetComponent<PlayerChasingCamera>().SetBeforePosition( new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z));
+            Camera.main.GetComponent<PlayerChasingCamera>().SetBeforePosition(new Vector3(transform.position.x,
+                transform.position.y, Camera.main.transform.position.z));
         }
 
         public void RoomPlay(Vector2Int position)
@@ -74,6 +84,83 @@ namespace QT.Map
         public void SetCameraCollider2D()
         {
             _playerManager.PlayerDoorEnterCameraShapeChange.Invoke(_collider2D);
+        }
+
+        public void RoomClear(Vector2Int position)
+        {
+            if (_position == position)
+            {
+                for (int i = 0; i < _doorTransforms.Length; i++)
+                {
+                    _doorTransforms[i].GetComponentInChildren<DoorAnimator>().DoorOpen();
+                }
+            }
+
+            SpecialDoorCreate();
+        }
+
+        private async void NormalDoorCreate()
+        {
+            string[] prefabPath = null;
+            switch (_roomType)
+            {
+                case RoomType.GoldShop:
+                case RoomType.HpShop:
+                    prefabPath = Util.AddressablesDataPath.StoreDoorPaths;
+                    break;
+                case RoomType.None:
+                case RoomType.Normal:
+                case RoomType.Boss:
+                case RoomType.Start:
+                default:
+                    prefabPath = Util.AddressablesDataPath.DoorPaths;
+                    break;
+            }
+            for (int i = 0; i < _doorTransforms.Length; i++)
+            {
+                var doorObject =
+                    await SystemManager.Instance.ResourceManager.GetFromPool<DoorAnimator>(
+                        prefabPath[i], _doorTransforms[i]);
+                doorObject.transform.localPosition = Vector3.zero;
+                if(_roomType == RoomType.Start)
+                    doorObject.DoorOpen();
+            }
+        }
+
+        private async void SpecialDoorCreate()
+        {
+            if (isDoorCreate)
+                return;
+
+            DungeonMapSystem dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
+            var data = dungeonMapSystem.DungeonMapData;
+            int dirCount = 0;
+            foreach (Vector2Int dir in QT.Util.UnityUtil.PathDirections)
+            {
+                RoomType nextRoomType = dungeonMapSystem.RoomCheck(_position - dir);
+                if (nextRoomType == RoomType.GoldShop || nextRoomType == RoomType.HpShop)
+                {
+                    int beforeCount = dirCount;
+                    if (dirCount == 2)
+                    {
+                        dirCount = 3;
+                    }
+                    else if (dirCount == 3)
+                    {
+                        dirCount = 2;
+                    }
+                    Destroy(_doorTransforms[dirCount].GetChild(0).gameObject);
+                    var doorObject =
+                        await SystemManager.Instance.ResourceManager.GetFromPool<DoorAnimator>(
+                            Util.AddressablesDataPath.StoreDoorPaths[dirCount], _doorTransforms[dirCount]);
+                    doorObject.transform.localPosition = Vector3.zero;
+                    dirCount = beforeCount;
+                }
+
+                dirCount++;
+            }
+
+            isDoorCreate = true;
         }
     }
 }

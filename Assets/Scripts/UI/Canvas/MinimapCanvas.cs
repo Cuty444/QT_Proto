@@ -116,6 +116,16 @@ namespace QT.UI
                 cell.name = cell.name + "_Boss";
                 cell.SetRoomType(RoomType.Boss);
             }
+            else if (createPos == _mapData.ShopRoomPosition)
+            {
+                cell.name = cell.name + "_Shop";
+                cell.SetRoomType(RoomType.GoldShop);
+            }
+            else if (createPos == _mapData.StartPosition)
+            {
+                cell.name = cell.name + "_Start";
+                cell.SetRoomType(RoomType.Start);
+            }
             cell.Setting();
             _cellList.Add(cell);
         }
