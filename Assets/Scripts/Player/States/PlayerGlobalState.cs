@@ -27,12 +27,14 @@ namespace QT.InGame
             _ownerEntity.SetBatActive(false);
             SystemManager.Instance.PlayerManager.OnDamageEvent.AddListener(OnDamage);
             
-            _ownerEntity.OnLook.AddListener(OnLook);
+            _ownerEntity.OnAim.AddListener(OnAim);
         }
 
 
-        private void OnLook(Vector2 lookDir)
+        private void OnAim(Vector2 aimPos)
         {
+            var aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
+            
             float flip = 180;
             if (_ownerEntity.IsDodge)
             {
@@ -40,7 +42,7 @@ namespace QT.InGame
                 _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
                 return;
             }
-            var angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90;
+            var angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg - 90;
             
             if (angle < 0)
             {

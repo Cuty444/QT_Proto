@@ -68,20 +68,10 @@ namespace QT.Core
                 return null;
             }
 
-            if (ChangeState(state))
+            if (state == null || state == _currentState)
             {
-                PreviousStateIndex = CurrentStateIndex;
-                CurrentStateIndex = (int)enumValue;
-                
-                return _currentState;
+                return null;
             }
-
-            return null;
-        }
-
-        private bool ChangeState(FSMState<T> newState)
-        {
-            if (newState == null || newState == _currentState) return false;
 
             if (_currentState != null)
             {
@@ -92,14 +82,18 @@ namespace QT.Core
                 Debug.Log($"{this.GetType()} : {_currentState.GetType()} 상태 클리어");
             }
 
-            _currentState = newState;
+            PreviousStateIndex = CurrentStateIndex;
+            CurrentStateIndex = (int)enumValue;
+            
+            _currentState = state;
             _currentState.InitializeState();
 
-            Debug.Log($"{this.GetType()} : {newState.GetType()} 상태로 전환");
+            Debug.Log($"{this.GetType()} : {state.GetType()} 상태로 전환");
 
-            return true;
+            return _currentState;
         }
 
+        
         public void SetGlobalState(FSMState<T> state)
         {
             _globalState?.ClearState();
