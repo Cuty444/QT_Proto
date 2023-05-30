@@ -68,7 +68,7 @@ namespace QT.InGame
             //_ownerEntity.PlayerHitEffectPlay();
             
             var hp = _ownerEntity.GetStatus(PlayerStats.HP);
-            
+            _ownerEntity.MaterialChanger.SetHitMaterial();
             hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);
 

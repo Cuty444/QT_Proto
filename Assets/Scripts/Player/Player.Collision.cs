@@ -32,10 +32,6 @@ namespace QT.InGame
                         break;
                 }
             }
-            else if (other.gameObject.layer == LayerMask.NameToLayer("Item"))
-            {
-                
-            }
         }
     }
 }
