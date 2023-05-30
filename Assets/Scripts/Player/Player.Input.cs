@@ -24,8 +24,8 @@ namespace QT.InGame
         // 벡터넘겨주는 액션은 따로 처리
         public UnityAction<Vector2> OnMove { get; set; }
 
-        public UnityEvent<Vector2> OnLook { get; private set; } = new();
-        public Vector2 LookDir { get; private set; } = Vector2.zero;
+        public UnityEvent<Vector2> OnAim { get; private set; } = new();
+        public Vector2 AimPosition { get; private set; } = Vector2.zero;
 
         
         private Dictionary<ButtonActions, InputAction> buttonActions;
@@ -76,16 +76,10 @@ namespace QT.InGame
             var moveInput = moveInputAction.ReadValue<Vector2>();
             var lookInput = lookInputAction.ReadValue<Vector2>();
             
-            Vector2 mousePos = _camera.ScreenToWorldPoint(lookInput);
-            Vector2 lookDir = ((Vector2)transform.position - mousePos).normalized;
+            AimPosition = _camera.ScreenToWorldPoint(lookInput);
 
-            if (lookDir != Vector2.zero)
-            {
-                LookDir = lookDir;
-            }
-            
             OnMove?.Invoke(moveInput);
-            OnLook?.Invoke(LookDir);
+            OnAim?.Invoke(AimPosition);
         }
 
         private void OnEnable()

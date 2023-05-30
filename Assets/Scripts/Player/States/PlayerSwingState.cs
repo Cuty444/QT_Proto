@@ -155,7 +155,8 @@ namespace QT.InGame
 
             if (hitCount > 0)
             {
-                _ownerEntity.AttackImpulseSource.GenerateImpulse(_ownerEntity.LookDir * 0.5f);
+                var aimDir = ((Vector2) _ownerEntity.transform.position - _ownerEntity.AimPosition).normalized;
+                _ownerEntity.AttackImpulseSource.GenerateImpulse(aimDir * 0.5f);
             }
 
             if (ballHitCount > 0)
@@ -277,14 +278,14 @@ namespace QT.InGame
 
         private Vector2 GetNewProjectileDir(IProjectile projectile)
         {
-            return -_ownerEntity.LookDir;
-            // if (Vector2.Distance(projectile.Position, _ownerEntity.transform.position) >
-            //     Vector2.Distance(_ownerEntity.MousePos, _ownerEntity.transform.position))
-            // {
-            //     return (_ownerEntity.MousePos - (Vector2) _ownerEntity.transform.position).normalized;
-            // }
-            //
-            // return (_ownerEntity.MousePos - projectile.Position).normalized;
+            Vector2 ownerPos = _ownerEntity.transform.position;
+            
+            if ((projectile.Position - ownerPos).sqrMagnitude > (_ownerEntity.AimPosition - ownerPos).sqrMagnitude)
+            {
+                return (_ownerEntity.AimPosition -ownerPos).normalized;
+            }
+            
+            return (_ownerEntity.AimPosition - projectile.Position).normalized;
         }
 
         private void CheckSwingAreaMesh()
