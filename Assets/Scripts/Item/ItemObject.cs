@@ -37,6 +37,8 @@ namespace QT
             _itemName.text = ItemGameData.Name;
             _itemCost.text = "가격 : " + ItemGameData.CostGold;
             _itemEffect.text = ItemGameData.Desc;
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_itemScriptCanvas.transform);
+
         }
 
         private void OnTriggerEnter2D(Collider2D other)
