@@ -36,7 +36,7 @@ namespace QT.Core
 
         private void Awake()
         {
-            title = "GameData Validator";
+            titleContent = new GUIContent("GameData Validator");
             
             SetDataInfos();
         }
