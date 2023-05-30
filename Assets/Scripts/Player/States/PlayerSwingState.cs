@@ -68,7 +68,6 @@ namespace QT.InGame
 
             _ownerEntity.SwingAreaMeshRenderer.enabled = true;
 
-            Debug.LogError((Player.States)_ownerEntity.PreviousStateIndex);
             if (_ownerEntity.PreviousStateIndex != (int) Player.States.Dodge)
             {
                 _isCharged = false;
