@@ -26,7 +26,7 @@ namespace QT.Core
             {
                 var stopWatch = new Stopwatch();
 
-                var files = Directory.GetFiles(GameDataPath, "*.xlsx");
+                var files = Directory.GetFiles(GameDataPath, "*.xls*");
                 foreach (var file in files)
                 {
                     var filename = file.Split('\\', '.', '/');
