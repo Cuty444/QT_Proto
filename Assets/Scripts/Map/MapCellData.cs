@@ -124,6 +124,10 @@ namespace QT.Map
                 doorObject.transform.localPosition = Vector3.zero;
                 if(_roomType == RoomType.Start)
                     doorObject.DoorOpen();
+                if (i <= 1)
+                {
+                    doorObject.DoorUpDown((MapDirection)(1 << i));
+                }
             }
         }
 
@@ -154,6 +158,10 @@ namespace QT.Map
                         await SystemManager.Instance.ResourceManager.GetFromPool<DoorAnimator>(
                             Util.AddressablesDataPath.StoreDoorPaths[dirCount], _doorTransforms[dirCount]);
                     doorObject.transform.localPosition = Vector3.zero;
+                    if (dirCount <= 1)
+                    {
+                        doorObject.DoorUpDown((MapDirection)(1 << dirCount));
+                    }
                     dirCount = beforeCount;
                 }
 
