@@ -84,8 +84,10 @@ namespace QT.InGame
             });
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
+            
             UpdateInputs();
             UpdateCoolTime();
         }
