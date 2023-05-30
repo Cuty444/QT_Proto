@@ -23,23 +23,17 @@ namespace QT.InGame
         private List<Enemy> _enemyInRange = new ();
         private List<LineRenderer> _lines = new();
 
-        private float _chargingStartTime;
-        private int _chargeLevel;
 
         private LayerMask _projectileLayerMask;
 
-        private bool[] _chargingEffectCheck;
+        private bool _isCharged = false;
+        private float _chargingTime;
+        private float _currentSwingRad, _currentSwingCentralAngle;
+
 
         private GlobalDataSystem _globalDataSystem;
-
-        private float _currentSwingRad = 0;
-        private float _currentSwingCentralAngle = 0;
-
-
         private SoundManager _soundManager;
 
-        private bool isChargeSound = false;
-        private bool isChargeTime = false;
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
@@ -62,7 +56,6 @@ namespace QT.InGame
             }
             
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
-            _chargingEffectCheck = new bool[3];
         }
 
 
@@ -71,22 +64,16 @@ namespace QT.InGame
             base.InitializeState();
 
             CheckSwingAreaMesh();
-            if (!isChargeSound)
-            {
-                _soundManager.ControlAudioPlay(ChargeSoundPath);
-            }
-
-            if (!isChargeTime)
-            {
-                _chargeLevel = 0;
-                _chargingStartTime = 0f;
-                isChargeTime = true;
-            }
-
-            
             SetLineObjects();
-            
+
             _ownerEntity.SwingAreaMeshRenderer.enabled = true;
+
+            Debug.LogError((Player.States)_ownerEntity.PreviousStateIndex);
+            if (_ownerEntity.PreviousStateIndex != (int) Player.States.Dodge)
+            {
+                _isCharged = false;
+                _chargingTime = 0;
+            }
         }
 
         public override void ClearState()
@@ -104,11 +91,16 @@ namespace QT.InGame
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
         }
 
+        public override void UpdateState()
+        {
+            _chargingTime += Time.deltaTime;
+            GetChargeLevel();
+        }
+
         public override void FixedUpdateState()
         {
             base.FixedUpdateState();
             
-            GetChargeLevel();
             GetProjectiles();
 
             SetLines();
@@ -124,8 +116,8 @@ namespace QT.InGame
             }
 
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
-            var power = _ownerEntity.ChargeShootSpds[_chargeLevel];
-            var bounce = (int) _ownerEntity.ChargeBounceCounts[_chargeLevel];
+            var power = _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
+            var bounce = (int) _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;
             int hitCount = 0;
             int ballHitCount = 0;
             int enemyHitCount = 0;
@@ -135,7 +127,6 @@ namespace QT.InGame
                 bounce = 0;
             }
 
-            var damage = _ownerEntity.ChargeProjectileDmgs[_chargeLevel];
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
@@ -146,22 +137,17 @@ namespace QT.InGame
                 ballHitCount++;
             }
 
+            
+            var damage = _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1).Value;
             foreach (var hitEnemy in _enemyInRange)
             {
-                hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized,
-                    _ownerEntity.ChargeRigidDmgs[_chargeLevel]);
+                hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized, damage);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position);
                 hitCount++;
                 enemyHitCount++;
             }
 
-            for (int i = 0; i < _chargingEffectCheck.Length; i++)
-            {
-                _chargingEffectCheck[i] = false;
-            }
-
             _ownerEntity.swingSlashEffectPlay();
-            _ownerEntity.FullChargingEffectStop();
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Move);
 
@@ -185,9 +171,6 @@ namespace QT.InGame
             {
                 _soundManager.RandomSoundOneShot(SwingMissSoundPath,4);
             }
-
-            isChargeSound = false;
-            isChargeTime = false;
         }
 
         private async void SetLineObjects()
@@ -203,38 +186,18 @@ namespace QT.InGame
 
         private void GetChargeLevel()
         {
-            _chargingStartTime += Time.deltaTime;
-            for (int level = _ownerEntity.ChargeTimes.Length - 1; level >= 0; level--)
+            if (_isCharged)
             {
-                if (_ownerEntity.ChargeTimes[level] < _chargingStartTime)
-                {
-                    _chargeLevel = level + 1;
-                    break;
-                }
-
-                if (level == 0)
-                {
-                    _chargeLevel = 0;
-                }
-            }
-
-            for (int i = 0; i < _chargingEffectCheck.Length; i++)
-            {
-                if (_chargeLevel > i && !_chargingEffectCheck[i])
-                {
-                    _ownerEntity.ChargingEffectPlay(i);
-                    if (_chargeLevel > 2)
-                    {
-                        isChargeSound = true;
-                        _ownerEntity.FullChargingEffectPlay();
-                        _soundManager.ControlAudioStop(ChargeSoundPath);
-                        _soundManager.RandomSoundOneShot(ChargeEndSoundPath,3);
-                        _ownerEntity.FullChargingEffectStop();
-                    }
-                    _chargingEffectCheck[i] = true;
-                }
+                return;
             }
             
+            if (_ownerEntity.GetStat(PlayerStats.ChargeTime).Value < _chargingTime)
+            {
+                _isCharged = true;
+                
+                _ownerEntity.FullChargingEffectPlay();
+                _soundManager.RandomSoundOneShot(ChargeEndSoundPath,3);
+            }
         }
 
         private void GetProjectiles()
@@ -253,7 +216,7 @@ namespace QT.InGame
 
         private void SetLines()
         {
-            var bounceCount = (int) _ownerEntity.ChargeBounceCounts[_chargeLevel];
+            var bounceCount = (int) _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;;
             if (_globalDataSystem.GlobalData.IsPlayerParrying)
             {
                 bounceCount = 0;
