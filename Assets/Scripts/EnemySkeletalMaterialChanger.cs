@@ -22,13 +22,14 @@ namespace QT
 
         private float _hitDuration = 0.1f;
         private AnimationCurve _hitCurve = new ();
-        
+
+        private GlobalData _globalData;
         private void Awake()
         {
-            var data = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
             
-            _hitDuration = data.EnemyHitEffectDuration;
-            _hitCurve = data.EnemyHitEffectCurve;
+            _hitDuration = _globalData.EnemyHitEffectDuration;
+            _hitCurve = _globalData.EnemyHitEffectCurve;
             
             _skeletonRenderer = GetComponent<SkeletonRenderer>();
 
@@ -78,6 +79,12 @@ namespace QT
         public void ClearMaterial()
         {
             _skeletonRenderer.CustomMaterialOverride.Clear();
+        }
+
+        public void SetHitDuration(float delta)
+        {
+            _hitDuration = delta;
+            _hitCurve = _globalData.PlayerHitEffectCurve;
         }
     }
 }
