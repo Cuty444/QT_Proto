@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "wjcfQ9Y1v6c", "spine": "4.1.20", "x": -296.93, "y": -397, "width": 712.93, "height": 812.65 },
+"skeleton": { "hash": "iEAJz8LWUSk", "spine": "4.1.20", "x": -296.93, "y": -397, "width": 712.93, "height": 812.65 },
 "bones": [
 	{ "name": "root" },
 	{
@@ -35,7 +35,15 @@
 	}
 ],
 "animations": {
-	"StoreDoor_Side_Normal": {},
+	"StoreDoor_Side_Normal": {
+		"slots": {
+			"StoreDoor_Side2": {
+				"rgba": [
+					{ "color": "ffffff00" }
+				]
+			}
+		}
+	},
 	"StoreDoor_Side_Open": {
 		"slots": {
 			"StoreDoor_Side1": {
@@ -57,7 +65,17 @@
 						"color": "ffffff00",
 						"curve": [ 0.111, 1, 0.122, 1, 0.111, 1, 0.122, 1, 0.111, 1, 0.122, 1, 0.111, 0, 0.122, 0.67 ]
 					},
-					{ "time": 0.1333, "color": "ffffffff" }
+					{
+						"time": 0.1333,
+						"color": "ffffffff",
+						"curve": [ 0.148, 1, 0.184, 1, 0.148, 1, 0.184, 1, 0.148, 1, 0.184, 1, 0.148, 1.45, 0.184, 0.86 ]
+					},
+					{
+						"time": 0.2333,
+						"color": "ffffffff",
+						"curve": [ 0.331, 1, 0.565, 1, 0.331, 1, 0.565, 1, 0.331, 1, 0.565, 1, 0.331, 1.26, 0.565, 0 ]
+					},
+					{ "time": 0.6667, "color": "ffffff00" }
 				]
 			}
 		},
@@ -104,18 +122,11 @@
 			}
 		}
 	},
-	"StoreDoor_Side_Open2": {
+	"StoreDoor_Side_Open_Normal": {
 		"slots": {
-			"StoreDoor_Side1": {
+			"StoreDoor_Side2": {
 				"rgba": [
 					{ "color": "ffffff00" }
-				]
-			}
-		},
-		"bones": {
-			"StoreDoor_Side1": {
-				"rotate": [
-					{}
 				]
 			}
 		}
