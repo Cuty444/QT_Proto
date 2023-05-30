@@ -38,6 +38,9 @@ namespace QT.InGame
         public CharacterAtkGameData AtkData { get; private set; }
         
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
+        
+        public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
+
 
         private PlayerManager _playerManager;
 
@@ -57,6 +60,7 @@ namespace QT.InGame
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
+            MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             Inventory = new Inventory(this);
             
             InitInputs();
@@ -82,6 +86,11 @@ namespace QT.InGame
             {
                 _goldCost = value;
             });
+        }
+
+        private void Start()
+        {
+            MaterialChanger.SetHitDuration(Data.MercyInvincibleTime);
         }
 
         protected override void Update()
