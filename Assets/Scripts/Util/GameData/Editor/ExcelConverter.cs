@@ -1,3 +1,5 @@
+#define READ_SHEET
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +14,7 @@ namespace QT.Core
 {
     public class ExcelConverter
     {
+        
         private static readonly string GameDataPath = $"{Directory.GetCurrentDirectory()}/_GameData";
         private static readonly string JsonDataPath = $"{Directory.GetCurrentDirectory()}/Assets/Data/GameData";
 
@@ -37,22 +40,48 @@ namespace QT.Core
                     stopWatch.Start();
                     Debug.Log($"Converting {name}...");
 
-                    var data = ExcelDataToJson(file);
-
-                    if (data == null)
+                    
+                    if (!File.Exists(file)) continue;
+                    using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
-                        continue;
+                        var xssWorkbook = new XSSFWorkbook(stream);
+
+#if READ_SHEET
+                        
+                        for (int i = 0; i < xssWorkbook.NumberOfSheets; i++)
+                        {
+                            var sheet = xssWorkbook.GetSheetAt(i);
+                            if (sheet.SheetName[0] == '#')
+                            {
+                                continue;
+                            }
+#else
+                        {
+                            var sheet = xssWorkbook.GetSheetAt(0);
+#endif
+                            
+                            var data = ExcelDataToJson(sheet);
+                            
+                            if (data != null)
+                            {
+                                
+#if READ_SHEET
+                                var sw = new StreamWriter($"{JsonDataPath}/{sheet.SheetName}.json", false, Encoding.UTF8);
+#else
+                                var sw = new StreamWriter($"{JsonDataPath}/{name}.json", false, Encoding.UTF8);
+#endif
+                                sw.WriteLine(data);
+                                sw.Close();
+                            }
+                        }
+                        
                     }
-
-                    var sw = new StreamWriter($"{JsonDataPath}/{name}.json", false, Encoding.UTF8);
-                    sw.WriteLine(data);
-                    sw.Close();
-
-
+                    
                     stopWatch.Stop();
                     Debug.Log($"{name} Finished (time : {stopWatch.ElapsedMilliseconds}ms)");
                     stopWatch.Reset();
                 }
+                
             }
             catch (Exception e)
             {
@@ -62,21 +91,13 @@ namespace QT.Core
             AssetDatabase.Refresh();
         }
 
-
-        private static string ExcelDataToJson(string excelFilePath)
+        
+        private static string ExcelDataToJson(ISheet sheet)
         {
-            if (!File.Exists(excelFilePath)) return null;
-
             var result = new StringBuilder();
-
+            
             var columns = new List<string>();
-
-            using (var stream = new FileStream(excelFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                var xssWorkbook = new XSSFWorkbook(stream);
-                var sheet = xssWorkbook.GetSheetAt(0);
-
-
+            
                 // 1 번째 행은 어떤 데이터가 있는지 확인하는 용도
                 result.Append("[\n\t[\n");
 
@@ -150,10 +171,10 @@ namespace QT.Core
                 }
 
                 result.Append("\t]\n]");
-            }
 
-            return result.ToString();
+                return result.ToString();
         }
+        
 
         private static string GetCellString(ICell cell)
         {
