@@ -118,7 +118,7 @@ namespace QT.InGame
             SetOwnerColor();
         }
         
-        public void Hit(Vector2 dir, float newSpeed)
+        public void Hit(Vector2 dir, float newSpeed,AttackType attackType)
         {
             ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
         }

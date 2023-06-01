@@ -30,7 +30,8 @@ namespace QT.InGame
         public bool IsInvincible()
         {
             return !GetStatus(PlayerStats.MercyInvincibleTime).IsFull()
-                    || !GetStatus(PlayerStats.DodgeInvincibleTime).IsFull();
+                    || !GetStatus(PlayerStats.DodgeInvincibleTime).IsFull()
+                    || CurrentStateIndex == (int)Player.States.Teleport;
         }
     }
 }

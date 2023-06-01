@@ -12,7 +12,7 @@ namespace QT.InGame
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
         }
         
-        private void OnDamage(Vector2 dir, float power)
+        private void OnDamage(Vector2 dir, float power,AttackType attackType)
         {
             if (_ownerEntity.CurrentStateIndex >= (int)Enemy.States.Rigid)
             {
@@ -24,6 +24,7 @@ namespace QT.InGame
             _ownerEntity.HpCanvas.gameObject.SetActive(true);
             _ownerEntity.Rigidbody.velocity = Vector2.zero; 
             _ownerEntity.Rigidbody.AddForce(-dir, ForceMode2D.Impulse);
+            _ownerEntity.HitAttackType = attackType;
             _ownerEntity.ChangeState(Enemy.States.Rigid);
         }
     }

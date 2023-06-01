@@ -4,8 +4,13 @@ using UnityEngine;
 
 namespace QT
 {
+    public enum AttackType
+    {
+        Ball,
+        Swing,
+    }
     public interface IHitable
     {
-        public void Hit(Vector2 dir, float power);
+        public void Hit(Vector2 dir, float power,AttackType attackType = AttackType.Ball);
     }
 }

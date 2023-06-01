@@ -125,7 +125,8 @@ namespace QT.InGame
             var damage = _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1).Value;
             foreach (var hitEnemy in _enemyInRange)
             {
-                hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized, damage);
+                hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized, damage,AttackType.Swing);
+                hitEnemy.ProjectileHit(GetNewProjectileDir(hitEnemy), power, mask, ProjectileOwner.Player,_ownerEntity.GetStat(PlayerStats.ReflectCorrection));
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position);
                 hitCount++;
                 enemyHitCount++;

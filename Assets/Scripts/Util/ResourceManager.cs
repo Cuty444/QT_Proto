@@ -145,8 +145,16 @@ namespace QT
         
         public async UniTaskVoid LoadSprite(string spritePath,SpriteRenderer spriteRenderer)
         {
-            var loadSprite = await Addressables.LoadAssetAsync<Sprite>(spritePath);
-            spriteRenderer.sprite = loadSprite;
+            try
+            {
+                var loadSprite = await Addressables.LoadAssetAsync<Sprite>(spritePath);
+                spriteRenderer.sprite = loadSprite;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"스프라이트 로드에 실패했습니다. Path : {spritePath}\n\n{e.Message}");
+            }
+            
         }
 
     }
