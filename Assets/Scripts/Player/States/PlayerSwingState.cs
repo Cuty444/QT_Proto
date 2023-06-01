@@ -30,8 +30,6 @@ namespace QT.InGame
         private float _chargingTime;
         private float _currentSwingRad, _currentSwingCentralAngle;
 
-
-        private GlobalDataSystem _globalDataSystem;
         private SoundManager _soundManager;
 
         
@@ -40,20 +38,9 @@ namespace QT.InGame
             CheckSwingAreaMesh();
             
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
-            
-            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
-
             _soundManager = SystemManager.Instance.SoundManager;
-            
-            if (_globalDataSystem.GlobalData.IsPlayerParrying)
-            {
-                _projectileLayerMask = LayerMask.GetMask("Wall");
-                
-            }
-            else
-            {
-                _projectileLayerMask = LayerMask.GetMask("Enemy");
-            }
+
+            _projectileLayerMask = LayerMask.GetMask("Player");
             
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
         }
@@ -117,18 +104,16 @@ namespace QT.InGame
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
             var power = _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
             var bounce = (int) _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;
+            var projectileDamage = (int)_ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1).Value;
+            
             int hitCount = 0;
             int ballHitCount = 0;
             int enemyHitCount = 0;
 
-            if (_globalDataSystem.GlobalData.IsPlayerParrying)
-            {
-                bounce = 0;
-            }
-
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
+                projectile.ResetProjectileDamage(projectileDamage);
                 projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
                     _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
@@ -217,10 +202,7 @@ namespace QT.InGame
         private void SetLines()
         {
             var bounceCount = (int) _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;;
-            if (_globalDataSystem.GlobalData.IsPlayerParrying)
-            {
-                bounceCount = 0;
-            }
+            
             for (int i = 0; i < _lines.Count; i++)
             {
                 if (_projectiles.Count > i)

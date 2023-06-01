@@ -23,7 +23,12 @@ namespace QT.InGame
         {
             
         }
-        
+
+        public void ResetProjectileDamage(int damage)
+        {
+            
+        }
+
         public LayerMask GetLayerMask()
         {
             return LayerMask.GetMask("Wall") | LayerMask.GetMask("Enemy"); // TODO : 임시 추후 수정 필요

@@ -19,6 +19,8 @@ namespace QT
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection);
 
         public void ResetBounceCount(int maxBounce);
+        
+        public void ResetProjectileDamage(int damage);
 
         public LayerMask GetLayerMask();
         
