@@ -15,6 +15,7 @@ namespace QT.InGame
             Move,
             Swing,
             Throw,
+            Teleport,
             Dodge,
             Dead,
         }

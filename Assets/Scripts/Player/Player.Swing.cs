@@ -14,7 +14,8 @@ namespace QT.InGame
         public MeshRenderer SwingAreaMeshRenderer { get; private set; }
 
         public List<Enemy> _enemyList;
-        
+        public Enemy _rigidTeleportEnemy;
+        public Enemy _rigidTargetEnemy;
         public void SetBatActive(bool isActive)
         {
             _batSpriteRenderer.enabled = isActive;
@@ -71,6 +72,47 @@ namespace QT.InGame
             
             _trailRenderer.emitting = false;
             _batSpriteRenderer.enabled = false;
+        }
+        
+        public bool RigidEnemyCheck()
+        {
+            foreach (var enemy in _enemyList)
+            {
+                if (enemy.CurrentStateIndex == (int) Enemy.States.Rigid && enemy.HP <= 0)
+                {
+                    if (GetStat(PlayerStats.TeleportAllowableDistance) <
+                        Vector2.Distance(transform.position, enemy.transform.position))
+                    {
+                        continue;
+                    }
+                    _rigidTeleportEnemy = enemy;
+                    _rigidTargetEnemy = null;
+                    float lowHp = float.MaxValue;
+                    foreach (var targetEnemy in _enemyList)
+                    {
+                        if (targetEnemy.CurrentStateIndex < (int) Enemy.States.Projectile)
+                        {
+                            if (targetEnemy.HP > 0)
+                            {
+                                float percentageHp = targetEnemy.HP / targetEnemy.HP.BaseValue;
+                                if (lowHp > percentageHp)
+                                {
+                                    lowHp = percentageHp;
+                                    _rigidTargetEnemy = targetEnemy;
+                                }
+                            }
+                        }
+                    }
+
+                    if (_rigidTargetEnemy != null)
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+
+            return true;
         }
         
         private bool PlayerSwingAngle()

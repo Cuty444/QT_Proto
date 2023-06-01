@@ -51,6 +51,8 @@ namespace QT.InGame
             
         ChargeProjectileDmg1,
         ChargeProjectileDmg2,
+        
+        TeleportAllowableDistance,
             
         AtkDmgPer,
     }
@@ -110,6 +112,7 @@ namespace QT.InGame
             _stats.Add(PlayerStats.ChargeProjectileDmg1, new(AtkData.ChargeProjectileDmg1));
             _stats.Add(PlayerStats.ChargeProjectileDmg2, new(AtkData.ChargeProjectileDmg2));
 
+            _stats.Add(PlayerStats.TeleportAllowableDistance, new (AtkData.TeleportAllowableDistance));
             
             _stats.Add(PlayerStats.ReflectCorrection, new(AtkData.ReflectCorrection));
             _stats.Add(PlayerStats.AtkDmgPer, new(AtkData.AtkDmgPer));
