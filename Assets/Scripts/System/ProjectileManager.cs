@@ -39,6 +39,11 @@ namespace QT
         {
             _projectiles.Remove(projectile.ProjectileId);
         }
+
+        public void ProjectileListClear()
+        {
+            _projectiles.Clear();
+        }
         
         public void GetInRange(Vector2 origin, float range, float angle, Vector2 dir, ref List<IProjectile> outList, int layerMask)
         {

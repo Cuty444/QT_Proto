@@ -33,6 +33,13 @@ namespace QT.InGame
             }
             else
             {
+                if (_ownerEntity.HitAttackType == AttackType.Swing)
+                {
+                    _ownerEntity.OnHitEvent.AddListener(OnDamage);
+                    _ownerEntity.Rigidbody.velocity = Vector2.zero;
+                    SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
+                }
+
                 _ownerEntity.MaterialChanger.SetHitMaterial();
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
             }

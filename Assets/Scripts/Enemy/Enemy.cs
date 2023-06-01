@@ -32,6 +32,7 @@ namespace QT.InGame
         public Animator Animator { get; private set; }
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
 
+        public CapsuleCollider2D Collider2D { get; private set; }
 
         [field: SerializeField] public Transform BallObject { get; private set; }
         [field: SerializeField] public float BallHeight { get; private set; }
@@ -39,10 +40,13 @@ namespace QT.InGame
         
         [HideInInspector] public Image HpImage;
 
+        [HideInInspector] public AttackType HitAttackType;
+
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
             Rigidbody = GetComponent<Rigidbody2D>();
+            Collider2D = GetComponent<CapsuleCollider2D>();
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
@@ -71,6 +75,8 @@ namespace QT.InGame
             {
                 collider.enabled = enable;
             }
+
+            Collider2D.enabled = enable; // TODO : 비활성화 되면 배열을 못가져오는 것 같아서 임시 처리 
         }
 
         public int RandomGoldDrop()

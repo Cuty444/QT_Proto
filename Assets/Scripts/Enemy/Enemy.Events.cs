@@ -5,17 +5,17 @@ namespace QT.InGame
 {
     public partial class Enemy
     {
-        public UnityEvent<Vector2, float> OnDamageEvent { get; } = new();
+        public UnityEvent<Vector2, float,AttackType> OnDamageEvent { get; } = new();
         public UnityEvent<Vector2, float, LayerMask> OnHitEvent { get; } = new();
 
-        public void Hit(Vector2 dir, float power)
+        public void Hit(Vector2 dir, float power,AttackType attackType)
         {
-            OnDamageEvent.Invoke(dir, power);
+            OnDamageEvent.Invoke(dir, power,attackType);
         }
         
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection)
         {
-            OnDamageEvent.Invoke(dir, power);
+            OnDamageEvent.Invoke(dir, power,AttackType.Swing);
             OnHitEvent.Invoke(dir, power, bounceMask);
         }
         

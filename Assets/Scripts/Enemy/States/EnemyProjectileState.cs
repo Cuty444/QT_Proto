@@ -11,7 +11,8 @@ namespace QT.InGame
     {
         private static readonly int ProjectileAnimHash = Animator.StringToHash("Projectile");
         private static readonly int ProjectileSpeedAnimHash = Animator.StringToHash("ProjectileSpeed");
-        
+        private static readonly int NormalAnimHash = Animator.StringToHash("Normal");
+        private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
         private const string MonsterFlySoundPath = "Assets/Sound/QT/Assets/Monster_Fly.wav";
 
@@ -41,6 +42,7 @@ namespace QT.InGame
         
         private Transform _transform;
         
+        private bool isNormal;
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
@@ -71,10 +73,18 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
             
             SystemManager.Instance.SoundManager.PlayOneShot(MonsterFlySoundPath);
+            isNormal = false;
         }
         
         public override void ClearState()
         {
+            _ownerEntity.Animator.ResetTrigger(ProjectileAnimHash);
+            if (isNormal)
+            {
+                _ownerEntity.Animator.SetTrigger(NormalAnimHash);
+                _ownerEntity.StartCoroutine(
+                    Util.UnityUtil.WaitForFunc(() => { _ownerEntity.Animator.ResetTrigger(NormalAnimHash); }, 0.2f));
+            }
             SystemManager.Instance.ProjectileManager.UnRegister(_ownerEntity);
         }
         
@@ -104,7 +114,10 @@ namespace QT.InGame
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
                 if (--_bounceCount == 0)
                 {
-                    _isReleased = true;
+                    if (_ownerEntity.HP <= 0)
+                    {
+                        _isReleased = true;
+                    }
                     _releaseStartTime = Time.time;
 
                     if (_releaseDelay > 0)
@@ -129,10 +142,22 @@ namespace QT.InGame
                 
                 if (_speed <= 0)
                 {
-                    _isReleased = true;
-                    _releaseStartTime = Time.time;
-                
-                    _speed = MinSpeed;
+                    if (_ownerEntity.HP <= 0)
+                    {
+                        _isReleased = true;
+                        _releaseStartTime = Time.time;
+
+                        _speed = MinSpeed;
+                    }
+                    else
+                    {
+                        isNormal = true;
+                        _ownerEntity.Animator.SetBool(RigidAnimHash, false);
+                        _ownerEntity.Animator.SetFloat(ProjectileSpeedAnimHash, 1);
+                        _ownerEntity.SetPhysics(true);
+                        _ownerEntity.ChangeState(Enemy.States.Normal);
+                        return;
+                    }
                 }
             }
 
