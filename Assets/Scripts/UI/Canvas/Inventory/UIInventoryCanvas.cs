@@ -50,20 +50,23 @@ namespace QT.UI
 
             for (int i = 0; i < _itemFrames.Length; i++)
             {
-                _itemFrames[i].gameObject.SetActive(i < items.Length);
-                
                 if (i < items.Length)
                 {
                     var itemData = items[i].ItemGameData;
-                    var index = i;
-                    _itemFrames[i].OnClick = () =>
-                    {
-                        _itemName.text = itemData.Name;
-                        _itemDesc.text = itemData.Desc;
-                    };
+                    
+                    _itemFrames[i].SetItem(i, itemData);
+                }
+                else
+                {
+                    _itemFrames[i].ClearItem();
                 }
             }
         }
-
+        
+        private void OnClickItem(UIInventoryItem item)
+        {
+            _itemName.text = item.ItemGameData.Name;
+            _itemDesc.text = item.ItemGameData.Desc;
+        }
     }
 }
