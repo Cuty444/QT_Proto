@@ -21,6 +21,7 @@ namespace QT.InGame
             _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing);
             //_ownerEntity.SetAction(Player.ButtonActions.Throw, OnThrow);
             _ownerEntity.SetAction(Player.ButtonActions.Dodge, OnDodge);
+            _ownerEntity.SetAction(Player.ButtonActions.Teleport,OnTeleport);
 
             _moveDirection = Vector2.zero;
         }
@@ -31,7 +32,8 @@ namespace QT.InGame
             _ownerEntity.ClearAction(Player.ButtonActions.Swing);
             //_ownerEntity.ClearAction(Player.ButtonActions.Throw);
             _ownerEntity.ClearAction(Player.ButtonActions.Dodge);
-            
+            _ownerEntity.ClearAction(Player.ButtonActions.Teleport);
+
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
 
@@ -72,6 +74,14 @@ namespace QT.InGame
             if (isOn && _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).IsFull() && _moveDirection != Vector2.zero)
             {
                 (_ownerEntity.ChangeState(Player.States.Dodge) as PlayerDodgeState).InitializeState(_moveDirection);
+            }
+        }
+
+        protected virtual void OnTeleport(bool isOn)
+        {
+            if (isOn && !_ownerEntity.RigidEnemyCheck())
+            {
+                _ownerEntity.ChangeState(Player.States.Teleport);
             }
         }
     }

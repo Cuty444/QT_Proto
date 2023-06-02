@@ -36,18 +36,20 @@ namespace QT
         
         protected static List<string> ParseApplyValue(ref string applyValue)
         {
+            bool IsAlpha(char c) => c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
+            bool IsNumber(char c) => c is >= '0' and <= '9';
+
             var param = new List<string>();
 
-            StringBuilder value = new StringBuilder(applyValue.Length);
-            StringBuilder temp = new StringBuilder(20);
-            
-            for (int i = 0; i < applyValue.Length; i++)
-            {
-                char c = applyValue[i];
+            var value = new StringBuilder(applyValue.Length);
+            var temp = new StringBuilder(20);
 
-                bool isAlpha = c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
+            bool isLastCharIsAlpha = false;
+            foreach (var c in applyValue)
+            {
+                var isAlpha = IsAlpha(c);
                 
-                if (!isAlpha && c != '_')
+                if (!isAlpha && c != '_' && !(isLastCharIsAlpha && IsNumber(c)))
                 {
                     if (temp.Length > 0)
                     {
@@ -63,6 +65,8 @@ namespace QT
                 {
                     temp.Append(c);
                 }
+
+                isLastCharIsAlpha = isAlpha;
             }
 
             if (temp.Length > 0)

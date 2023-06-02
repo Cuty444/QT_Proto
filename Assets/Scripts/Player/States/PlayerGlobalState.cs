@@ -33,6 +33,10 @@ namespace QT.InGame
 
         private void OnAim(Vector2 aimPos)
         {
+            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Teleport)
+            {
+                return;
+            }
             var aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
             
             float flip = 180;

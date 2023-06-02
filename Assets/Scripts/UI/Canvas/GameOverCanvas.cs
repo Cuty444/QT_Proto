@@ -34,6 +34,7 @@ namespace QT.UI
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
+                SystemManager.Instance.ProjectileManager.ProjectileListClear();
                 SystemManager.Instance.LoadingManager.LoadScene(1, OnClose);
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();

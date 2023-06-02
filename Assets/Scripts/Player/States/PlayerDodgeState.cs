@@ -94,7 +94,10 @@ namespace QT.InGame
 
             var duration = _ownerEntity.GetStat(PlayerStats.DodgeDurationTime).Value;
 
-            _ownerEntity.StartCoroutine(WaitSecond(duration));
+            _ownerEntity.StartCoroutine( Util.UnityUtil.WaitForFunc(() =>
+            {
+                _ownerEntity.RevertToPreviousState();
+            },duration));
         }
         
         public override void ClearState()
@@ -103,13 +106,6 @@ namespace QT.InGame
             
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.IsDodge = false;
-        }
-        
-        IEnumerator WaitSecond(float time)
-        {
-            yield return new WaitForSeconds(time);
-            
-            _ownerEntity.RevertToPreviousState();
         }
     }
 }

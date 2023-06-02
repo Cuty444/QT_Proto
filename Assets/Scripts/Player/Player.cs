@@ -15,6 +15,7 @@ namespace QT.InGame
             Move,
             Swing,
             Throw,
+            Teleport,
             Dodge,
             Dead,
         }
@@ -73,7 +74,7 @@ namespace QT.InGame
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.CurrentRoomEnemyRegister.AddListener((enemyList) =>
             {
-                _enemyList = enemyList;
+                _enemyList.AddRange(enemyList);
             });
             _playerManager.PlayerMapPass.AddListener((isBool) =>
             {
@@ -101,7 +102,7 @@ namespace QT.InGame
             UpdateCoolTime();
         }
         
-        public void Hit(Vector2 dir, float power)
+        public void Hit(Vector2 dir, float power,AttackType attackType)
         {
             if (IsInvincible())
             {

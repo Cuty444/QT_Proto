@@ -19,6 +19,8 @@ namespace QT
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection);
 
         public void ResetBounceCount(int maxBounce);
+        
+        public void ResetProjectileDamage(int damage);
 
         public LayerMask GetLayerMask();
         
@@ -36,6 +38,11 @@ namespace QT
         public void UnRegister(IProjectile projectile)
         {
             _projectiles.Remove(projectile.ProjectileId);
+        }
+
+        public void ProjectileListClear()
+        {
+            _projectiles.Clear();
         }
         
         public void GetInRange(Vector2 origin, float range, float angle, Vector2 dir, ref List<IProjectile> outList, int layerMask)

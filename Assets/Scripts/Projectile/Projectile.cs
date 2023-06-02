@@ -61,7 +61,6 @@ namespace QT.InGame
         private float _reflectCorrection;
         private Transform _playerTransform;
 
-        private LayerMask _enemyLayerMask;
 
         private float _currentStretch;
 
@@ -70,7 +69,6 @@ namespace QT.InGame
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
             _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
             _trailRenderer = GetComponentInChildren<TrailRenderer>();
-            _enemyLayerMask = LayerMask.GetMask("Enemy");
         }
 
         private void OnEnable()
@@ -120,7 +118,7 @@ namespace QT.InGame
             SetOwnerColor();
         }
         
-        public void Hit(Vector2 dir, float newSpeed)
+        public void Hit(Vector2 dir, float newSpeed,AttackType attackType)
         {
             ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
         }
@@ -144,6 +142,11 @@ namespace QT.InGame
         public void ResetBounceCount(int maxBounce)
         {
             _bounceCount = _maxBounce = maxBounce;
+        }
+
+        public void ResetProjectileDamage(int damage)
+        {
+            _damage = damage;
         }
 
         public LayerMask GetLayerMask()
@@ -179,7 +182,7 @@ namespace QT.InGame
                 if (hit.collider.TryGetComponent(out IHitable hitable))
                 {
                     hitable.Hit(_direction, _damage);
-                    if((_bounceMask &_enemyLayerMask) != 0)
+                    if(_owner == ProjectileOwner.Player)
                     {
                         SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
                         SystemManager.Instance.SoundManager.RandomSoundOneShot(BallThrowHitSoundPath,3);

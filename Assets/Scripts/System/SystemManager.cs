@@ -42,8 +42,14 @@ namespace QT.Core
             _PostInitializeSystems();
             
             UIManager?.PostSystemInitialize();
+
+#if Testing
+
+            _debugConsole.SetActive(true);
+#else
+            _debugConsole.SetActive(false);   
+#endif
             
-            _debugConsole.SetActive(Debug.isDebugBuild);
         }
 
         private void InitializeSystems()
