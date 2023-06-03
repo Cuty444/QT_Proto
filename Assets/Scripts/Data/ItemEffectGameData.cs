@@ -11,6 +11,7 @@ namespace QT
             None,
             ResourceChange,
             PlayerStat,
+            Reverse,
         }
 
         public enum ApplyPoints
@@ -19,7 +20,9 @@ namespace QT
             OnCharging,
             OnGoldChanged,
             OnHpChanged,
-            OnSwing
+            OnSwing,
+            OnMovementSpdChanged,
+            OnChargeBounceCountChanged
         }
         
         public int Index { get; set; }
