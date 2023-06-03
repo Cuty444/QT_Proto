@@ -27,10 +27,10 @@ namespace QT.InGame
             playerManager.OnGoldValueChanged.AddListener((value) =>
                 InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnGoldChanged));
             
-            playerManager.Player.GetStat(PlayerStats.MovementSpd).OnValueChanged
+            _targetPlayer.GetStat(PlayerStats.MovementSpd).OnValueChanged
                 .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnMovementSpdChanged));
             
-            playerManager.Player.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
+            _targetPlayer.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
                 .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnChargeBounceCountChanged));
         }
 
