@@ -84,5 +84,10 @@ namespace QT
                 effect.RemoveEffect(player, this);
             }
         }
+
+        public int GetItemID()
+        {
+            return _itemDataId;
+        }
     }
 }

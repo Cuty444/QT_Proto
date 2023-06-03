@@ -15,6 +15,7 @@ namespace QT.InGame
             Dodge,
             Throw,
             Teleport,
+            Interaction,
         }
 
         public enum ValueActions //float 값으로 입력받는 액션
@@ -63,6 +64,7 @@ namespace QT.InGame
             SetButtonAction(inputActions.Player.Throw, ButtonActions.Throw);
             SetButtonAction(inputActions.Player.Dodge, ButtonActions.Dodge);
             SetButtonAction(inputActions.Player.Teleport, ButtonActions.Teleport);
+            SetButtonAction(inputActions.Player.Interaction, ButtonActions.Interaction);
 
             _camera = Camera.main;
         }

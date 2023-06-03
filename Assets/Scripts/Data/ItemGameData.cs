@@ -7,12 +7,12 @@ namespace QT
     {
         public enum GradeTypes
         {
+            Normal,
+            Rare,
+            Cursed,
             Hp,
             Gold,
             Weapon,
-            Normal,
-            Rare,
-            Cursed
         }
         
         public int Index { get; set; }

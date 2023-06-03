@@ -15,6 +15,8 @@ namespace QT.Core
         public PlayerManager PlayerManager { get; } = new();
         public ProjectileManager ProjectileManager { get; } = new();
 
+        public ItemDataManager ItemDataManager { get; } = new();
+
         public LoadingManager LoadingManager { get; } = new();
 
         public SoundManager SoundManager { get; } = new();
@@ -29,8 +31,9 @@ namespace QT.Core
             base.Awake();
             
             ResourceManager.Initialize();
+            ItemDataManager.Initialize();
             DataManager.Initialize();
-            
+
             InitializeSystems();
 
             UIManager?.Initialize();

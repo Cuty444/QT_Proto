@@ -47,6 +47,10 @@ namespace QT.Map
             _doorTransforms[2].gameObject.SetActive((mapDirection & MapDirection.Left) != 0);
             _doorTransforms[3].gameObject.SetActive((mapDirection & MapDirection.Right) != 0);
             _position = position;
+            if (TryGetComponent(out ShopMapData data))
+            {
+                data.MapPosition = position;
+            }
             _roomType = roomType;
             NormalDoorCreate();
         }
