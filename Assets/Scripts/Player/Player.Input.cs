@@ -44,6 +44,7 @@ namespace QT.InGame
 
         [HideInInspector] public bool IsDodge;
         [HideInInspector] public bool IsFlip;
+        [HideInInspector] public bool IsReverseLookDir = false;
         
         private void InitInputs()
         {

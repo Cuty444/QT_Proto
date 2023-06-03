@@ -52,6 +52,9 @@ namespace QT
                 case ItemEffectGameData.ApplyTypes.PlayerStat:
                     effect = new ItemEffectStat(effectData);
                     break;
+                case ItemEffectGameData.ApplyTypes.Reverse:
+                    effect = new ItemEffectReverse(effectData);
+                    break;
                 default:
                     return;
             }
