@@ -1,12 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using QT.Core;
-using QT.Map;
-using QT.Core.Map;
-using QT.InGame;
-using TMPro;
 using UnityEngine;
 
 namespace QT.UI
@@ -16,15 +9,22 @@ namespace QT.UI
         [SerializeField] private GameObject _inventoryGameobject;
         [SerializeField] private Transform _itemListParents;
 
-        [SerializeField] private TextMeshProUGUI _itemName;
-        [SerializeField] private TextMeshProUGUI _itemDesc;
+        [SerializeField] private UIInventoryDesc _desc;
         
         private UIInventoryItem[] _itemFrames;
+
+        [SerializeField] private UITweenAnimator _popAnimation;
+        [SerializeField] private UITweenAnimator _releaseAnimation;
+
+        private bool _isOpen = false;
         
         public override void PostSystemInitialize()
         {
             _itemFrames = _itemListParents.GetComponentsInChildren<UIInventoryItem>();
+            
             gameObject.SetActive(true);
+            _inventoryGameobject.SetActive(false);
+            _desc.Hide();
         }
 
         private void Update()
@@ -36,12 +36,30 @@ namespace QT.UI
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                _inventoryGameobject.SetActive(!_inventoryGameobject.activeInHierarchy);
-                if (_inventoryGameobject.activeInHierarchy)
+                _isOpen = !_isOpen;
+
+                StopAllCoroutines();
+                if (_isOpen)
                 {
                     SetInventoryUI();
+                    _inventoryGameobject.SetActive(true);
+                    _popAnimation.ReStart();
+                }
+                else
+                {
+                    StartCoroutine(CloseCorutine());
                 }
             }
+        }
+
+        private IEnumerator CloseCorutine()
+        {
+            _releaseAnimation.ReStart();
+            _desc.Hide();
+            
+            yield return new WaitForSeconds(_releaseAnimation.SequenceLength);
+            
+            _inventoryGameobject.SetActive(false);
         }
 
         private void SetInventoryUI()
@@ -50,20 +68,31 @@ namespace QT.UI
 
             for (int i = 0; i < _itemFrames.Length; i++)
             {
-                _itemFrames[i].gameObject.SetActive(i < items.Length);
-                
                 if (i < items.Length)
                 {
                     var itemData = items[i].ItemGameData;
-                    var index = i;
-                    _itemFrames[i].OnClick = () =>
-                    {
-                        _itemName.text = itemData.Name;
-                        _itemDesc.text = itemData.Desc;
-                    };
+                    
+                    _itemFrames[i].SetItem(i, itemData);
                 }
+                else
+                {
+                    _itemFrames[i].ClearItem();
+                }
+                
+                _itemFrames[i].OnClick = OnClickItem;
             }
         }
 
+        private void OnClickItem(UIInventoryItem item)
+        {
+            if (item.ItemGameData != null)
+            {
+                _desc.Show(item);
+            }
+            else
+            {
+                _desc.Hide();
+            }
+        }
     }
 }

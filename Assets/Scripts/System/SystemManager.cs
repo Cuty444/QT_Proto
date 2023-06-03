@@ -136,11 +136,8 @@ namespace QT.Core
 
                 var plusStat = stat.Value - stat.BaseValue;
 
-                //if (plusStat != 0)
-                {
-                    style.normal.textColor = plusStat < 0 ? Color.red : Color.cyan;
-                    GUI.Label(new Rect(190, y, 20, 20), $"{stat.Value - stat.BaseValue}", style);
-                }
+                style.normal.textColor = plusStat == 0 ? Color.gray: (plusStat < 0 ? Color.red : Color.cyan);
+                GUI.Label(new Rect(190, y, 20, 20), $"{stat.Value - stat.BaseValue}", style);
             }
         }
 #endif
