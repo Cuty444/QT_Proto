@@ -69,6 +69,9 @@ namespace QT.Map
             {
                 _playerManager.Player.transform.position = _doorExitTransforms[3].position;
             }
+
+            Camera.main.GetComponent<PlayerChasingCamera>().SetBeforePosition(new Vector3(transform.position.x,
+                transform.position.y, Camera.main.transform.position.z));
         }
 
         public void RoomPlay(Vector2Int position)
