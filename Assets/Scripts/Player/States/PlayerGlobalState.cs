@@ -38,6 +38,11 @@ namespace QT.InGame
                 return;
             }
             var aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
+
+            if (_ownerEntity.IsReverseLookDir)
+            {
+                aimDir *= -1;
+            }
             
             float flip = 180;
             if (_ownerEntity.IsDodge)

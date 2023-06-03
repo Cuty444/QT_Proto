@@ -62,11 +62,12 @@ namespace QT.InGame
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
-            Inventory = new Inventory(this);
             
             InitInputs();
             InitStats();
             EffectSetup();
+            
+            Inventory = new Inventory(this);
             
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
@@ -82,8 +83,8 @@ namespace QT.InGame
             });
             _isEnterDoor = true;
             
-            _playerManager.GoldValueChanged.Invoke(_goldCost);
-            _playerManager.GoldValueChanged.AddListener((value) =>
+            _playerManager.OnGoldValueChanged.Invoke(_goldCost);
+            _playerManager.OnGoldValueChanged.AddListener((value) =>
             {
                 _goldCost = value;
             });

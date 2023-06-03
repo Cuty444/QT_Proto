@@ -63,7 +63,7 @@ namespace QT
                 return;
             
             _playerManager.Player.Inventory.AddItem(ItemID);
-            _playerManager.GoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);
+            _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);
             Destroy(gameObject);
         }
     }

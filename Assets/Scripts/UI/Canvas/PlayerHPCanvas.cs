@@ -33,7 +33,7 @@ namespace QT.UI
 
         private void Start()
         {
-            SystemManager.Instance.PlayerManager.GoldValueChanged.AddListener(SetGoldText);
+            SystemManager.Instance.PlayerManager.OnGoldValueChanged.AddListener(SetGoldText);
         }
 
         public void SetHp(Status hp)

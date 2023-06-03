@@ -11,6 +11,7 @@ namespace QT
             None,
             ResourceChange,
             PlayerStat,
+            Reverse,
         }
 
         public enum ApplyPoints
@@ -19,7 +20,9 @@ namespace QT
             OnCharging,
             OnGoldChanged,
             OnHpChanged,
-            OnSwing
+            OnSwing,
+            OnMovementSpdChanged,
+            OnChargeBounceCountChanged
         }
         
         public int Index { get; set; }
@@ -48,6 +51,9 @@ namespace QT
             {
                 case ItemEffectGameData.ApplyTypes.PlayerStat:
                     effect = new ItemEffectStat(effectData);
+                    break;
+                case ItemEffectGameData.ApplyTypes.Reverse:
+                    effect = new ItemEffectReverse(effectData);
                     break;
                 default:
                     return;

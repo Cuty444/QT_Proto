@@ -21,7 +21,7 @@ namespace QT.InGame
             _ownerEntity.BallObject.localPosition = Vector3.up * _ownerEntity.BallHeightMin;
             _ownerEntity.HpCanvas.gameObject.SetActive(false);
             PlayerManager _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.GoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() + _ownerEntity.RandomGoldDrop());
+            _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() + _ownerEntity.RandomGoldDrop());
         }
     }
 }

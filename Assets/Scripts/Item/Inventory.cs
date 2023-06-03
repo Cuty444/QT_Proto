@@ -10,7 +10,7 @@ namespace QT.InGame
     {
         private Player _targetPlayer;
         private List<Item> _items = new List<Item>();
-
+        
         public Inventory(Player target)
         {
             _targetPlayer = target;
@@ -20,7 +20,18 @@ namespace QT.InGame
         private void SetApplyPointEvents()
         {
             var playerManager = SystemManager.Instance.PlayerManager;
-            playerManager.OnDamageEvent.AddListener((dir, power) => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnHpChanged));
+
+            playerManager.OnDamageEvent.AddListener((dir, power) =>
+                InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnHpChanged));
+            
+            playerManager.OnGoldValueChanged.AddListener((value) =>
+                InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnGoldChanged));
+            
+            // _targetPlayer.GetStat(PlayerStats.MovementSpd).OnValueChanged
+            //     .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnMovementSpdChanged));
+            //
+            // _targetPlayer.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
+            //     .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnChargeBounceCountChanged));
         }
 
         private void InvokeApplyPoint(ItemEffectGameData.ApplyPoints applyPoints)
