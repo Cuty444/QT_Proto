@@ -123,6 +123,11 @@ namespace QT.InGame
         {
             return _goldCost > cost;
         }
+
+        public bool GetHpComparision(int hpCost)
+        {
+            return GetStatus(PlayerStats.HP) > hpCost;
+        }
         
     }
 }
