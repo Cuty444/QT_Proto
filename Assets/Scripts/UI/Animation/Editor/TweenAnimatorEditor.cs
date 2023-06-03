@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using DG.Tweening;
 using DG.DOTweenEditor;
 using UnityEngine;
 using UnityEditor;
@@ -16,11 +18,16 @@ namespace QT
 
             bool isPlaying = EditorApplication.isPlaying;
             
-            if (GUILayout.Button("¿Áª˝"))
+            
+            if (GUILayout.Button("Ïû¨ÏÉù"))
             {
                 if (!isPlaying)
                 {
-                    DOTweenEditorPreview.PrepareTweenForPreview((target as TweenAnimator).Sequence, true, false);
+                    //DOTweenEditorPreview.Stop(true);
+                    (target as TweenAnimator).BakeSeqence();
+                    
+                     var sequence = (Sequence)typeof(TweenAnimator).GetField("_sequence", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default)?.GetValue(target);
+                    DOTweenEditorPreview.PrepareTweenForPreview(sequence, true, false);
                     DOTweenEditorPreview.Start();
                 }
                 else
@@ -28,11 +35,11 @@ namespace QT
                     (target as TweenAnimator).ReStart();
                 }
             }
-            if (GUILayout.Button(isPlaying ? "¿ÁΩ√¿€" : "√≥¿Ω√≥∑≥"))
+            if (GUILayout.Button(isPlaying ? "Ïû¨ÏãúÏûë" : "Ï≤òÏùåÏ≤òÎüº"))
             {
                 if (!isPlaying)
                 {
-                    DOTweenEditorPreview.Stop(true, true);
+                    DOTweenEditorPreview.Stop(true);
                 }
                 else
                 {

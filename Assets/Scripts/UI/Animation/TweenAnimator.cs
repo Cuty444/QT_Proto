@@ -18,7 +18,7 @@ namespace QT
     public class TweenSequenceElement
     {
         public TweenMode Mode;
-        public Transform Target;
+        public RectTransform Target;
         public Ease Ease = Ease.Linear;
         public Vector3 TweenTarget;
         public float Duration = 1;
@@ -39,38 +39,36 @@ namespace QT
       
         
         private Sequence _sequence;
-        public Sequence Sequence
-        {
-            get
-            {
-                if (_sequence == null)
-                {
-                    MakeSeqence();
-                }
-
-                return _sequence;
-            }
-        }
         
         private void Awake()
         {
             if (PlayOnAwake)
             {
-                Sequence.Play();
+                ReStart();
             }
         }
 
         public void ReStart()
         {
-            Sequence.Restart();
+            if (_sequence == null)
+            {
+                BakeSeqence();
+            }
+            
+            _sequence.Restart();
         }
 
         public void Rewind()
         {
-            Sequence.Rewind();
+            if (_sequence == null)
+            {
+                BakeSeqence();
+            }
+            
+            _sequence.Rewind();
         }
 
-        private void MakeSeqence()
+        public void BakeSeqence()
         {
             _sequence = DOTween.Sequence().SetUpdate(IgnoreTimeScale).SetRecyclable(true).SetAutoKill(false).Pause();
 
@@ -82,11 +80,11 @@ namespace QT
                     switch (elements.Mode)
                     {
                         case TweenMode.DoMove:
-                            seq.Join(elements.Target.DOMove(elements.TweenTarget, elements.Duration)
+                            seq.Join(elements.Target.DOAnchorPos(elements.TweenTarget, elements.Duration)
                                 .SetEase(elements.Ease));
                             break;
                         case TweenMode.DoRotate:
-                            seq.Join(elements.Target.DORotate(elements.TweenTarget, elements.Duration)
+                            seq.Join(elements.Target.DOLocalRotate(elements.TweenTarget, elements.Duration)
                                 .SetEase(elements.Ease));
                             break;
                         case TweenMode.DoScale:
