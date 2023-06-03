@@ -24,6 +24,9 @@ namespace QT.InGame
             playerManager.OnDamageEvent.AddListener((dir, power) =>
                 InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnHpChanged));
             
+            playerManager.OnGoldValueChanged.AddListener((value) =>
+                InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnGoldChanged));
+            
             playerManager.Player.GetStat(PlayerStats.MovementSpd).OnValueChanged
                 .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnMovementSpdChanged));
             

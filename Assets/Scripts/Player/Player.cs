@@ -82,8 +82,8 @@ namespace QT.InGame
             });
             _isEnterDoor = true;
             
-            _playerManager.GoldValueChanged.Invoke(_goldCost);
-            _playerManager.GoldValueChanged.AddListener((value) =>
+            _playerManager.OnGoldValueChanged.Invoke(_goldCost);
+            _playerManager.OnGoldValueChanged.AddListener((value) =>
             {
                 _goldCost = value;
             });

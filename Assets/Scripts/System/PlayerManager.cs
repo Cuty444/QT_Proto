@@ -21,7 +21,7 @@ namespace QT.Core
         public UnityEvent PlayerThrowProjectileReleased { get; } = new();
         public UnityEvent<Vector2, float> OnDamageEvent { get; } = new();
         
-        public UnityEvent<int> GoldValueChanged { get; } = new();
+        public UnityEvent<int> OnGoldValueChanged { get; } = new();
 
         public Player Player { get; private set; }
         
