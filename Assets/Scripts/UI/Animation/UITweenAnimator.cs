@@ -30,14 +30,16 @@ namespace QT
         public List<TweenSequenceElement> Elements;
     }
 
-    public class TweenAnimator : MonoBehaviour
+    public class UITweenAnimator : MonoBehaviour
     {
         public bool PlayOnAwake;
         public bool IgnoreTimeScale;
+        public bool IsLoop;
+
+        public float SequenceLength { get; private set; }
 
         [field: SerializeField] public List<TweenSequence> Sequences { get; private set; } = new();
       
-        
         private Sequence _sequence;
         
         private void Awake()
@@ -58,23 +60,31 @@ namespace QT
             _sequence.Restart();
         }
 
-        public void Rewind()
+        public void PlayBackwards()
         {
             if (_sequence == null)
             {
                 BakeSeqence();
             }
             
-            _sequence.Rewind();
+            _sequence.PlayBackwards();
         }
 
         public void BakeSeqence()
         {
             _sequence = DOTween.Sequence().SetUpdate(IgnoreTimeScale).SetRecyclable(true).SetAutoKill(false).Pause();
+            SequenceLength = 0;
 
+            if (IsLoop)
+            {
+                _sequence.SetLoops(-1);
+            }
+            
             foreach (var sequence in Sequences)
             {
                 var seq = DOTween.Sequence();
+                float duration = 0;
+                
                 foreach (var elements in sequence.Elements)
                 {
                     switch (elements.Mode)
@@ -92,8 +102,15 @@ namespace QT
                                 .SetEase(elements.Ease));
                             break;
                     }
+
+                    if (elements.Duration > duration)
+                    {
+                        duration = elements.Duration;
+                    }
                 }
+
                 _sequence.Append(seq);
+                SequenceLength += duration;
             }
         }
     }
