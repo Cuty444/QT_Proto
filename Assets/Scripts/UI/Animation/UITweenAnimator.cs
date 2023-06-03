@@ -65,6 +65,7 @@ namespace QT
             if (_sequence == null)
             {
                 BakeSeqence();
+                _sequence.Rewind();
             }
             
             _sequence.PlayBackwards();

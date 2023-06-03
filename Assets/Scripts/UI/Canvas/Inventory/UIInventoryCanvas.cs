@@ -24,6 +24,7 @@ namespace QT.UI
             
             gameObject.SetActive(true);
             _inventoryGameobject.SetActive(false);
+            _desc.Hide();
         }
 
         private void Update()
@@ -72,19 +73,26 @@ namespace QT.UI
                     var itemData = items[i].ItemGameData;
                     
                     _itemFrames[i].SetItem(i, itemData);
-                    _itemFrames[i].OnClick = OnClickItem;
                 }
                 else
                 {
                     _itemFrames[i].ClearItem();
-                    _itemFrames[i].OnClick = null;
                 }
+                
+                _itemFrames[i].OnClick = OnClickItem;
             }
         }
 
         private void OnClickItem(UIInventoryItem item)
         {
-            _desc.Show(item);
+            if (item.ItemGameData != null)
+            {
+                _desc.Show(item);
+            }
+            else
+            {
+                _desc.Hide();
+            }
         }
     }
 }

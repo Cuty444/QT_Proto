@@ -11,10 +11,7 @@ namespace QT
         private Button _button;
         
         public ItemGameData ItemGameData { get; private set; }
-        
         public UnityAction<UIInventoryItem> OnClick { get; set; }
-
-        private int _inventoryIndex;
         
         private void Awake()
         {
@@ -27,7 +24,6 @@ namespace QT
         public async void SetItem(int index, ItemGameData data)
         {
             ItemGameData = data;
-            _inventoryIndex = index;
 
             var sprite = await SystemManager.Instance.ResourceManager.LoadAsset<Sprite>(data.ItemIconPath, true);
 
@@ -44,7 +40,5 @@ namespace QT
         {
             OnClick?.Invoke(this);
         }
-        
-        
     }
 }
