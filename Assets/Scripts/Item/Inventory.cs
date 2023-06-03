@@ -20,7 +20,15 @@ namespace QT.InGame
         private void SetApplyPointEvents()
         {
             var playerManager = SystemManager.Instance.PlayerManager;
-            playerManager.OnDamageEvent.AddListener((dir, power) => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnHpChanged));
+
+            playerManager.OnDamageEvent.AddListener((dir, power) =>
+                InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnHpChanged));
+            
+            playerManager.Player.GetStat(PlayerStats.MovementSpd).OnValueChanged
+                .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnMovementSpdChanged));
+            
+            playerManager.Player.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
+                .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnChargeBounceCountChanged));
         }
 
         private void InvokeApplyPoint(ItemEffectGameData.ApplyPoints applyPoints)

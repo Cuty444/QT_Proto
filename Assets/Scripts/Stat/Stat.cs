@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace QT
 {
@@ -23,6 +24,7 @@ namespace QT
         protected bool _isDirty;
 
         public static implicit operator float(Stat stat) => stat.Value;
+        public UnityEvent OnValueChanged { get; } = new();
         
         public Stat(float baseValue)
         {
@@ -76,6 +78,8 @@ namespace QT
 
             _value = (float) Math.Round(_value, 4);
             _isDirty = false;
+            
+            OnValueChanged.Invoke();
         }
     }
 }
