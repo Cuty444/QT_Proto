@@ -225,6 +225,37 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!1 &2416421081778518698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 866138246295670245}
+  m_Layer: 8
+  m_Name: TeleporLine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &866138246295670245
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2416421081778518698}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7781006472481742598}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2732374406405681312
 GameObject:
   m_ObjectHideFlags: 0
@@ -926,6 +957,7 @@ Transform:
   - {fileID: 9189640144716347242}
   - {fileID: 5859357442242790302}
   - {fileID: 5797891430121522041}
+  - {fileID: 866138246295670245}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -984,6 +1016,7 @@ MonoBehaviour:
   _batTransform: {fileID: 7781006472145116645}
   _batSpriteRenderer: {fileID: 7781006471382150582}
   _trailRenderer: {fileID: 1174900424466493601}
+  <TeleportLineTransform>k__BackingField: {fileID: 866138246295670245}
   <DamageImpulseSource>k__BackingField: {fileID: 4929062616781592802}
   <AttackImpulseSource>k__BackingField: {fileID: 1385383193845319107}
   _dashLRTransform: {fileID: 8372018800310822414}
@@ -999,7 +1032,10 @@ MonoBehaviour:
   _swingSlashParticle: {fileID: 1407635080818322637}
   IsDodge: 0
   IsFlip: 0
+  IsReverseLookDir: 0
   _enemyList: []
+  _rigidTeleportEnemy: {fileID: 0}
+  _rigidTargetEnemy: {fileID: 0}
 --- !u!114 &7971022190768053407
 MonoBehaviour:
   m_ObjectHideFlags: 0

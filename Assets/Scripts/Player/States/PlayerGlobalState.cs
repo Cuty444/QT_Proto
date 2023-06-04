@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
 using QT.UI;
@@ -13,9 +14,13 @@ namespace QT.InGame
     {
         private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
         private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
-        
+        private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
+
         private PlayerHPCanvas _playerHpCanvas;
 
+        private List<LineRenderer> _teleportLines = new();
+
+        private Dictionary<LineRenderer, Enemy> _teleportEnemyCheckDictionary = new Dictionary<LineRenderer, Enemy>();
 
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
@@ -23,9 +28,14 @@ namespace QT.InGame
             _playerHpCanvas.gameObject.SetActive(true);
             
             _playerHpCanvas.SetHp(_ownerEntity.GetStatus(PlayerStats.HP));
+            SystemManager.Instance.ResourceManager.CacheAsset(TeleportLinePath);
 
             _ownerEntity.SetBatActive(false);
             SystemManager.Instance.PlayerManager.OnDamageEvent.AddListener(OnDamage);
+            SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.AddListener(arg0 => TeleportLineClear());
+            SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
+            SystemManager.Instance.PlayerManager.EnemyDeathStateChanged.AddListener(EnemyNotRigidState);
+            SystemManager.Instance.PlayerManager.EnemyProjectileStateChanged.AddListener(EnemyNotRigidState);
             
             _ownerEntity.OnAim.AddListener(OnAim);
         }
@@ -69,8 +79,14 @@ namespace QT.InGame
             _ownerEntity.Animator.SetFloat(AnimationMouseRotateHash, angle / 180 * 4);
             _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
         }
-        
-        
+
+
+        public override void FixedUpdateState()
+        {
+            base.FixedUpdateState();
+            SetTeleportLines();
+        }
+
         private void OnDamage(Vector2 dir, float damage)
         {
             _ownerEntity.Animator.SetTrigger(AnimationRigidHash);
@@ -94,6 +110,102 @@ namespace QT.InGame
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             _ownerEntity.ChangeState(Player.States.Dead);
+        }
+
+        private void TeleportLineClear()
+        {
+            foreach (var line in _teleportLines)
+            {
+                line.positionCount = 0;
+                SystemManager.Instance.ResourceManager.ReleaseObject(TeleportLinePath,line);
+            }
+            
+            _teleportLines.Clear();
+            _teleportEnemyCheckDictionary.Clear();
+            SetTeleportLineObjects();
+            Debug.Log("Line Clear");
+        }
+        
+        private async void SetTeleportLineObjects()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                var line = await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(TeleportLinePath,_ownerEntity.TeleportLineTransform);
+                line.positionCount = 0;
+                _teleportLines.Add(line);
+            }
+        }
+        
+        private void SetTeleportLines()
+        {
+            var list = _ownerEntity.GetRigidEnemyList(); 
+            int enemyIndex = 0;
+            int i = 0;
+            for (; i < _teleportLines.Count; i++)
+            {
+                if (enemyIndex >= list.Item2.Count)
+                    break;
+                
+                SetTeleportLine(_teleportLines[i],list.Item2[enemyIndex].Position, true);
+                if (_teleportEnemyCheckDictionary.ContainsKey(_teleportLines[i]))
+                {
+                    _teleportEnemyCheckDictionary[_teleportLines[i]] = list.Item2[enemyIndex++];
+                }
+                else
+                {
+                    _teleportEnemyCheckDictionary.Add(_teleportLines[i],list.Item2[enemyIndex++]);
+                }
+            }
+
+            for (enemyIndex = 0; i < _teleportLines.Count; i++)
+            {
+                if (enemyIndex >= list.Item1.Count)
+                    break;
+                
+                SetTeleportLine(_teleportLines[i],list.Item1[enemyIndex].Position,false);
+                if (_teleportEnemyCheckDictionary.ContainsKey(_teleportLines[i]))
+                {
+                    _teleportEnemyCheckDictionary[_teleportLines[i]] = list.Item1[enemyIndex++];
+                }
+                else
+                {
+                    _teleportEnemyCheckDictionary.Add(_teleportLines[i], list.Item1[enemyIndex++]);
+                }
+            }
+        }
+
+        private void EnemyNotRigidState(Enemy enemy)
+        {
+            if (_teleportEnemyCheckDictionary.ContainsValue(enemy))
+            {
+                foreach (var data in _teleportEnemyCheckDictionary)
+                {
+                    if (data.Value == enemy)
+                    {
+                        data.Key.positionCount = 0;
+                        _teleportEnemyCheckDictionary.Remove(data.Key);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        private void SetTeleportLine(LineRenderer lineRenderer,Vector2 position,bool isDistance)
+        {
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0,_ownerEntity.transform.position);
+            lineRenderer.SetPosition(1,position);
+            if (isDistance)
+            {
+                lineRenderer.colorGradient.alphaKeys[0] = new GradientAlphaKey(1f, 0f);
+                lineRenderer.colorGradient.alphaKeys[1] = new GradientAlphaKey(1f, 1f);
+            }
+            else
+            {
+                lineRenderer.colorGradient.alphaKeys[0] = new GradientAlphaKey(0.66f, 0f);
+                lineRenderer.colorGradient.alphaKeys[1] = new GradientAlphaKey(0.66f, 1f);
+                
+            }
         }
         
     }
