@@ -1,91 +1,95 @@
 using System.Collections;
 using System.Collections.Generic;
-using QT.Core;
-using Unity.VisualScripting;
+using FMOD.Studio;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace QT
+namespace QT.Sound
 {
+
     public class SoundManager
     {
+        private StudioEventEmitter _bgmEmitter;
+        
+        private Bus _masterBus;
+        private Bus _bgmBus;
+        private Bus _sfxBus;
+
+        private Dictionary<EventReference, StudioEventEmitter> _sfxLoopDictionary =
+            new Dictionary<EventReference, StudioEventEmitter>();
+
         private Transform _poolRootTransform;
 
-        private AudioSource _audioSource;
-        private const string AudioObjectPath = "Assets/Sound/Prefabs/AudioSource.prefab";
-        private const string Wav = ".wav";
-
-        private List<AsyncOperationHandle> _soundSourceList = new List<AsyncOperationHandle>();
-        private Dictionary<string, AudioSource> _audioSourceDictionary = new Dictionary<string, AudioSource>();
-        public void Initialize(AudioSource audioSource)
+        [HideInInspector] public SoundPathData SoundData;
+        public void Initialize()
         {
             _poolRootTransform = new GameObject("AudioSourcePoolRoot").transform;
-            GameObject.DontDestroyOnLoad(_poolRootTransform);
-            _audioSource = audioSource;
-        }
-
-
-        public void PlayOneShot(string soundPath)
-        {
-            LoadAudioClip(soundPath);
-        }
-
-        public void RandomSoundOneShot(string soundPath, int max)
-        {
-            LoadAudioClip(soundPath + Random.Range(1, max + 1) + Wav);
-        }
-
-        public void ControlAudioPlay(string soundPath ,bool loop = false)
-        {
-            if (_audioSourceDictionary.TryGetValue(soundPath, out var value))
+            Addressables.LoadAssetAsync<SoundPathData>("Assets/Data/SoundPathData.asset").Completed += (obj) =>
             {
-                value.loop = loop;
+                SoundData = obj.Result;
+                //_masterBus = RuntimeManager.GetBus(SoundData.Bank[0]); //TODO : Bank 상의 후 넣어야함
+                //_bgmBus = RuntimeManager.GetBus(SoundData.Bank[1]);
+                //_sfxBus = RuntimeManager.GetBus(SoundData.Bank[2]);
+            };
+            var bgm = GameObject.Instantiate(new GameObject(), _poolRootTransform);
+            _bgmEmitter = bgm.AddComponent<StudioEventEmitter>();
+            bgm.name = "BGMEmitter";
+            GameObject.DontDestroyOnLoad(_poolRootTransform);
+        }
+
+
+        public void PlayOneShot(EventReference data,Vector3 position = default)
+        {
+            RuntimeManager.PlayOneShot(data, position == default ? Camera.main.transform.position : position);
+        }
+
+        public void PlaySFX(EventReference data)
+        {
+            if (_sfxLoopDictionary.TryGetValue(data, out var value))
+            {
+                value.ChangeEvent(data);
                 value.Play();
             }
             else
             {
-                InstateAudioSource(soundPath);
+                var sfx = GameObject.Instantiate(new GameObject(), _poolRootTransform);
+                sfx.name = data.Path;
+                var sfxEmitter = sfx.AddComponent<StudioEventEmitter>();
+                _sfxLoopDictionary.Add(data,sfxEmitter);
+                sfxEmitter.ChangeEvent(data);
+                sfxEmitter.Play();
+            }
+        }
+        
+        public void StopSFX(EventReference data,bool fadeOut = false)
+        {
+            if (_sfxLoopDictionary.ContainsKey(data))
+            {
+                _sfxLoopDictionary[data].AllowFadeout = fadeOut;
+                _sfxLoopDictionary[data].Stop();
             }
         }
 
-        public void ControlAudioStop(string soundPath)
+        public void PlayBGM(EventReference data, bool isFade = false)
         {
-            if (_audioSourceDictionary.ContainsKey(soundPath))
-            {
-                _audioSourceDictionary[soundPath].Stop();
-            }
+            ChangeBGM(data, isFade);
+            _bgmEmitter.Play();
         }
+        public void SetPauseBGM(bool pause) => _bgmEmitter.SetPause(pause);
 
-        private async void InstateAudioSource(string soundPath,bool loop = false)
+        public void ChangeBGM(EventReference data,bool isFade = false)
         {
-            var audioSource = await SystemManager.Instance.ResourceManager.GetFromPool<AudioSource>(AudioObjectPath);
-            audioSource.transform.SetParent(_poolRootTransform);
-            Addressables.LoadAssetAsync<AudioClip>(soundPath).Completed += (obj) =>
-            {
-                audioSource.clip = obj.Result;
-                audioSource.loop = loop;
-                audioSource.Play();
-                _audioSourceDictionary.Add(soundPath,audioSource);
-            };
+            _bgmEmitter.ChangeEvent(data,isFade);
         }
-
-        private void LoadAudioClip(string soundPath)
+        
+        public void StopBGM(bool fadeOut = false)
         {
-            Addressables.LoadAssetAsync<AudioClip>(soundPath).Completed += (obj) =>
-            {
-                _soundSourceList.Add(obj);
-                _audioSource.PlayOneShot(obj.Result);
-            };
+            _bgmEmitter.AllowFadeout = fadeOut;
+            _bgmEmitter.Stop();
         }
-
-        public void ReleaseAudio()
-        {
-            foreach (var data in _soundSourceList)
-            {
-                Addressables.Release(data);
-            }
-            _soundSourceList.Clear();
-        }
+        public void SetMasterVolume(float value) => _masterBus.setVolume(value);
+        public void SetBGMVolume(float value) => _bgmBus.setVolume(value);
+        public void SetSFXVolume(float value) => _sfxBus.setVolume(value);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.InGame
@@ -11,8 +12,6 @@ namespace QT.InGame
     {
         private const string HitEffectPath = "Effect/Prefabs/FX_M_Hit.prefab";
         private const string ColliderDustEffectPath = "Effect/Prefabs/FX_Collider_Dust.prefab";
-        private const string BallBounceSoundPath = "Assets/Sound/QT/Assets/Ball_Bounce_";
-        private const string BallThrowHitSoundPath = "Assets/Sound/QT/Assets/Player_Throw_Hit_";
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
@@ -64,11 +63,14 @@ namespace QT.InGame
 
         private float _currentStretch;
 
+        private SoundManager _soundManager;
+        
         private void Awake()
         {
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
             _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
             _trailRenderer = GetComponentInChildren<TrailRenderer>();
+            _soundManager = SystemManager.Instance.SoundManager;
         }
 
         private void OnEnable()
@@ -185,12 +187,12 @@ namespace QT.InGame
                     if(_owner == ProjectileOwner.Player)
                     {
                         SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
-                        SystemManager.Instance.SoundManager.RandomSoundOneShot(BallThrowHitSoundPath,3);
+                        _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
                     }
                 }
                 else
                 {
-                    SystemManager.Instance.SoundManager.RandomSoundOneShot(BallBounceSoundPath,5);
+                    _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX,hit.transform.position);
                 }
                 
                 _ballTransform.up = hit.normal;

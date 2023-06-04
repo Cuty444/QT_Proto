@@ -1,5 +1,6 @@
 using QT.Core;
 using QT.Core.Data;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.InGame
@@ -8,13 +9,15 @@ namespace QT.InGame
     public class EnemyRigidState : FSMState<Enemy>
     {
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
-        private const string MonsterStunSoundPath = "Assets/Sound/QT/Assets/Monster1_Stun.wav";
 
         private float _rigidStartTime;
         private float _rigidTime;
 
+        private SoundManager _soundManager;
+
         public EnemyRigidState(IFSMEntity owner) : base(owner)
         {
+            _soundManager = SystemManager.Instance.SoundManager;
         }
 
         public override void InitializeState()
@@ -26,7 +29,7 @@ namespace QT.InGame
             {
                 _ownerEntity.OnHitEvent.AddListener(OnDamage);
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
-                SystemManager.Instance.SoundManager.PlayOneShot(MonsterStunSoundPath);
+                _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
                 _ownerEntity.MaterialChanger.SetRigidMaterial();
                 
                 SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
