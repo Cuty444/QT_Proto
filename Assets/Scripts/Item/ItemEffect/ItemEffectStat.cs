@@ -91,8 +91,6 @@ namespace QT
                 
                 Stat stat = player.GetStat(param.Item1);
 
-                stat.RemoveAllModifiersFromSource(source);
-                
                 if(stat is Status)
                 {
                     value = param.Item2 == StatValueType.Base ? (stat as Status).Value : (stat as Status).StatusValue;
