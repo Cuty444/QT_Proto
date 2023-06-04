@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using QT.InGame;
+using QT.Sound;
 using QT.UI;
 using UnityEngine;
 
@@ -40,7 +41,7 @@ namespace QT.Core
             
             LoadingManager.Initialize();
             
-            SoundManager.Initialize(GetComponent<AudioSource>());
+            SoundManager.Initialize();
             
             _PostInitializeSystems();
             

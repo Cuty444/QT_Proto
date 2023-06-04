@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
-using QT.Core.Data;
+using QT.Sound;
 
 namespace QT.InGame
 {
@@ -11,11 +11,7 @@ namespace QT.InGame
         private const string HitLinePath = "Prefabs/HitLine.prefab";
         private const string SwingProjectileHitPath = "Effect/Prefabs/FX_Ball_Attack.prefab";
         private const string SwingBatHitPath = "Effect/Prefabs/FX_Bat_Hit.prefab";
-        private const string SwingBatBallHitSoundPath = "Assets/Sound/QT/Assets/Player_Ball_Attack_2.wav";
-        private const string SwingBatEnemyHitSoundPath = "Assets/Sound/QT/Assets/Player_Swing_Hit.wav";
-        private const string SwingMissSoundPath = "Assets/Sound/QT/Assets/Player_Swing_Swing_";
-        private const string ChargeSoundPath = "Assets/Sound/QT/Assets/Player_Charge.wav";
-        private const string ChargeEndSoundPath = "Assets/Sound/QT/Assets/GameCharge_End_";
+        
         private const int Segments = 32;
         private const int MaxLineCount = 10;
 
@@ -59,13 +55,14 @@ namespace QT.InGame
             {
                 _isCharged = false;
                 _chargingTime = 0;
+                _soundManager.PlaySFX(_soundManager.SoundData.ChargeSFX);
             }
         }
 
         public override void ClearState()
         {
             base.ClearState();
-            _soundManager.ControlAudioStop(ChargeSoundPath);
+            _soundManager.StopSFX(_soundManager.SoundData.ChargeSFX);
             _projectiles.Clear();
             foreach (var line in _lines)
             {
@@ -146,16 +143,16 @@ namespace QT.InGame
 
             if (ballHitCount > 0)
             {
-                _soundManager.PlayOneShot(SwingBatBallHitSoundPath);
+                _soundManager.PlayOneShot(_soundManager.SoundData.BallAttackSFX);
             }
 
             if (enemyHitCount > 0)
             {
-                _soundManager.PlayOneShot(SwingBatEnemyHitSoundPath);
+                _soundManager.PlayOneShot(_soundManager.SoundData.PlayerSwingHitSFX);
             }
             if(ballHitCount == 0 && enemyHitCount == 0)
             {
-                _soundManager.RandomSoundOneShot(SwingMissSoundPath,4);
+                _soundManager.PlayOneShot(_soundManager.SoundData.SwingSFX);
             }
         }
 
@@ -180,9 +177,9 @@ namespace QT.InGame
             if (_ownerEntity.GetStat(PlayerStats.ChargeTime).Value < _chargingTime)
             {
                 _isCharged = true;
-                
+                _soundManager.StopSFX(_soundManager.SoundData.ChargeSFX);
                 _ownerEntity.FullChargingEffectPlay();
-                _soundManager.RandomSoundOneShot(ChargeEndSoundPath,3);
+                _soundManager.PlayOneShot(_soundManager.SoundData.ChargeEndSFX);
             }
         }
 

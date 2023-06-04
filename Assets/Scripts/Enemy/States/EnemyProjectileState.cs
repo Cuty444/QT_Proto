@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.InGame
@@ -14,7 +15,6 @@ namespace QT.InGame
         private static readonly int NormalAnimHash = Animator.StringToHash("Normal");
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
-        private const string MonsterFlySoundPath = "Assets/Sound/QT/Assets/Monster_Fly.wav";
 
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
@@ -43,6 +43,8 @@ namespace QT.InGame
         private Transform _transform;
         
         private bool isNormal;
+
+        private SoundManager _soundManager;
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
@@ -52,6 +54,8 @@ namespace QT.InGame
             
             _size = data.ColliderRad * 0.5f;
             _damage = data.DirectDmg;
+
+            _soundManager = SystemManager.Instance.SoundManager;
         }
 
         public void InitializeState(Vector2 dir, float power, LayerMask bounceMask)
@@ -72,7 +76,7 @@ namespace QT.InGame
             }
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
             
-            SystemManager.Instance.SoundManager.PlayOneShot(MonsterFlySoundPath);
+            _soundManager.PlayOneShot(_soundManager.SoundData.MonsterFly);
             isNormal = false;
         }
         

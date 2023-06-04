@@ -383,5 +383,22 @@ namespace FMODUnity
             }
             return false;
         }
+        
+        public void ChangeEvent(EventReference newEvent,bool fade = false)
+        {
+            //사운드를 정지/릴리즈합니다.
+            AllowFadeout = fade;
+            Stop();
+            
+            //새로운 이벤트 레퍼런스를 적용합니다.
+            EventReference = newEvent;
+            Lookup();
+        }
+        
+        public void SetPause(bool pause)
+        {
+            if (instance.isValid()) 
+                instance.setPaused(pause);
+        }
     }
 }
