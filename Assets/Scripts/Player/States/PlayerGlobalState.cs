@@ -22,6 +22,8 @@ namespace QT.InGame
 
         private Dictionary<LineRenderer, Enemy> _teleportEnemyCheckDictionary = new Dictionary<LineRenderer, Enemy>();
 
+        private GlobalDataSystem _globalDataSystem;
+
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
@@ -36,7 +38,8 @@ namespace QT.InGame
             SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
             SystemManager.Instance.PlayerManager.EnemyDeathStateChanged.AddListener(EnemyNotRigidState);
             SystemManager.Instance.PlayerManager.EnemyProjectileStateChanged.AddListener(EnemyNotRigidState);
-            
+
+            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             _ownerEntity.OnAim.AddListener(OnAim);
         }
 
@@ -197,13 +200,21 @@ namespace QT.InGame
             lineRenderer.SetPosition(1,position);
             if (isDistance)
             {
-                lineRenderer.colorGradient.alphaKeys[0] = new GradientAlphaKey(1f, 0f);
-                lineRenderer.colorGradient.alphaKeys[1] = new GradientAlphaKey(1f, 1f);
+                lineRenderer.startColor = _globalDataSystem.GlobalData.CloseColor;
+                lineRenderer.endColor = _globalDataSystem.GlobalData.CloseColor;
+                //lineRenderer.colorGradient.colorKeys[0] = new GradientColorKey(_globalDataSystem.GlobalData.CloseColor, 0f);
+                //lineRenderer.colorGradient.colorKeys[1] = new GradientColorKey(_globalDataSystem.GlobalData.CloseColor, 1f);
+                //lineRenderer.colorGradient.alphaKeys[0] = new GradientAlphaKey(_globalDataSystem.GlobalData.CloseColor.a, 0f);
+                //lineRenderer.colorGradient.alphaKeys[1] = new GradientAlphaKey(_globalDataSystem.GlobalData.CloseColor.a, 1f);
             }
             else
             {
-                lineRenderer.colorGradient.alphaKeys[0] = new GradientAlphaKey(0.66f, 0f);
-                lineRenderer.colorGradient.alphaKeys[1] = new GradientAlphaKey(0.66f, 1f);
+                lineRenderer.startColor = _globalDataSystem.GlobalData.FarColor;
+                lineRenderer.endColor = _globalDataSystem.GlobalData.FarColor;
+                //lineRenderer.colorGradient.colorKeys[0] = new GradientColorKey(_globalDataSystem.GlobalData.FarColor, 0f);
+                //lineRenderer.colorGradient.colorKeys[1] = new GradientColorKey(_globalDataSystem.GlobalData.FarColor, 1f);
+                //lineRenderer.colorGradient.alphaKeys[0] = new GradientAlphaKey(_globalDataSystem.GlobalData.FarColor.a, 0f);
+                //lineRenderer.colorGradient.alphaKeys[1] = new GradientAlphaKey(_globalDataSystem.GlobalData.FarColor.a, 1f);
                 
             }
         }

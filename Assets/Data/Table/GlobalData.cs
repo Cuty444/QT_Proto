@@ -94,5 +94,19 @@ namespace QT.Core.Data
         [field: SerializeField]
         [Tooltip("플레이어 피격 시 깜박임 효과 그래프")]
         public AnimationCurve PlayerHitEffectCurve { get; private set; } = new ();
+        
+        /// <summary>
+        /// 범위 안 텔레포트 컬러
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("범위 안 텔레포트 컬러")]
+        public Color CloseColor { get; private set; } = new ();
+        
+        /// <summary>
+        /// 범위 안 텔레포트 컬러
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("범위 밖 텔레포트 컬러")]
+        public Color FarColor { get; private set; } = new ();
     }
 }
