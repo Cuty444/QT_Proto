@@ -27,7 +27,7 @@ namespace QT.InGame
         [SerializeField] private Transform _batTransform;
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [SerializeField] private TrailRenderer _trailRenderer;
-        
+        [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
         [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
         [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
         
@@ -75,8 +75,15 @@ namespace QT.InGame
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.CurrentRoomEnemyRegister.AddListener((enemyList) =>
             {
+                _enemyList.Clear();
                 _enemyList.AddRange(enemyList);
             });
+
+            _playerManager.PlayerMapClearPosition.AddListener((arg) =>
+            {
+                _enemyList.Clear();
+            });
+            
             _playerManager.PlayerMapPass.AddListener((isBool) =>
             {
                 _isEnterDoor = isBool;

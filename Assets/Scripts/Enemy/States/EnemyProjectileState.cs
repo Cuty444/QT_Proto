@@ -78,6 +78,7 @@ namespace QT.InGame
             
             _soundManager.PlayOneShot(_soundManager.SoundData.MonsterFly);
             isNormal = false;
+            SystemManager.Instance.PlayerManager.EnemyProjectileStateChanged.Invoke(_ownerEntity);
         }
         
         public override void ClearState()

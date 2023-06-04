@@ -114,6 +114,29 @@ namespace QT.InGame
 
             return true;
         }
+
+        public (List<Enemy>,List<Enemy>) GetRigidEnemyList()
+        {
+            List<Enemy> rigidList = new List<Enemy>();
+            List<Enemy> distanceList = new List<Enemy>();
+            foreach (var enemy in _enemyList)
+            {
+                if (enemy.CurrentStateIndex == (int) Enemy.States.Rigid && enemy.HP <= 0)
+                {
+                    if (GetStat(PlayerStats.TeleportAllowableDistance) <
+                        Vector2.Distance(transform.position, enemy.transform.position))
+                    {
+                        rigidList.Add(enemy);
+                    }
+                    else
+                    {
+                        distanceList.Add(enemy);
+                    }
+                }
+            }
+
+            return (rigidList,distanceList);
+        }
         
         private bool PlayerSwingAngle()
         {
