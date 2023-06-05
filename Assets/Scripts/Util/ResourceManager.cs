@@ -66,17 +66,14 @@ namespace QT
         
         public async UniTask<IList<T>> LoadAssets<T>(IList<IResourceLocation> locations) where T : Object
         {
-            var assets = new List<T>();
+            var tasks = new List<UniTask<T>>();
 
             foreach (var location in locations)
             {
-                var asset = await Addressables.LoadAssetAsync<T>(location).Task;
-
-                if (asset != null)
-                {
-                    assets.Add(asset);
-                }
+                tasks.Add(Addressables.LoadAssetAsync<T>(location).ToUniTask());
             }
+
+            var assets= await UniTask.WhenAll(tasks);
 
             return assets;
         }
