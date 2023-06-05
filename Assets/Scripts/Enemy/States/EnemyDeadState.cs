@@ -22,7 +22,6 @@ namespace QT.InGame
             _ownerEntity.HpCanvas.gameObject.SetActive(false);
             PlayerManager _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() + _ownerEntity.RandomGoldDrop());
-            _playerManager.EnemyDeathStateChanged.Invoke(_ownerEntity);
         }
     }
 }
