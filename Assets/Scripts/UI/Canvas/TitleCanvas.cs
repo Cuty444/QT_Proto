@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
-using Application = UnityEngine.Device.Application;
 
 namespace QT.UI
 {

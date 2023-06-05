@@ -77,7 +77,7 @@ namespace QT.Util
             if (_isSelected)
             {
                 ChangeSprite(_selectedSprite);
-                _isInteractable = false;
+                //_isInteractable = false;
             }
         }
 
