@@ -15,7 +15,6 @@ namespace QT
         [SerializeField] private GameObject _itemScriptCanvas;
         [SerializeField] private SpriteRenderer _itemSprite;
         [SerializeField] private TextMeshProUGUI _itemName;
-        [SerializeField] private TextMeshProUGUI _itemEffect;
         [SerializeField] private TextMeshProUGUI _itemDesc;
         [SerializeField] private TextMeshProUGUI _itemCost;
         [SerializeField] private Transform _goldTransform;
@@ -71,8 +70,6 @@ namespace QT
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_itemScriptCanvas.transform);
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_itemName.transform);
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_itemDesc.transform);
-            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_itemEffect.transform);
-
         }
 
         private void OnTriggerEnter2D(Collider2D other)
