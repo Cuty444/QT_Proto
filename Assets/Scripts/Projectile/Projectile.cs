@@ -38,6 +38,7 @@ namespace QT.InGame
         [Space]
         [SerializeField] private GameObject _player;
         [SerializeField] private GameObject _enemy;
+        [SerializeField] private GameObject _boss;
         
         private TrailRenderer _trailRenderer;
         
@@ -71,6 +72,7 @@ namespace QT.InGame
             _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
             _trailRenderer = GetComponentInChildren<TrailRenderer>();
             _soundManager = SystemManager.Instance.SoundManager;
+            _boss.SetActive(false);
         }
 
         private void OnEnable()
