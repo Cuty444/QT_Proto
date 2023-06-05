@@ -22,16 +22,13 @@ namespace QT.Sound
         private Transform _poolRootTransform;
 
         [HideInInspector] public SoundPathData SoundData;
-        public void Initialize()
+        public void Initialize(SoundPathData soundPathData)
         {
             _poolRootTransform = new GameObject("AudioSourcePoolRoot").transform;
-            Addressables.LoadAssetAsync<SoundPathData>("Assets/Data/SoundPathData.asset").Completed += (obj) =>
-            {
-                SoundData = obj.Result;
-                //_masterBus = RuntimeManager.GetBus(SoundData.Bank[0]); //TODO : Bank 상의 후 넣어야함
-                //_bgmBus = RuntimeManager.GetBus(SoundData.Bank[1]);
-                //_sfxBus = RuntimeManager.GetBus(SoundData.Bank[2]);
-            };
+            SoundData = soundPathData;
+            //_masterBus = RuntimeManager.GetBus(SoundData.Bank[0]); //TODO : Bank 상의 후 넣어야함
+            //_bgmBus = RuntimeManager.GetBus(SoundData.Bank[1]);
+            //_sfxBus = RuntimeManager.GetBus(SoundData.Bank[2]);
             var bgm = GameObject.Instantiate(new GameObject(), _poolRootTransform);
             _bgmEmitter = bgm.AddComponent<StudioEventEmitter>();
             bgm.name = "BGMEmitter";
@@ -72,7 +69,7 @@ namespace QT.Sound
                 _sfxLoopDictionary[data].Stop();
             }
         }
-
+        
         public void PlayBGM(EventReference data, bool isFade = false)
         {
             ChangeBGM(data, isFade);

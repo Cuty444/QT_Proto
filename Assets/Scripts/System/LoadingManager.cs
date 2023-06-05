@@ -12,13 +12,15 @@ namespace QT
 {
     public class LoadingManager
     {
-        public UnityEvent DataAllLoadCompletedEvent { get; } = new();
+        public UnityEvent DataJsonLoadCompletedEvent { get; } = new();
+        public UnityEvent DataMapLoadCompletedEvent { get; } = new();
 
         private LoadingCanvas _loadingCanvas;
         private GameOverCanvas _gameOverCanvas;
         private FadeCanvas _fadeCanvas;
 
-        private bool _isAllLoad = false;
+        private bool _isJsonLoad = false;
+        private bool _isMapLoad = false;
         public void Initialize()
         {
             if (SystemManager.Instance.UIManager != null)
@@ -27,8 +29,6 @@ namespace QT
                 _gameOverCanvas = SystemManager.Instance.UIManager.GetUIPanel<GameOverCanvas>();
                 _fadeCanvas = SystemManager.Instance.UIManager.GetUIPanel<FadeCanvas>();
             }
-
-            DataAllLoadCompletedEvent.AddListener(() => _isAllLoad = true);
         }
 
         public void GameOverOpen()
@@ -63,7 +63,7 @@ namespace QT
                 }
                 else
                 {
-                    if (Time.time - StartLoadingTime > 2.5f && _isAllLoad)
+                    if (Time.time - StartLoadingTime > 2.5f && IsAllLoad())
                     {
                         operation.allowSceneActivation = true;
                         _fadeCanvas.AutoFadeOutIn(() =>
@@ -75,6 +75,30 @@ namespace QT
                 }
                 yield return null;
             }
+        }
+
+        public void DataLoadCheck()
+        {
+            DataJsonLoadCompletedEvent.AddListener(() =>
+            {
+                _isJsonLoad = true;
+                Debug.Log("Json Data Load Completed");
+            });
+            DataMapLoadCompletedEvent.AddListener(() =>
+            {
+                _isMapLoad = true;
+                Debug.Log("Map Data Load Completed");
+            });
+        }
+
+        private bool IsAllLoad()
+        {
+            return _isJsonLoad && _isMapLoad;
+        }
+
+        public bool IsJsonLoad()
+        {
+            return _isJsonLoad;
         }
     }
 }

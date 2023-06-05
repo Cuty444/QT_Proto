@@ -75,7 +75,7 @@ namespace QT
         private Player _player;
         public void Initialize()
         {
-            SystemManager.Instance.LoadingManager.DataAllLoadCompletedEvent.AddListener(() =>
+            SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.AddListener(() =>
             {
                 _gameDataManager = SystemManager.Instance.DataManager;
                 DropGameDataLoad();
