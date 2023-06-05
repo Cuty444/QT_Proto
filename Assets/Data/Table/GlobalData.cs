@@ -96,6 +96,13 @@ namespace QT.Core.Data
         public AnimationCurve PlayerHitEffectCurve { get; private set; } = new ();
         
         /// <summary>
+        /// 적 낙사 스케일링 그래프
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("적 낙사 스케일링 그래프")]
+        public AnimationCurve EnemyFallScaleCurve { get; private set; } = new ();
+        
+        /// <summary>
         /// 범위 안 텔레포트 컬러
         /// </summary>
         [field: SerializeField]

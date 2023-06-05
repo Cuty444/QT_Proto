@@ -147,6 +147,14 @@ namespace QT.InGame
                 
                 if (_speed <= 0)
                 {
+                    if (_ownerEntity.IsFall)
+                    {
+                        _ownerEntity.HP.SetStatus(0);
+                        _isReleased = true;
+                        _releaseStartTime = Time.time;
+                        _ownerEntity.ChangeState(Enemy.States.Dead);
+                        return;
+                    }
                     if (_ownerEntity.HP <= 0)
                     {
                         _isReleased = true;

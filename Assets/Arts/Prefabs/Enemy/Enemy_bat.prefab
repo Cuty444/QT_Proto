@@ -183,7 +183,7 @@ Transform:
   m_GameObject: {fileID: 6026413936422589559}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3026859772209166903}
@@ -343,7 +343,7 @@ Transform:
   m_GameObject: {fileID: 6119265654750196061}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.2, z: 1}
+  m_LocalScale: {x: 1.2, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3026859772209166903}
@@ -515,7 +515,6 @@ GameObject:
   - component: {fileID: 9203921043259468480}
   - component: {fileID: 2344846795604620376}
   - component: {fileID: 5769672979650985188}
-  - component: {fileID: 397479124440014172}
   - component: {fileID: -6209716994341537550}
   m_Layer: 11
   m_Name: Enemy_bat
@@ -577,7 +576,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.55}
-  m_Size: {x: 0.65, y: 0.5}
+  m_Size: {x: 1, y: 1}
   m_Direction: 1
 --- !u!114 &2344846795604620376
 MonoBehaviour:
@@ -599,6 +598,7 @@ MonoBehaviour:
   HpImage: {fileID: 0}
   HitAttackType: 0
   TeleportLineRenderer: {fileID: 0}
+  IsFall: 0
   _detectionRadius: 2
   _obstacleLayerMask:
     serializedVersion: 2
@@ -617,23 +617,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shootPoint: {fileID: 3026859772209166903}
---- !u!114 &397479124440014172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8220631510388221840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9c8d949920874e32839bdaca9906f4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _detectionRadius: 2
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 52224
-  _enemySize: 0.5
 --- !u!210 &-6209716994341537550
 SortingGroup:
   m_ObjectHideFlags: 0

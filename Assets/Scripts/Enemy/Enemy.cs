@@ -1,4 +1,6 @@
+using System.Collections;
 using QT.Core;
+using QT.Core.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,7 +37,7 @@ namespace QT.InGame
 
 
         public CapsuleCollider2D Collider2D { get; private set; }
-
+        
         [field: SerializeField] public Transform BallObject { get; private set; }
         [field: SerializeField] public float BallHeight { get; private set; }
         [field: SerializeField] public float BallHeightMin { get; private set; }
@@ -45,6 +47,10 @@ namespace QT.InGame
         [HideInInspector] public AttackType HitAttackType;
 
         [HideInInspector] public LineRenderer TeleportLineRenderer;
+
+        [HideInInspector] public bool IsFall = false;
+
+        private AnimationCurve enemyFallScaleCurve;
         
         private void Start()
         {
@@ -67,19 +73,21 @@ namespace QT.InGame
             HpCanvas.worldCamera = Camera.main;
             HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
             HpCanvas.gameObject.SetActive(false);
+
+            enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
         }
         
         public void SetPhysics(bool enable)
         {
             Rigidbody.simulated = enable;
 
-            var colliders = new Collider2D[Rigidbody.attachedColliderCount];
-            Rigidbody.GetAttachedColliders(colliders);
-            
-            foreach (var collider in colliders)
-            {
-                collider.enabled = enable;
-            }
+            //var colliders = new Collider2D[Rigidbody.attachedColliderCount];
+            //Rigidbody.GetAttachedColliders(colliders);
+            //
+            //foreach (var collider in colliders)
+            //{
+            //    collider.enabled = enable;
+            //}
 
             Collider2D.enabled = enable; // TODO : 비활성화 되면 배열을 못가져오는 것 같아서 임시 처리 
         }
@@ -87,6 +95,23 @@ namespace QT.InGame
         public int RandomGoldDrop()
         {
             return UnityEngine.Random.Range(Data.GoldDropMin, Data.GoldDropMax + 1);
+        }
+
+        public void FallScale()
+        {
+            StartCoroutine(ScaleReduce());
+        }
+
+        private IEnumerator ScaleReduce()
+        {
+            float time = 0f;
+            while (time < 1f)
+            {
+                float scale = Mathf.Lerp(0, 1, enemyFallScaleCurve.Evaluate(time / 1f));
+                transform.localScale = new Vector3(scale, scale, scale);
+                yield return null;
+                time += Time.deltaTime;
+            }
         }
     }    
 }
