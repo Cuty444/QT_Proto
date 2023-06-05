@@ -42,6 +42,8 @@ namespace QT.InGame
 
         [HideInInspector] public AttackType HitAttackType;
 
+        [HideInInspector] public LineRenderer TeleportLineRenderer;
+        
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);

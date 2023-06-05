@@ -78,12 +78,6 @@ namespace QT.InGame
                 _enemyList.Clear();
                 _enemyList.AddRange(enemyList);
             });
-
-            _playerManager.PlayerMapClearPosition.AddListener((arg) =>
-            {
-                _enemyList.Clear();
-            });
-            
             _playerManager.PlayerMapPass.AddListener((isBool) =>
             {
                 _isEnterDoor = isBool;
