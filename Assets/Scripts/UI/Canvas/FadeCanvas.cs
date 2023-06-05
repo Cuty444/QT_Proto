@@ -20,7 +20,6 @@ namespace QT.UI
         public override void PostSystemInitialize()
         {
             OnOpen();
-            FadeIn();
         }
 
         public void AutoFadeOutIn(Action firstFunc, Action lastFunc = null,float time = 0f)
