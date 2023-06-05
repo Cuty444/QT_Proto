@@ -80,6 +80,8 @@ namespace QT.Map
                     _cellMapObject = _dungeonMapSystem.StartMapObject();
                     break;
                 case RoomType.Boss:
+                    _cellMapObject = _dungeonMapSystem.BossMapObject();
+                    break;
                 case RoomType.None:
                 case RoomType.Normal:
                 default:
