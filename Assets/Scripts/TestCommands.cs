@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using IngameDebugConsole;
 using QT.Core;
+using QT.InGame;
 using UnityEngine;
 
 namespace QT
@@ -19,6 +20,13 @@ namespace QT
         public static void RemoveItem(int index)
         {
             SystemManager.Instance.PlayerManager.Player.Inventory.RemoveItem(index);
+        }
+        
+        [ConsoleMethod("PowerOver", "무적")]
+        public static void PowerOver()
+        {
+            SystemManager.Instance.PlayerManager.Player.GetStatus(PlayerStats.MercyInvincibleTime).AddModifier(new StatModifier(999999,StatModifier.ModifierType.Addition,null));
+            Debug.Log("Power Overwhelming");
         }
     }
 }
