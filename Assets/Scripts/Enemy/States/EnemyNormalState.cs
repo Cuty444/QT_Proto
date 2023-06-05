@@ -94,7 +94,7 @@ namespace QT.InGame
             var danger = new DirectionWeights();
             var interest = new DirectionWeights();
             
-            _ownerEntity.DetectObstacle(ref danger);
+            _ownerEntity.Steering.DetectObstacle(ref danger);
 
             if (targetDistance > _data.SpacingRad)
             {
@@ -110,7 +110,7 @@ namespace QT.InGame
                 interest.AddWeight(_rotateSide ? new Vector2(dir.y, -dir.x) : new Vector2(-dir.y, dir.x), 1);
             }
 
-            var result = _ownerEntity.CalculateContexts(danger, interest);
+            var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             
             if(isRotate && result.sqrMagnitude < TurnoverLimitSpeed)
             {

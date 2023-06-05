@@ -1,8 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QT.InGame
 {
-    public partial class Enemy
+    public class Steering : MonoBehaviour
     {
         [Header("장애물 감지")]
         [SerializeField] private float _detectionRadius = 2;
@@ -49,8 +51,8 @@ namespace QT.InGame
             return dir;
         }
     }
-
-
+    
+    
     public class DirectionWeights
     {
         public const int DirCount = 8;

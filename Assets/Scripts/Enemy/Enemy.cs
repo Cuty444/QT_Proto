@@ -31,6 +31,8 @@ namespace QT.InGame
         public EnemyProjectileShooter Shooter { get; private set; }
         public Animator Animator { get; private set; }
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
+        public Steering Steering { get; private set; }
+
 
         public CapsuleCollider2D Collider2D { get; private set; }
 
@@ -52,6 +54,7 @@ namespace QT.InGame
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
+            Steering = GetComponent<Steering>();
 
             ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
                 .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
