@@ -21,8 +21,11 @@ namespace QT.Core
         public LoadingManager LoadingManager { get; } = new();
 
         public SoundManager SoundManager { get; } = new();
+
+        public StageLoadManager StageLoadManager { get; } = new();
         
         [field:SerializeField]public UIManager UIManager { get; private set; }
+        [SerializeField] private SoundPathData _soundPathData;
         [SerializeField] private GameObject _debugConsole;
         
         private readonly Dictionary<Type, SystemBase> _systems = new ();
@@ -30,9 +33,17 @@ namespace QT.Core
         private void Awake()
         {
             base.Awake();
+#if Testing
+
+            _debugConsole.SetActive(true);
+#else
+            _debugConsole.SetActive(false);   
+#endif
+            LoadingManager.DataLoadCheck();
+            SoundManager.Initialize(_soundPathData);
+            ItemDataManager.Initialize();
             
             ResourceManager.Initialize();
-            ItemDataManager.Initialize();
             DataManager.Initialize();
 
             InitializeSystems();
@@ -41,18 +52,11 @@ namespace QT.Core
             
             LoadingManager.Initialize();
             
-            SoundManager.Initialize();
             
             _PostInitializeSystems();
             
             UIManager?.PostSystemInitialize();
 
-#if Testing
-
-            _debugConsole.SetActive(true);
-#else
-            _debugConsole.SetActive(false);   
-#endif
             
         }
 

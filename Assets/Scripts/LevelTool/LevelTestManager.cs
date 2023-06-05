@@ -24,7 +24,7 @@ namespace QT
         {
             _enemyTransform.gameObject.SetActive(false);
             PlayerManager _playerManager = SystemManager.Instance.PlayerManager;
-            SystemManager.Instance.LoadingManager.DataAllLoadCompletedEvent.AddListener(() =>
+            SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.AddListener(() =>
             {
                 _playerManager.CreatePlayer();
             });

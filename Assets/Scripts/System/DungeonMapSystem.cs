@@ -7,6 +7,7 @@ using QT.Core;
 using QT.Core.Data;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Random = UnityEngine.Random;
 
 namespace QT.Core.Map
@@ -357,9 +358,17 @@ namespace QT.Core.Map
             var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var objectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
             _mapList = QT.Util.RandomSeed.GetRandomIndexes(objectList.ToList(),_maxRoomValue);
+        }
+
+        public async UniTask ShopLoad()
+        {
             var stageShopLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Shop"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var shopObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageShopLocationList);
             _shopMapList = shopObjectList.ToList();
+        }
+
+        public async UniTask StartRoomLoad()
+        {
             var stageStartLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Start"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var startObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageStartLocationList);
             _startList = startObjectList.ToList();

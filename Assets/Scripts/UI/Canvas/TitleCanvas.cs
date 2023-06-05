@@ -15,7 +15,11 @@ namespace QT.UI
 
         public void GameStart()
         {
-            SystemManager.Instance.LoadingManager.LoadScene(1,OnClose);
+            if (SystemManager.Instance.LoadingManager.IsJsonLoad())
+            {
+                SystemManager.Instance.StageLoadManager.StageLoad(string.Empty);
+                SystemManager.Instance.LoadingManager.LoadScene(1, OnClose);
+            }
         }
 
         public void GameEnd()
