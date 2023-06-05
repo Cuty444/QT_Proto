@@ -120,6 +120,7 @@ namespace QT.InGame
 
             _owner = owner;
             SetOwnerColor();
+            _trailRenderer.emitting = true;
         }
         
         public void Hit(Vector2 dir, float newSpeed,AttackType attackType)
@@ -170,6 +171,7 @@ namespace QT.InGame
             if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
             {
                 SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
+                _trailRenderer.emitting = false;
             }
 
             CheckHit();

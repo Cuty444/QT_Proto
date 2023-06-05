@@ -51,6 +51,12 @@ namespace QT.InGame
             {
                 _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId);
             }
+            
+            if (_ownerEntity.IsFall)
+            {
+                _ownerEntity.HP.SetStatus(0);
+                _ownerEntity.ChangeState(Enemy.States.Dead);
+            }
         }
 
         public override void ClearState()
