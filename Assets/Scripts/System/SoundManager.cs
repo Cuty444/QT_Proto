@@ -54,7 +54,9 @@ namespace QT.Sound
             else
             {
                 var sfx = GameObject.Instantiate(new GameObject(), _poolRootTransform);
+                #if UNITY_EDITOR
                 sfx.name = data.Path;
+                #endif
                 var sfxEmitter = sfx.AddComponent<StudioEventEmitter>();
                 _sfxLoopDictionary.Add(data,sfxEmitter);
                 sfxEmitter.ChangeEvent(data);
