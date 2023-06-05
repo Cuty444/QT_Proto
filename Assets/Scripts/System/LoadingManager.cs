@@ -82,6 +82,7 @@ namespace QT
             DataJsonLoadCompletedEvent.AddListener(() =>
             {
                 _isJsonLoad = true;
+                SystemManager.Instance.UIManager.GetUIPanel<FadeCanvas>().FadeIn();
                 Debug.Log("Json Data Load Completed");
             });
             DataMapLoadCompletedEvent.AddListener(() =>
