@@ -14,6 +14,7 @@ namespace QT
         
         private readonly Dictionary<string, Object> _cache = new ();
         private readonly Dictionary<string, Stack<Component>> _pool = new ();
+        private List<GameObject> _poolObjectList = new();
         
         public void Initialize()
         {
@@ -98,6 +99,10 @@ namespace QT
             {
                 _pool.Add(path, new Stack<Component>());
                 (await LoadAsset<GameObject>(path, true))?.TryGetComponent(out obj);
+                if (obj != null)
+                {
+                    _poolObjectList.Add(obj.gameObject);
+                }
             }
 
             if (obj != null)
@@ -121,6 +126,17 @@ namespace QT
             {
                 Object.Destroy(obj.gameObject);
             }
+        }
+
+        public void AllReleasedObject()
+        {
+            for (int i = 0; i < _poolObjectList.Count; i++)
+            {
+                GameObject.Destroy(_poolObjectList[i]);
+            }
+
+            _poolObjectList.Clear();
+            _pool.Clear();
         }
 
         public async UniTaskVoid EmitParticle(string path, Vector2 position)

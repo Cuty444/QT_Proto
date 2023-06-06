@@ -62,6 +62,11 @@ namespace QT.InGame
 
         protected Vector2 GetDirection(float angle, AimTypes aimType)
         {
+            if (_targetTransform == null)
+            {
+                Destroy(gameObject);
+                return Vector2.zero;
+            }
             switch (aimType)
             {
                 case AimTypes.Target:

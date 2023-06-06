@@ -114,6 +114,11 @@ namespace QT.Map
             _mapImage.color = _mapColors[2];
             _mapImage.sprite = _mapSprites[2];
             _lineRenders.SetActive(false);
+            Destroy(gameObject);
+            if (_mapCellData != null)
+            {
+                Destroy(_mapCellData.gameObject);
+            }
         }
 
         public void SetRouteDirection(MapDirection mapDirection)
