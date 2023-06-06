@@ -99,26 +99,22 @@ namespace QT.InGame
 
         private async void SetTeleportLineObjects()
         {
-            var line = await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(TeleportLinePath,_ownerEntity.transform);
+            var line = await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(TeleportLinePath);
             line.positionCount = 0;
             _ownerEntity.TeleportLineRenderer = line;
         }
         
         private void SetTeleportLine(LineRenderer lineRenderer,Vector2 position,bool isDistance)
         {
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0,position);
-            lineRenderer.SetPosition(1,_ownerEntity.transform.position);
-            if (isDistance)
+            if (!isDistance)
             {
-                lineRenderer.startColor = _globalDataSystem.GlobalData.CloseColor;
-                lineRenderer.endColor = _globalDataSystem.GlobalData.CloseColor;
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPosition(0, position);
+                lineRenderer.SetPosition(1, _ownerEntity.transform.position);
             }
             else
             {
-                lineRenderer.startColor = _globalDataSystem.GlobalData.FarColor;
-                lineRenderer.endColor = _globalDataSystem.GlobalData.FarColor;
-
+                lineRenderer.positionCount = 0;
             }
         }
 
