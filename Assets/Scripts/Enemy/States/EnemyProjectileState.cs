@@ -91,6 +91,7 @@ namespace QT.InGame
                     Util.UnityUtil.WaitForFunc(() => { _ownerEntity.Animator.ResetTrigger(NormalAnimHash); }, 0.2f));
             }
             SystemManager.Instance.ProjectileManager.UnRegister(_ownerEntity);
+            _ownerEntity.IsTeleportProjectile = false;
         }
         
         public override void UpdateState()
@@ -112,7 +113,14 @@ namespace QT.InGame
             {
                 if (hit.collider.TryGetComponent(out IHitable hitable))
                 {
-                    hitable.Hit(_direction, _damage);
+                    if (_ownerEntity.IsTeleportProjectile)
+                    {
+                        hitable.Hit(_direction,_damage,AttackType.Teleport);
+                    }
+                    else
+                    {
+                        hitable.Hit(_direction, _damage);
+                    }
                     //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
                 
