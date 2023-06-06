@@ -8,15 +8,13 @@ namespace QT.InGame
     public class DullahanNormalState : FSMState<Dullahan>
     {
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
-        private readonly int DirXAnimHash = Animator.StringToHash("DirX");
-        private readonly int DirYAnimHash = Animator.StringToHash("DirY");
+        
+        private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
         
         private readonly EnemyGameData _data;
 
         private float _lastMoveTargetUpdateTime;
         private Vector2 _moveTarget;
-
-        private float _lastAtkCheckTime;
 
         private bool _rotateSide;
 
@@ -28,7 +26,6 @@ namespace QT.InGame
         public override void InitializeState()
         {
             _lastMoveTargetUpdateTime = 0;
-            _lastAtkCheckTime = Time.time;
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
         }
 
@@ -52,11 +49,6 @@ namespace QT.InGame
             var targetDistance = (_moveTarget-(Vector2) _ownerEntity.transform.position).magnitude;
             
             Move(targetDistance);
-            
-            if (CheckAttackStart(targetDistance))
-            {
-                _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId);
-            }
         }
 
         public override void ClearState()
@@ -77,7 +69,6 @@ namespace QT.InGame
                     break;
             }
 
-            
             var currentDir = Vector2.zero;
 
             if (dir != Vector2.zero)
@@ -88,8 +79,25 @@ namespace QT.InGame
 
             _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd);
             
-            _ownerEntity.Animator.SetFloat(DirXAnimHash, currentDir.x);
-            _ownerEntity.Animator.SetFloat(DirYAnimHash, currentDir.y);
+            SetRotation(currentDir);
+        }
+
+        private void SetRotation(Vector2 dir)
+        {
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 90;
+            
+            if (angle < 0)
+            {
+                angle += 360;
+            }
+
+            if (angle > 180)
+            {
+                angle = 360 - angle;
+            }
+            
+            _ownerEntity.Animator.SetFloat(RotationAnimHash,  Mathf.Round(angle / 180 * 4));
+            _ownerEntity.SetFlip(dir.x > 0);
         }
 
         private Vector2 SpacingMove(float targetDistance, bool isRotate = false)
@@ -108,7 +116,7 @@ namespace QT.InGame
             }
             else if(targetDistance < _data.SpacingRad - 1)
             {
-                interest.AddWeight(-dir, 1);
+                interest.AddWeight(-dir, 0.5f);
             }
             
             if (isRotate)
@@ -124,34 +132,6 @@ namespace QT.InGame
             }
             
             return result.normalized;
-        }
-
-        private bool CheckAttackStart(float targetDistance)
-        {
-            if (_data.AtkDataId == 0 || _lastAtkCheckTime + _data.AtkCheckDelay > Time.time)
-            {
-                return false;
-            }
-
-            switch (_data.AtkStartType)
-            {
-                case EnemyGameData.AtkStartTypes.AfterIdleSec:
-                {
-                    _lastAtkCheckTime = Time.time;
-                    return true;
-                }
-                case EnemyGameData.AtkStartTypes.Sight:
-                {
-                    if (targetDistance < _data.AtkStartParam)
-                    {
-                        _lastAtkCheckTime = Time.time;
-                        return true;
-                    }
-                    break;
-                }
-            }
-
-            return false;
         }
     }
 }

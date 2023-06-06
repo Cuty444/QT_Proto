@@ -24,7 +24,6 @@ namespace QT.InGame
             Dead,
         }
         
-        public float ColliderRad { get; private set; }
         [SerializeField] private int _enemyId;
         public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
@@ -34,8 +33,10 @@ namespace QT.InGame
         public Animator Animator { get; private set; }
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
-        
-        
+
+        private Collider2D[] _colliders;
+
+
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
@@ -44,26 +45,26 @@ namespace QT.InGame
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
+            
+            _colliders = new Collider2D[Rigidbody.attachedColliderCount];
+            Rigidbody.GetAttachedColliders(_colliders);
 
-            ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
-                .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
-            
-            //Shooter.Initialize(this);
-            
             SetUp(States.Normal);
         }
         
         public void SetPhysics(bool enable)
         {
             Rigidbody.simulated = enable;
-
-            var colliders = new Collider2D[Rigidbody.attachedColliderCount];
-            Rigidbody.GetAttachedColliders(colliders);
             
-            foreach (var collider in colliders)
+            foreach (var collider in _colliders)
             {
                 collider.enabled = enable;
             }
+        }
+
+        public void SetFlip(bool enable)
+        {
+            Animator.transform.rotation = Quaternion.Euler(0f, enable ? 180 : 0, 0f);
         }
     }
 }

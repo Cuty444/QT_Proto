@@ -50,7 +50,7 @@ namespace QT
                 yield return new WaitForSeconds(data.AfterDelay);
             }
             
-            _enemy.Animator.SetBool(AttackAnimHash, false);
+            _enemy?.Animator.SetBool(AttackAnimHash, false);
         }
     }
 }
