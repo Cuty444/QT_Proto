@@ -11,12 +11,23 @@ namespace QT.UI
 {
     public class GameOverCanvas : UIPanel
     {
+        [SerializeField] private GameObject _gameOverUI;
+        [SerializeField] private Transform _panelTransform;
         [SerializeField] private SkeletonGraphic _skeletonGraphic;
         [SerializeField] private ButtonTrigger _retryButtonTrigger;
         [SerializeField] private CanvasGroup _canvasGroup;
+
+        private GameObject _uiObject = null;
         public override void OnOpen()
         {
             base.OnOpen();
+            if (_uiObject != null)
+            {
+                Destroy(_uiObject);
+            }
+            _uiObject = Instantiate(_gameOverUI, _panelTransform);
+            _uiObject.transform.localPosition = Vector3.zero;
+            _skeletonGraphic = _uiObject.GetComponentInChildren<SkeletonGraphic>();
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver",false);
             _canvasGroup.alpha = 0f;
             _canvasGroup.interactable = false;
@@ -27,21 +38,22 @@ namespace QT.UI
                 {
                     _canvasGroup.interactable = true;
                 }));
+                SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<Enemy>());
+                SystemManager.Instance.ProjectileManager.ProjectileListClear();
+                SystemManager.Instance.ResourceManager.AllReleasedObject();
             }, 3.0f));
         }
 
         public void Retry()
         {
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
-            SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<Enemy>());
-            SystemManager.Instance.ProjectileManager.ProjectileListClear();
-            SystemManager.Instance.ResourceManager.AllReleasedObject();
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
                 SystemManager.Instance.LoadingManager.LoadScene(1, OnClose);
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
                 _retryButtonTrigger.Clear();
+                _uiObject.SetActive(false);
             }, 1f));
         }
 
