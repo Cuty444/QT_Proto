@@ -14,9 +14,9 @@ namespace QT.InGame
             
             // 살아있음
             Normal,
-            Rigid, 
+            Stun, 
             
-            Dash,
+            Rush,
             Jump,
             Attack,
             Throw,
