@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    public class Boss : FSMPlayer<Enemy>, IFSMEntity
+    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity
     {
         public enum States : int
         {

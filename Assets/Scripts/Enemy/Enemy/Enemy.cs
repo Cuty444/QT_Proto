@@ -27,6 +27,7 @@ namespace QT.InGame
 
         [SerializeField] private int _enemyId;
         [field: SerializeField] public Canvas HpCanvas { get; private set; }
+        
         public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
         
@@ -34,13 +35,11 @@ namespace QT.InGame
         public Animator Animator { get; private set; }
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
-
-
-        public CapsuleCollider2D Collider2D { get; private set; }
         
         [field: SerializeField] public Transform BallObject { get; private set; }
         [field: SerializeField] public float BallHeight { get; private set; }
         [field: SerializeField] public float BallHeightMin { get; private set; }
+        
         
         [HideInInspector] public Image HpImage;
 
@@ -49,16 +48,19 @@ namespace QT.InGame
         [HideInInspector] public LineRenderer TeleportLineRenderer;
 
         [HideInInspector] public bool IsFall = false;
+        
+        [HideInInspector] public bool IsTeleportProjectile = false;
 
         private AnimationCurve enemyFallScaleCurve;
 
-        [HideInInspector] public bool IsTeleportProjectile = false;
+        private Collider2D _collider;
+
         
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
             Rigidbody = GetComponent<Rigidbody2D>();
-            Collider2D = GetComponent<CapsuleCollider2D>();
+            _collider = GetComponent<Collider2D>();
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
@@ -82,16 +84,7 @@ namespace QT.InGame
         public void SetPhysics(bool enable)
         {
             Rigidbody.simulated = enable;
-
-            //var colliders = new Collider2D[Rigidbody.attachedColliderCount];
-            //Rigidbody.GetAttachedColliders(colliders);
-            //
-            //foreach (var collider in colliders)
-            //{
-            //    collider.enabled = enable;
-            //}
-
-            Collider2D.enabled = enable; // TODO : 비활성화 되면 배열을 못가져오는 것 같아서 임시 처리 
+            _collider.enabled = enable;
         }
 
         public int RandomGoldDrop()
