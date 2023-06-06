@@ -20,6 +20,7 @@ namespace QT
 
         public override void InitializeState()
         {
+            _ownerEntity.TeleportEffect(true);
             _ownerEntity.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0.5f);
             _ownerEntity.transform.position = _ownerEntity._rigidTeleportEnemy.Position;
             _ownerEntity.Animator.SetTrigger(AnimationTeleportHash);
@@ -61,6 +62,7 @@ namespace QT
         public override void ClearState()
         {
             _ownerEntity.Animator.SetTrigger(AnimationTeleportEndHash);
+            _ownerEntity.TeleportEffect(false);
             _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
             {
                 _ownerEntity.Animator.ResetTrigger(AnimationTeleportEndHash);
