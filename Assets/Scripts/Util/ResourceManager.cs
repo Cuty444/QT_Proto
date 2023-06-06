@@ -93,6 +93,10 @@ namespace QT
                 else
                 {
                     obj = (await LoadAsset<GameObject>(path, true)).GetComponent<T>();
+                    if (obj != null)
+                    {
+                        _poolObjectList.Add(obj.gameObject);
+                    }
                 }
             }
             else

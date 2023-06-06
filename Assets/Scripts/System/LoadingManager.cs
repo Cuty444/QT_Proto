@@ -48,6 +48,15 @@ namespace QT
                 SystemManager.Instance.StartCoroutine(LoadAsynchronously(sceneIndex));
             });
         }
+
+        public void LoadFadeOutScene(int sceneIndex, Action func = null)
+        {
+            _fadeCanvas.FadeOut(() =>
+            {
+                func?.Invoke();
+                SystemManager.Instance.StartCoroutine(LoadAsynchronously(sceneIndex));
+            });
+        }
         
         private IEnumerator LoadAsynchronously(int sceneIndex)
         {
