@@ -69,7 +69,13 @@ namespace QT.InGame
         private void Awake()
         {
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
-            _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
+            Player player = SystemManager.Instance.PlayerManager.Player;
+            if (player == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            _playerTransform = player.transform;
             _trailRenderer = GetComponentInChildren<TrailRenderer>();
             _soundManager = SystemManager.Instance.SoundManager;
             _boss.SetActive(false);

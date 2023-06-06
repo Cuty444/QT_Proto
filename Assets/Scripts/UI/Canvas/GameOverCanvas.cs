@@ -5,6 +5,7 @@ using UnityEngine;
 using QT.Core;
 using QT.Util;
 using QT.Core.Map;
+using QT.InGame;
 
 namespace QT.UI
 {
@@ -32,9 +33,11 @@ namespace QT.UI
         public void Retry()
         {
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
+            SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<Enemy>());
+            SystemManager.Instance.ProjectileManager.ProjectileListClear();
+            SystemManager.Instance.ResourceManager.AllReleasedObject();
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
-                SystemManager.Instance.ProjectileManager.ProjectileListClear();
                 SystemManager.Instance.LoadingManager.LoadScene(1, OnClose);
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();

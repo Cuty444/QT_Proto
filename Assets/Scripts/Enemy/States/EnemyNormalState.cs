@@ -37,6 +37,12 @@ namespace QT.InGame
             if (_lastMoveTargetUpdateTime + _data.MoveTargetUpdatePeroid < Time.time)
             {
                 _lastMoveTargetUpdateTime = Time.time;
+                Player player = SystemManager.Instance.PlayerManager.Player;
+                if (player == null)
+                {
+                    GameObject.Destroy(_ownerEntity.gameObject);
+                    return;
+                }
                 _moveTarget = SystemManager.Instance.PlayerManager.Player.transform.position;
             }
         }
