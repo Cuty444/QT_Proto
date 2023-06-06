@@ -16,7 +16,10 @@ namespace QT.InGame
         {
             if (_ownerEntity.CurrentStateIndex >= (int)Enemy.States.Rigid)
             {
-                return;
+                if (attackType != AttackType.Teleport)
+                {
+                    return;
+                }
             }
 
             _ownerEntity.HP.AddStatus(-power);

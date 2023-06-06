@@ -7,7 +7,8 @@ namespace QT
     public enum ProjectileOwner
     {
         Player,
-        Enemy
+        Enemy,
+        PlayerTeleport,
     }
     
     public interface IProjectile : IHitable

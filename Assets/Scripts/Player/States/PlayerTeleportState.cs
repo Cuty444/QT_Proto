@@ -20,6 +20,7 @@ namespace QT
 
         public override void InitializeState()
         {
+            _ownerEntity.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0.5f);
             _ownerEntity.transform.position = _ownerEntity._rigidTeleportEnemy.Position;
             _ownerEntity.Animator.SetTrigger(AnimationTeleportHash);
             _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
@@ -44,7 +45,7 @@ namespace QT
 
             _ownerEntity._rigidTeleportEnemy.ProjectileHit((_ownerEntity._rigidTargetEnemy.Position - _ownerEntity._rigidTeleportEnemy.Position).normalized
                 , _ownerEntity.GetStat(PlayerStats.ChargeShootSpd2), BounceMask
-                , ProjectileOwner.Player
+                , ProjectileOwner.PlayerTeleport
                 , _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
             SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, _ownerEntity._rigidTargetEnemy.Position);
             //var angle = Util.Math.GetDegree(_ownerEntity.transform.position, _ownerEntity._rigidTargetEnemy.Position);

@@ -372,27 +372,37 @@ namespace QT.Core.Map
             Dictionary<Vector2Int,Vector2Int> bossRoomPositionsConfirmed = new Dictionary<Vector2Int,Vector2Int>();
             foreach (var bossRoomPos in bossRoomPositions)
             {
-                Vector2Int nextRoomPos = bossRoomPos.Value - Vector2Int.left;
-                if (nextRoomPos.x < 0 || nextRoomPos.x >= _mapWidth)
+                if (BossDirectionCheck(bossRoomPos))
                 {
-                    continue;
+                    bossRoomPositionsConfirmed.Add(bossRoomPos.Key,bossRoomPos.Value);
                 }
-                if (_map[nextRoomPos.y, nextRoomPos.x].RoomType != RoomType.None)
-                {
-                    continue;
-                }
-                nextRoomPos = bossRoomPos.Value - Vector2Int.right;
-                if (nextRoomPos.x < 0 || nextRoomPos.x >= _mapWidth)
-                {
-                    continue;
-                }
-                if (_map[nextRoomPos.y, nextRoomPos.x].RoomType != RoomType.None)
-                {
-                    continue;
-                }
-                bossRoomPositionsConfirmed.Add(bossRoomPos.Key,bossRoomPos.Value);
             }
             return bossRoomPositionsConfirmed;
+        }
+
+        private bool BossDirectionCheck(KeyValuePair<Vector2Int,Vector2Int> bossPosition)
+        {
+            bool bCheck = true;
+            foreach (Vector2Int dir in QT.Util.UnityUtil.PathDirections)
+            {
+                if (dir == Vector2Int.down)
+                    continue;
+                Vector2Int nextRoomPos = bossPosition.Value - dir;
+                if (nextRoomPos.y < 0)
+                {
+                    continue;
+                }
+                if (nextRoomPos.x < 0 || nextRoomPos.x >= _mapWidth)
+                {
+                    continue;
+                }
+                if (_map[nextRoomPos.y, nextRoomPos.x].RoomType != RoomType.None)
+                {
+                    bCheck = false;
+                    break;
+                }
+            }
+            return bCheck;
         }
 
         public RoomType RoomCheck(Vector2Int roomPosition)

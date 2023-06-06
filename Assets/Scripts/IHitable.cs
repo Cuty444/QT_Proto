@@ -8,6 +8,7 @@ namespace QT
     {
         Ball,
         Swing,
+        Teleport,
     }
     public interface IHitable
     {
