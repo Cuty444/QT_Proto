@@ -53,14 +53,17 @@ namespace QT.InGame
 
         private AnimationCurve enemyFallScaleCurve;
 
-        private Collider2D _collider;
+        private Collider2D[] _colliders;
 
         
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
             Rigidbody = GetComponent<Rigidbody2D>();
-            _collider = GetComponent<Collider2D>();
+            
+            _colliders = new Collider2D[Rigidbody.attachedColliderCount];
+            Rigidbody.GetAttachedColliders(_colliders);
+            
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
@@ -84,7 +87,11 @@ namespace QT.InGame
         public void SetPhysics(bool enable)
         {
             Rigidbody.simulated = enable;
-            _collider.enabled = enable;
+            
+            foreach (var collider in _colliders)
+            {
+                collider.enabled = enable;
+            }
         }
 
         public int RandomGoldDrop()
