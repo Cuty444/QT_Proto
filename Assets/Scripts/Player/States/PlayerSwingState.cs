@@ -132,7 +132,6 @@ namespace QT.InGame
                 enemyHitCount++;
             }
 
-            _ownerEntity.swingSlashEffectPlay();
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Move);
 

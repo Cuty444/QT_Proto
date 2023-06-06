@@ -26,7 +26,6 @@ namespace QT.InGame
         [field:SerializeField] public Transform EyeTransform { get; private set; }
         [SerializeField] private Transform _batTransform;
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
-        [SerializeField] private TrailRenderer _trailRenderer;
         [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
         [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
         [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
