@@ -17,6 +17,8 @@ namespace QT.InGame
         {
             OnDamageEvent.Invoke(dir, power,AttackType.Swing);
             OnHitEvent.Invoke(dir, power, bounceMask);
+            if (owner == ProjectileOwner.PlayerTeleport)
+                IsTeleportProjectile = true;
         }
         
         public void ResetBounceCount(int maxBounce)
