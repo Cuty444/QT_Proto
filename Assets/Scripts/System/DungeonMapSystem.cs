@@ -367,7 +367,6 @@ namespace QT.Core.Map
                 if (_map[nextRoomPos.y, nextRoomPos.x].RoomType == RoomType.None)
                 {
                     bossRoomPositions.Add(cellData[i].Position,nextRoomPos);
-                    _map[nextRoomPos.y, nextRoomPos.x].RoomType = RoomType.Normal;
                 }
             }
             Dictionary<Vector2Int,Vector2Int> bossRoomPositionsConfirmed = new Dictionary<Vector2Int,Vector2Int>();
