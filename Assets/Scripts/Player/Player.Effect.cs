@@ -37,6 +37,16 @@ namespace QT.InGame
             _playerHitParticle.Play();
         }
 
+        public void ChargingEffectPlay()
+        {
+            _chargingLevelParticle[0].Play();
+        }
+
+        public void ChargingEffectStop()
+        {
+            _chargingLevelParticle[0].Stop();
+        }
+        
         public void FullChargingEffectPlay()
         {
             _chargingMaintainParticle.Play();

@@ -57,6 +57,8 @@ namespace QT.InGame
                 _chargingTime = 0;
                 _soundManager.PlaySFX(_soundManager.SoundData.ChargeSFX);
             }
+            if(!_isCharged)
+                _ownerEntity.ChargingEffectPlay();
         }
 
         public override void ClearState()
@@ -64,6 +66,7 @@ namespace QT.InGame
             base.ClearState();
             _soundManager.StopSFX(_soundManager.SoundData.ChargeSFX);
             _projectiles.Clear();
+            _ownerEntity.ChargingEffectStop();
             foreach (var line in _lines)
             {
                 SystemManager.Instance.ResourceManager.ReleaseObject(HitLinePath, line);
@@ -179,6 +182,7 @@ namespace QT.InGame
                 _isCharged = true;
                 _soundManager.StopSFX(_soundManager.SoundData.ChargeSFX);
                 _ownerEntity.FullChargingEffectPlay();
+                _ownerEntity.ChargingEffectStop();
                 _soundManager.PlayOneShot(_soundManager.SoundData.ChargeEndSFX);
             }
         }
