@@ -12,6 +12,7 @@ namespace QT.InGame
         [SerializeField] private ParticleSystem _chargingMaintainParticle;
         [SerializeField] private ParticleSystem[] _chargingLevelParticle;
         [SerializeField] private ParticleSystem _swingSlashParticle;
+        [SerializeField] private TrailRenderer[] _teleportEffectLines;
 
         private void EffectSetup()
         {
@@ -22,6 +23,7 @@ namespace QT.InGame
             {
                 _chargingLevelParticle[i].Stop();
             }
+            TeleportEffectEmitting(false);
         }
         
         public void DodgeEffectPlay(Vector2 dir)
@@ -55,6 +57,19 @@ namespace QT.InGame
         public void swingSlashEffectPlay()
         {
             _swingSlashParticle.Play();
+        }
+
+        public void TeleportEffect(bool isActive)
+        {
+            TeleportEffectEmitting(isActive);
+        }
+
+        private void TeleportEffectEmitting(bool isActive)
+        {
+            for (int i = 0; i < _teleportEffectLines.Length; i++)
+            {
+                _teleportEffectLines[i].emitting = isActive;
+            }
         }
     }
 }
