@@ -26,6 +26,8 @@ namespace QT.InGame
         
         [SerializeField] private int _enemyId;
         public EnemyGameData Data { get; private set; }
+        [field: SerializeField] public DullahanData DullahanData{ get; private set; }
+        
         public Rigidbody2D Rigidbody { get; private set; }
         
         
@@ -46,9 +48,11 @@ namespace QT.InGame
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
             
+            Shooter.Initialize(Animator);
+            
             _colliders = new Collider2D[Rigidbody.attachedColliderCount];
             Rigidbody.GetAttachedColliders(_colliders);
-
+            
             SetUp(States.Normal);
         }
         
