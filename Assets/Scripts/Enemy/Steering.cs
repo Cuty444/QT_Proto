@@ -1,8 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QT.InGame
 {
-    public partial class Enemy
+    public class Steering : MonoBehaviour
     {
         [Header("장애물 감지")]
         [SerializeField] private float _detectionRadius = 2;
@@ -48,9 +50,36 @@ namespace QT.InGame
             
             return dir;
         }
+
+        public bool IsStuck()
+        {
+            var obstacles = Physics2D.OverlapCircleAll(transform.position, _detectionRadius, _obstacleLayerMask);
+            var bounds = new Bounds(transform.position, Vector2.one * _enemySize);
+            
+            foreach (var obstacleCollider in obstacles)
+            {
+                if (obstacleCollider.gameObject == gameObject)
+                {
+                    continue;
+                }
+
+                var min = obstacleCollider.bounds.min;
+                var max = obstacleCollider.bounds.max;
+
+                if (min.x < bounds.min.x && max.x > bounds.max.x)
+                {
+                    if (min.y < bounds.min.y && max.y > bounds.max.y)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
-
-
+    
+    
     public class DirectionWeights
     {
         public const int DirCount = 8;

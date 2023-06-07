@@ -42,9 +42,10 @@ namespace QT.InGame
         
         private Transform _transform;
         
-        private bool isNormal;
+        private bool _isNormal;
 
         private SoundManager _soundManager;
+        
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
@@ -77,13 +78,13 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
             
             _soundManager.PlayOneShot(_soundManager.SoundData.MonsterFly);
-            isNormal = false;
+            _isNormal = false;
         }
         
         public override void ClearState()
         {
             _ownerEntity.Animator.ResetTrigger(ProjectileAnimHash);
-            if (isNormal)
+            if (_isNormal)
             {
                 _ownerEntity.Animator.SetTrigger(NormalAnimHash);
                 _ownerEntity.StartCoroutine(
@@ -154,7 +155,7 @@ namespace QT.InGame
                 
                 if (_speed <= 0)
                 {
-                    if (_ownerEntity.IsFall)
+                    if (_ownerEntity.Steering.IsStuck())
                     {
                         _ownerEntity.HP.SetStatus(0);
                         _isReleased = true;
@@ -171,7 +172,7 @@ namespace QT.InGame
                     }
                     else
                     {
-                        isNormal = true;
+                        _isNormal = true;
                         _ownerEntity.Animator.SetBool(RigidAnimHash, false);
                         _ownerEntity.Animator.SetFloat(ProjectileSpeedAnimHash, 1);
                         _ownerEntity.SetPhysics(true);

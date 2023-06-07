@@ -24,7 +24,7 @@ namespace QT.Map
             _enemyList = GetComponentsInChildren<Enemy>().ToList();
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.CurrentRoomEnemyRegister.Invoke(_enemyList);
+            _playerManager.CurrentRoomEnemyRegister.Invoke(GetComponentsInChildren<IHitable>().ToList());
         }
 
         private void Update()

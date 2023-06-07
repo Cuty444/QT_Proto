@@ -469,6 +469,7 @@ GameObject:
   - component: {fileID: 9203921043259468480}
   - component: {fileID: 2344846795604620376}
   - component: {fileID: 5769672979650985188}
+  - component: {fileID: -200144162355979423}
   - component: {fileID: -6209716994341537550}
   m_Layer: 11
   m_Name: Enemy_Catcher
@@ -547,7 +548,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyId: 506
   <HpCanvas>k__BackingField: {fileID: 6951805284751817465}
-  spineTransform: {fileID: 8933612405404149923}
   <BallObject>k__BackingField: {fileID: 8933612405404149923}
   <BallHeight>k__BackingField: 1
   <BallHeightMin>k__BackingField: 0.5
@@ -555,11 +555,6 @@ MonoBehaviour:
   HitAttackType: 0
   TeleportLineRenderer: {fileID: 0}
   IsFall: 0
-  _detectionRadius: 2
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 52224
-  _enemySize: 1
 --- !u!114 &5769672979650985188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,6 +568,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shootPoint: {fileID: 3258319901047688248}
+--- !u!114 &-200144162355979423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8220631510388221840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9c8d949920874e32839bdaca9906f4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _detectionRadius: 2
+  _obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 52480
+  _enemySize: 1
 --- !u!210 &-6209716994341537550
 SortingGroup:
   m_ObjectHideFlags: 0

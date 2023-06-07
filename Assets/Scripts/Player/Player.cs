@@ -72,14 +72,14 @@ namespace QT.InGame
             SetGlobalState(new PlayerGlobalState(this));
             
             _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.CurrentRoomEnemyRegister.AddListener((enemyList) =>
+            _playerManager.CurrentRoomEnemyRegister.AddListener((hitables) =>
             {
-                _enemyList.Clear();
-                _enemyList.AddRange(enemyList);
+                _hitableList.Clear();
+                _hitableList.AddRange(hitables);
             });
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
             {
-                _enemyList.Clear();
+                _hitableList.Clear();
             });
             _playerManager.PlayerMapPass.AddListener((isBool) =>
             {

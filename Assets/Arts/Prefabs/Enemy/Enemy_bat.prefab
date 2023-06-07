@@ -429,7 +429,7 @@ RectTransform:
   m_GameObject: {fileID: 7265613979005463524}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4540391478626507336}
@@ -515,6 +515,7 @@ GameObject:
   - component: {fileID: 9203921043259468480}
   - component: {fileID: 2344846795604620376}
   - component: {fileID: 5769672979650985188}
+  - component: {fileID: 5225239866265232190}
   - component: {fileID: -6209716994341537550}
   m_Layer: 11
   m_Name: Enemy_bat
@@ -599,12 +600,6 @@ MonoBehaviour:
   HitAttackType: 0
   TeleportLineRenderer: {fileID: 0}
   IsFall: 0
-  IsTeleportProjectile: 0
-  _detectionRadius: 2
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  _enemySize: 0.5
 --- !u!114 &5769672979650985188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,6 +613,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shootPoint: {fileID: 3026859772209166903}
+--- !u!114 &5225239866265232190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8220631510388221840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9c8d949920874e32839bdaca9906f4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _detectionRadius: 2
+  _obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 52480
+  _enemySize: 0.5
 --- !u!210 &-6209716994341537550
 SortingGroup:
   m_ObjectHideFlags: 0
