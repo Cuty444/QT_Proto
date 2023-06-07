@@ -20,6 +20,7 @@ namespace QT
 
         public override void InitializeState()
         {
+            _ownerEntity.TeleportEffect(true);
             _ownerEntity.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0.5f);
             _ownerEntity.transform.position = _ownerEntity._rigidTeleportEnemy.Position;
             _ownerEntity.Animator.SetTrigger(AnimationTeleportHash);
@@ -48,9 +49,6 @@ namespace QT
                 , ProjectileOwner.PlayerTeleport
                 , _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
             SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, _ownerEntity._rigidTargetEnemy.Position);
-            //var angle = Util.Math.GetDegree(_ownerEntity.transform.position, _ownerEntity._rigidTargetEnemy.Position);
-            //_ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle);
-            _ownerEntity.swingSlashEffectPlay();
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
             {
@@ -61,6 +59,7 @@ namespace QT
         public override void ClearState()
         {
             _ownerEntity.Animator.SetTrigger(AnimationTeleportEndHash);
+            _ownerEntity.TeleportEffect(false);
             _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
             {
                 _ownerEntity.Animator.ResetTrigger(AnimationTeleportEndHash);

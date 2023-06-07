@@ -9,6 +9,14 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
+[Serializable]
+public class VolumData
+{
+    public Color VolumeColor;
+    [Range(0f, 1f)] public float Intensity;
+    [Range(0f, 1f)] public float Smooothness;
+}
+
 public class PlayerChasingCamera : MonoBehaviour
 {
     #region Inspector_Definition
@@ -16,6 +24,7 @@ public class PlayerChasingCamera : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
     [SerializeField] private CinemachineConfiner _cinemachineConfiner;
 
+    [SerializeField] private VolumData[] _volumDatas;
     [SerializeField] private Volume _globalVolume;
     [SerializeField] private float _vignetteTimeScale;
     #endregion
@@ -43,7 +52,15 @@ public class PlayerChasingCamera : MonoBehaviour
         });
         SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonStart();
         _globalVolume.profile.TryGet(out _vignette);
-        _maxIntensity = _vignette.intensity.value;
+        _maxIntensity = _volumDatas[1].Intensity;
+    }
+
+    private void Update()
+    {
+        if (_vignetteCoroutine == null)
+        {
+            SetVolum(0);
+        }
     }
 
     private void VignetteOn(Vector2 dir, float damage)
@@ -52,7 +69,7 @@ public class PlayerChasingCamera : MonoBehaviour
         {
             return;
         }
-        _vignette.active = true;
+        SetVolum(1);
         _vignetteCoroutine = StartCoroutine(VignetteOff(_vignette,_vignetteTimeScale));
     }
 
@@ -76,9 +93,15 @@ public class PlayerChasingCamera : MonoBehaviour
             vignette.intensity.value = Unity.Mathematics.math.remap(0f, halfTime, 0f, _maxIntensity, currentTime);
             yield return null;
         }
-
-        _vignette.active = false;
+        SetVolum(0);
         _vignetteCoroutine = null;
+    }
+
+    private void SetVolum(int index)
+    {
+        _vignette.color.value = _volumDatas[index].VolumeColor;
+        _vignette.intensity.value = _volumDatas[index].Intensity;
+        _vignette.smoothness.value = _volumDatas[index].Smooothness;
     }
 
 }

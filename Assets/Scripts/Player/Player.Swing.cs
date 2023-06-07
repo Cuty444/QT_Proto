@@ -32,6 +32,7 @@ namespace QT.InGame
                 startAngle = -90.0f - halfAngle;
                 endAngel = -90.0f + halfAngle;
                 _batSpriteRenderer.flipX = true;
+               swingSlashEffectPlay(true);
             }
             else
             {
@@ -39,6 +40,7 @@ namespace QT.InGame
                 endAngel = -90.0f - halfAngle;
                 rotationSpeed = - 1;
                 _batSpriteRenderer.flipX = false;
+               swingSlashEffectPlay(false);
             }
             
             _batTransform.transform.localRotation = Quaternion.Euler(0f, 0f, startAngle);
@@ -49,7 +51,6 @@ namespace QT.InGame
         
         private IEnumerator BatAnimation(Transform targetTransform, float rotateSpeed, float targetAngle)
         {
-            _trailRenderer.emitting = true;
             _batSpriteRenderer.enabled = true;
             
             
@@ -70,7 +71,6 @@ namespace QT.InGame
             
             yield return new WaitForSeconds(0.1f);
             
-            _trailRenderer.emitting = false;
             _batSpriteRenderer.enabled = false;
         }
         
