@@ -70,7 +70,7 @@ namespace QT.InGame
             ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
                 .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
             
-            Shooter.Initialize(this);
+            Shooter.Initialize(Animator);
             
             SetUpStats();
             SetUp(States.Normal);
