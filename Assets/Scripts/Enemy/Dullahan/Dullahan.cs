@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity
+    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IHitable
     {
         public enum States : int
         {

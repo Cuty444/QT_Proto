@@ -8,13 +8,15 @@ namespace QT.InGame
     public class DullahanNormalState : FSMState<Dullahan>
     {
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
-        
+
         private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
-        
+
         private readonly EnemyGameData _data;
 
-        private float _lastMoveTargetUpdateTime;
+        private float _targetUpdateCoolTime;
         private Vector2 _moveTarget;
+
+        private float _atkCoolTime;
 
         private bool _rotateSide;
 
@@ -25,30 +27,29 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            _lastMoveTargetUpdateTime = 0;
+            _targetUpdateCoolTime = 0;
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
         }
 
         public override void UpdateState()
         {
-            if (_lastMoveTargetUpdateTime + _data.MoveTargetUpdatePeroid < Time.time)
+            _atkCoolTime += Time.deltaTime;
+            _targetUpdateCoolTime += Time.deltaTime;
+            
+            if (_targetUpdateCoolTime > _data.MoveTargetUpdatePeroid)
             {
-                _lastMoveTargetUpdateTime = Time.time;
-                Player player = SystemManager.Instance.PlayerManager.Player;
-                if (player == null)
-                {
-                    GameObject.Destroy(_ownerEntity.gameObject);
-                    return;
-                }
+                _targetUpdateCoolTime = 0;
                 _moveTarget = SystemManager.Instance.PlayerManager.Player.transform.position;
             }
         }
 
         public override void FixedUpdateState()
         {
-            var targetDistance = (_moveTarget-(Vector2) _ownerEntity.transform.position).magnitude;
-            
+            var targetDistance = (_moveTarget - (Vector2) _ownerEntity.transform.position).magnitude;
+
             Move(targetDistance);
+
+            CheckAttackStart(targetDistance);
         }
 
         public override void ClearState()
@@ -61,8 +62,8 @@ namespace QT.InGame
 
             switch (_data.MoveType)
             {
-                case EnemyGameData.MoveTypes.Spacing :
-                    dir = SpacingMove(targetDistance,false);
+                case EnemyGameData.MoveTypes.Spacing:
+                    dir = SpacingMove(targetDistance, false);
                     break;
                 case EnemyGameData.MoveTypes.SpacingLeft:
                     dir = SpacingMove(targetDistance, true);
@@ -78,14 +79,14 @@ namespace QT.InGame
             }
 
             _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd);
-            
+
             SetRotation(currentDir);
         }
 
         private void SetRotation(Vector2 dir)
         {
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 90;
-            
+
             if (angle < 0)
             {
                 angle += 360;
@@ -95,8 +96,8 @@ namespace QT.InGame
             {
                 angle = 360 - angle;
             }
-            
-            _ownerEntity.Animator.SetFloat(RotationAnimHash,  Mathf.Round(angle / 180 * 4));
+
+            _ownerEntity.Animator.SetFloat(RotationAnimHash, Mathf.Round(angle / 180 * 4));
             _ownerEntity.SetFlip(dir.x > 0);
         }
 
@@ -104,34 +105,49 @@ namespace QT.InGame
         {
             var ownerPos = (Vector2) _ownerEntity.transform.position;
             var dir = _moveTarget - ownerPos;
-            
+
             var danger = new DirectionWeights();
             var interest = new DirectionWeights();
-            
+
             _ownerEntity.Steering.DetectObstacle(ref danger);
 
             if (targetDistance > _data.SpacingRad)
             {
                 interest.AddWeight(dir, 1);
             }
-            else if(targetDistance < _data.SpacingRad - 1)
+            else if (targetDistance < _data.SpacingRad - 1)
             {
                 interest.AddWeight(-dir, 0.5f);
             }
-            
+
             if (isRotate)
             {
                 interest.AddWeight(_rotateSide ? new Vector2(dir.y, -dir.x) : new Vector2(-dir.y, dir.x), 1);
             }
 
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
-            
-            if(isRotate && result.sqrMagnitude < TurnoverLimitSpeed)
+
+            if (isRotate && result.sqrMagnitude < TurnoverLimitSpeed)
             {
                 _rotateSide = !_rotateSide;
             }
-            
+
             return result.normalized;
+        }
+
+        private bool CheckAttackStart(float targetDistance)
+        {
+            if (_atkCoolTime < _data.AtkCheckDelay)
+            {
+                return false;
+            }
+
+            _atkCoolTime = 0;
+
+            Debug.LogError("공습 경보 공습 경보");
+            //_ownerEntity.ChangeState(Dullahan.States.Attack);
+
+            return false;
         }
     }
 }
