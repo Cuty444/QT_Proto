@@ -17,7 +17,6 @@ namespace QT.Core
         private Dictionary<int, FSMState<T>> _states;
 
         private FSMState<T> _currentState = null;
-        private FSMState<T> _previousState = null;
         private FSMState<T> _globalState = null;
 
         public int PreviousStateIndex { get; private set; }
@@ -75,11 +74,9 @@ namespace QT.Core
 
             if (_currentState != null)
             {
-                _previousState = _currentState;
-
                 _currentState.ClearState();
 
-                Debug.Log($"{this.GetType()} : {_currentState.GetType()} 상태 클리어");
+                //Debug.Log($"{this.GetType()} : {_currentState.GetType()} 상태 클리어");
             }
 
             PreviousStateIndex = CurrentStateIndex;
@@ -88,7 +85,7 @@ namespace QT.Core
             _currentState = state;
             _currentState.InitializeState();
 
-            Debug.Log($"{this.GetType()} : {state.GetType()} 상태로 전환");
+            //Debug.Log($"{this.GetType()} : {state.GetType()} 상태로 전환");
 
             return _currentState;
         }
