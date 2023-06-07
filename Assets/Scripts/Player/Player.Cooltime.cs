@@ -12,6 +12,7 @@ namespace QT.InGame
         {
             if (CurrentStateIndex == (int) States.Dead)
             {
+                _attackSpeedCanvas.gameObject.SetActive(false);
                 return;
             }
             
@@ -25,6 +26,7 @@ namespace QT.InGame
             dodgeCooldown.AddStatus(Time.deltaTime);
             
             SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().SetDodgeCoolTime(dodgeCooldown);
+            AttackCanvas();
         }
         
         public bool IsInvincible()
@@ -32,6 +34,41 @@ namespace QT.InGame
             return !GetStatus(PlayerStats.MercyInvincibleTime).IsFull()
                     || !GetStatus(PlayerStats.DodgeInvincibleTime).IsFull()
                     || CurrentStateIndex == (int)Player.States.Teleport;
+        }
+
+        private void AttackCanvas()
+        {
+            if (GetStatus(PlayerStats.SwingCooldown).IsFull())
+            {
+                _attackSpeedCanvas.gameObject.SetActive(false);
+            }
+            else
+            {
+                _attackSpeedCanvas.gameObject.SetActive(true);
+                bool flip = PlayerAimAngle();
+                _attackSpeedBackground[flip ? 0 : 1].gameObject.SetActive(true);
+                _attackSpeedBackground[flip ? 1 : 0].gameObject.SetActive(false);
+                var attackCoolTime = GetStatus(PlayerStats.SwingCooldown);
+                for (int i = 0; i < _attackGaugeImages.Length; i++)
+                {
+                    _attackGaugeImages[i].fillAmount =
+                        Util.Math.Remap(attackCoolTime.StatusValue, attackCoolTime.Value, 0f);
+                }
+            }
+        }
+        
+        private bool PlayerAimAngle()
+        {
+            float playerRotation = EyeTransform.rotation.z;
+            Debug.Log(playerRotation);
+            if (playerRotation < -0.7f)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
