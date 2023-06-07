@@ -155,7 +155,7 @@ namespace QT.InGame
                 
                 if (_speed <= 0)
                 {
-                    if (_ownerEntity.IsFall)
+                    if (_ownerEntity.Steering.IsStuck())
                     {
                         _ownerEntity.HP.SetStatus(0);
                         _isReleased = true;

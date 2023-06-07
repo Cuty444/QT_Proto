@@ -38,7 +38,7 @@ namespace QT.UI
                 {
                     _canvasGroup.interactable = true;
                 }));
-                SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<Enemy>());
+                SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
                 SystemManager.Instance.ProjectileManager.ProjectileListClear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
             }, 3.0f));

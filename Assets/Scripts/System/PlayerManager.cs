@@ -15,7 +15,7 @@ namespace QT.Core
         public UnityEvent<Vector2Int> PlayerMapClearPosition { get; } = new();
         public UnityEvent<Vector2Int> PlayerDoorEnter { get; } = new();
         public UnityEvent<bool> PlayerMapPass { get; } = new();
-        public UnityEvent<List<Enemy>> CurrentRoomEnemyRegister { get; } = new();
+        public UnityEvent<List<IHitable>> CurrentRoomEnemyRegister { get; } = new();
         public UnityEvent<Collider2D> PlayerDoorEnterCameraShapeChange { get; } = new();
 
         public UnityEvent PlayerItemInteraction { get; } = new();

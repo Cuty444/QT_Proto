@@ -37,6 +37,7 @@ namespace QT.InGame
             if (_lastMoveTargetUpdateTime + _data.MoveTargetUpdatePeroid < Time.time)
             {
                 _lastMoveTargetUpdateTime = Time.time;
+                // todo : 재시작을 위한 임시 처리
                 Player player = SystemManager.Instance.PlayerManager.Player;
                 if (player == null)
                 {
@@ -58,7 +59,7 @@ namespace QT.InGame
                 _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId);
             }
             
-            if (_ownerEntity.IsFall)
+            if (_ownerEntity.Steering.IsStuck())
             {
                 _ownerEntity.HP.SetStatus(0);
                 _ownerEntity.ChangeState(Enemy.States.Dead);

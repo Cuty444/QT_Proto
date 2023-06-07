@@ -322,8 +322,15 @@ namespace QT.InGame
         private void GetInEnemyRange(Vector2 origin, float range, float angle, Vector2 dir,
             ref List<Enemy> outList)
         {
-            foreach (var enemy in _ownerEntity._enemyList)
+            foreach (var hitable in _ownerEntity._hitableList)
             {
+                if (hitable is not Enemy)
+                {
+                    continue;
+                }
+                
+                var enemy = (Enemy) hitable;
+                
                 if (enemy.CurrentStateIndex > (int) Enemy.States.Rigid)
                     continue;
                 var checkRange = range + enemy.ColliderRad;
