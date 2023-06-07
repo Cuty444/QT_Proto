@@ -4,6 +4,7 @@ using QT.Core;
 using UnityEngine;
 using Cinemachine;
 using QT.UI;
+using UnityEngine.UI;
 
 namespace QT.InGame
 {
@@ -48,7 +49,10 @@ namespace QT.InGame
 
         private int _goldCost = 0;
         private PlayerHPCanvas _playerHpCanvas;
-        
+
+        [SerializeField] private Transform _attackSpeedCanvas;
+        [SerializeField] private Transform[] _attackSpeedBackground;
+        [SerializeField] private Image[] _attackGaugeImages;
         
         private void Awake()
         {
