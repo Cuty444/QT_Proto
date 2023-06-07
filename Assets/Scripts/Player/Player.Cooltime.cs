@@ -60,7 +60,6 @@ namespace QT.InGame
         private bool PlayerAimAngle()
         {
             float playerRotation = EyeTransform.rotation.z;
-            Debug.Log(playerRotation);
             if (playerRotation < -0.7f)
             {
                 return true;

@@ -61,8 +61,8 @@ namespace QT
             ResourceManager resourceManager = SystemManager.Instance.ResourceManager;
             resourceManager.LoadSprite(ItemGameData.ItemIconPath, _itemSprite);
             _itemName.text = ItemGameData.Name;
-            _itemCost.text = "가격 : " + ItemGameData.CostGold;
-            _itemDesc.text = ItemGameData.Desc.Replace("24","17");
+            _itemCost.text = ItemGameData.CostGold.ToString();
+            _itemDesc.text = ItemGameData.Desc.Replace("16","14");
             for (int i = 25; i <= ItemGameData.CostHp; i += 25)
             {
                 _hpImages[i/25].gameObject.SetActive(true);
