@@ -24,10 +24,11 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            SetDir();
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
             
             _ownerEntity.StartCoroutine(AttackSequence());
         }
+
 
         private void SetDir()
         {
@@ -58,6 +59,8 @@ namespace QT.InGame
         {
             foreach (var data in _atkList)
             {
+                SetDir();
+                
                 _ownerEntity.Animator.SetTrigger(AttackAnimHash);
                 yield return new WaitForSeconds(data.BeforeDelay);
 
