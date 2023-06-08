@@ -14,15 +14,21 @@ namespace QT.InGame
         private readonly int AnimationDirectionXHash = Animator.StringToHash("DirectionX");
         private readonly int AnimationDirectionYHash = Animator.StringToHash("DirectionY");
 
+        private LayerMask _dodgeLayer;
         private SoundManager _soundManager;
-        
+        private LayerMask _playerLayer;
+
         public PlayerDodgeState(IFSMEntity owner) : base(owner)
         {
             _soundManager = SystemManager.Instance.SoundManager;
+            _dodgeLayer = LayerMask.NameToLayer("PlayerDodge");
+            _playerLayer = LayerMask.NameToLayer("Player");
         }
         
         public void InitializeState(Vector2 dir)
         {
+            _ownerEntity.DodgePreviousPosition = _ownerEntity.transform.position;
+            _ownerEntity.gameObject.layer = _dodgeLayer;
             _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
             _ownerEntity.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
             _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
@@ -99,7 +105,16 @@ namespace QT.InGame
 
             _ownerEntity.StartCoroutine( Util.UnityUtil.WaitForFunc(() =>
             {
-                _ownerEntity.RevertToPreviousState();
+                if (_ownerEntity.IsFall)
+                {
+                    _ownerEntity.FallPreviousState = _ownerEntity.PreviousStateIndex;
+                    _ownerEntity.ChangeState(Player.States.Fall);
+                }
+                else
+                {
+                    _ownerEntity.RevertToPreviousState();
+                    _ownerEntity.gameObject.layer = _playerLayer;
+                }
             },duration));
         }
         
