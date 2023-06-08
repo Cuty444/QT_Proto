@@ -72,8 +72,9 @@ namespace QT.InGame
                 angle = 360 - angle;
                 flip = 0;
             }
-            
-            _ownerEntity.Animator.SetFloat(AnimationMouseRotateHash, angle / 180 * 4);
+
+            var aimValue = (angle / 180 * 4) + (_ownerEntity.CurrentStateIndex == (int)Player.States.Swing ? 5 : 0);
+            _ownerEntity.Animator.SetFloat(AnimationMouseRotateHash, aimValue);
             _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
         }
         
