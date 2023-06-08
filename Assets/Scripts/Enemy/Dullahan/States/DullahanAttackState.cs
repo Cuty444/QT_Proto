@@ -12,6 +12,9 @@ namespace QT.InGame
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
         private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
 
+        private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Smash.prefab";
+
+
         private List<EnemyAtkGameData> _atkList;
         
         public DullahanAttackState(IFSMEntity owner) : base(owner)
@@ -55,12 +58,14 @@ namespace QT.InGame
         {
             foreach (var data in _atkList)
             {
-                _ownerEntity.Animator.SetBool(AttackAnimHash, true);
+                _ownerEntity.Animator.SetTrigger(AttackAnimHash);
                 yield return new WaitForSeconds(data.BeforeDelay);
+
+                SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
+                    _ownerEntity.Shooter.ShootPoint.position);
 
                 _ownerEntity.Shooter.Shoot(data.ShootDataId, data.AimType);
                 
-                _ownerEntity.Animator.SetBool(AttackAnimHash, false);
                 yield return new WaitForSeconds(data.AfterDelay);
             }
 
