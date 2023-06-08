@@ -40,7 +40,7 @@ namespace QT.InGame
         [SerializeField] private GameObject _enemy;
         [SerializeField] private GameObject _boss;
         
-        private TrailRenderer _trailRenderer;
+        private TrailRenderer[] _trailRenderer;
         
         private float _maxSpeed;
         private float _speed;
@@ -76,7 +76,7 @@ namespace QT.InGame
                 return;
             }
             _playerTransform = player.transform;
-            _trailRenderer = GetComponentInChildren<TrailRenderer>();
+            _trailRenderer = GetComponentsInChildren<TrailRenderer>();
             _soundManager = SystemManager.Instance.SoundManager;
             _boss.SetActive(false);
         }
@@ -89,8 +89,13 @@ namespace QT.InGame
         private void OnDisable()
         {
             SystemManager.Instance?.ProjectileManager.UnRegister(this);
-            _trailRenderer?.Clear();
-            
+            if (_trailRenderer != null)
+            {
+                for (int i = 0; i < _trailRenderer.Length; i++)
+                {
+                    _trailRenderer[i].Clear();
+                }
+            }
             // Todo : 더 확실한 플레이어 투사체 구분필요
             if (_isReleased && _releaseDelay > 0)
             {
@@ -126,7 +131,7 @@ namespace QT.InGame
 
             _owner = owner;
             SetOwnerColor();
-            _trailRenderer.emitting = true;
+            TrailRendersSetEmitting(true);
         }
         
         public void Hit(Vector2 dir, float newSpeed,AttackType attackType)
@@ -177,7 +182,7 @@ namespace QT.InGame
             if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
             {
                 SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
-                _trailRenderer.emitting = false;
+                TrailRendersSetEmitting(false);
             }
 
             CheckHit();
@@ -281,6 +286,14 @@ namespace QT.InGame
             }
 
             return new Vector2(2 - power, power);
+        }
+
+        private void TrailRendersSetEmitting(bool isActive)
+        {
+            for (int i = 0; i < _trailRenderer.Length; i++)
+            {
+                _trailRenderer[i].emitting = isActive;
+            }
         }
         
         
