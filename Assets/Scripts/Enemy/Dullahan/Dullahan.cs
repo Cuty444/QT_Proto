@@ -26,17 +26,19 @@ namespace QT.InGame
         
         [SerializeField] private int _enemyId;
         public EnemyGameData Data { get; private set; }
+        [field: SerializeField] public DullahanData DullahanData{ get; private set; }
+        
+        
+        [field: SerializeField] public Transform[] ShootPoints{ get; private set; }
+
         public Rigidbody2D Rigidbody { get; private set; }
-        
-        
-        public EnemyProjectileShooter Shooter { get; private set; }
         public Animator Animator { get; private set; }
+        public EnemyProjectileShooter Shooter { get; private set; }
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
 
         private Collider2D[] _colliders;
-
-
+        
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
@@ -46,9 +48,11 @@ namespace QT.InGame
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
             
+            Shooter.Initialize(Animator);
+            
             _colliders = new Collider2D[Rigidbody.attachedColliderCount];
             Rigidbody.GetAttachedColliders(_colliders);
-
+            
             SetUp(States.Normal);
         }
         

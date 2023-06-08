@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Timers;
 using QT.Core;
 using UnityEngine;
+using System.Linq;
 
 namespace QT.InGame
 {
@@ -11,7 +13,8 @@ namespace QT.InGame
 
         private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
 
-        private readonly EnemyGameData _data;
+        private readonly EnemyGameData _enemyData;
+        private readonly DullahanData _dullahanData;
 
         private float _targetUpdateCoolTime;
         private Vector2 _moveTarget;
@@ -22,7 +25,8 @@ namespace QT.InGame
 
         public DullahanNormalState(IFSMEntity owner) : base(owner)
         {
-            _data = _ownerEntity.Data;
+            _enemyData = _ownerEntity.Data;
+            _dullahanData = _ownerEntity.DullahanData;
         }
 
         public override void InitializeState()
@@ -36,7 +40,7 @@ namespace QT.InGame
             _atkCoolTime += Time.deltaTime;
             _targetUpdateCoolTime += Time.deltaTime;
             
-            if (_targetUpdateCoolTime > _data.MoveTargetUpdatePeroid)
+            if (_targetUpdateCoolTime > _enemyData.MoveTargetUpdatePeroid)
             {
                 _targetUpdateCoolTime = 0;
                 _moveTarget = SystemManager.Instance.PlayerManager.Player.transform.position;
@@ -60,7 +64,7 @@ namespace QT.InGame
         {
             var dir = Vector2.zero;
 
-            switch (_data.MoveType)
+            switch (_enemyData.MoveType)
             {
                 case EnemyGameData.MoveTypes.Spacing:
                     dir = SpacingMove(targetDistance, false);
@@ -78,7 +82,7 @@ namespace QT.InGame
                 currentDir = Vector2.Lerp(currentDir, dir, 0.4f);
             }
 
-            _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd);
+            _ownerEntity.Rigidbody.velocity = currentDir * (_enemyData.MovementSpd);
 
             SetRotation(currentDir);
         }
@@ -111,11 +115,11 @@ namespace QT.InGame
 
             _ownerEntity.Steering.DetectObstacle(ref danger);
 
-            if (targetDistance > _data.SpacingRad)
+            if (targetDistance > _enemyData.SpacingRad)
             {
                 interest.AddWeight(dir, 1);
             }
-            else if (targetDistance < _data.SpacingRad - 1)
+            else if (targetDistance < _enemyData.SpacingRad - 1)
             {
                 interest.AddWeight(-dir, 0.5f);
             }
@@ -135,19 +139,41 @@ namespace QT.InGame
             return result.normalized;
         }
 
-        private bool CheckAttackStart(float targetDistance)
+        private void CheckAttackStart(float targetDistance)
         {
-            if (_atkCoolTime < _data.AtkCheckDelay)
+            if (_atkCoolTime < _enemyData.AtkCheckDelay)
             {
-                return false;
+                return;
             }
 
             _atkCoolTime = 0;
+            
+            var passableStates = new List<Dullahan.States>();
 
-            Debug.LogError("공습 경보 공습 경보");
-            //_ownerEntity.ChangeState(Dullahan.States.Attack);
+            if (_dullahanData.AttackRangeMin <= targetDistance && _dullahanData.AttackRangeMax >= targetDistance)
+            {
+                passableStates.Add(Dullahan.States.Attack);
+            }
+            // if (_dullahanData.RushRangeMin <= targetDistance && _dullahanData.RushRangeMax >= targetDistance)
+            // {
+            //     passableStates.Add(Dullahan.States.Rush);
+            // }
+            // if (_dullahanData.JumpRangeMin <= targetDistance && _dullahanData.JumpRangeMax >= targetDistance)
+            // {
+            //     passableStates.Add(Dullahan.States.Jump);
+            // }
+            // if (_dullahanData.ThrowRangeMin <= targetDistance && _dullahanData.ThrowRangeMax >= targetDistance)
+            // {
+            //     passableStates.Add(Dullahan.States.Throw);
+            // }
 
-            return false;
+            if (passableStates.Count == 0)
+            {
+                return;
+            }
+            
+            var rand = new System.Random();
+            _ownerEntity.ChangeState(passableStates[rand.Next(passableStates.Count)]);
         }
     }
 }

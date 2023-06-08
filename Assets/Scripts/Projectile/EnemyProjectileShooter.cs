@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
-using QT.InGame;
 using UnityEngine;
 
 
-namespace QT
+namespace QT.InGame
 {
     public class EnemyProjectileShooter : ProjectileShooter
     {
@@ -14,11 +13,11 @@ namespace QT
         public override LayerMask BounceMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player");
         public override ProjectileOwner Owner => ProjectileOwner.Enemy;
 
-        private Enemy _enemy;
+        private Animator _animator;
         
-        public void Initialize(Enemy enemy)
+        public void Initialize(Animator animator)
         {
-            _enemy = enemy;
+            _animator = animator;
         }
 
         public void PlayEnemyAtkSequence(int atkDataId, bool canOverlap = false)
@@ -39,7 +38,7 @@ namespace QT
 
         private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList)
         {
-            _enemy.Animator.SetBool(AttackAnimHash, true);
+            _animator.SetBool(AttackAnimHash, true);
             
             foreach (var data in atkList)
             {
@@ -50,7 +49,7 @@ namespace QT
                 yield return new WaitForSeconds(data.AfterDelay);
             }
             
-            _enemy?.Animator.SetBool(AttackAnimHash, false);
+            _animator.SetBool(AttackAnimHash, false);
         }
     }
 }
