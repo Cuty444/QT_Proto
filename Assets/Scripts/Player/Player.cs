@@ -62,6 +62,7 @@ namespace QT.InGame
             Rigidbody = GetComponent<Rigidbody2D>();
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
+            SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
