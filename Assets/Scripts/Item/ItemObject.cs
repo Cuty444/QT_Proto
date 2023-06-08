@@ -21,6 +21,8 @@ namespace QT
         [SerializeField] private Transform _hpTransform;
         [SerializeField] private Image[] _hpImages;
         
+        [SerializeField] private UITweenAnimator _popAnimation;
+        
 
         private PlayerManager _playerManager;
         public ItemGameData ItemGameData { get; private set; }
@@ -70,13 +72,15 @@ namespace QT
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_itemScriptCanvas.transform);
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_itemName.transform);
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_itemDesc.transform);
+            
+            _popAnimation.PlayBackwards();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
-                _itemScriptCanvas.gameObject.SetActive(true);
+                _popAnimation.ReStart();
                 if (DropType == DropGameType.GoldShop || DropType == DropGameType.HpShop)
                 {
                     _playerManager.PlayerItemInteraction.AddListener(ItemBuy);
@@ -88,7 +92,7 @@ namespace QT
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
-                _itemScriptCanvas.gameObject.SetActive(false);
+                _popAnimation.PlayBackwards();
                 if (DropType == DropGameType.GoldShop || DropType == DropGameType.HpShop)
                 {
                     _playerManager.PlayerItemInteraction.RemoveListener(ItemBuy);
