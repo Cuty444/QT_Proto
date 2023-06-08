@@ -28,17 +28,17 @@ namespace QT.InGame
         public EnemyGameData Data { get; private set; }
         [field: SerializeField] public DullahanData DullahanData{ get; private set; }
         
+        
+        [field: SerializeField] public Transform[] ShootPoints{ get; private set; }
+
         public Rigidbody2D Rigidbody { get; private set; }
-        
-        
-        public EnemyProjectileShooter Shooter { get; private set; }
         public Animator Animator { get; private set; }
+        public EnemyProjectileShooter Shooter { get; private set; }
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
 
         private Collider2D[] _colliders;
-
-
+        
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
