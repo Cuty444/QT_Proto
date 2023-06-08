@@ -24,12 +24,15 @@ namespace QT.UI
         [SerializeField] private Sprite[] _playerHpImage;
         [SerializeField] private SkeletonGraphic _skeletonGraphicRecharge;
         [SerializeField] private TextMeshProUGUI _goldCostText;
+        
         public Image PlayerHPImage => _playerHPImage;
         public Image PlayerInvicibleImage => _playerInvicibleImage;
         public Image PlayerDodgeCoolBarImage => _playerDodgeCoolBarImage;
         public Image PlayerDodgeCoolBackgroundImage => _playerDodgeCoolBackgroundImage;
         
         private List<Image> _playerHpList = new List<Image>();
+        
+        [SerializeField] private UITweenAnimator _goldAnimation;
 
         private void Start()
         {
@@ -94,7 +97,13 @@ namespace QT.UI
 
         private void SetGoldText(int goldText)
         {
-            _goldCostText.text = goldText.ToString();
+            var str = goldText.ToString();
+
+            if (str != _goldCostText.text)
+            {
+                _goldCostText.text = str;
+                _goldAnimation.ReStart();
+            }
         }
 
     }
