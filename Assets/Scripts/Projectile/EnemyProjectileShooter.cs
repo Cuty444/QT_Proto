@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
-using QT.InGame;
 using UnityEngine;
 
 
-namespace QT
+namespace QT.InGame
 {
     public class EnemyProjectileShooter : ProjectileShooter
     {

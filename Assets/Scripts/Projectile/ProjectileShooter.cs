@@ -18,7 +18,7 @@ namespace QT.InGame
         public virtual LayerMask BounceMask => LayerMask.GetMask("Wall", "HardCollider", "ProjectileCollider");
         public virtual ProjectileOwner Owner => ProjectileOwner.Player;
 
-        [SerializeField] protected Transform _shootPoint;
+        public Transform ShootPoint;
 
         private Transform _targetTransform;
 
@@ -55,7 +55,7 @@ namespace QT.InGame
 
             var projectile =
                 await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
-            projectile.transform.position = _shootPoint.position;
+            projectile.transform.position = ShootPoint.position;
 
             projectile.Init(projectileData, dir, speed, bounceCount, reflectCorrection, BounceMask, Owner, releaseDelay, projectileData.PrefabPath);
         }
