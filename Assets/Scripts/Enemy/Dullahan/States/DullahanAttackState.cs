@@ -67,7 +67,7 @@ namespace QT.InGame
                 SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
                     _ownerEntity.Shooter.ShootPoint.position);
 
-                _ownerEntity.Shooter.Shoot(data.ShootDataId, data.AimType);
+                _ownerEntity.Shooter.Shoot(data.ShootDataId, data.AimType,_ownerEntity.Owner);
                 
                 yield return new WaitForSeconds(data.AfterDelay);
             }

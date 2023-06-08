@@ -38,6 +38,7 @@ namespace QT.InGame
         [Space]
         [SerializeField] private GameObject _player;
         [SerializeField] private GameObject _enemy;
+        [SerializeField] private GameObject _enemyElite;
         [SerializeField] private GameObject _boss;
         
         private TrailRenderer[] _trailRenderer;
@@ -174,6 +175,8 @@ namespace QT.InGame
         {
             _player?.SetActive(_owner == ProjectileOwner.Player);
             _enemy?.SetActive(_owner == ProjectileOwner.Enemy);
+            _enemyElite?.SetActive(_owner == ProjectileOwner.EnemyElite);
+            _boss?.SetActive(_owner == ProjectileOwner.Boss);
         }
 
         

@@ -27,7 +27,7 @@ namespace QT.InGame
             _targetTransform = target;
         }
 
-        public virtual void Shoot(int shootDataId, AimTypes aimType)
+        public virtual void Shoot(int shootDataId, AimTypes aimType,ProjectileOwner owenr)
         {
             var shootData = SystemManager.Instance.DataManager.GetDataBase<ShootGameDataBase>().GetData(shootDataId);
 
@@ -39,12 +39,12 @@ namespace QT.InGame
             foreach (var shoot in shootData)
             {
                 var dir = GetDirection(shoot.ShootAngle, aimType);
-                ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, 0, shoot.MaxBounceCount);
+                ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, 0, shoot.MaxBounceCount,owenr);
             }
         }
 
         public virtual async void ShootProjectile(int projectileDataId, Vector2 dir, float speed,
-            float reflectCorrection, int bounceCount, float releaseDelay = 0)
+            float reflectCorrection, int bounceCount,ProjectileOwner owner, float releaseDelay = 0)
         {
             var projectileData = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
                 .GetData(projectileDataId);
@@ -57,7 +57,7 @@ namespace QT.InGame
                 await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
             projectile.transform.position = ShootPoint.position;
 
-            projectile.Init(projectileData, dir, speed, bounceCount, reflectCorrection, BounceMask, Owner, releaseDelay, projectileData.PrefabPath);
+            projectile.Init(projectileData, dir, speed, bounceCount, reflectCorrection, BounceMask, owner, releaseDelay, projectileData.PrefabPath);
         }
 
         protected Vector2 GetDirection(float angle, AimTypes aimType)

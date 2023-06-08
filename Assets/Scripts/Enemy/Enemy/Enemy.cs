@@ -40,8 +40,9 @@ namespace QT.InGame
         [field: SerializeField] public float BallHeight { get; private set; }
         [field: SerializeField] public float BallHeightMin { get; private set; }
         [field: SerializeField] public SpriteRenderer ShadowSprite { get; private set; }
-        
-        
+
+        [field: SerializeField] public ProjectileOwner Owner { get; private set; }
+
         [HideInInspector] public Image HpImage;
 
         [HideInInspector] public AttackType HitAttackType;

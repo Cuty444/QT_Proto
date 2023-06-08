@@ -56,7 +56,7 @@ namespace QT.InGame
             
             if (CheckAttackStart(targetDistance))
             {
-                _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId);
+                _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId,_ownerEntity.Owner);
             }
             
             if (_ownerEntity.Steering.IsStuck())
