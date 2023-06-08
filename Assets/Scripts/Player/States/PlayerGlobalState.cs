@@ -84,7 +84,6 @@ namespace QT.InGame
             //_ownerEntity.PlayerHitEffectPlay();
             
             var hp = _ownerEntity.GetStatus(PlayerStats.HP);
-            _ownerEntity.MaterialChanger.SetHitMaterial();
             hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);
 
@@ -92,15 +91,12 @@ namespace QT.InGame
             
             if (hp <= 0)
             {
-                PlayerDead();
+                _ownerEntity.PlayerDead();
             }
-        }
-
-        private void PlayerDead()
-        {
-            SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
-            SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
-            _ownerEntity.ChangeState(Player.States.Dead);
+            else
+            {
+                _ownerEntity.MaterialChanger.SetHitMaterial();
+            }
         }
 
     }

@@ -20,7 +20,7 @@ namespace QT.InGame
             _animator = animator;
         }
 
-        public void PlayEnemyAtkSequence(int atkDataId, bool canOverlap = false)
+        public void PlayEnemyAtkSequence(int atkDataId,ProjectileOwner owner, bool canOverlap = false)
         {
             var atkList = SystemManager.Instance.DataManager.GetDataBase<EnemyAtkGameDataBase>().GetData(atkDataId);  
             if (atkList == null)
@@ -33,10 +33,10 @@ namespace QT.InGame
                 StopAllCoroutines();
             }
 
-            StartCoroutine(AttackSequence(atkList));
+            StartCoroutine(AttackSequence(atkList,owner));
         }
 
-        private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList)
+        private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList,ProjectileOwner owner)
         {
             _animator.SetBool(AttackAnimHash, true);
             
@@ -44,7 +44,7 @@ namespace QT.InGame
             {
                 yield return new WaitForSeconds(data.BeforeDelay);
 
-                Shoot(data.ShootDataId, data.AimType);
+                Shoot(data.ShootDataId, data.AimType,owner);
                 
                 yield return new WaitForSeconds(data.AfterDelay);
             }

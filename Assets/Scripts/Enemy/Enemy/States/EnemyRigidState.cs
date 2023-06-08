@@ -22,6 +22,10 @@ namespace QT.InGame
             _soundManager = SystemManager.Instance.SoundManager;
             _playerManager = SystemManager.Instance.PlayerManager;
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            _playerManager.PlayerMapClearPosition.AddListener((arg) =>
+            {
+                _rigidTime = 0f;
+            });
         }
 
         public override void InitializeState()

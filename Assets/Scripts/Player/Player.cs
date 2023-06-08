@@ -18,6 +18,7 @@ namespace QT.InGame
             Throw,
             Teleport,
             Dodge,
+            Fall,
             Dead,
         }
 
@@ -53,7 +54,10 @@ namespace QT.InGame
         [SerializeField] private Transform _attackSpeedCanvas;
         [SerializeField] private Transform[] _attackSpeedBackground;
         [SerializeField] private Image[] _attackGaugeImages;
-        
+        [HideInInspector] public bool IsFall;
+        [HideInInspector] public FallObject EnterFallObject;
+        [HideInInspector] public Vector2 DodgePreviousPosition;
+        [HideInInspector] public int FallPreviousState;
         private void Awake()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
@@ -138,5 +142,11 @@ namespace QT.InGame
             return GetStatus(PlayerStats.HP) > hpCost;
         }
         
+        public void PlayerDead()
+        {
+            SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
+            SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
+            ChangeState(Player.States.Dead);
+        }
     }
 }

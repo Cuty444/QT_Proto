@@ -43,7 +43,7 @@ namespace QT.InGame
             var throwSpd = _ownerEntity.GetStat(PlayerStats.ThrowSpd).Value;
             var throwBounceCount = (int)_ownerEntity.GetStat(PlayerStats.ThrowBounceCount).Value;
             
-            _ownerEntity.ProjectileShooter.ShootProjectile(200, Util.Math.ZAngleToGetDirection(_ownerEntity.EyeTransform), throwSpd, 0, throwBounceCount, 2.5f);
+            _ownerEntity.ProjectileShooter.ShootProjectile(200, Util.Math.ZAngleToGetDirection(_ownerEntity.EyeTransform), throwSpd, 0, throwBounceCount,ProjectileOwner.Player, 2.5f);
             
             _ownerEntity.RevertToPreviousState();
         }

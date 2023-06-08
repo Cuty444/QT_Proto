@@ -8,6 +8,8 @@ namespace QT
     {
         Player,
         Enemy,
+        EnemyElite,
+        Boss,
         PlayerTeleport,
     }
     

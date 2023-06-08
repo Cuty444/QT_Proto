@@ -37,6 +37,8 @@ namespace QT.InGame
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
 
+        [field: SerializeField] public ProjectileOwner Owner { get; private set; }
+
         private Collider2D[] _colliders;
         
         private void Start()
@@ -47,7 +49,6 @@ namespace QT.InGame
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
-            
             Shooter.Initialize(Animator);
             
             _colliders = new Collider2D[Rigidbody.attachedColliderCount];
