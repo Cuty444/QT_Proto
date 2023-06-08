@@ -39,6 +39,7 @@ namespace QT.InGame
         [field: SerializeField] public Transform BallObject { get; private set; }
         [field: SerializeField] public float BallHeight { get; private set; }
         [field: SerializeField] public float BallHeightMin { get; private set; }
+        [field: SerializeField] public SpriteRenderer ShadowSprite { get; private set; }
         
         
         [HideInInspector] public Image HpImage;
