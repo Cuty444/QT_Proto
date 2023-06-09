@@ -37,7 +37,7 @@ namespace QT.UI
 
         private void CheckInput()
         {
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (Input.GetKeyDown(KeyCode.Tab) && SystemManager.Instance.PlayerManager.Player != null)
             {
                 _isOpen = !_isOpen;
                 SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(_isOpen);

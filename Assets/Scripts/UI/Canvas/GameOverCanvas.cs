@@ -31,12 +31,17 @@ namespace QT.UI
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver",false);
             _canvasGroup.alpha = 0f;
             _canvasGroup.interactable = false;
+            _retryButtonTrigger.InteractableOff();
+            var buttonTrigger = _canvasGroup.GetComponentsInChildren<ButtonTrigger>()[1];
+            buttonTrigger.InteractableOff();
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
-                StartCoroutine(UnityUtil.FadeCanvasGroup(_canvasGroup, 0f, 1f, 0.5f,()=>
+                StartCoroutine(UnityUtil.FadeCanvasGroup(_canvasGroup, 0f, 1f, 1.0f,()=>
                 {
                     _canvasGroup.interactable = true;
+                    _retryButtonTrigger.InteractableOn();
+                    buttonTrigger.InteractableOn();
                 }));
                 SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
                 SystemManager.Instance.ProjectileManager.ProjectileListClear();
