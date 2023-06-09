@@ -50,6 +50,11 @@ public class PlayerChasingCamera : MonoBehaviour
             _cinemachineVirtualCamera.Follow = obj.transform;
             playerManager.OnDamageEvent.AddListener(VignetteOn);
         });
+        playerManager.OnVolumeProfileChange.AddListener((data) =>
+        {
+            _globalVolume.profile = data;
+            _globalVolume.profile.TryGet(out _vignette);
+        });
         SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonStart();
         _globalVolume.profile.TryGet(out _vignette);
         _maxIntensity = _volumDatas[1].Intensity;

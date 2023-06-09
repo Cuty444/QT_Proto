@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Map;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace QT.Map
 {
@@ -16,6 +17,7 @@ namespace QT.Map
         [Header("카메라 외곽 제한 콜라이더")] [SerializeField]
         private Collider2D _collider2D;
 
+        [Header("해당 맵 볼륨")] public VolumeProfile VolumeProfile;
         private RoomType _roomType;
 
         private PlayerManager _playerManager;
