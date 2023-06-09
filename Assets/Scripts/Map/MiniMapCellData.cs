@@ -159,6 +159,7 @@ namespace QT.Map
                 else
                 {
                     _mapCellData.SetCameraCollider2D();
+                    _playerManager.OnVolumeProfileChange.Invoke(_mapCellData.VolumeProfile);
                 }
                 //ColorSetLineRender(_mapColors[0]);
             }

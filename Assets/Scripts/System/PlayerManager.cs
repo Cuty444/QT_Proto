@@ -3,6 +3,7 @@ using QT.InGame;
 using UnityEngine;
 using UnityEngine.Events;
 using QT.Map;
+using UnityEngine.Rendering;
 
 namespace QT.Core
 {
@@ -22,6 +23,8 @@ namespace QT.Core
         public UnityEvent<Vector2, float> OnDamageEvent { get; } = new();
         public UnityEvent PlayerThrowProjectileReleased { get; } = new();
         public UnityEvent<int> OnGoldValueChanged { get; } = new();
+
+        public UnityEvent<VolumeProfile> OnVolumeProfileChange { get; } = new();
 
         public Player Player { get; private set; }
         
