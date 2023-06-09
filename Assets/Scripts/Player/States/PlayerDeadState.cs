@@ -23,7 +23,7 @@ namespace QT.InGame
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             
             _ownerEntity.Animator.SetTrigger(AnimationDeadHash);
-            
+            _ownerEntity.OnAim.RemoveAllListeners();
             SystemManager.Instance.LoadingManager.GameOverOpen();
         }
     }
