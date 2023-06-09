@@ -170,7 +170,28 @@ namespace QT.Map
                     }
                     dirCount = beforeCount;
                 }
-
+                if (nextRoomType == RoomType.Boss)
+                {
+                    int beforeCount = dirCount;
+                    if (dirCount == 2)
+                    {
+                        dirCount = 3;
+                    }
+                    else if (dirCount == 3)
+                    {
+                        dirCount = 2;
+                    }
+                    Destroy(_doorTransforms[dirCount].GetChild(0).gameObject);
+                    var doorObject =
+                        await SystemManager.Instance.ResourceManager.GetFromPool<DoorAnimator>(
+                            Util.AddressablesDataPath.StoreDoorPaths[dirCount], _doorTransforms[dirCount]); // TODO : 보스문 프리팹 설정해서 바꾸기
+                    doorObject.transform.localPosition = Vector3.zero;
+                    if (dirCount <= 1)
+                    {
+                        doorObject.DoorUpDown((MapDirection)(1 << dirCount));
+                    }
+                    dirCount = beforeCount;
+                }
                 dirCount++;
             }
 

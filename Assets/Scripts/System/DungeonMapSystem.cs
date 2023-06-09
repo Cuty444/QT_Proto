@@ -417,6 +417,11 @@ namespace QT.Core.Map
             {
                 return RoomType.GoldShop;
             }
+
+            if (roomPosition == _mapData.BossRoomPosition)
+            {
+                return RoomType.Boss;
+            }
             return _map[roomPosition.y, roomPosition.x].RoomType;
         }
         
