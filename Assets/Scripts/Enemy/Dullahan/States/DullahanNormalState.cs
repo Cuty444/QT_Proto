@@ -11,8 +11,6 @@ namespace QT.InGame
     {
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
 
-        private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
-
         private readonly EnemyGameData _enemyData;
         private readonly DullahanData _dullahanData;
 
@@ -84,25 +82,7 @@ namespace QT.InGame
 
             _ownerEntity.Rigidbody.velocity = currentDir * (_enemyData.MovementSpd);
 
-            SetRotation(currentDir);
-        }
-
-        private void SetRotation(Vector2 dir)
-        {
-            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 90;
-
-            if (angle < 0)
-            {
-                angle += 360;
-            }
-
-            if (angle > 180)
-            {
-                angle = 360 - angle;
-            }
-
-            _ownerEntity.Animator.SetFloat(RotationAnimHash, Mathf.Round(angle / 180 * 4));
-            _ownerEntity.SetFlip(dir.x > 0);
+            _ownerEntity.SetDir(currentDir, 4);
         }
 
         private Vector2 SpacingMove(float targetDistance, bool isRotate = false)
@@ -154,10 +134,10 @@ namespace QT.InGame
             {
                 passableStates.Add(Dullahan.States.Attack);
             }
-            // if (_dullahanData.RushRangeMin <= targetDistance && _dullahanData.RushRangeMax >= targetDistance)
-            // {
-            //     passableStates.Add(Dullahan.States.Rush);
-            // }
+            if (_dullahanData.RushRangeMin <= targetDistance && _dullahanData.RushRangeMax >= targetDistance)
+            {
+                passableStates.Add(Dullahan.States.Rush);
+            }
             // if (_dullahanData.JumpRangeMin <= targetDistance && _dullahanData.JumpRangeMax >= targetDistance)
             // {
             //     passableStates.Add(Dullahan.States.Jump);
