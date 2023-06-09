@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace QT
 {
@@ -18,6 +19,8 @@ namespace QT
         
         public static implicit operator float(Status status) => status.StatusValue;
         
+        public UnityEvent OnStatusChanged { get; } = new();
+        
         public Status(float baseValue) : base(baseValue)
         {
             _statusValue = baseValue;
@@ -25,12 +28,24 @@ namespace QT
 
         public void AddStatus(float amount)
         {
+            if (amount == 0)
+            {
+                return;
+            }
+            
             _statusValue = Mathf.Clamp(_statusValue + amount, 0, Value);
+            OnStatusChanged?.Invoke();
         }
         
         public void SetStatus(float value)
         {
-            _statusValue = Mathf.Clamp(value, 0, Value);;
+            if (value == _statusValue)
+            {
+                return;
+            }
+            
+            _statusValue = Mathf.Clamp(value, 0, Value);
+            OnStatusChanged?.Invoke();
         }
         
         public bool IsFull()
