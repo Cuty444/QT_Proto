@@ -20,6 +20,8 @@ namespace QT.InGame
         private float _atkCoolTime;
 
         private bool _rotateSide;
+        
+        private InputVector2Damper _dirDamper = new ();
 
         public DullahanNormalState(IFSMEntity owner) : base(owner)
         {
@@ -82,7 +84,7 @@ namespace QT.InGame
 
             _ownerEntity.Rigidbody.velocity = currentDir * (_enemyData.MovementSpd);
 
-            _ownerEntity.SetDir(currentDir, 4);
+            _ownerEntity.SetDir(_dirDamper.GetDampedValue(currentDir, Time.deltaTime), 4);
         }
 
         private Vector2 SpacingMove(float targetDistance, bool isRotate = false)

@@ -20,6 +20,7 @@ namespace QT.InGame
         [field: SerializeField] public float RushReadyTime { get; private set; }
         [field: SerializeField] public float RushLengthTime { get; private set; }
         [field: SerializeField] public float RushSpeed { get; private set; }
+        [field: SerializeField] public float RushHitDamage { get; private set; }
         
         [field: Space]
         [field: SerializeField] public float ThrowRangeMin { get; private set; }

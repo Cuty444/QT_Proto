@@ -32,14 +32,15 @@ namespace QT.InGame
         
         
         [field: SerializeField] public Transform[] ShootPoints{ get; private set; }
+        [field: SerializeField] public Transform RushCenter{ get; private set; }
+        [field: SerializeField] public float RushColliderSize{ get; private set; }
+        [field: SerializeField] public GameObject RushTrailObject{ get; private set; }
 
         public Rigidbody2D Rigidbody { get; private set; }
         public Animator Animator { get; private set; }
         public EnemyProjectileShooter Shooter { get; private set; }
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
-
-        [field: SerializeField] public ProjectileOwner Owner { get; private set; }
 
         private Collider2D[] _colliders;
         
