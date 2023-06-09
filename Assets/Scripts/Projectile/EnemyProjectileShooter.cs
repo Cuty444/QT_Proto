@@ -13,6 +13,8 @@ namespace QT.InGame
         public override LayerMask BounceMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player","InteractionCollider");
         public override ProjectileOwner Owner => ProjectileOwner.Enemy;
 
+        public bool IsAttacking { get;private set; }
+
         private Animator _animator;
         
         public void Initialize(Animator animator)
@@ -39,6 +41,7 @@ namespace QT.InGame
         private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList,ProjectileOwner owner)
         {
             _animator.SetBool(AttackAnimHash, true);
+            IsAttacking = true;
             
             foreach (var data in atkList)
             {
@@ -50,6 +53,14 @@ namespace QT.InGame
             }
             
             _animator.SetBool(AttackAnimHash, false);
+            IsAttacking = false;
+        }
+        
+        public void StopAttack()
+        {
+            StopAllCoroutines();
+            _animator.SetBool(AttackAnimHash, false);
+            IsAttacking = false;
         }
     }
 }

@@ -13,10 +13,10 @@ namespace QT.InGame
         
         private readonly EnemyGameData _data;
 
-        private float _lastMoveTargetUpdateTime;
+        private float _moveTargetUpdateTimer;
         private Vector2 _moveTarget;
 
-        private float _lastAtkCheckTime;
+        private float _atkCheckTimer;
 
         private bool _rotateSide;
 
@@ -27,16 +27,23 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            _lastMoveTargetUpdateTime = 0;
-            _lastAtkCheckTime = Time.time;
+            _moveTargetUpdateTimer = 9999;
+            _atkCheckTimer = 0;
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
         }
 
         public override void UpdateState()
         {
-            if (_lastMoveTargetUpdateTime + _data.MoveTargetUpdatePeroid < Time.time)
+            _moveTargetUpdateTimer += Time.deltaTime;
+
+            if (!_ownerEntity.Shooter.IsAttacking)
             {
-                _lastMoveTargetUpdateTime = Time.time;
+                _atkCheckTimer += Time.deltaTime;
+            }
+            
+            if (_moveTargetUpdateTimer > _data.MoveTargetUpdatePeroid)
+            {
+                _moveTargetUpdateTimer = 0;
                 // todo : 재시작을 위한 임시 처리
                 Player player = SystemManager.Instance.PlayerManager.Player;
                 if (player == null)
@@ -68,6 +75,7 @@ namespace QT.InGame
 
         public override void ClearState()
         {
+            _ownerEntity.Shooter.StopAttack();
         }
 
         private void Move(float targetDistance)
@@ -135,7 +143,7 @@ namespace QT.InGame
 
         private bool CheckAttackStart(float targetDistance)
         {
-            if (_data.AtkDataId == 0 || _lastAtkCheckTime + _data.AtkCheckDelay > Time.time)
+            if (_data.AtkDataId == 0 || _atkCheckTimer < _data.AtkCheckDelay)
             {
                 return false;
             }
@@ -144,14 +152,14 @@ namespace QT.InGame
             {
                 case EnemyGameData.AtkStartTypes.AfterIdleSec:
                 {
-                    _lastAtkCheckTime = Time.time;
+                    _atkCheckTimer = 0;
                     return true;
                 }
                 case EnemyGameData.AtkStartTypes.Sight:
                 {
                     if (targetDistance < _data.AtkStartParam)
                     {
-                        _lastAtkCheckTime = Time.time;
+                        _atkCheckTimer = 0;
                         return true;
                     }
                     break;
