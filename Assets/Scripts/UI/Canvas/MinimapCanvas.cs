@@ -22,7 +22,8 @@ namespace QT.UI
         private MapData _mapData;
 
         private List<MiniMapCellData> _cellList = new List<MiniMapCellData>();
-
+        private Dictionary<MiniMapCellData, Vector2> _cellMapDictionary = new Dictionary<MiniMapCellData, Vector2>();
+        private List<GameObject> _cellMapList = new List<GameObject>();
         private bool IsPreviousActive;
         private Vector2Int _currentPlayerPosition; // TODO : DungeonMapSystem으로 옮겨야함
         public override void Initialize()
@@ -52,6 +53,7 @@ namespace QT.UI
                 _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
+                MapCreate();
             });
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
             {
@@ -61,9 +63,13 @@ namespace QT.UI
             
             SystemManager.Instance.UIManager.InventoryInputCheck.AddListener((isActive) =>
             {
-                if (isActive && IsPreviousActive)
+                if (isActive)
                 {
-                    _miniMapOnOff.SetActive(false);
+                    MapCreate();
+                    if (IsPreviousActive)
+                    {
+                        _miniMapOnOff.SetActive(false);
+                    }
                 }
                 else if(!isActive && IsPreviousActive)
                 {
@@ -89,6 +95,7 @@ namespace QT.UI
                 Destroy(cell.gameObject);
             }
             _cellList.Clear();
+            _cellMapDictionary.Clear();
         }
         
         public override void PostSystemInitialize()
@@ -106,7 +113,6 @@ namespace QT.UI
             }
             
             MiniMapCellCenterPositionChagne(_currentPlayerPosition);
-
         }
         
         private async void CellCreate(Vector2Int createPos,MapDirection direction,int index)
@@ -135,6 +141,7 @@ namespace QT.UI
             }
             cell.Setting();
             _cellList.Add(cell);
+            _cellMapDictionary.Add(cell,pos);
         }
 
         private MapDirection DirectionCheck(Vector2Int position)
@@ -174,6 +181,23 @@ namespace QT.UI
         {
             Vector3 pos = new Vector3(position.x * 200f, position.y * -200f, 0f);
             _miniMapCellTransform.transform.localPosition = -pos;
+        }
+
+        private void MapCreate()
+        {
+            foreach (var cell in _cellMapList)
+            {
+                Destroy(cell.gameObject);
+            }
+            _cellMapList.Clear();
+            var pool = SystemManager.Instance.UIManager.GetUIPanel<UIInventoryCanvas>().MapTransform;
+            foreach (var cell in _cellMapDictionary)
+            {
+                var obj = Instantiate(cell.Key.gameObject, pool);
+                obj.transform.localScale = Vector3.one;
+                obj.transform.localPosition = cell.Value;
+                _cellMapList.Add(obj);
+            }
         }
     }
 }

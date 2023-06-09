@@ -7,6 +7,7 @@ namespace QT.UI
     public class UIInventoryCanvas : UIPanel
     {
         [SerializeField] private GameObject _inventoryGameobject;
+        [SerializeField] private GameObject _mapGameObject;
         [SerializeField] private Transform _itemListParents;
 
         [SerializeField] private UIInventoryDesc _desc;
@@ -17,6 +18,7 @@ namespace QT.UI
         [SerializeField] private UITweenAnimator _releaseAnimation;
 
         private bool _isOpen = false;
+        public Transform MapTransform;
         
         public override void PostSystemInitialize()
         {
@@ -24,6 +26,7 @@ namespace QT.UI
             
             gameObject.SetActive(true);
             _inventoryGameobject.SetActive(false);
+            _mapGameObject.SetActive(false);
             _desc.Hide();
         }
 
@@ -43,6 +46,7 @@ namespace QT.UI
                 {
                     SetInventoryUI();
                     _inventoryGameobject.SetActive(true);
+                    _mapGameObject.SetActive(true);
                     _popAnimation.ReStart();
                 }
                 else
@@ -60,6 +64,7 @@ namespace QT.UI
             yield return new WaitForSeconds(_releaseAnimation.SequenceLength);
             
             _inventoryGameobject.SetActive(false);
+            _mapGameObject.SetActive(false);
         }
 
         private void SetInventoryUI()
