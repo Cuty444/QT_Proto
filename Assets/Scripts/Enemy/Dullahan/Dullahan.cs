@@ -8,6 +8,8 @@ namespace QT.InGame
 {
     public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IHitable
     {
+        private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
+        
         public enum States : int
         {
             Global,
@@ -30,14 +32,15 @@ namespace QT.InGame
         
         
         [field: SerializeField] public Transform[] ShootPoints{ get; private set; }
+        [field: SerializeField] public Transform CenterTransform{ get; private set; }
+        [field: SerializeField] public float RushColliderSize{ get; private set; }
+        [field: SerializeField] public GameObject RushTrailObject{ get; private set; }
 
         public Rigidbody2D Rigidbody { get; private set; }
         public Animator Animator { get; private set; }
         public EnemyProjectileShooter Shooter { get; private set; }
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
-
-        [field: SerializeField] public ProjectileOwner Owner { get; private set; }
 
         private Collider2D[] _colliders;
         
@@ -67,9 +70,27 @@ namespace QT.InGame
             }
         }
 
-        public void SetFlip(bool enable)
+        public int SetDir(Vector2 dir,int sideCount)
         {
-            Animator.transform.rotation = Quaternion.Euler(0f, enable ? 180 : 0, 0f);
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 90;
+
+            if (angle < 0)
+            {
+                angle += 360;
+            }
+
+            if (angle > 180)
+            {
+                angle = 360 - angle;
+            }
+
+            int side = (int)Mathf.Round(angle / 180 * sideCount);
+            
+            Animator.SetFloat(RotationAnimHash, side);
+            
+            Animator.transform.rotation = Quaternion.Euler(0f, dir.x > 0 ? 180 : 0, 0f);
+
+            return side;
         }
     }
 }

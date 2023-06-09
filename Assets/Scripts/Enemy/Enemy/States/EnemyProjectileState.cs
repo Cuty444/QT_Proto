@@ -79,6 +79,8 @@ namespace QT.InGame
             
             _soundManager.PlayOneShot(_soundManager.SoundData.MonsterFly);
             _isNormal = false;
+
+            _damage = power;
         }
         
         public override void ClearState()
