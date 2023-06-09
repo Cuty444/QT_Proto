@@ -29,7 +29,7 @@ namespace QT.InGame
         public DullahanRushState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
-            _rushCenter = _ownerEntity.RushCenter;
+            _rushCenter = _ownerEntity.CenterTransform;
             
             _speed = _ownerEntity.DullahanData.RushSpeed;
             _size = _ownerEntity.RushColliderSize;
@@ -41,47 +41,61 @@ namespace QT.InGame
             _dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
             _ownerEntity.SetDir(_dir,2);
 
+            _dir.Normalize();
+            // if (Mathf.Abs(_dir.x) > Mathf.Abs(_dir.y))
+            // {
+            //     _dir = new Vector2(_dir.x > 0 ? 1 : -1, 0);
+            // }
+            // else
+            // {
+            //     _dir = new Vector2(0, _dir.y > 0 ? 1 : -1);
+            // }
+
             _isReady = false;
             _time = 0;
-            
-            _transform = _ownerEntity.transform;
-            _ownerEntity.SetPhysics(false);
-
-            if (Mathf.Abs(_dir.x) > Mathf.Abs(_dir.y))
-            {
-                _dir = new Vector2(_dir.x > 0 ? 1 : -1, 0);
-            }
-            else
-            {
-                _dir = new Vector2(0, _dir.y > 0 ? 1 : -1);
-            }
 
             _ownerEntity.Animator.SetTrigger(RushReadyAnimHash);
             _ownerEntity.RushTrailObject.SetActive(true);
+            _ownerEntity.SetPhysics(false);
         }
 
+        public override void ClearState()
+        {
+            _ownerEntity.Animator.ResetTrigger(RushReadyAnimHash);
+            _ownerEntity.Animator.SetBool(IsRushingAnimHash, false);
+            _ownerEntity.RushTrailObject.SetActive(false);
+            _ownerEntity.SetPhysics(true);
+        }
+        
         public override void UpdateState()
         {
             _time += Time.deltaTime;
+            
             if (!_isReady)
             {
                 if (_time > _ownerEntity.DullahanData.RushReadyTime)
                 {
                     _isReady = true;
                     _ownerEntity.RushTrailObject.SetActive(true);
+                    _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
                     _time = 0;
                 }
-                _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
             }
-            
-            _transform.Translate(_dir * (_speed * Time.deltaTime));
+            else
+            {
+                _transform.Translate(_dir * (_speed * Time.deltaTime));
+            }
         }
 
         public override void FixedUpdateState()
         {
+            if (!_isReady)
+            {
+                return;
+            }
+            
             if (CheckHit() || _time > _ownerEntity.DullahanData.RushLengthTime)
             {
-                _ownerEntity.RushTrailObject.SetActive(false);
                 _ownerEntity.ChangeState(Dullahan.States.Normal);
             }
         }
@@ -108,13 +122,5 @@ namespace QT.InGame
             return hits.Length > 0;
         }
 
-        public override void ClearState()
-        {
-            _ownerEntity.Animator.SetBool(IsRushingAnimHash, false);
-            _ownerEntity.SetPhysics(true);
-            
-            _ownerEntity.Animator.ResetTrigger(RushReadyAnimHash);
-        }
-        
     }
 }

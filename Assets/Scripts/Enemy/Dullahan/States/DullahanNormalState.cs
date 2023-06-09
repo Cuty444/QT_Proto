@@ -144,10 +144,10 @@ namespace QT.InGame
             // {
             //     passableStates.Add(Dullahan.States.Jump);
             // }
-            // if (_dullahanData.ThrowRangeMin <= targetDistance && _dullahanData.ThrowRangeMax >= targetDistance)
-            // {
-            //     passableStates.Add(Dullahan.States.Throw);
-            // }
+            if (_dullahanData.ThrowRangeMin <= targetDistance && _dullahanData.ThrowRangeMax >= targetDistance)
+            {
+                passableStates.Add(Dullahan.States.Throw);
+            }
 
             if (passableStates.Count == 0)
             {
