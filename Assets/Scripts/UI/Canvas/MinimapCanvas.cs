@@ -22,7 +22,9 @@ namespace QT.UI
         private MapData _mapData;
 
         private List<MiniMapCellData> _cellList = new List<MiniMapCellData>();
-
+        private Dictionary<MiniMapCellData, Vector2> _cellMapDictionary = new Dictionary<MiniMapCellData, Vector2>();
+        private List<GameObject> _cellMapList = new List<GameObject>();
+        private bool IsPreviousActive;
         private Vector2Int _currentPlayerPosition; // TODO : DungeonMapSystem으로 옮겨야함
         public override void Initialize()
         {
@@ -32,19 +34,47 @@ namespace QT.UI
             _pathDirections.Add(Vector2Int.left,MapDirection.Right);
             SystemManager.Instance.ResourceManager.CacheAsset(CellPath);
             MinimapSetting();
-            _miniMapOnOff.SetActive(false);
+            IsPreviousActive = true;
+            _miniMapOnOff.SetActive(true);
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerDoorEnter.AddListener(NextMapWarp);
             _playerManager.PlayerMapPosition.AddListener((position) =>
             {
                 _currentPlayerPosition = position;
                 MiniMapCellCenterPositionChagne(position);
+                if (!SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(position).IsClear)
+                {
+                    IsPreviousActive = false;
+                    _miniMapOnOff.SetActive(false);
+                }
             });
             _playerManager.PlayerCreateEvent.AddListener((player) =>
             {
                 _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
+                MapCreate();
+            });
+            _playerManager.PlayerMapClearPosition.AddListener((arg) =>
+            {
+                IsPreviousActive = true;
+                _miniMapOnOff.SetActive(true);
+            });
+            
+            SystemManager.Instance.UIManager.InventoryInputCheck.AddListener((isActive) =>
+            {
+                if (isActive)
+                {
+                    MapCreate();
+                    if (IsPreviousActive)
+                    {
+                        _miniMapOnOff.SetActive(false);
+                    }
+                }
+                else if(!isActive && IsPreviousActive)
+                {
+                    _miniMapOnOff.SetActive(true);
+                }
             });
         }
 
@@ -53,8 +83,8 @@ namespace QT.UI
             _mapData = SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData;
             _currentPlayerPosition = _mapData.StartPosition;
             MiniMapDraw();
-
         }
+
 
         public void CellClear()
         {
@@ -65,28 +95,12 @@ namespace QT.UI
                 Destroy(cell.gameObject);
             }
             _cellList.Clear();
+            _cellMapDictionary.Clear();
         }
         
         public override void PostSystemInitialize()
         {
             gameObject.SetActive(true);
-        }
-        
-        private void Update()
-        {
-            MiniMapInput();
-        }
-
-        private void MiniMapInput()
-        {
-            if (Input.GetKey(KeyCode.Tab))
-            {
-                _miniMapOnOff.SetActive(true);
-            }
-            else
-            {
-                _miniMapOnOff.SetActive(false);
-            }
         }
 
         private void MiniMapDraw()
@@ -99,7 +113,6 @@ namespace QT.UI
             }
             
             MiniMapCellCenterPositionChagne(_currentPlayerPosition);
-
         }
         
         private async void CellCreate(Vector2Int createPos,MapDirection direction,int index)
@@ -128,6 +141,7 @@ namespace QT.UI
             }
             cell.Setting();
             _cellList.Add(cell);
+            _cellMapDictionary.Add(cell,pos);
         }
 
         private MapDirection DirectionCheck(Vector2Int position)
@@ -167,6 +181,23 @@ namespace QT.UI
         {
             Vector3 pos = new Vector3(position.x * 200f, position.y * -200f, 0f);
             _miniMapCellTransform.transform.localPosition = -pos;
+        }
+
+        private void MapCreate()
+        {
+            foreach (var cell in _cellMapList)
+            {
+                Destroy(cell.gameObject);
+            }
+            _cellMapList.Clear();
+            var pool = SystemManager.Instance.UIManager.GetUIPanel<UIInventoryCanvas>().MapTransform;
+            foreach (var cell in _cellMapDictionary)
+            {
+                var obj = Instantiate(cell.Key.gameObject, pool);
+                obj.transform.localScale = Vector3.one;
+                obj.transform.localPosition = cell.Value;
+                _cellMapList.Add(obj);
+            }
         }
     }
 }
