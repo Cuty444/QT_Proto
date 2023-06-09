@@ -23,6 +23,7 @@ namespace QT.UI
 
         private List<MiniMapCellData> _cellList = new List<MiniMapCellData>();
 
+        private bool IsPreviousActive;
         private Vector2Int _currentPlayerPosition; // TODO : DungeonMapSystem으로 옮겨야함
         public override void Initialize()
         {
@@ -32,19 +33,42 @@ namespace QT.UI
             _pathDirections.Add(Vector2Int.left,MapDirection.Right);
             SystemManager.Instance.ResourceManager.CacheAsset(CellPath);
             MinimapSetting();
-            _miniMapOnOff.SetActive(false);
+            IsPreviousActive = true;
+            _miniMapOnOff.SetActive(true);
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerDoorEnter.AddListener(NextMapWarp);
             _playerManager.PlayerMapPosition.AddListener((position) =>
             {
                 _currentPlayerPosition = position;
                 MiniMapCellCenterPositionChagne(position);
+                if (!SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(position).IsClear)
+                {
+                    IsPreviousActive = false;
+                    _miniMapOnOff.SetActive(false);
+                }
             });
             _playerManager.PlayerCreateEvent.AddListener((player) =>
             {
                 _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
+            });
+            _playerManager.PlayerMapClearPosition.AddListener((arg) =>
+            {
+                IsPreviousActive = true;
+                _miniMapOnOff.SetActive(true);
+            });
+            
+            SystemManager.Instance.UIManager.InventoryInputCheck.AddListener((isActive) =>
+            {
+                if (isActive && IsPreviousActive)
+                {
+                    _miniMapOnOff.SetActive(false);
+                }
+                else if(!isActive && IsPreviousActive)
+                {
+                    _miniMapOnOff.SetActive(true);
+                }
             });
         }
 
@@ -53,8 +77,8 @@ namespace QT.UI
             _mapData = SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData;
             _currentPlayerPosition = _mapData.StartPosition;
             MiniMapDraw();
-
         }
+
 
         public void CellClear()
         {
@@ -70,23 +94,6 @@ namespace QT.UI
         public override void PostSystemInitialize()
         {
             gameObject.SetActive(true);
-        }
-        
-        private void Update()
-        {
-            MiniMapInput();
-        }
-
-        private void MiniMapInput()
-        {
-            if (Input.GetKey(KeyCode.Tab))
-            {
-                _miniMapOnOff.SetActive(true);
-            }
-            else
-            {
-                _miniMapOnOff.SetActive(false);
-            }
         }
 
         private void MiniMapDraw()

@@ -34,10 +34,10 @@ namespace QT.UI
 
         private void CheckInput()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
                 _isOpen = !_isOpen;
-
+                SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(_isOpen);
                 StopAllCoroutines();
                 if (_isOpen)
                 {

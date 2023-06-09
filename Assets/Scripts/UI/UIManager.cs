@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Events;
+
 namespace QT.UI
 {
     public class UIManager : MonoBehaviour
@@ -9,6 +11,8 @@ namespace QT.UI
         private readonly Dictionary<Type, UIPanel> _Panels = new Dictionary<Type, UIPanel>();
         private UIPanel _currentPanel;
 
+
+        public UnityEvent<bool> InventoryInputCheck { get; } = new();
         public void Initialize()
         {
             for(int i = 0; i < transform.childCount; i++)
