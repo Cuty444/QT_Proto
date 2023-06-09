@@ -15,7 +15,11 @@ namespace QT.Util
         public static readonly string[] StoreDoorPaths = {"Map/Sculpture/Stage1/Door/Store/StoreUp.prefab",
             "Map/Sculpture/Stage1/Door/Store/StoreDown.prefab",
             "Map/Sculpture/Stage1/Door/Store/StoreLeft.prefab",
-            "Map/Sculpture/Stage1/Door/Store/StoreRight.prefab"};
+            "Map/Sculpture/Stage1/Door/Store/StoreRight.prefab"};        
+        public static readonly string[] BossDoorPaths = {"Map/Sculpture/Stage1/Door/Boss/BossUp.prefab",
+            "Map/Sculpture/Stage1/Door/Boss/BossDown.prefab",
+            "Map/Sculpture/Stage1/Door/Boss/BossUp.prefab",
+            "Map/Sculpture/Stage1/Door/Boss/BossUp.prefab"};
     }
     public static class UnityUtil
     {

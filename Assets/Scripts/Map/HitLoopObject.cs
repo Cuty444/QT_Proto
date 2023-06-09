@@ -1,27 +1,19 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Util;
 using Spine.Unity;
 using UnityEngine;
 
 namespace QT
 {
-    public class InteractionObject : MonoBehaviour, IHitable
+    public class HitLoopObject : InteractionObject, IHitable
     {
-        protected bool isHit = false;
-        protected SkeletonMecanim _skeletonMecanim;
-        protected Animator _animator;
-        protected readonly int AnimationHitHash = Animator.StringToHash("Hit");
-
-        private CircleCollider2D _circleCollider2D;
 
         private void Awake()
         {
             _skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
             _animator = GetComponentInChildren<Animator>();
-            _circleCollider2D = GetComponent<CircleCollider2D>();
         }
-
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
             if (isHit)
@@ -29,7 +21,14 @@ namespace QT
             
             _animator.SetTrigger(AnimationHitHash);
             isHit = true;
-            _circleCollider2D.enabled = false;
+            StartCoroutine(UnityUtil.WaitForFunc(() =>
+            {
+                _animator.ResetTrigger(AnimationHitHash);
+            }, 0.2f));
+            StartCoroutine(UnityUtil.WaitForFunc(() =>
+            {
+                isHit = false;
+            }, 1.0f));
         }
     }
 }

@@ -199,20 +199,28 @@ namespace QT.InGame
 
             if (hit.collider != null)
             {
+                bool isTriggerCheck = false;
                 if (hit.collider.TryGetComponent(out IHitable hitable))
                 {
                     hitable.Hit(_direction, _damage);
-                    if(_owner == ProjectileOwner.Player)
+                    if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
+                    {
+                        isTriggerCheck = hit.collider.isTrigger;
+                    }
+                    else if(_owner == ProjectileOwner.Player)
                     {
                         SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
                         _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
                     }
+
                 }
                 else
                 {
                     _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX,hit.transform.position);
                 }
-                
+
+                if (isTriggerCheck)
+                    return;
                 _ballTransform.up = hit.normal;
                 _currentStretch = -1;
                 _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
