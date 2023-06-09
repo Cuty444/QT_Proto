@@ -114,9 +114,11 @@ namespace QT.Map
                 case RoomType.HpShop:
                     prefabPath = Util.AddressablesDataPath.StoreDoorPaths;
                     break;
+                case RoomType.Boss:
+                    prefabPath = Util.AddressablesDataPath.BossDoorPaths;
+                    break;
                 case RoomType.None:
                 case RoomType.Normal:
-                case RoomType.Boss:
                 case RoomType.Start:
                 default:
                     prefabPath = Util.AddressablesDataPath.DoorPaths;
@@ -184,7 +186,7 @@ namespace QT.Map
                     Destroy(_doorTransforms[dirCount].GetChild(0).gameObject);
                     var doorObject =
                         await SystemManager.Instance.ResourceManager.GetFromPool<DoorAnimator>(
-                            Util.AddressablesDataPath.StoreDoorPaths[dirCount], _doorTransforms[dirCount]); // TODO : 보스문 프리팹 설정해서 바꾸기
+                            Util.AddressablesDataPath.BossDoorPaths[dirCount], _doorTransforms[dirCount]); // TODO : 보스문 프리팹 설정해서 바꾸기
                     doorObject.transform.localPosition = Vector3.zero;
                     if (dirCount <= 1)
                     {

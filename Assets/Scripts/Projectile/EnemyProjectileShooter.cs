@@ -10,7 +10,7 @@ namespace QT.InGame
     public class EnemyProjectileShooter : ProjectileShooter
     {
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
-        public override LayerMask BounceMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player");
+        public override LayerMask BounceMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player","InteractionCollider");
         public override ProjectileOwner Owner => ProjectileOwner.Enemy;
 
         private Animator _animator;

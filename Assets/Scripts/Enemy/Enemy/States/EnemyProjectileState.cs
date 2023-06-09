@@ -111,9 +111,14 @@ namespace QT.InGame
 
             if (hit.collider != null)
             {
+                bool isTriggerCheck = false;
                 if (hit.collider.TryGetComponent(out IHitable hitable))
                 {
-                    if (_ownerEntity.IsTeleportProjectile)
+                    if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
+                    {
+                        isTriggerCheck = hit.collider.isTrigger;
+                    }
+                    else if (_ownerEntity.IsTeleportProjectile)
                     {
                         hitable.Hit(_direction,_damage,AttackType.Teleport);
                     }
@@ -123,6 +128,9 @@ namespace QT.InGame
                     }
                     //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
+                
+                if (isTriggerCheck)
+                    return;
                 
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
                 if (--_bounceCount == 0)
