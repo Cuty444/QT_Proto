@@ -1,4 +1,5 @@
 using System.Collections;
+using Cysharp.Threading.Tasks.Triggers;
 using QT.Core;
 using UnityEngine;
 
@@ -6,28 +7,29 @@ namespace QT.UI
 {
     public class UIInventoryCanvas : UIPanel
     {
-        [SerializeField] private GameObject _inventoryGameobject;
-        [SerializeField] private GameObject _mapGameObject;
-        [SerializeField] private Transform _itemListParents;
-
-        [SerializeField] private UIInventoryDesc _desc;
+        [SerializeField] private GameObject _backGround;
         
-        private UIInventoryItem[] _itemFrames;
-
+        [SerializeField] private GameObject _settingGameobject;
+        [SerializeField] private UIInventoryPage _inventoryPage;
+        
+        [Space]
         [SerializeField] private UITweenAnimator _popAnimation;
         [SerializeField] private UITweenAnimator _releaseAnimation;
+        [SerializeField] private UITweenAnimator _switchAnimation;
 
-        private bool _isOpen = false;
+        [Space]
         public Transform MapTransform;
+        
+        private bool _isOpen = false;
+
+        private bool _isInventory = true;
         
         public override void PostSystemInitialize()
         {
-            _itemFrames = _itemListParents.GetComponentsInChildren<UIInventoryItem>();
-            
             gameObject.SetActive(true);
-            _inventoryGameobject.SetActive(false);
-            _mapGameObject.SetActive(false);
-            _desc.Hide();
+            _inventoryPage.Initialize();
+            
+            _backGround.SetActive(false);
         }
 
         private void Update()
@@ -37,67 +39,97 @@ namespace QT.UI
 
         private void CheckInput()
         {
-            if (Input.GetKeyDown(KeyCode.Tab) && SystemManager.Instance.PlayerManager.Player != null)
+            if (SystemManager.Instance.PlayerManager.Player == null)
             {
-                _isOpen = !_isOpen;
-                SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(_isOpen);
-                StopAllCoroutines();
-                if (_isOpen)
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (_isOpen && _isInventory)
                 {
-                    SetInventoryUI();
-                    _inventoryGameobject.SetActive(true);
-                    _mapGameObject.SetActive(true);
-                    _popAnimation.ReStart();
+                    SwitchPage(false);
                 }
                 else
                 {
-                    StartCoroutine(CloseCorutine());
+                    _isInventory = false;
+                    CheckOpen();
+                }
+            }
+            
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                if (_isOpen && !_isInventory)
+                {
+                    SwitchPage(true);
+                }
+                else
+                {
+                    _isInventory = true;
+                    CheckOpen();
                 }
             }
         }
 
-        private IEnumerator CloseCorutine()
+        private void CheckOpen()
         {
-            _releaseAnimation.ReStart();
-            _desc.Hide();
+            StopAllCoroutines();
             
-            yield return new WaitForSeconds(_releaseAnimation.SequenceLength);
-            
-            _inventoryGameobject.SetActive(false);
-            _mapGameObject.SetActive(false);
-        }
-
-        private void SetInventoryUI()
-        {
-            var items = SystemManager.Instance.PlayerManager.Player.Inventory.GetItemList();
-
-            for (int i = 0; i < _itemFrames.Length; i++)
+            _isOpen = !_isOpen;
+            if (_isOpen)
             {
-                if (i < items.Length)
-                {
-                    var itemData = items[i].ItemGameData;
-                    
-                    _itemFrames[i].SetItem(i, itemData);
-                }
-                else
-                {
-                    _itemFrames[i].ClearItem();
-                }
-                
-                _itemFrames[i].OnClick = OnClickItem;
-            }
-        }
+                SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(true);
 
-        private void OnClickItem(UIInventoryItem item)
-        {
-            if (item.ItemGameData != null)
-            {
-                _desc.Show(item);
+                SetPage();
+
+                _backGround.SetActive(true);
+                _popAnimation.ReStart();
             }
             else
             {
-                _desc.Hide();
+                StartCoroutine(CloseCorutine());
             }
+        }
+
+        private void SetPage()
+        {
+            _settingGameobject.SetActive(!_isInventory);
+            _inventoryPage.gameObject.SetActive(_isInventory);
+                
+            if (_isInventory)
+            {
+                _inventoryPage.SetInventoryUI();
+            }
+            else
+            {
+                // 세팅 페이지 세팅
+            }
+        }
+
+        public void SwitchPage(bool isInventory)
+        {
+            _isInventory = isInventory;
+            StartCoroutine(SwitchCorutine());
+        }
+        
+        private IEnumerator SwitchCorutine()
+        {
+            _switchAnimation.ReStart();
+
+            yield return new WaitForSeconds(0.2f);
+            
+            SetPage();
+        }
+        
+        
+        
+        private IEnumerator CloseCorutine()
+        {
+            _releaseAnimation.ReStart();
+            
+            yield return new WaitForSeconds(_releaseAnimation.SequenceLength);
+            
+            _backGround.SetActive(false);
         }
     }
 }
