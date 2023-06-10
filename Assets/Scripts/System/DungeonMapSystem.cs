@@ -5,9 +5,9 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using QT.Core;
 using QT.Core.Data;
-using Unity.VisualScripting;
+using QT.UI;
+using QT.Util;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Random = UnityEngine.Random;
 
 namespace QT.Core.Map
@@ -70,6 +70,7 @@ namespace QT.Core.Map
         [SerializeField] private int _mapWidth = 11;
         [SerializeField] private int _mapHeight = 7;
         [SerializeField] private int _maxRoomValue = 10;
+        [SerializeField] private int _floorValue = 0;
         [Range(0.0f,1.0f)]
         [SerializeField] private float _manyPathCorrection = 1.0f;
 
@@ -88,11 +89,13 @@ namespace QT.Core.Map
         private List<GameObject> _startList;
         private List<GameObject> _shopMapList;
         private List<GameObject> _bossMapList;
+        private List<GameObject> _stairsMapList;
         private int _mapCount;
         
         public override void OnInitialized()
         {
             _maxRoomValue--; // TODO : 보스방 생성에 의해 1개 줄임
+            SystemManager.Instance.PlayerManager.StairNextRoomEvent.AddListener(NextFloor);
             DungenMapGenerate();
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
             {
@@ -110,6 +113,15 @@ namespace QT.Core.Map
 
         public void DungenMapGenerate()
         {
+            if (_floorValue != 0)
+            {
+                var data = SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>().GetData(800 + _floorValue);
+                _maxRoomValue = data.MaxRoomValue - 1;
+            }
+            else
+            {
+                _maxRoomValue = 9;
+            }
             Vector2Int startPos = new Vector2Int(_mapWidth / 2, _mapHeight / 2);
             _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
             if(_mapList != null)
@@ -458,6 +470,13 @@ namespace QT.Core.Map
             _bossMapList = bossObjectList.ToList();
         }
 
+        public async UniTask StairsRoomLoad()
+        {
+            var stageStairsLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Stairs"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var stairsObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageStairsLocationList);
+            _stairsMapList = stairsObjectList.ToList();
+        }
+
         public GameObject GetMapObject()
         {
             return _mapList[_mapCount++ % _mapList.Count];
@@ -477,10 +496,56 @@ namespace QT.Core.Map
         {
             return _bossMapList[Random.Range(0, _bossMapList.Count)];
         }
+
+        public GameObject StairsMapObject()
+        {
+            return _stairsMapList[Random.Range(0, _stairsMapList.Count)];
+        }
         
         public CellData GetCellData(Vector2Int pos)
         {
             return _map[pos.y, pos.x];
+        }
+
+        public void NextFloor()
+        {
+            if (_floorValue == 2)
+                return;
+            _floorValue++;
+            SystemManager.Instance.PlayerManager._playerInventory = SystemManager.Instance.PlayerManager.Player.Inventory.GetItemList().ToList();
+            var uiManager = SystemManager.Instance.UIManager;
+            uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
+            {
+                uiManager.GetUIPanel<MinimapCanvas>().OnClose();
+                uiManager.GetUIPanel<FadeCanvas>().FadeIn();
+                uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
+                SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
+                SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
+                SystemManager.Instance.ProjectileManager.ProjectileListClear();
+                SystemManager.Instance.ResourceManager.AllReleasedObject();
+
+                StartCoroutine(UnityUtil.WaitForFunc(() =>
+                {
+                    SystemManager.Instance.LoadingManager.FloorLoadScene(1);
+                    DungenMapGenerate();
+                    SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
+                },5f));
+            });
+        }
+
+        public void SetFloor(int value)
+        {
+            _floorValue = value;
+        }
+
+        public float GetEnemyHpIncreasePer()
+        {
+            return SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>().GetData(800 + _floorValue).EnemyHpIncreasePer;
+        }
+
+        public int GetFloor()
+        {
+            return _floorValue;
         }
     }
 }

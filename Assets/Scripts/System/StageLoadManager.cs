@@ -20,7 +20,8 @@ namespace QT
             await UniTask.WhenAll(SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(),
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().ShopLoad(),
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().StartRoomLoad(),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().BossRoomLoad());
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().BossRoomLoad(),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().StairsRoomLoad());
 
             SystemManager.Instance.LoadingManager.DataMapLoadCompletedEvent.Invoke();
         }

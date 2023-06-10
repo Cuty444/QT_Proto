@@ -18,10 +18,27 @@ namespace QT.Map
         private DungeonMapSystem _dungeonMapSystem;
 
         private PlayerManager _playerManager;
+        private readonly string _eliteName = "Elite";
 
         private void Awake()
         {
             _enemyList = GetComponentsInChildren<Enemy>().ToList();
+            List<Enemy> _enemyNormalList = new List<Enemy>();
+            for (int i = 0; i < _enemyList.Count; i++)
+            {
+                if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() > 0)
+                {
+                    if (_enemyList[i].gameObject.name.LastIndexOf(_eliteName, StringComparison.Ordinal) == 0)
+                    {
+                        _enemyNormalList.Add(_enemyList[i]);
+                    }
+                }
+            }
+
+            if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() == 0)
+            {
+                _enemyList.AddRange(_enemyNormalList);
+            }
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.CurrentRoomEnemyRegister.Invoke(GetComponentsInChildren<IHitable>().ToList());

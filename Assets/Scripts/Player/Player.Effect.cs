@@ -26,6 +26,11 @@ namespace QT.InGame
             {
                 _chargingLevelParticle[i].Stop();
             }
+
+            for (int i = 0; i < _dashParticle.Length; i++)
+            {
+                _dashParticle[i].Stop();
+            }
             TeleportEffectEmitting(false);
         }
         
