@@ -519,6 +519,7 @@ namespace QT.Core.Map
                 uiManager.GetUIPanel<MinimapCanvas>().OnClose();
                 uiManager.GetUIPanel<FadeCanvas>().FadeIn();
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
+                SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
                 SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
                 SystemManager.Instance.ProjectileManager.ProjectileListClear();
