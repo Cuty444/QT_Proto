@@ -1,91 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &78897827168941432
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8983568617181762790}
-  - component: {fileID: 3586377110196363791}
-  m_Layer: 0
-  m_Name: HitAnimation
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &8983568617181762790
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 78897827168941432}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7452305266777142196}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3586377110196363791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 78897827168941432}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a0f8fe0ec834f74b9550d9a4030158b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayOnAwake: 1
-  IgnoreTimeScale: 0
-  IsLoop: 0
-  <Sequences>k__BackingField:
-  - Elements:
-    - Mode: 0
-      Target: {fileID: 228624997589515611}
-      Ease: 1
-      TweenTarget: {x: 0, y: 0, z: 0}
-      Duration: 0
-    - Mode: 1
-      Target: {fileID: 228624997589515611}
-      Ease: 1
-      TweenTarget: {x: 0, y: 0, z: 0}
-      Duration: 0
-  - Elements:
-    - Mode: 2
-      Target: {fileID: 228624997589515611}
-      Ease: 21
-      TweenTarget: {x: 0.8, y: 0.8, z: 0.8}
-      Duration: 0.1
-    - Mode: 1
-      Target: {fileID: 228624997589515611}
-      Ease: 27
-      TweenTarget: {x: 0, y: 0, z: 0}
-      Duration: 0.3
-  - Elements:
-    - Mode: 2
-      Target: {fileID: 228624997589515611}
-      Ease: 21
-      TweenTarget: {x: 1, y: 1, z: 1}
-      Duration: 0.1
-    - Mode: 1
-      Target: {fileID: 228624997589515611}
-      Ease: 27
-      TweenTarget: {x: 0, y: 0, z: 0}
-      Duration: 0.3
 --- !u!1 &1544710689055656909
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,6 +37,107 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!1 &2433689384262947686
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7939631061204398318}
+  - component: {fileID: 5401041752151460352}
+  m_Layer: 0
+  m_Name: HitAnimation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7939631061204398318
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2433689384262947686}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7452305266777142196}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5401041752151460352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2433689384262947686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a0f8fe0ec834f74b9550d9a4030158b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayOnAwake: 0
+  IgnoreTimeScale: 0
+  IsLoop: 0
+  <Sequences>k__BackingField:
+  - Elements:
+    - Mode: 0
+      Target: {fileID: 228624997589515611}
+      Ease: 1
+      TweenTarget: {x: 0, y: 0, z: 0}
+      Duration: 0
+    - Mode: 2
+      Target: {fileID: 228624997589515611}
+      Ease: 1
+      TweenTarget: {x: 1, y: 1, z: 1}
+      Duration: 0
+    - Mode: 1
+      Target: {fileID: 228624997589515611}
+      Ease: 1
+      TweenTarget: {x: 0, y: 0, z: 0}
+      Duration: 0
+  - Elements:
+    - Mode: 0
+      Target: {fileID: 228624997589515611}
+      Ease: 31
+      TweenTarget: {x: 0, y: 5, z: 0}
+      Duration: 0.1
+    - Mode: 2
+      Target: {fileID: 228624997589515611}
+      Ease: 29
+      TweenTarget: {x: 0.95, y: 1.1, z: 1}
+      Duration: 0.1
+    - Mode: 1
+      Target: {fileID: 228624997589515611}
+      Ease: 29
+      TweenTarget: {x: 0, y: 0, z: 1}
+      Duration: 0.1
+  - Elements:
+    - Mode: 0
+      Target: {fileID: 228624997589515611}
+      Ease: 34
+      TweenTarget: {x: 0, y: 0, z: 0}
+      Duration: 0.1
+    - Mode: 2
+      Target: {fileID: 228624997589515611}
+      Ease: 30
+      TweenTarget: {x: 1, y: 1, z: 1}
+      Duration: 0.1
+    - Mode: 1
+      Target: {fileID: 228624997589515611}
+      Ease: 30
+      TweenTarget: {x: 0, y: 0, z: 0}
+      Duration: 0.1
 --- !u!1 &2940082149637752352
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a0f8fe0ec834f74b9550d9a4030158b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayOnAwake: 1
+  PlayOnAwake: 0
   IgnoreTimeScale: 0
   IsLoop: 0
   <Sequences>k__BackingField:
@@ -192,12 +207,12 @@ MonoBehaviour:
       Target: {fileID: 228624997589515611}
       Ease: 30
       TweenTarget: {x: 0, y: 0, z: 0}
-      Duration: 1
+      Duration: 2
     - Mode: 1
       Target: {fileID: 228624997589515611}
       Ease: 27
       TweenTarget: {x: 0, y: 0, z: 0}
-      Duration: 0.7
+      Duration: 1.7
 --- !u!1 &3660400536836692050
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,7 +242,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8336995943779988466}
-  - {fileID: 8983568617181762790}
+  - {fileID: 4006376406248719728}
+  - {fileID: 7939631061204398318}
   m_Father: {fileID: 388250562076942966}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -236,6 +252,81 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &4066504483665128134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4006376406248719728}
+  - component: {fileID: 2583381761620158497}
+  m_Layer: 0
+  m_Name: ReleaseAnimation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4006376406248719728
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4066504483665128134}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7452305266777142196}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2583381761620158497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4066504483665128134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a0f8fe0ec834f74b9550d9a4030158b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayOnAwake: 0
+  IgnoreTimeScale: 0
+  IsLoop: 0
+  <Sequences>k__BackingField:
+  - Elements:
+    - Mode: 0
+      Target: {fileID: 228624997589515611}
+      Ease: 1
+      TweenTarget: {x: 0, y: 0, z: 0}
+      Duration: 0
+    - Mode: 1
+      Target: {fileID: 228624997589515611}
+      Ease: 1
+      TweenTarget: {x: 0, y: 0, z: 0}
+      Duration: 0
+  - Elements:
+    - Mode: 0
+      Target: {fileID: 228624997589515611}
+      Ease: 20
+      TweenTarget: {x: 0, y: -450, z: 0}
+      Duration: 2.3
+    - Mode: 1
+      Target: {fileID: 228624997589515611}
+      Ease: 26
+      TweenTarget: {x: 0, y: 0, z: -60}
+      Duration: 2.7
 --- !u!1 &5991208618999635899
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,7 +346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &388250562076942966
 RectTransform:
   m_ObjectHideFlags: 0
@@ -287,7 +378,7 @@ Canvas:
   m_GameObject: {fileID: 5991208618999635899}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -297,7 +388,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 300
   m_TargetDisplay: 0
 --- !u!114 &8940886605497599897
 MonoBehaviour:
@@ -311,10 +402,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -352,6 +443,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hpImage: {fileID: 6554937130639536518}
+  _popAnimation: {fileID: 8666717683869079038}
+  _releaseAnimation: {fileID: 2583381761620158497}
+  _hitAnimation: {fileID: 5401041752151460352}
 --- !u!1 &6372132613124091378
 GameObject:
   m_ObjectHideFlags: 0
