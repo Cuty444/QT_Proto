@@ -13,6 +13,7 @@ namespace QT.InGame
         private readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
         private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
+        private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
         
         private bool _isReady;
         private Vector2 _dir;
