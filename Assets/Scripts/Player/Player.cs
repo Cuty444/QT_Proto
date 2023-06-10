@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using QT.Core;
 using UnityEngine;
 using Cinemachine;
+using QT.Core.Map;
 using QT.UI;
 using UnityEngine.UI;
 
@@ -16,6 +18,7 @@ namespace QT.InGame
             Move,
             Swing,
             Throw,
+            Gain,
             Teleport,
             Dodge,
             Fall,
@@ -51,6 +54,8 @@ namespace QT.InGame
         private int _goldCost = 0;
         private PlayerHPCanvas _playerHpCanvas;
 
+        [HideInInspector]public List<IHitable> _floorAllHit = new List<IHitable>();
+
         [SerializeField] private Transform _attackSpeedCanvas;
         [SerializeField] private Transform[] _attackSpeedBackground;
         [SerializeField] private Image[] _attackGaugeImages;
@@ -58,6 +63,7 @@ namespace QT.InGame
         [HideInInspector] public FallObject EnterFallObject;
         [HideInInspector] public Vector2 DodgePreviousPosition;
         [HideInInspector] public int FallPreviousState;
+        [HideInInspector] public bool IsGarden;
         private void Awake()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
@@ -90,6 +96,12 @@ namespace QT.InGame
                 _hitableList.Clear();
                 _hitableList.AddRange(hitables);
             });
+            
+            _playerManager.FloorAllHitalbeRegister.AddListener((hitalbes) =>
+            {
+                _floorAllHit.AddRange(hitalbes);
+            });
+            
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
             {
                 _hitableList.Clear();

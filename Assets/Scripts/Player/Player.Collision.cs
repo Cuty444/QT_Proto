@@ -33,7 +33,7 @@ namespace QT.InGame
                         break;
                 }
             }
-            if (other.gameObject.layer == LayerMask.NameToLayer("StairCollider"))
+            else if (other.gameObject.layer == LayerMask.NameToLayer("StairCollider"))
             {
                 if (isNextMap)
                     return;
@@ -47,6 +47,18 @@ namespace QT.InGame
                 ClearAction(Player.ButtonActions.Interaction);
 
                 Rigidbody.velocity = Vector2.zero;
+            }
+            else if(other.gameObject.layer == LayerMask.NameToLayer("GardenCollider"))
+            {
+                IsGarden = true;
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if(other.gameObject.layer == LayerMask.NameToLayer("GardenCollider"))
+            {
+                IsGarden = false;
             }
         }
     }

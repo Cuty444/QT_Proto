@@ -207,6 +207,7 @@ namespace QT.InGame
             
             SystemManager.Instance.ProjectileManager.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
             GetInEnemyRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _enemyInRange);
+            GetInHitalbeCheck(eye.position,swingRad,swingCentralAngle * 0.5f,eye.right);
         }
 
         private void SetLines()
@@ -335,19 +336,6 @@ namespace QT.InGame
                 
                 if (hitable is not Enemy)
                 {
-                    var hitCheckRange = range + 0.5f;
-                    var hitTargetDir = hitable.GetPosition() - origin;
-
-                    if (hitTargetDir.sqrMagnitude < hitCheckRange * hitCheckRange)
-                    {
-                        var dot = Vector2.Dot((hitTargetDir).normalized, dir);
-                        var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
-
-                        if (degrees < angle)
-                        {
-                            _hitableRange.Add(hitable);
-                        }
-                    }
                     continue;
                 }
                 
@@ -366,6 +354,29 @@ namespace QT.InGame
                     if (degrees < angle)
                     {
                         outList.Add(enemy);
+                    }
+                }
+            }
+        }
+
+        private void GetInHitalbeCheck(Vector2 origin,float range,float angle,Vector2 dir)
+        {
+            foreach (var hitable in _ownerEntity._floorAllHit)
+            {
+                if (hitable is not Enemy)
+                {
+                    var hitCheckRange = range + 0.5f;
+                    var hitTargetDir = hitable.GetPosition() - origin;
+
+                    if (hitTargetDir.sqrMagnitude < hitCheckRange * hitCheckRange)
+                    {
+                        var dot = Vector2.Dot((hitTargetDir).normalized, dir);
+                        var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
+
+                        if (degrees < angle)
+                        {
+                            _hitableRange.Add(hitable);
+                        }
                     }
                 }
             }
