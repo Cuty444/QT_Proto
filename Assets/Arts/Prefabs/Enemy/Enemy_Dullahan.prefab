@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 1728294786722340741}
   - component: {fileID: 7433885297957215848}
   - component: {fileID: 3720069595483841744}
+  - component: {fileID: 927427120280924730}
   m_Layer: 0
   m_Name: Spine Mecanim GameObject (1_Boss_01)
   m_TagString: Untagged
@@ -158,8 +159,6 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
-  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
   - {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
   - {fileID: 2100000, guid: 4d76b6154470ed5439b32c4c97254a22, type: 2}
   - {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
@@ -251,6 +250,21 @@ MonoBehaviour:
     layerMixModes: 01000000
     layerBlendModes: 01000000
   updateTiming: 1
+--- !u!114 &927427120280924730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3242003511834536937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3893e13995f1444699d17a415a5356f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseMaterial: {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
+  _hitMaterial: {fileID: 2100000, guid: dfabde552acaf4316893acc1bc196010, type: 2}
+  _rigidMaterial: {fileID: 2100000, guid: ac741a52c64994d6d94cc5bbbe86bc69, type: 2}
 --- !u!1 &3249150020102672483
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,7 +807,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7a2463ca52d43dfae1e8fa6a2d8213, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyId: 508
+  _enemyId: 507
   <DullahanData>k__BackingField: {fileID: 11400000, guid: b0ce0a2e7426842e28053d7315c00892, type: 2}
   <ShootPoints>k__BackingField:
   - {fileID: 3258319901047688248}

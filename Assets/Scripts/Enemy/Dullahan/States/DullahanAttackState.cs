@@ -42,18 +42,25 @@ namespace QT.InGame
 
                 var side = _ownerEntity.SetDir(dir,2);
                 _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPoints[side];
-                
-                _ownerEntity.Animator.SetTrigger(AttackAnimHash);
-                yield return new WaitForSeconds(data.BeforeDelay);
+
+                if (data.BeforeDelay > 0)
+                {
+                    _ownerEntity.Animator.SetTrigger(AttackAnimHash);
+                    yield return new WaitForSeconds(data.BeforeDelay);
 
                 SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
                     _ownerEntity.Shooter.ShootPoint.position);
-
-                _ownerEntity.Shooter.Shoot(data.ShootDataId, data.AimType, ProjectileOwner.Boss);
+                }
                 
-                yield return new WaitForSeconds(data.AfterDelay);
+                _ownerEntity.Shooter.Shoot(data.ShootDataId, data.AimType, ProjectileOwner.Boss);
+
+                if (data.AfterDelay > 0)
+                {
+                    yield return new WaitForSeconds(data.AfterDelay);
+                }
             }
 
+            _ownerEntity.Animator.ResetTrigger(AttackAnimHash);
             _ownerEntity.ChangeState(Dullahan.States.Normal);
         }
     }

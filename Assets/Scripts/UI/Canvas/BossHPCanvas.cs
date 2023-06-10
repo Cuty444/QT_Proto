@@ -14,8 +14,7 @@ namespace QT.UI
         }
         
         public void SetHPGuage(Status hp)
-        { 
-            Debug.LogError($"{(hp.StatusValue / hp.Value)}");
+        {
             _hpImage.fillAmount = hp.StatusValue / hp.Value;
         }
     }

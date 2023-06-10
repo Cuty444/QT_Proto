@@ -10,7 +10,6 @@ namespace QT.InGame
         public void Hit(Vector2 dir, float power, AttackType attackType)
         {
             OnDamageEvent.Invoke(dir, power,attackType);
-            Debug.LogError("Hit");
         }
     }
 }

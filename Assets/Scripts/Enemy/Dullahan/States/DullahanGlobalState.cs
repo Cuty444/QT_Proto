@@ -6,7 +6,7 @@ using Debug = UnityEngine.Debug;
 
 namespace QT.InGame
 {
-    [FSMState((int) Dullahan.States.Global)]
+    [FSMState((int) Dullahan.States.Global, false)]
     public class DullahanGlobalState : FSMState<Dullahan>
     {
         private static readonly int HitAnimHash = Animator.StringToHash("Hit");
@@ -28,11 +28,12 @@ namespace QT.InGame
         {
             _hpCanvas = SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>();
             _hpCanvas.gameObject.SetActive(true);
+            _ownerEntity.MaterialChanger.SetHitMaterial();
         }
         
         private void OnDamage(Vector2 dir, float power,AttackType attackType)
         {
-            if (_ownerEntity.CurrentStateIndex != (int)Dullahan.States.Dead)
+            if (_ownerEntity.CurrentStateIndex == (int)Dullahan.States.Dead)
             {
                 return;
             }
@@ -64,6 +65,7 @@ namespace QT.InGame
             if(_rigidTime >= _rigidTimer)
             {
                 _ownerEntity.MaterialChanger.ClearMaterial();
+                _ownerEntity.Animator.ResetTrigger(HitAnimHash);
 
                 if (_ownerEntity.HP <= 0)
                 {
