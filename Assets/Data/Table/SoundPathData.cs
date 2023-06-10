@@ -27,6 +27,7 @@ namespace QT.Sound
         
         [field: SerializeField] public EventReference Stage1BGM{ get; private set; }
         [field: SerializeField] public EventReference LoadingBGM{ get; private set; }
+        [field: SerializeField] public EventReference BossStageBGM { get; private set; }
         
         [field: SerializeField] public string[] Bank{ get; private set; }
     }
