@@ -8,8 +8,8 @@ using QT.UI;
 using QT.Util;
 using Spine.Unity;
 using TMPro;
-using UnityEngine.Events;
-
+using System.Linq;
+using QT.InGame;
 namespace QT.UI
 {
     public class PlayerHPCanvas : UIPanel
@@ -31,12 +31,18 @@ namespace QT.UI
         public Image PlayerDodgeCoolBackgroundImage => _playerDodgeCoolBackgroundImage;
         
         private List<Image> _playerHpList = new List<Image>();
-        
+        private int beforeHp = 0;
         [SerializeField] private UITweenAnimator _goldAnimation;
 
         private void Start()
         {
-            SystemManager.Instance.PlayerManager.OnGoldValueChanged.AddListener(SetGoldText);
+            var playerManager = SystemManager.Instance.PlayerManager;
+            playerManager.OnGoldValueChanged.AddListener(SetGoldText);
+            playerManager.PlayerCreateEvent.AddListener((arg) =>
+            {
+                arg.GetStat(PlayerStats.HP).OnValueChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));
+                arg.GetStatus(PlayerStats.HP).OnStatusChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));
+            });
         }
 
         public void SetHp(Status hp)
@@ -49,6 +55,34 @@ namespace QT.UI
             {
                 _playerHpList.Add(Instantiate(_playerHpObject,_playerHpTransform).GetComponent<Image>());
             }
+
+            beforeHp = (int)hp.Value;
+        }
+
+        public void SetHpUpdate(Status hp)
+        {
+            for (int i = _playerHpList.Count * 25; i < hp.Value; i += 25)
+            {
+                _playerHpList.Add(Instantiate(_playerHpObject,_playerHpTransform).GetComponent<Image>());
+            }
+
+            var maxHp = (int) hp.Value;
+            if (beforeHp < maxHp)
+            {
+                hp.AddStatus(maxHp-beforeHp);
+            }
+            else if (beforeHp > maxHp)
+            {
+                int index = (beforeHp - maxHp) / 25;
+                for (int i = 0; i < index; i++)
+                {
+                    Destroy(_playerHpList.Last().gameObject);
+                    _playerHpList.Remove(_playerHpList.Last());
+                }
+            }
+            beforeHp = maxHp;
+
+            CurrentHpImageChange(hp);
         }
         
         public void CurrentHpImageChange(Status hp)

@@ -37,7 +37,6 @@ namespace QT.InGame
             _ownerEntity.OnAim.AddListener(OnAim);
         }
 
-
         private void OnAim(Vector2 aimPos)
         {
             if (_ownerEntity.CurrentStateIndex == (int)Player.States.Teleport)

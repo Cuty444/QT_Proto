@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using QT.Core;
 using TMPro;
 using UnityEngine;
@@ -64,7 +65,7 @@ namespace QT
             resourceManager.LoadSprite(ItemGameData.ItemIconPath, _itemSprite);
             _itemName.text = ItemGameData.Name;
             _itemCost.text = ItemGameData.CostGold.ToString();
-            _itemDesc.text = ItemGameData.Desc.Replace("20","11.5");
+            _itemDesc.text = DataStringChanger(ItemGameData.Desc,"20","11.5");
             for (int i = 25; i <= ItemGameData.CostHp; i += 25)
             {
                 _hpImages[i/25].gameObject.SetActive(true);
@@ -117,6 +118,38 @@ namespace QT
 
             _playerManager.Player.Inventory.AddItem(ItemID);
             Destroy(gameObject);
+        }
+        
+        private string DataStringChanger(string original, string before,string after)
+        {
+            List<StringBuilder> textList = new List<StringBuilder>();
+
+            var temp = original.Split("<");
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (temp[i].IndexOf("size=") >= 0)
+                {
+                    textList.Add(new StringBuilder("<"+temp[i].Replace(before, after)));
+                }
+                else
+                {
+                    if (i == 0)
+                    {
+                       textList.Add(new StringBuilder(temp[i]));
+                    }
+                    else
+                    {
+                       textList.Add(new StringBuilder("<"+temp[i]));
+                    }
+                }
+            }
+
+            StringBuilder finalText = new StringBuilder();
+            for (int i = 0; i < textList.Count; i++)
+            {
+                finalText.Append(textList[i]);
+            }
+            return finalText.ToString();
         }
     }
 }

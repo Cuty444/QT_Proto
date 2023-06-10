@@ -10,6 +10,7 @@ namespace QT.InGame
 {
     public partial class Player
     {
+        private bool isNextMap = false;
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Door"))
@@ -31,6 +32,21 @@ namespace QT.InGame
                         _playerManager.PlayerDoorEnter.Invoke(Vector2Int.left);
                         break;
                 }
+            }
+            if (other.gameObject.layer == LayerMask.NameToLayer("StairCollider"))
+            {
+                if (isNextMap)
+                    return;
+                SystemManager.Instance.PlayerManager.StairNextRoomEvent.Invoke();
+                isNextMap = true;
+                OnMove = null;
+                ClearAction(Player.ButtonActions.Swing);
+                //_ownerEntity.ClearAction(Player.ButtonActions.Throw);
+                ClearAction(Player.ButtonActions.Dodge);
+                ClearAction(Player.ButtonActions.Teleport);
+                ClearAction(Player.ButtonActions.Interaction);
+
+                Rigidbody.velocity = Vector2.zero;
             }
         }
     }

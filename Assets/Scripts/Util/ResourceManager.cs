@@ -128,6 +128,8 @@ namespace QT
             }
             else
             {
+                if (obj == null)
+                    return;
                 Object.Destroy(obj.gameObject);
             }
         }

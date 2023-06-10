@@ -48,5 +48,23 @@ namespace QT
             SystemManager.Instance.PlayerManager.PlayerMapPosition.Invoke(SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.MapNodeList[index] - Vector2Int.down);
             SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(Vector2Int.up);
         }
+        [ConsoleMethod("FloorMove", "1~3 층으로 이동")]
+        public static void FloorMove(int index)
+        {
+            if (index >= 4 && index <= 0)
+            {
+                Debug.Log("층 최대치를 넘김 Index 숫자를 줄여주세요");
+                return;
+            }
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(index - 2);
+            SystemManager.Instance.PlayerManager.StairNextRoomEvent.Invoke();
+        }
+        
+        [ConsoleMethod("Gold", "골드 획득")]
+        public static void Gold(int value)
+        {
+            var _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() + value);
+        }
     }
 }

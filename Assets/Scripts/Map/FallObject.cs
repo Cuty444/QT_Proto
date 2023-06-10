@@ -159,13 +159,27 @@ namespace QT
             float halfY = _boxCollider2D.size.y * 0.5f;
             var boxPosition = transform.position;
             var halfPosition = new Vector2(boxPosition.x + halfX, boxPosition.y);
-            positionDictionary.Add(Vector2.Distance(halfPosition, position), new FallDirectionData(MapDirection.Right,halfPosition));
+            float distanceKey = Vector2.Distance(halfPosition, position);
+            positionDictionary.Add(distanceKey, new FallDirectionData(MapDirection.Right,halfPosition));
             halfPosition = new Vector2(boxPosition.x - halfX, boxPosition.y);
-            positionDictionary.Add(Vector2.Distance(halfPosition, position), new FallDirectionData(MapDirection.Left,halfPosition));
+            distanceKey = Vector2.Distance(halfPosition, position);
+            if (!positionDictionary.ContainsKey(distanceKey))
+            {
+                positionDictionary.Add(distanceKey, new FallDirectionData(MapDirection.Left,halfPosition));
+            }
             halfPosition = new Vector2(boxPosition.x, boxPosition.y - halfY);
-            positionDictionary.Add(Vector2.Distance(halfPosition, position), new FallDirectionData(MapDirection.Down,halfPosition));
+            distanceKey = Vector2.Distance(halfPosition, position);
+            if (!positionDictionary.ContainsKey(distanceKey))
+            {
+                positionDictionary.Add(distanceKey, new FallDirectionData(MapDirection.Down, halfPosition));
+            }
             halfPosition = new Vector2(boxPosition.x, boxPosition.y + halfY);
-            positionDictionary.Add(Vector2.Distance(halfPosition, position), new FallDirectionData(MapDirection.Up,halfPosition));
+            distanceKey = Vector2.Distance(halfPosition, position);
+            if (!positionDictionary.ContainsKey(distanceKey))
+            {
+                positionDictionary.Add(distanceKey, new FallDirectionData(MapDirection.Up, halfPosition));
+            }
+
             do
             {
 

@@ -97,6 +97,11 @@ namespace QT.InGame
                     float lowHp = float.MaxValue;
                     foreach (var targetHitable in _hitableList)
                     {
+                        if (targetHitable is not Enemy)
+                        {
+                            continue;
+                        }
+
                         var targetEnemy = (Enemy) targetHitable;
                         
                         if (targetEnemy.CurrentStateIndex < (int) Enemy.States.Projectile)
