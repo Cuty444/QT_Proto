@@ -41,13 +41,21 @@ namespace QT.Map
             }
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.CurrentRoomEnemyRegister.Invoke(GetComponentsInChildren<IHitable>().ToList());
+            _playerManager.PlayerMapPosition.AddListener((pos) =>
+            {
+                if (_cellPos == pos)
+                {
+                    _playerManager.CurrentRoomEnemyRegister.Invoke(transform.parent.parent.gameObject.GetComponentsInChildren<IHitable>().ToList());
+                }
+            });
+            //_playerManager.CurrentRoomEnemyRegister.Invoke(transform.parent.parent.gameObject.GetComponentsInChildren<IHitable>().ToList());
         }
 
         private void Update()
         {
             if (_dungeonMapSystem.GetCellData(_cellPos).IsClear)
-                return;
+                    return;
+
             MapClearCheck();
         }
 
@@ -68,7 +76,12 @@ namespace QT.Map
             if (_enemyList.Count == 0)
             {
                 _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
+
                 _playerManager.PlayerMapPass.Invoke(true);
+                if (_dungeonMapSystem.DungeonMapData.ShopRoomPosition == _cellPos)
+                {
+                    _playerManager.CurrentRoomEnemyRegister.Invoke(transform.parent.parent.gameObject.GetComponentsInChildren<IHitable>().ToList());
+                }
             }
         }
 

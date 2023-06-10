@@ -30,8 +30,10 @@ namespace QT.Core
         
         public Player Player { get; private set; }
 
-        public List<Item> _playerInventory = new List<Item>();
-        
+        public List<int> _playerIndexInventory = new List<int>();
+
+        public UnityEvent AddItemEvent { get; } = new();
+
         public async void CreatePlayer() // 추후 로그라이크맵 절차 생성 SystemManager에서 관리하도록 코드 위치 변경이 필요함
         {
             Player = await SystemManager.Instance.ResourceManager.GetFromPool<Player>(Constant.PlayerPrefabPath);

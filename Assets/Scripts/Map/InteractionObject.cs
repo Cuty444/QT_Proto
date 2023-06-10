@@ -31,5 +31,10 @@ namespace QT
             isHit = true;
             _circleCollider2D.enabled = false;
         }
+        
+        public Vector2 GetPosition()
+        {
+            return transform.position;
+        }
     }
 }

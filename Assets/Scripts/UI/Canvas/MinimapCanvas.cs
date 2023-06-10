@@ -39,7 +39,7 @@ namespace QT.UI
             SystemManager.Instance.ResourceManager.CacheAsset(CellPath);
             MinimapSetting();
             IsPreviousActive = true;
-            _miniMapOnOff.SetActive(true);
+            _miniMapOnOff.SetActive(false);
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerDoorEnter.AddListener(NextMapWarp);
             _playerManager.PlayerMapPosition.AddListener((position) =>
@@ -63,6 +63,7 @@ namespace QT.UI
             {
                 IsPreviousActive = true;
                 _miniMapOnOff.SetActive(true);
+                _popAnimator.ReStart();
             });
             
             SystemManager.Instance.UIManager.InventoryInputCheck.AddListener((isActive) =>
@@ -73,15 +74,15 @@ namespace QT.UI
                     if (IsPreviousActive)
                     {
                         _miniMapOnOff.SetActive(false);
+                        _popAnimator.PlayBackwards();
                     }
                 }
                 else if(!isActive && IsPreviousActive)
                 {
                     _miniMapOnOff.SetActive(true);
+                    _popAnimator.ReStart();
                 }
             });
-
-            _popAnimator.ReStart();
         }
 
         public void MinimapSetting()

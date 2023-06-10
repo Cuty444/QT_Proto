@@ -9,6 +9,7 @@ using QT.Util;
 using Spine.Unity;
 using TMPro;
 using System.Linq;
+using QT.InGame;
 namespace QT.UI
 {
     public class PlayerHPCanvas : UIPanel
@@ -35,7 +36,13 @@ namespace QT.UI
 
         private void Start()
         {
-            SystemManager.Instance.PlayerManager.OnGoldValueChanged.AddListener(SetGoldText);
+            var playerManager = SystemManager.Instance.PlayerManager;
+            playerManager.OnGoldValueChanged.AddListener(SetGoldText);
+            playerManager.PlayerCreateEvent.AddListener((arg) =>
+            {
+                arg.GetStat(PlayerStats.HP).OnValueChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));
+                arg.GetStatus(PlayerStats.HP).OnStatusChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));
+            });
         }
 
         public void SetHp(Status hp)

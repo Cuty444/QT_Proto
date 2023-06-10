@@ -140,6 +140,11 @@ namespace QT.InGame
             ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
         }
         
+        public Vector2 GetPosition()
+        {
+            return transform.position;
+        }
+        
         public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection = 0)
         {
             _ballTransform.up  = _direction = dir;
