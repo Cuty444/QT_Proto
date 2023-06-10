@@ -13,6 +13,8 @@ namespace QT.UI
         [SerializeField] private Transform _miniMapCellTransform;
         [SerializeField] private GameObject _miniMapOnOff;
         
+        [SerializeField] private UITweenAnimator _popAnimator;
+        [SerializeField] private UITweenAnimator _releaseAnimator;
         
         private const string CellPath = "Prefabs/Map/MiniMap/Cell.prefab";
         
@@ -26,6 +28,8 @@ namespace QT.UI
         private List<GameObject> _cellMapList = new List<GameObject>();
         private bool IsPreviousActive;
         private Vector2Int _currentPlayerPosition; // TODO : DungeonMapSystem으로 옮겨야함
+        
+
         public override void Initialize()
         {
             _pathDirections.Add(Vector2Int.up,MapDirection.Up);
@@ -76,6 +80,8 @@ namespace QT.UI
                     _miniMapOnOff.SetActive(true);
                 }
             });
+
+            _popAnimator.ReStart();
         }
 
         public void MinimapSetting()
