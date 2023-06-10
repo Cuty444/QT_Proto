@@ -80,7 +80,14 @@ namespace QT.Map
                     _cellMapObject = _dungeonMapSystem.StartMapObject();
                     break;
                 case RoomType.Boss:
-                    _cellMapObject = _dungeonMapSystem.BossMapObject();
+                    if (_dungeonMapSystem.GetFloor() == 2)
+                    {
+                        _cellMapObject = _dungeonMapSystem.BossMapObject();
+                    }
+                    else
+                    {
+                        _cellMapObject = _dungeonMapSystem.StairsMapObject();
+                    }
                     break;
                 case RoomType.None:
                 case RoomType.Normal:

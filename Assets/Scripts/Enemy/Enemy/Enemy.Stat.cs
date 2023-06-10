@@ -1,5 +1,8 @@
 
 
+using QT.Core;
+using QT.Core.Map;
+
 namespace QT.InGame
 {
     public partial class Enemy
@@ -9,7 +12,7 @@ namespace QT.InGame
         
         private  void SetUpStats()
         {
-            HP = new Status(Data.MaxHp);
+            HP = new Status(Data.MaxHp * SystemManager.Instance.GetSystem<DungeonMapSystem>().GetEnemyHpIncreasePer());
             MoveSpd = new Stat(Data.MovementSpd);
         }
     }

@@ -76,11 +76,15 @@ namespace QT.InGame
             EffectSetup();
             
             Inventory = new Inventory(this);
-            
+            _playerManager = SystemManager.Instance.PlayerManager;
+            var items = _playerManager._playerInventory;
+            for (int i = 0; i < items.Count; i++)
+            {
+                Inventory.AddItem(items[i]);
+            }
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
             
-            _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.CurrentRoomEnemyRegister.AddListener((hitables) =>
             {
                 _hitableList.Clear();
@@ -101,6 +105,7 @@ namespace QT.InGame
             {
                 _goldCost = value;
             });
+            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().OnOpen();
         }
 
         private void Start()
@@ -134,7 +139,7 @@ namespace QT.InGame
 
         public bool GetGoldComparison(int cost)
         {
-            return _goldCost > cost;
+            return _goldCost >= cost;
         }
 
         public bool GetHpComparision(int hpCost)

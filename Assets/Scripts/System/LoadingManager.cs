@@ -49,6 +49,12 @@ namespace QT
             });
         }
 
+        public void FloorLoadScene(int sceneIndex, Action func = null)
+        {
+            func?.Invoke();
+            SystemManager.Instance.StartCoroutine(LoadAsynchronously(sceneIndex));
+        }
+        
         public void LoadFadeOutScene(int sceneIndex, Action func = null)
         {
             _fadeCanvas.FadeOut(() =>
