@@ -37,6 +37,11 @@ namespace QT.InGame
             _ownerEntity.OnAim.AddListener(OnAim);
         }
 
+        public override void UpdateState()
+        {
+            _playerHpCanvas.SetHpUpdate(_ownerEntity.GetStatus(PlayerStats.HP));
+        }
+
         private void OnAim(Vector2 aimPos)
         {
             if (_ownerEntity.CurrentStateIndex == (int)Player.States.Teleport)
