@@ -8,7 +8,7 @@ namespace QT.InGame
     [FSMState((int) Dullahan.States.Rush)]
     public class DullahanRushState : FSMState<Dullahan>
     {
-        public readonly LayerMask BounceMask = LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player","InteractionCollider");
+        public readonly LayerMask BounceMask = LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "Enemy", "InteractionCollider");
         
         private readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
         private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
@@ -56,7 +56,7 @@ namespace QT.InGame
 
             _ownerEntity.Animator.SetTrigger(RushReadyAnimHash);
             _ownerEntity.RushTrailObject.SetActive(true);
-            _ownerEntity.SetPhysics(false);
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
 
         public override void ClearState()
@@ -78,6 +78,7 @@ namespace QT.InGame
                     _isReady = true;
                     _ownerEntity.RushTrailObject.SetActive(true);
                     _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
+                    _ownerEntity.SetPhysics(false);
                     _time = 0;
                 }
             }

@@ -56,7 +56,10 @@ namespace QT.InGame
             
             _colliders = new Collider2D[Rigidbody.attachedColliderCount];
             Rigidbody.GetAttachedColliders(_colliders);
+
+            SetUpStats();
             
+            SetGlobalState(new DullahanGlobalState(this));
             SetUp(States.Normal);
         }
         

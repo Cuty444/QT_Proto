@@ -26,7 +26,7 @@ namespace QT.InGame
             _ownerEntity.HpImage.fillAmount = Util.Math.Remap(_ownerEntity.HP,_ownerEntity.HP.BaseValue,0f);
             _ownerEntity.HpCanvas.gameObject.SetActive(true);
             _ownerEntity.Rigidbody.velocity = Vector2.zero; 
-            _ownerEntity.Rigidbody.AddForce(-dir, ForceMode2D.Impulse);
+            _ownerEntity.Rigidbody.AddForce(dir, ForceMode2D.Impulse);
             _ownerEntity.HitAttackType = attackType;
             _ownerEntity.ChangeState(Enemy.States.Rigid);
         }
