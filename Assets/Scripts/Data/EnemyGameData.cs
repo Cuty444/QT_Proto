@@ -22,6 +22,7 @@ namespace QT
         public int Index { get; set; }
         public int MaxHp { get; set; }
     
+        public float AgroRange { get; set; }
         public MoveTypes MoveType { get; set; }
         public float MovementSpd { get; set; }
         public float SpacingRad { get; set; }

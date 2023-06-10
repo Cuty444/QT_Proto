@@ -7,6 +7,7 @@ namespace QT.InGame
     [FSMState((int) Enemy.States.Normal)]
     public class EnemyNormalState : FSMState<Enemy>
     {
+        private const float AvoidDirDampTime = 30;
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
         private readonly int DirXAnimHash = Animator.StringToHash("DirX");
         private readonly int DirYAnimHash = Animator.StringToHash("DirY");
@@ -19,10 +20,16 @@ namespace QT.InGame
         private float _atkCheckTimer;
 
         private bool _rotateSide;
+        private bool _isAgro;
+        
+        private InputVector2Damper _dirDamper = new ();
+        private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
         public EnemyNormalState(IFSMEntity owner) : base(owner)
         {
             _data = _ownerEntity.Data;
+
+            _ownerEntity.OnDamageEvent.AddListener((dir, power, type) => { _isAgro = true; });
         }
 
         public override void InitializeState()
@@ -58,6 +65,11 @@ namespace QT.InGame
         public override void FixedUpdateState()
         {
             var targetDistance = (_moveTarget-(Vector2) _ownerEntity.transform.position).magnitude;
+
+            if (!CheckAgro(targetDistance))
+            {
+                return;
+            }
             
             Move(targetDistance);
             
@@ -71,6 +83,16 @@ namespace QT.InGame
                 _ownerEntity.HP.SetStatus(0);
                 _ownerEntity.ChangeState(Enemy.States.Dead);
             }
+        }
+
+        private bool CheckAgro(float targetDistance)
+        {
+            if (targetDistance < _data.AgroRange)
+            {
+                _isAgro = true;
+            }
+
+            return _isAgro;
         }
 
         public override void ClearState()
@@ -102,9 +124,11 @@ namespace QT.InGame
             }
 
             _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd);
-            
-            _ownerEntity.Animator.SetFloat(DirXAnimHash, currentDir.x);
-            _ownerEntity.Animator.SetFloat(DirYAnimHash, currentDir.y);
+
+
+            var dampedDir = _dirDamper.GetDampedValue(currentDir, Time.deltaTime);
+            _ownerEntity.Animator.SetFloat(DirXAnimHash, dampedDir.x);
+            _ownerEntity.Animator.SetFloat(DirYAnimHash, dampedDir.y);
         }
 
         private Vector2 SpacingMove(float targetDistance, bool isRotate = false)
@@ -125,19 +149,30 @@ namespace QT.InGame
             {
                 interest.AddWeight(-dir, 1);
             }
-            
+
+            var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
+            if (avoidDir != Vector2.zero)
+            {
+                interest.AddWeight(_avoidDirDamper.GetDampedValue(avoidDir, Time.deltaTime), 1);
+            }
+
             if (isRotate)
             {
                 interest.AddWeight(_rotateSide ? new Vector2(dir.y, -dir.x) : new Vector2(-dir.y, dir.x), 1);
             }
 
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
-            
-            if(isRotate && result.sqrMagnitude < TurnoverLimitSpeed)
+
+            if (result.sqrMagnitude < TurnoverLimitSpeed)
             {
-                _rotateSide = !_rotateSide;
+                if (isRotate)
+                {
+                    _rotateSide = !_rotateSide;
+                }
+
+                _avoidDirDamper.ResetCurrentValue(-result);
             }
-            
+
             return result.normalized;
         }
 
