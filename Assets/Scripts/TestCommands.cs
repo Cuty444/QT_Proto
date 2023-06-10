@@ -59,5 +59,12 @@ namespace QT
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(index - 2);
             SystemManager.Instance.PlayerManager.StairNextRoomEvent.Invoke();
         }
+        
+        [ConsoleMethod("Gold", "골드 획득")]
+        public static void Gold(int value)
+        {
+            var _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() + value);
+        }
     }
 }

@@ -23,21 +23,21 @@ namespace QT.Map
         private void Awake()
         {
             _enemyList = GetComponentsInChildren<Enemy>().ToList();
-            List<Enemy> _enemyNormalList = new List<Enemy>();
+            List<Enemy> _enemyElitList = new List<Enemy>();
             for (int i = 0; i < _enemyList.Count; i++)
             {
-                if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() > 0)
+                if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() == 0)
                 {
-                    if (_enemyList[i].gameObject.name.LastIndexOf(_eliteName, StringComparison.Ordinal) == 0)
+                    if (_enemyList[i].gameObject.name.LastIndexOf(_eliteName, StringComparison.Ordinal) >= 0)
                     {
-                        _enemyNormalList.Add(_enemyList[i]);
+                        _enemyElitList.Add(_enemyList[i]);
                     }
                 }
             }
-
-            if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() == 0)
+            for (int i = 0; i < _enemyElitList.Count; i++)
             {
-                _enemyList.AddRange(_enemyNormalList);
+                _enemyList.Remove(_enemyElitList[i]);
+                _enemyElitList[i].gameObject.SetActive(false);
             }
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
