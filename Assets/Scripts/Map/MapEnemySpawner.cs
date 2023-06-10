@@ -78,10 +78,6 @@ namespace QT.Map
                 _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
 
                 _playerManager.PlayerMapPass.Invoke(true);
-                if (_dungeonMapSystem.DungeonMapData.ShopRoomPosition == _cellPos)
-                {
-                    _playerManager.CurrentRoomEnemyRegister.Invoke(transform.parent.parent.gameObject.GetComponentsInChildren<IHitable>().ToList());
-                }
             }
         }
 

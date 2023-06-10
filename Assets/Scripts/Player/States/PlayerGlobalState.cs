@@ -32,7 +32,7 @@ namespace QT.InGame
             SystemManager.Instance.PlayerManager.OnDamageEvent.AddListener(OnDamage);
             //SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.AddListener(arg0 => TeleportLineClear());
             //SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
-
+            SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainItem);
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             _ownerEntity.OnAim.AddListener(OnAim);
         }
@@ -96,6 +96,11 @@ namespace QT.InGame
             {
                 _ownerEntity.MaterialChanger.SetHitMaterial();
             }
+        }
+
+        private void GainItem()
+        {
+            _ownerEntity.ChangeState(Player.States.Gain);
         }
 
     }

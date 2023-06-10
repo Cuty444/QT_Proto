@@ -108,6 +108,11 @@ namespace QT.Core.Map
             SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((player) =>
             {
                 _mapCellsTransform = GameObject.FindWithTag("MapCells").transform;
+                StartCoroutine(UnityUtil.WaitForFunc(() =>
+                {
+                    SystemManager.Instance.PlayerManager.FloorAllHitalbeRegister.Invoke(_mapCellsTransform
+                        .GetComponentsInChildren<IHitable>().ToList());
+                }, 5f));
             });
         }
 

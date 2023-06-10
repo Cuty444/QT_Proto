@@ -112,6 +112,11 @@ namespace QT.InGame
         {
             if (!isDistance)
             {
+                if (_playerManager.Player.CurrentStateIndex >= (int)Player.States.Fall)
+                {
+                    lineRenderer.positionCount = 0;
+                    return;
+                }
                 lineRenderer.positionCount = 2;
                 lineRenderer.SetPosition(0, position);
                 lineRenderer.SetPosition(1, _ownerEntity.transform.position);
