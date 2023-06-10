@@ -77,7 +77,7 @@ namespace QT.InGame
             
             Inventory = new Inventory(this);
             _playerManager = SystemManager.Instance.PlayerManager;
-            var items = _playerManager._playerInventory;
+            var items = _playerManager._playerIndexInventory;
             for (int i = 0; i < items.Count; i++)
             {
                 Inventory.AddItem(items[i]);
@@ -132,6 +132,11 @@ namespace QT.InGame
             _playerManager.OnDamageEvent.Invoke(dir, power);
         }
 
+        public Vector2 GetPosition()
+        {
+            return transform.position;
+        }
+        
         public int GetGoldCost()
         {
             return _goldCost;

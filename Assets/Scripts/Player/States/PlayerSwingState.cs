@@ -17,6 +17,7 @@ namespace QT.InGame
 
         private List<IProjectile> _projectiles = new();
         private List<Enemy> _enemyInRange = new ();
+        private List<IHitable> _hitableRange = new();
         private List<LineRenderer> _lines = new();
 
 
@@ -132,6 +133,13 @@ namespace QT.InGame
                 enemyHitCount++;
             }
 
+            foreach (var hit in _hitableRange)
+            {
+                hit.Hit(((Vector2) _ownerEntity.transform.position - hit.GetPosition()).normalized,damage,AttackType.Swing);
+                hitCount++;
+                enemyHitCount++;
+            }
+            
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Move);
 
@@ -192,6 +200,7 @@ namespace QT.InGame
 
             _projectiles.Clear();
             _enemyInRange.Clear();
+            _hitableRange.Clear();
             
             float swingRad = _ownerEntity.GetStat(PlayerStats.SwingRad);
             float swingCentralAngle = _ownerEntity.GetStat(PlayerStats.SwingCentralAngle);
@@ -320,11 +329,25 @@ namespace QT.InGame
 
         private void GetInEnemyRange(Vector2 origin, float range, float angle, Vector2 dir,
             ref List<Enemy> outList)
-        {
+        { 
             foreach (var hitable in _ownerEntity._hitableList)
             {
+                
                 if (hitable is not Enemy)
                 {
+                    var hitCheckRange = range + 0.5f;
+                    var hitTargetDir = hitable.GetPosition() - origin;
+
+                    if (hitTargetDir.sqrMagnitude < hitCheckRange * hitCheckRange)
+                    {
+                        var dot = Vector2.Dot((hitTargetDir).normalized, dir);
+                        var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
+
+                        if (degrees < angle)
+                        {
+                            _hitableRange.Add(hitable);
+                        }
+                    }
                     continue;
                 }
                 

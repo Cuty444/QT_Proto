@@ -13,6 +13,11 @@ namespace QT.InGame
             OnDamageEvent.Invoke(dir, power,attackType);
         }
         
+        public Vector2 GetPosition()
+        {
+            return transform.position;
+        }
+        
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection)
         {
             OnDamageEvent.Invoke(dir, power,AttackType.Swing);

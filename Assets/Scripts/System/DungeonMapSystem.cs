@@ -512,7 +512,12 @@ namespace QT.Core.Map
             if (_floorValue == 2)
                 return;
             _floorValue++;
-            SystemManager.Instance.PlayerManager._playerInventory = SystemManager.Instance.PlayerManager.Player.Inventory.GetItemList().ToList();
+            var playerInventory = SystemManager.Instance.PlayerManager._playerIndexInventory;
+            var itemList = SystemManager.Instance.PlayerManager.Player.Inventory.GetItemList();
+            for (int i = 0; i < itemList.Length; i++)
+            {
+                playerInventory.Add(itemList[i].GetItemID());
+            }
             var uiManager = SystemManager.Instance.UIManager;
             uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
             {
