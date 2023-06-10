@@ -46,7 +46,7 @@ namespace QT
         {
             StopAllCoroutines();
             
-            _skeletonRenderer.CustomMaterialOverride.Clear();
+            _skeletonRenderer.CustomMaterialOverride.Remove(_baseMaterial);
             _skeletonRenderer.CustomMaterialOverride.Add(_baseMaterial, _rigidMaterial);
         }
         
@@ -54,7 +54,7 @@ namespace QT
         {
             StopAllCoroutines();
             
-            _skeletonRenderer.CustomMaterialOverride.Clear();
+            _skeletonRenderer.CustomMaterialOverride.Remove(_baseMaterial);
             _skeletonRenderer.CustomMaterialOverride.Add(_baseMaterial, _hitMaterial);
             
             StartCoroutine(Hit());

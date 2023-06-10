@@ -28,7 +28,6 @@ namespace QT.InGame
         {
             _hpCanvas = SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>();
             _hpCanvas.gameObject.SetActive(true);
-            _ownerEntity.MaterialChanger.SetHitMaterial();
         }
         
         private void OnDamage(Vector2 dir, float power,AttackType attackType)
@@ -38,17 +37,20 @@ namespace QT.InGame
                 return;
             }
 
-            Debug.LogError($"{_ownerEntity.HP.StatusValue} {power}");
             _ownerEntity.HP.AddStatus(-power);
 
             _hpCanvas.SetHPGuage(_ownerEntity.HP);
+            
+            foreach (var changer in _ownerEntity.MaterialChanger)
+            {
+                changer.SetHitMaterial();
+            }
             
             _ownerEntity.Rigidbody.velocity = Vector2.zero; 
             _ownerEntity.Rigidbody.AddForce(-dir, ForceMode2D.Impulse);
             
             _ownerEntity.Animator.SetTrigger(HitAnimHash);
             
-            _ownerEntity.MaterialChanger.SetHitMaterial();
             _isRigid = true;
             _rigidTime = 0;
         }
@@ -64,7 +66,6 @@ namespace QT.InGame
             
             if(_rigidTime >= _rigidTimer)
             {
-                _ownerEntity.MaterialChanger.ClearMaterial();
                 _ownerEntity.Animator.ResetTrigger(HitAnimHash);
 
                 if (_ownerEntity.HP <= 0)
