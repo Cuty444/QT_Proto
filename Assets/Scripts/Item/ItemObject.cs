@@ -21,9 +21,10 @@ namespace QT
         [SerializeField] private Transform _goldTransform;
         [SerializeField] private Transform _hpTransform;
         [SerializeField] private Image[] _hpImages;
-        
+        [SerializeField] private GameObject _altarObject;
         [SerializeField] private UITweenAnimator _popAnimation;
-        
+        [SerializeField] private SpriteRenderer _soldSprite;
+        [SerializeField] private BoxCollider2D _boxCollider2D;
 
         private PlayerManager _playerManager;
         public ItemGameData ItemGameData { get; private set; }
@@ -47,7 +48,7 @@ namespace QT
                     _goldTransform.gameObject.SetActive(false);
                     _hpTransform.gameObject.SetActive(true);
                 }
-                
+                _altarObject.gameObject.SetActive(false);
             }
             else if (DropType == DropGameType.Boss || DropType == DropGameType.ItemReward ||
                      DropType == DropGameType.Select)
@@ -93,11 +94,7 @@ namespace QT
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
-                _popAnimation.PlayBackwards();
-                if (DropType == DropGameType.GoldShop || DropType == DropGameType.HpShop)
-                {
-                    _playerManager.PlayerItemInteraction.RemoveListener(ItemBuy);
-                }
+                ItemClear();
             }
         }
 
@@ -116,8 +113,20 @@ namespace QT
                 _playerManager.OnDamageEvent.Invoke(Vector2.zero, ItemGameData.CostHp);
             }
 
+            _itemSprite.enabled = false;
+            _soldSprite.enabled = true;
+            _boxCollider2D.enabled = false;
             _playerManager.Player.Inventory.AddItem(ItemID);
-            Destroy(gameObject);
+            //Destroy(gameObject);
+        }
+
+        private void ItemClear()
+        {
+            _popAnimation.PlayBackwards();
+            if (DropType == DropGameType.GoldShop || DropType == DropGameType.HpShop)
+            {
+                _playerManager.PlayerItemInteraction.RemoveListener(ItemBuy);
+            }
         }
         
         private string DataStringChanger(string original, string before,string after)
