@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QT.UI
 {
-    public class UIInventoryCanvas : UIPanel
+    public class UIDiaryCanvas : UIPanel
     {
         [SerializeField] private GameObject _backGround;
         
