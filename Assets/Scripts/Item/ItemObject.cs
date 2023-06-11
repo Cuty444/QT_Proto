@@ -20,42 +20,64 @@ namespace QT
         [SerializeField] private TextMeshProUGUI _itemCost;
         [SerializeField] private Transform _goldTransform;
         [SerializeField] private Transform _hpTransform;
+        [SerializeField] private Transform _blankTransform;
         [SerializeField] private Image[] _hpImages;
         [SerializeField] private GameObject _altarObject;
         [SerializeField] private UITweenAnimator _popAnimation;
         [SerializeField] private SpriteRenderer _soldSprite;
         [SerializeField] private BoxCollider2D _boxCollider2D;
+        [SerializeField] private BoxCollider2D _characterCollider2D;
 
         private PlayerManager _playerManager;
+        [HideInInspector]public ItemSelectMapData _itemSelectMapData;
         public ItemGameData ItemGameData { get; private set; }
         public List<ItemEffect> ItemEffectData { get; private set; } = new ();
 
+        private Animator _animator;
+        private readonly int AnimationExitHash = Animator.StringToHash("Exit");
+        private CircleCollider2D _altarItemCollider2D;
+
+        private bool isAltar = false;
         private void Start()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
             var dataManager = SystemManager.Instance.DataManager;
-
-            if (DropType == DropGameType.GoldShop || DropType == DropGameType.HpShop)
+            _animator = _altarObject.GetComponent<Animator>();
+            if (DropType == DropGameType.Shop /*|| DropType == DropGameType.HpShop*/)
             {
                 ItemGameData = dataManager.GetDataBase<ItemGameDataBase>().GetData(ItemID);
-                if (DropType == DropGameType.GoldShop)
+                if (DropType == DropGameType.Shop)
                 {
                     _goldTransform.gameObject.SetActive(true);
                     _hpTransform.gameObject.SetActive(false);
                 }
-                else
-                {
-                    _goldTransform.gameObject.SetActive(false);
-                    _hpTransform.gameObject.SetActive(true);
-                }
+                //else
+                //{
+                //    _goldTransform.gameObject.SetActive(false);
+                //    _hpTransform.gameObject.SetActive(true);
+                //}
                 _altarObject.gameObject.SetActive(false);
             }
-            else if (DropType == DropGameType.Boss || DropType == DropGameType.ItemReward ||
-                     DropType == DropGameType.Select)
+            else if (DropType == DropGameType.Start || DropType == DropGameType.Select)
             {
-                var list = SystemManager.Instance.ItemDataManager.GetDropItemList(DropType, 1);
-                ItemGameData = dataManager.GetDataBase<ItemGameDataBase>().GetData(list[0]);
+                ItemGameData = dataManager.GetDataBase<ItemGameDataBase>().GetData(ItemID);
+                _goldTransform.gameObject.SetActive(false);
+                _hpTransform.gameObject.SetActive(false);
+                _blankTransform.gameObject.SetActive(true);
+                Destroy(_boxCollider2D);
+                _altarItemCollider2D = gameObject.AddComponent<CircleCollider2D>();
+                _altarItemCollider2D.radius = 0.75f;
+                _altarItemCollider2D.isTrigger = true;
+                _altarItemCollider2D.offset = new Vector2(0f, 0.5f);
+                isAltar = true;
+                _itemSprite.enabled = false;
             }
+            //else if (/*DropType == DropGameType.Boss || DropType == DropGameType.ItemReward ||*/
+            //         DropType == DropGameType.Select)
+            //{
+            //    //var list = SystemManager.Instance.ItemDataManager.GetDropItemList(DropType, 1);
+            //    //ItemGameData = dataManager.GetDataBase<ItemGameDataBase>().GetData(list[0]);
+            //}
             if (ItemGameData != null)
             {
                 ItemEffectData = dataManager.GetDataBase<ItemEffectGameDataBase>()
@@ -78,14 +100,29 @@ namespace QT
             _popAnimation.PlayBackwards();
         }
 
+        private void Update()
+        {
+            if (isAltar)
+            {
+                if (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f)
+                {
+                    _itemSprite.enabled = true;
+                }
+            }
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
                 _popAnimation.ReStart();
-                if (DropType == DropGameType.GoldShop || DropType == DropGameType.HpShop)
+                if (DropType == DropGameType.Shop /*|| DropType == DropGameType.HpShop*/)
                 {
                     _playerManager.PlayerItemInteraction.AddListener(ItemBuy);
+                }
+                else if (DropType == DropGameType.Start || DropType == DropGameType.Select)
+                {
+                    _playerManager.PlayerItemInteraction.AddListener(ItemGain);
                 }
             }
         }
@@ -100,18 +137,18 @@ namespace QT
 
         public void ItemBuy()
         {
-            if (DropType == DropGameType.GoldShop)
+            if (DropType == DropGameType.Shop)
             {
                 if (!_playerManager.Player.GetGoldComparison(ItemGameData.CostGold))
                     return;
                 _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);
             }
-            else if(DropType == DropGameType.HpShop)
-            {
-                if (!_playerManager.Player.GetHpComparision(ItemGameData.CostHp))
-                    return;
-                _playerManager.OnDamageEvent.Invoke(Vector2.zero, ItemGameData.CostHp);
-            }
+            //else if(DropType == DropGameType.HpShop)
+            //{
+            //    if (!_playerManager.Player.GetHpComparision(ItemGameData.CostHp))
+            //        return;
+            //    _playerManager.OnDamageEvent.Invoke(Vector2.zero, ItemGameData.CostHp);
+            //}
 
             _itemSprite.enabled = false;
             _soldSprite.enabled = true;
@@ -120,12 +157,32 @@ namespace QT
             //Destroy(gameObject);
         }
 
+        public void ItemGain()
+        {
+            _itemSelectMapData.ItemSelectGainEnd();
+            _playerManager.Player.Inventory.AddItem(ItemID);
+        }
+
+        public void EndAnimation()
+        {
+            _animator.SetTrigger(AnimationExitHash);
+            isAltar = false;
+            _itemSprite.enabled = false;
+            _characterCollider2D.enabled = false;
+            _altarItemCollider2D.enabled = false;
+            ItemClear();
+        }
+        
         private void ItemClear()
         {
             _popAnimation.PlayBackwards();
-            if (DropType == DropGameType.GoldShop || DropType == DropGameType.HpShop)
+            if (DropType == DropGameType.Shop /*|| DropType == DropGameType.HpShop*/)
             {
                 _playerManager.PlayerItemInteraction.RemoveListener(ItemBuy);
+            }
+            else if (DropType == DropGameType.Start || DropType == DropGameType.Select)
+            {
+                _playerManager.PlayerItemInteraction.RemoveListener(ItemGain);
             }
         }
         

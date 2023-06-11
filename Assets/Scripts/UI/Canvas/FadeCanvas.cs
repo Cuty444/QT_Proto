@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
 using QT.Util;
 using UnityEngine;
 
@@ -40,6 +41,7 @@ namespace QT.UI
             {
                 _backGroundObject.SetActive(false);
                 func?.Invoke();
+                SystemManager.Instance.PlayerManager.FadeInCanvasOut.Invoke();
             }));
         }
 
