@@ -46,7 +46,7 @@ namespace QT.InGame
                 ClearAction(Player.ButtonActions.Teleport);
                 ClearAction(Player.ButtonActions.Interaction);
 
-                Rigidbody.velocity = Vector2.zero;
+                //Rigidbody.velocity = Vector2.zero;
             }
             else if(other.gameObject.layer == LayerMask.NameToLayer("GardenCollider"))
             {
