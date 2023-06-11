@@ -13,8 +13,8 @@ namespace QT
         void Start()
         {
 
-            Cursor.SetCursor(cursorImg, Vector2.zero, CursorMode.ForceSoftware);
-        
+            Cursor.SetCursor(cursorImg, new Vector2(31.5f,31.5f), CursorMode.ForceSoftware);
+
         }
 
         // Update is called once per frame
