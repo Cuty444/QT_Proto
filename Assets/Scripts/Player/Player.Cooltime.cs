@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Core.Data;
 using QT.UI;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace QT.InGame
 {
     public partial class Player
     {
+        private GlobalDataSystem _globalDataSystem;
         private void UpdateCoolTime()
         {
             if (CurrentStateIndex == (int) States.Dead)
@@ -49,10 +51,15 @@ namespace QT.InGame
                 _attackSpeedBackground[flip ? 0 : 1].gameObject.SetActive(true);
                 _attackSpeedBackground[flip ? 1 : 0].gameObject.SetActive(false);
                 var attackCoolTime = GetStatus(PlayerStats.SwingCooldown);
+                float r = Mathf.Lerp(0, 1, _globalDataSystem.GlobalData.AttackSpeedColorCurve[0].Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value));
+                float g = Mathf.Lerp(0, 1, _globalDataSystem.GlobalData.AttackSpeedColorCurve[1].Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value));
+                float b = Mathf.Lerp(0, 1, _globalDataSystem.GlobalData.AttackSpeedColorCurve[2].Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value));
+                Color color = new Color(r,g,b);
+                float remap = Util.Math.Remap(attackCoolTime.StatusValue, attackCoolTime.Value, 0f);
                 for (int i = 0; i < _attackGaugeImages.Length; i++)
                 {
-                    _attackGaugeImages[i].fillAmount =
-                        Util.Math.Remap(attackCoolTime.StatusValue, attackCoolTime.Value, 0f);
+                    _attackGaugeImages[i].fillAmount = remap;
+                    _attackGaugeImages[i].color = color;
                 }
             }
         }

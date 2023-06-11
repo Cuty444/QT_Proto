@@ -115,5 +115,12 @@ namespace QT.Core.Data
         [field: SerializeField]
         [Tooltip("범위 밖 텔레포트 컬러")]
         public Color FarColor { get; private set; } = new ();
+        
+        /// <summary>
+        /// 플레이어 공속 게이지 커브
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("공속 게이지 그래프")]
+        public AnimationCurve[] AttackSpeedColorCurve { get; private set; }
     }
 }
