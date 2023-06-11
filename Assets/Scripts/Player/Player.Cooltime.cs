@@ -51,10 +51,7 @@ namespace QT.InGame
                 _attackSpeedBackground[flip ? 0 : 1].gameObject.SetActive(true);
                 _attackSpeedBackground[flip ? 1 : 0].gameObject.SetActive(false);
                 var attackCoolTime = GetStatus(PlayerStats.SwingCooldown);
-                float r = Mathf.Lerp(0, 1, _globalDataSystem.GlobalData.AttackSpeedColorCurve[0].Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value));
-                float g = Mathf.Lerp(0, 1, _globalDataSystem.GlobalData.AttackSpeedColorCurve[1].Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value));
-                float b = Mathf.Lerp(0, 1, _globalDataSystem.GlobalData.AttackSpeedColorCurve[2].Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value));
-                Color color = new Color(r,g,b);
+                Color color = _globalDataSystem.GlobalData.AttackSpeedColorCurve.Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value);
                 float remap = Util.Math.Remap(attackCoolTime.StatusValue, attackCoolTime.Value, 0f);
                 for (int i = 0; i < _attackGaugeImages.Length; i++)
                 {

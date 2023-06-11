@@ -519,6 +519,7 @@ namespace QT.Core.Map
             _floorValue++;
             var _playerManager = SystemManager.Instance.PlayerManager;
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
+            _playerManager._playerIndexInventory.Clear();
             var playerInventory = _playerManager._playerIndexInventory;
             var itemList = SystemManager.Instance.PlayerManager.Player.Inventory.GetItemList();
             for (int i = 0; i < itemList.Length; i++)
