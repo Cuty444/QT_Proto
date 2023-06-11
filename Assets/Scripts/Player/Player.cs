@@ -34,6 +34,7 @@ namespace QT.InGame
         [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
         [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
         [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
+        [field:SerializeField] public CinemachineImpulseSource TeleportImpulseSource { get; private set; }
         
         
         public Inventory Inventory { get; private set; }

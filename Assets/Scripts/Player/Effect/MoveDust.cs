@@ -51,7 +51,13 @@ namespace QT
 
         private void MoveSoundOn()
         {
-            _soundManager.PlayOneShot(_soundManager.SoundData.WalkSFX);
+            if (_playerManager.Player.IsGarden)
+            {
+            }
+            else
+            {
+                _soundManager.PlayOneShot(_soundManager.SoundData.WalkSFX);
+            }
         }
     }
 }
