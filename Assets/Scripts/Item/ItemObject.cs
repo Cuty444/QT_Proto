@@ -27,7 +27,7 @@ namespace QT
         [SerializeField] private SpriteRenderer _soldSprite;
         [SerializeField] private BoxCollider2D _boxCollider2D;
         [SerializeField] private BoxCollider2D _characterCollider2D;
-
+        [SerializeField] private Transform _textPanel;
         private PlayerManager _playerManager;
         [HideInInspector]public ItemSelectMapData _itemSelectMapData;
         public ItemGameData ItemGameData { get; private set; }
@@ -153,6 +153,8 @@ namespace QT
             _itemSprite.enabled = false;
             _soldSprite.enabled = true;
             _boxCollider2D.enabled = false;
+            _textPanel.gameObject.SetActive(false);
+            _playerManager.GainItemSprite.Invoke(_itemSprite.sprite);
             _playerManager.Player.Inventory.AddItem(ItemID);
             //Destroy(gameObject);
         }
@@ -160,6 +162,8 @@ namespace QT
         public void ItemGain()
         {
             _itemSelectMapData.ItemSelectGainEnd();
+            _textPanel.gameObject.SetActive(false);
+            _playerManager.GainItemSprite.Invoke(_itemSprite.sprite);
             _playerManager.Player.Inventory.AddItem(ItemID);
         }
 

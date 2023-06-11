@@ -37,7 +37,7 @@ namespace QT.InGame
         
         
         public Inventory Inventory { get; private set; }
-        public Animator Animator { get; private set; }
+        public Animator Animator;
         public Rigidbody2D Rigidbody { get; private set; }
         public CharacterGameData Data { get; private set; }
         public CharacterAtkGameData AtkData { get; private set; }
@@ -74,7 +74,7 @@ namespace QT.InGame
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
             SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
-            Animator = GetComponentInChildren<Animator>();
+            //Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             
             InitInputs();
@@ -117,6 +117,9 @@ namespace QT.InGame
             {
                 _goldCost = value;
             });
+            
+            _playerManager.GainItemSprite.AddListener(GainItem);
+            
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().OnOpen();
         }
 

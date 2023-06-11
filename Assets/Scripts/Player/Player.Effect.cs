@@ -13,6 +13,9 @@ namespace QT.InGame
         [SerializeField] private ParticleSystem[] _chargingLevelParticle;
         [SerializeField] private ParticleSystem[] _swingSlashParticle;
         [SerializeField] private TrailRenderer[] _teleportEffectLines;
+        [SerializeField] private ParticleSystem _itemPickUpParticle;
+        [SerializeField] private SpriteRenderer _itemPickUpImage;
+        [SerializeField] private Animator _itemPickUpAnimator;
 
         private void EffectSetup()
         {
@@ -31,6 +34,8 @@ namespace QT.InGame
             {
                 _dashParticle[i].Stop();
             }
+            _itemPickUpParticle.Stop();
+            _itemPickUpImage.enabled = false;
             TeleportEffectEmitting(false);
         }
         
@@ -70,6 +75,14 @@ namespace QT.InGame
         public void TeleportEffect(bool isActive)
         {
             TeleportEffectEmitting(isActive);
+        }
+
+        public void GainItem(Sprite sprite)
+        {
+            _itemPickUpParticle.Play();
+            _itemPickUpImage.enabled = true;
+            _itemPickUpImage.sprite = sprite;
+            _itemPickUpAnimator.Play("ItemGainAnimation",-1,0f);
         }
 
         private void TeleportEffectEmitting(bool isActive)
