@@ -84,7 +84,6 @@ namespace QT
                         _fadeCanvas.AutoFadeOutIn(() =>
                         {
                             _loadingCanvas.OnClose();
-                            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
                         });
                         yield break;
                     }

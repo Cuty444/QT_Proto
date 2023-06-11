@@ -66,6 +66,16 @@ namespace QT.UI
                 _playerHpList.Add(Instantiate(_playerHpObject,_playerHpTransform).GetComponent<Image>());
             }
 
+            if (_playerHpList.Count * 25 > hp.Value)
+            {
+                int index = (int) ((_playerHpList.Count * 25 - hp.Value) / 25);
+                for (int i = 0; i < index; i++)
+                {
+                    Destroy(_playerHpList.Last().gameObject);
+                    _playerHpList.Remove(_playerHpList.Last());
+                }
+            }
+
             beforeHp = (int)hp.Value;
         }
 

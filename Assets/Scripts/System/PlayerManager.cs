@@ -45,7 +45,7 @@ namespace QT.Core
         {
             Player = await SystemManager.Instance.ResourceManager.GetFromPool<Player>(Constant.PlayerPrefabPath);
             Player.transform.localPosition = new Vector3(0f, 6f, 0f);
-            
+            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
             PlayerCreateEvent.Invoke(Player);
         }
     }

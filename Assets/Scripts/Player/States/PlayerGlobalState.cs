@@ -25,7 +25,6 @@ namespace QT.InGame
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
             
-            _playerHpCanvas.SetHp(_ownerEntity.GetStatus(PlayerStats.HP));
             SystemManager.Instance.ResourceManager.CacheAsset(TeleportLinePath);
 
             _ownerEntity.SetBatActive(false);
