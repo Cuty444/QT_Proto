@@ -85,6 +85,7 @@ namespace QT.InGame
             HpCanvas.gameObject.SetActive(false);
 
             enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
+            LoadSound();
         }
         
         public void SetPhysics(bool enable)
