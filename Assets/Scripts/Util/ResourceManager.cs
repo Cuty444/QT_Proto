@@ -150,7 +150,11 @@ namespace QT
             var particle = await GetFromPool<ParticleSystem>(path);
             
             particle.transform.position = position;
-            particle.transform.rotation = Quaternion.Euler(0, 0, rotation);
+
+            if (rotation != 0)
+            {
+                particle.transform.rotation = Quaternion.Euler(-90, 0, rotation);
+            }
             
             await UniTask.Delay(TimeSpan.FromSeconds(particle.main.duration));
 
