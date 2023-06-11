@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using QT.Core;
 using UnityEngine;
 
@@ -35,6 +36,7 @@ namespace QT.InGame
         [field: SerializeField] public Transform CenterTransform{ get; private set; }
         [field: SerializeField] public float RushColliderSize{ get; private set; }
         [field: SerializeField] public GameObject RushTrailObject{ get; private set; }
+        [field:SerializeField] public CinemachineImpulseSource RushShockImpulseSource { get; private set; }
 
         public Rigidbody2D Rigidbody { get; private set; }
         public Animator Animator { get; private set; }
