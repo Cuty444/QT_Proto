@@ -15,6 +15,9 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
+            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            
             _ownerEntity.Animator.SetBool(IsDeadAnimHash, true);
         }
 
