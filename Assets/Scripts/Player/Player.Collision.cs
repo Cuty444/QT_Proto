@@ -45,7 +45,7 @@ namespace QT.InGame
                 ClearAction(Player.ButtonActions.Dodge);
                 ClearAction(Player.ButtonActions.Teleport);
                 ClearAction(Player.ButtonActions.Interaction);
-
+                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_Walk_StairSFX);
                 //Rigidbody.velocity = Vector2.zero;
             }
             else if(other.gameObject.layer == LayerMask.NameToLayer("GardenCollider"))

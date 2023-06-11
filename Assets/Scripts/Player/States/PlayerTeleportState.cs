@@ -20,6 +20,7 @@ namespace QT
 
         public override void InitializeState()
         {
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_TeleportAttackSFX);
             _ownerEntity.TeleportEffect(true);
             _ownerEntity.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0.5f);
             _ownerEntity.transform.position = _ownerEntity._rigidTeleportEnemy.Position;

@@ -57,6 +57,7 @@ namespace QT.UI
                 _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
+                GetComponent<Canvas>().worldCamera = Camera.main;
                 MapCreate();
             });
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
@@ -181,6 +182,12 @@ namespace QT.UI
                     _cellList[i].PlayerEnterDoor(nextDirection);
                     break;
                 }
+            }
+
+            if (_currentPlayerPosition ==
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.ShopRoomPosition)
+            {
+                SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
             }
         }
 

@@ -24,6 +24,14 @@ namespace QT.UI
 
         private bool _isInventory = true;
         
+        public override void Initialize()
+        {
+            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((arg) =>
+            {
+                GetComponent<Canvas>().worldCamera = Camera.main;
+            });
+        }
+
         public override void PostSystemInitialize()
         {
             gameObject.SetActive(true);
@@ -77,6 +85,7 @@ namespace QT.UI
             
             _isOpen = !_isOpen;
             SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(_isOpen);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UITabSFX);
             if (_isOpen)
             {
 

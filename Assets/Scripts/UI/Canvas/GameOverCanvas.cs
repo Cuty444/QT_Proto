@@ -18,6 +18,13 @@ namespace QT.UI
         [SerializeField] private CanvasGroup _canvasGroup;
 
         private GameObject _uiObject = null;
+        public override void Initialize()
+        {
+            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((arg) =>
+            {
+                GetComponent<Canvas>().worldCamera = Camera.main;
+            });
+        }
         public override void OnOpen()
         {
             base.OnOpen();

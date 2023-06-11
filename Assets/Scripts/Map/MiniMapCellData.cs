@@ -151,6 +151,10 @@ namespace QT.Map
         {
             if (pos == CellPos)
             {
+                if (pos == _dungeonMapSystem.DungeonMapData.ShopRoomPosition)
+                {
+                    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.ShopStageBGM);
+                }
                 _lineRenders.SetActive(true);
                 _mapImage.enabled = true;
                 _iconsTransform.gameObject.SetActive(true);

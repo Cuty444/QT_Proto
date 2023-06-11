@@ -71,6 +71,7 @@ namespace QT
                 _altarItemCollider2D.offset = new Vector2(0f, 0.5f);
                 isAltar = true;
                 _itemSprite.enabled = false;
+                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Altar_AppearSFX);
             }
             //else if (/*DropType == DropGameType.Boss || DropType == DropGameType.ItemReward ||*/
             //         DropType == DropGameType.Select)
@@ -113,7 +114,7 @@ namespace QT
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+            if (other.gameObject.layer == LayerMask.NameToLayer("Player") || other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
                 _popAnimation.ReStart();
                 if (DropType == DropGameType.Shop /*|| DropType == DropGameType.HpShop*/)
@@ -129,7 +130,7 @@ namespace QT
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+            if (other.gameObject.layer == LayerMask.NameToLayer("Player")|| other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
                 ItemClear();
             }
@@ -140,7 +141,10 @@ namespace QT
             if (DropType == DropGameType.Shop)
             {
                 if (!_playerManager.Player.GetGoldComparison(ItemGameData.CostGold))
+                {
+                    SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Shop_BuyErrorSFX);
                     return;
+                }
                 _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);
             }
             //else if(DropType == DropGameType.HpShop)
@@ -155,6 +159,8 @@ namespace QT
             _boxCollider2D.enabled = false;
             _textPanel.gameObject.SetActive(false);
             _playerManager.GainItemSprite.Invoke(_itemSprite.sprite);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Item_GetSFX);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Shop_BuySFX);
             _playerManager.Player.Inventory.AddItem(ItemID);
             //Destroy(gameObject);
         }
@@ -163,6 +169,7 @@ namespace QT
         {
             _itemSelectMapData.ItemSelectGainEnd();
             _textPanel.gameObject.SetActive(false);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Item_GetSFX);
             _playerManager.GainItemSprite.Invoke(_itemSprite.sprite);
             _playerManager.Player.Inventory.AddItem(ItemID);
         }

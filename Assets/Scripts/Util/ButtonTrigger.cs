@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -59,6 +60,7 @@ namespace QT.Util
             if (!_isInteractable)
                 return;
             ChangeSprite(_highligtedSprite);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIMouseOverSFX);
         }
 
         public void OnPointerDown(PointerEventData eventData)

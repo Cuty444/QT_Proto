@@ -34,10 +34,20 @@ namespace QT.UI
         private int beforeHp = 0;
         [SerializeField] private UITweenAnimator _goldAnimation;
 
+
+        public override void Initialize()
+        {
+            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((arg) =>
+            {
+                GetComponent<Canvas>().worldCamera = Camera.main;
+            });
+        }
+
         private void Start()
         {
             var playerManager = SystemManager.Instance.PlayerManager;
             playerManager.OnGoldValueChanged.AddListener(SetGoldText);
+
             //playerManager.PlayerCreateEvent.AddListener((arg) =>
             //{
             //    arg.GetStat(PlayerStats.HP).OnValueChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));

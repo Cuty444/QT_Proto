@@ -9,6 +9,7 @@ namespace QT.Sound
     public class SoundPathData : ScriptableObject
     {
         [field: SerializeField] public EventReference WalkSFX{ get; private set; }
+        [field: SerializeField] public EventReference WalkFlowerSFX{ get; private set; }
         [field: SerializeField] public EventReference SwingSFX{ get; private set; }
         [field: SerializeField] public EventReference PlayerSwingHitSFX{ get; private set; }
         [field: SerializeField] public EventReference BallAttackSFX{ get; private set; }
@@ -29,6 +30,37 @@ namespace QT.Sound
         [field: SerializeField] public EventReference LoadingBGM{ get; private set; }
         [field: SerializeField] public EventReference BossStageBGM { get; private set; }
         
+        [field: SerializeField] public EventReference ShopStageBGM { get; private set; }
+        
+        [field: SerializeField] public EventReference MainBGM { get; private set; }
+
+        [field: SerializeField] public EventReference UITabSFX { get; private set; }
+        [field: SerializeField] public EventReference UISkipSFX { get; private set; }
+        [field: SerializeField] public EventReference UIMouseOverSFX { get; private set; }
+        [field: SerializeField] public EventReference UIGameStartSFX { get; private set; }
+        
+        
+        [field: SerializeField] public EventReference Monster_AwaySFX { get; private set; }
+        [field: SerializeField] public EventReference Monster_AwayWallHitSFX { get; private set; }
+        [field: SerializeField] public EventReference Monster_AwayMonsterHitSFX { get; private set; }
+        
+        
+        [field: SerializeField] public EventReference Door_OpenSFX { get; private set; }
+        [field: SerializeField] public EventReference Altar_AppearSFX { get; private set; }
+        
+        [field: SerializeField] public EventReference Item_GetSFX { get; private set; }
+        [field: SerializeField] public EventReference Shop_BuySFX { get; private set; }
+        [field: SerializeField] public EventReference Shop_BuyErrorSFX { get; private set; }
+        [field: SerializeField] public EventReference Coin_GetSFX { get; private set; }
+        
+        [field: SerializeField] public EventReference Player_TeleportAttackSFX { get; private set; }
+        [field: SerializeField] public EventReference Player_Walk_StairSFX { get; private set; }
+        
+        [field: SerializeField] public EventReference Monster_WaterDrop { get; private set; }
+        
+        
+        
         [field: SerializeField] public string[] Bank{ get; private set; }
+        
     }
 }
