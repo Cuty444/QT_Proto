@@ -5,6 +5,7 @@ using System.Linq;
 using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.Map
@@ -87,7 +88,7 @@ namespace QT.Map
                     if (_dullahan.HP <= 0)
                     {
                         _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
-
+                        SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Door_OpenSFX);
                         _playerManager.PlayerMapPass.Invoke(true);
                     }
                 }
@@ -97,7 +98,7 @@ namespace QT.Map
                 if (_enemyList.Count == 0)
                 {
                     _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
-
+                    SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Door_OpenSFX);
                     _playerManager.PlayerMapPass.Invoke(true);
                 }
             }

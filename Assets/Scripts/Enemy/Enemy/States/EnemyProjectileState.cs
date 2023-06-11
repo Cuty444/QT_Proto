@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Sound;
+using QT.Util;
 using UnityEngine;
 
 namespace QT.InGame
@@ -44,7 +45,9 @@ namespace QT.InGame
         private bool _isNormal;
 
         private SoundManager _soundManager;
-        
+
+        private bool isStuckSound = false;
+
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
@@ -76,7 +79,7 @@ namespace QT.InGame
             }
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
             
-            _soundManager.PlayOneShot(_soundManager.SoundData.MonsterFly);
+            _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
             _isNormal = false;
 
             _damage = _ownerEntity._damage;
@@ -128,16 +131,27 @@ namespace QT.InGame
                     else if (_ownerEntity.IsTeleportProjectile)
                     {
                         hitable.Hit(_direction,_damage,AttackType.Teleport);
+                        _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayMonsterHitSFX);
                     }
                     else
                     {
                         hitable.Hit(_direction, _damage);
+                        _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayMonsterHitSFX);
                     }
                     _ownerEntity._hitalbesList.Add(hitable);
                     //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
                 else
                 {
+                    if (!isStuckSound)
+                    {
+                        _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayWallHitSFX);
+                        isStuckSound = true;
+                        _ownerEntity.StartCoroutine(UnityUtil.WaitForFunc(() =>
+                        {
+                            isStuckSound = false;
+                        }, 0.1f));
+                    }
                     _ownerEntity._hitalbesList.Clear();
                 }
                 
