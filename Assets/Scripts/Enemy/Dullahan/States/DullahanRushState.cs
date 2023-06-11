@@ -8,12 +8,10 @@ namespace QT.InGame
     [FSMState((int) Dullahan.States.Rush)]
     public class DullahanRushState : FSMState<Dullahan>
     {
-        public readonly LayerMask BounceMask = LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "Enemy", "InteractionCollider");
-        
         private readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
         private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
-        private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
+        private const string ShockEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
         
         private bool _isReady;
         private Vector2 _dir;
@@ -104,7 +102,7 @@ namespace QT.InGame
 
         private bool CheckHit()
         {
-            var hits = Physics2D.CircleCastAll(_rushCenter.position, _size, _dir, _speed * Time.deltaTime, BounceMask);
+            var hits = Physics2D.CircleCastAll(_rushCenter.position, _size, _dir, _speed * Time.deltaTime, _ownerEntity.HitMask);
 
             Debug.DrawRay(_rushCenter.position, _dir * (_size +_speed * Time.deltaTime), Color.magenta, 1);
             Debug.DrawRay(_rushCenter.position, new Vector3(-_dir.y, _dir.x) * (_size), Color.magenta, 1);
@@ -118,6 +116,12 @@ namespace QT.InGame
                     {
                         hitable.Hit(_dir, _damage);
                     }
+
+                    var normal = hit.normal;
+                    var angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg + 90;
+
+                    SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
+                    _ownerEntity.RushShockImpulseSource.GenerateImpulse(normal);
                 }
             }
             

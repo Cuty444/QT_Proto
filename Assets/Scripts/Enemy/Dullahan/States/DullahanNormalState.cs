@@ -9,6 +9,9 @@ namespace QT.InGame
     [FSMState((int) Dullahan.States.Normal)]
     public class DullahanNormalState : FSMState<Dullahan>
     {
+        private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
+        
+        private const float AvoidDirDampTime = 30;
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
 
         private readonly EnemyGameData _enemyData;
@@ -22,6 +25,7 @@ namespace QT.InGame
         private bool _rotateSide;
         
         private InputVector2Damper _dirDamper = new ();
+        private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
         public DullahanNormalState(IFSMEntity owner) : base(owner)
         {
@@ -51,6 +55,10 @@ namespace QT.InGame
         {
             var targetDistance = (_moveTarget - (Vector2) _ownerEntity.transform.position).magnitude;
 
+            var speed = _ownerEntity.Rigidbody.velocity.sqrMagnitude /
+                        (_enemyData.MovementSpd * _enemyData.MovementSpd);
+            _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, speed);
+            
             Move(targetDistance);
 
             CheckAttackStart(targetDistance);
@@ -105,7 +113,13 @@ namespace QT.InGame
             {
                 interest.AddWeight(-dir, 0.5f);
             }
-
+            
+            var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
+            if (avoidDir != Vector2.zero)
+            {
+                interest.AddWeight(_avoidDirDamper.GetDampedValue(avoidDir, Time.deltaTime), 1);
+            }
+            
             if (isRotate)
             {
                 interest.AddWeight(_rotateSide ? new Vector2(dir.y, -dir.x) : new Vector2(-dir.y, dir.x), 1);
@@ -113,9 +127,14 @@ namespace QT.InGame
 
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
 
-            if (isRotate && result.sqrMagnitude < TurnoverLimitSpeed)
+            if (result.sqrMagnitude < TurnoverLimitSpeed)
             {
-                _rotateSide = !_rotateSide;
+                if (isRotate)
+                {
+                    _rotateSide = !_rotateSide;
+                }
+
+                _avoidDirDamper.ResetCurrentValue(-result);
             }
 
             return result.normalized;
@@ -132,22 +151,22 @@ namespace QT.InGame
             
             var passableStates = new List<Dullahan.States>();
 
-            if (_dullahanData.AttackRangeMin <= targetDistance && _dullahanData.AttackRangeMax >= targetDistance)
-            {
-                passableStates.Add(Dullahan.States.Attack);
-            }
-            if (_dullahanData.RushRangeMin <= targetDistance && _dullahanData.RushRangeMax >= targetDistance)
-            {
-                passableStates.Add(Dullahan.States.Rush);
-            }
-            // if (_dullahanData.JumpRangeMin <= targetDistance && _dullahanData.JumpRangeMax >= targetDistance)
-            // {
-            //     passableStates.Add(Dullahan.States.Jump);
-            // }
+             if (_dullahanData.AttackRangeMin <= targetDistance && _dullahanData.AttackRangeMax >= targetDistance)
+             {
+                 passableStates.Add(Dullahan.States.Attack);
+             }
+             if (_dullahanData.RushRangeMin <= targetDistance && _dullahanData.RushRangeMax >= targetDistance)
+             {
+                 passableStates.Add(Dullahan.States.Rush);
+             }
+             if (_dullahanData.JumpRangeMin <= targetDistance && _dullahanData.JumpRangeMax >= targetDistance)
+             {
+                 passableStates.Add(Dullahan.States.Jump);
+             }
             if (_dullahanData.ThrowRangeMin <= targetDistance && _dullahanData.ThrowRangeMax >= targetDistance)
-            {
-                passableStates.Add(Dullahan.States.Throw);
-            }
+             {
+                 passableStates.Add(Dullahan.States.Throw);
+             }
 
             if (passableStates.Count == 0)
             {
