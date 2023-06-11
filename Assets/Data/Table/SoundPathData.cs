@@ -44,7 +44,20 @@ namespace QT.Sound
         [field: SerializeField] public EventReference Monster_AwayWallHitSFX { get; private set; }
         [field: SerializeField] public EventReference Monster_AwayMonsterHitSFX { get; private set; }
         
+        [field: SerializeField] public EventReference Slime_WalkSFX { get; private set; }
+        [field: SerializeField] public EventReference Slime_DeadSFX { get; private set; }
         
+        [field: SerializeField] public EventReference Catcher_WalkSFX { get; private set; }
+        [field: SerializeField] public EventReference Catcher_DeadSFX { get; private set; }
+        
+        [field: SerializeField] public EventReference Bat_WalkSFX { get; private set; }
+        [field: SerializeField] public EventReference Bat_DeadSFX { get; private set; }
+        
+        [field: SerializeField] public EventReference Ghost_WalkSFX { get; private set; }
+        [field: SerializeField] public EventReference Ghost_DeadSFX { get; private set; }
+        
+        [field: SerializeField] public EventReference Telekinesisz_WalkSFX { get; private set; }
+        [field: SerializeField] public EventReference Telekinesisz_DeadSFX { get; private set; }
         [field: SerializeField] public EventReference Door_OpenSFX { get; private set; }
         [field: SerializeField] public EventReference Altar_AppearSFX { get; private set; }
         

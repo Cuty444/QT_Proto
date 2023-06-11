@@ -20,7 +20,7 @@ namespace QT.InGame
         
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce)
         {
-            OnDamageEvent.Invoke(dir, power,AttackType.Swing);
+            //OnDamageEvent.Invoke(dir, power,AttackType.Swing);
             OnHitEvent.Invoke(dir, power, bounceMask);
             if (owner == ProjectileOwner.PlayerTeleport)
                 IsTeleportProjectile = true;

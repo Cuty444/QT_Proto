@@ -25,7 +25,7 @@ namespace QT.InGame
             _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() + _ownerEntity.RandomGoldDrop());
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Coin_GetSFX);
             _ownerEntity.ShadowSprite.DOFade(0, 1).SetEase(Ease.InQuad);
-            
+            _ownerEntity.DeadSound();
             if (_ownerEntity.Steering.IsStuck())
             {
                 _ownerEntity.FallScale();
