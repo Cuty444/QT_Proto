@@ -10,11 +10,9 @@ namespace QT
     [Serializable]
     public enum DropGameType
     {
-        ItemReward,
-        HpShop,
-        GoldShop,
-        Select,
-        Boss,
+        Start,
+        Shop,
+        Select
     }
 
     public class DropPercentage
@@ -124,7 +122,7 @@ namespace QT
             int index = 9000;
             for (int i = 0; i < 10; i++)
             {
-                var data = GetDropData(index + i);
+                var data = GetDropData(index + i + 1);
                 if (data == null)
                     break;
                 _dropPercentagesList.Add((DropGameType) i, data);

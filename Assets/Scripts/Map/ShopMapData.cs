@@ -21,7 +21,8 @@ namespace QT
         {
             if (position == MapPosition)
             {
-                DropGameType dropGameType = Random.Range(0, 1) == 0 ? DropGameType.GoldShop : DropGameType.HpShop;
+                //DropGameType dropGameType = Random.Range(0, 1) == 0 ? DropGameType.GoldShop : DropGameType.HpShop;
+                DropGameType dropGameType = DropGameType.Shop;
                 List<int> itemIDs = SystemManager.Instance.ItemDataManager.GetDropItemList(dropGameType, _shopItemTransforms.Length);
                 for (int i = 0; i < itemIDs.Count; i++)
                 {
