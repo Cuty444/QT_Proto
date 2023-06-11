@@ -13,7 +13,7 @@ namespace QT.InGame
         private readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
         private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
-        private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
+        private const string ShockEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
         
         private bool _isReady;
         private Vector2 _dir;
@@ -118,6 +118,11 @@ namespace QT.InGame
                     {
                         hitable.Hit(_dir, _damage);
                     }
+
+                    var normal = hit.normal;
+                    var angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg + 90;
+
+                    SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
                 }
             }
             

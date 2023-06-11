@@ -145,11 +145,12 @@ namespace QT
             _pool.Clear();
         }
 
-        public async UniTaskVoid EmitParticle(string path, Vector2 position)
+        public async UniTaskVoid EmitParticle(string path, Vector2 position, float rotation = 0)
         {
             var particle = await GetFromPool<ParticleSystem>(path);
             
             particle.transform.position = position;
+            particle.transform.rotation = Quaternion.Euler(0, 0, rotation);
             
             await UniTask.Delay(TimeSpan.FromSeconds(particle.main.duration));
 
