@@ -128,6 +128,7 @@ namespace QT.InGame
             foreach (var hitEnemy in _enemyInRange)
             {
                 hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized, damage,AttackType.Swing);
+                hitEnemy.ResetProjectileDamage(projectileDamage);
                 hitEnemy.ProjectileHit(GetNewProjectileDir(hitEnemy), power, mask, ProjectileOwner.Player,_ownerEntity.GetStat(PlayerStats.ReflectCorrection),false);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position);
                 hitCount++;

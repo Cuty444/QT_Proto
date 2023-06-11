@@ -55,7 +55,7 @@ namespace QT.InGame
 
         private Collider2D[] _colliders;
 
-        
+        public int _damage { get; private set; }
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
