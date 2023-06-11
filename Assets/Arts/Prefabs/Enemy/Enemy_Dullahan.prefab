@@ -31,6 +31,38 @@ Transform:
   m_Father: {fileID: 2972661818584243404}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &896892224640076823
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5641973990325650118}
+  m_Layer: 11
+  m_Name: DullahanObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5641973990325650118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896892224640076823}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3310964528194750462}
+  m_Father: {fileID: 3026859772209166903}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &981026779590313958
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,13 +241,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3242003511834536937}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.3, z: 0}
+  m_LocalPosition: {x: 0, y: 2.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 515597336106742899}
   - {fileID: 2972661818584243404}
-  m_Father: {fileID: 3026859772209166903}
+  m_Father: {fileID: 5641973990325650118}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8467327969544759447
@@ -440,7 +472,7 @@ Transform:
   m_GameObject: {fileID: 6119265654750196061}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 0.5, z: 1}
+  m_LocalScale: {x: 2.5, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3026859772209166903}
@@ -488,7 +520,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.39215687}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.54901963}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -598,7 +630,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3310964528194750462}
+  - {fileID: 5641973990325650118}
   - {fileID: 4017139709627570518}
   - {fileID: 729872792031352346}
   - {fileID: 5816072960571659168}
@@ -680,6 +712,8 @@ MonoBehaviour:
   <RushColliderSize>k__BackingField: 1.5
   <RushTrailObject>k__BackingField: {fileID: 6668560867680925416}
   <RushShockImpulseSource>k__BackingField: {fileID: 6374430474491516114}
+  <DullahanObject>k__BackingField: {fileID: 5641973990325650118}
+  <Shadow>k__BackingField: {fileID: 3921227068175943799}
 --- !u!114 &6343918163637424495
 MonoBehaviour:
   m_ObjectHideFlags: 0

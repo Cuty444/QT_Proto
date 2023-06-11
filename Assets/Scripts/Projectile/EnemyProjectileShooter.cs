@@ -40,7 +40,7 @@ namespace QT.InGame
 
         private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList,ProjectileOwner owner)
         {
-            _animator.SetBool(AttackAnimHash, true);
+            _animator?.SetBool(AttackAnimHash, true);
             IsAttacking = true;
             
             foreach (var data in atkList)
@@ -52,14 +52,14 @@ namespace QT.InGame
                 yield return new WaitForSeconds(data.AfterDelay);
             }
             
-            _animator.SetBool(AttackAnimHash, false);
+            _animator?.SetBool(AttackAnimHash, false);
             IsAttacking = false;
         }
         
         public void StopAttack()
         {
             StopAllCoroutines();
-            _animator.SetBool(AttackAnimHash, false);
+            _animator?.SetBool(AttackAnimHash, false);
             IsAttacking = false;
         }
     }

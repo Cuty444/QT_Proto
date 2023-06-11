@@ -9,6 +9,8 @@ namespace QT.InGame
 {
     public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IHitable
     {
+        public LayerMask HitMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "Enemy", "InteractionCollider");
+
         private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
         
         public enum States : int
@@ -37,6 +39,9 @@ namespace QT.InGame
         [field: SerializeField] public float RushColliderSize{ get; private set; }
         [field: SerializeField] public GameObject RushTrailObject{ get; private set; }
         [field:SerializeField] public CinemachineImpulseSource RushShockImpulseSource { get; private set; }
+        
+        [field: SerializeField] public Transform DullahanObject{ get; private set; }
+        [field: SerializeField] public SpriteRenderer Shadow{ get; private set; }
 
         public Rigidbody2D Rigidbody { get; private set; }
         public Animator Animator { get; private set; }
@@ -54,7 +59,7 @@ namespace QT.InGame
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentsInChildren<EnemySkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
-            Shooter.Initialize(Animator);
+            Shooter.Initialize(null);
             
             _colliders = new Collider2D[Rigidbody.attachedColliderCount];
             Rigidbody.GetAttachedColliders(_colliders);

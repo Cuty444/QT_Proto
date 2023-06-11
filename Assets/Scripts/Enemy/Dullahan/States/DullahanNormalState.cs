@@ -151,22 +151,25 @@ namespace QT.InGame
             
             var passableStates = new List<Dullahan.States>();
 
-            if (_dullahanData.AttackRangeMin <= targetDistance && _dullahanData.AttackRangeMax >= targetDistance)
-            {
-                passableStates.Add(Dullahan.States.Attack);
-            }
-            if (_dullahanData.RushRangeMin <= targetDistance && _dullahanData.RushRangeMax >= targetDistance)
-            {
-                passableStates.Add(Dullahan.States.Rush);
-            }
-            // if (_dullahanData.JumpRangeMin <= targetDistance && _dullahanData.JumpRangeMax >= targetDistance)
-            // {
-            //     passableStates.Add(Dullahan.States.Jump);
-            // }
-            if (_dullahanData.ThrowRangeMin <= targetDistance && _dullahanData.ThrowRangeMax >= targetDistance)
-            {
-                passableStates.Add(Dullahan.States.Throw);
-            }
+            //  if (_dullahanData.AttackRangeMin <= targetDistance && _dullahanData.AttackRangeMax >= targetDistance)
+            //  {
+            //      passableStates.Add(Dullahan.States.Attack);
+            //  }
+            //  if (_dullahanData.RushRangeMin <= targetDistance && _dullahanData.RushRangeMax >= targetDistance)
+            //  {
+            //      passableStates.Add(Dullahan.States.Rush);
+            //  }
+            //  if (_dullahanData.JumpRangeMin <= targetDistance && _dullahanData.JumpRangeMax >= targetDistance)
+            //  {
+            //      passableStates.Add(Dullahan.States.Jump);
+            //  }
+            // if (_dullahanData.ThrowRangeMin <= targetDistance && _dullahanData.ThrowRangeMax >= targetDistance)
+            //  {
+            //      passableStates.Add(Dullahan.States.Throw);
+            //  }
+            //
+            
+            passableStates.Add(Dullahan.States.Jump);
 
             if (passableStates.Count == 0)
             {

@@ -8,8 +8,6 @@ namespace QT.InGame
     [FSMState((int) Dullahan.States.Rush)]
     public class DullahanRushState : FSMState<Dullahan>
     {
-        public readonly LayerMask BounceMask = LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "Enemy", "InteractionCollider");
-        
         private readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
         private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
@@ -104,7 +102,7 @@ namespace QT.InGame
 
         private bool CheckHit()
         {
-            var hits = Physics2D.CircleCastAll(_rushCenter.position, _size, _dir, _speed * Time.deltaTime, BounceMask);
+            var hits = Physics2D.CircleCastAll(_rushCenter.position, _size, _dir, _speed * Time.deltaTime, _ownerEntity.HitMask);
 
             Debug.DrawRay(_rushCenter.position, _dir * (_size +_speed * Time.deltaTime), Color.magenta, 1);
             Debug.DrawRay(_rushCenter.position, new Vector3(-_dir.y, _dir.x) * (_size), Color.magenta, 1);
