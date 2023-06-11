@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
 using UnityEngine;
@@ -55,7 +56,9 @@ namespace QT.InGame
 
         private Collider2D[] _colliders;
 
-        
+        public int _damage { get; private set; }
+
+        public List<IHitable> _hitalbesList { get; private set; } = new List<IHitable>();
         private void Start()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);

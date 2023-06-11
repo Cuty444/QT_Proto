@@ -18,7 +18,7 @@ namespace QT.InGame
             return transform.position;
         }
         
-        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection)
+        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce)
         {
             OnDamageEvent.Invoke(dir, power,AttackType.Swing);
             OnHitEvent.Invoke(dir, power, bounceMask);
@@ -33,9 +33,9 @@ namespace QT.InGame
 
         public void ResetProjectileDamage(int damage)
         {
-            
-        }
+            _damage = damage;
 
+        }
         public LayerMask GetLayerMask()
         {
             return LayerMask.GetMask("Wall") | LayerMask.GetMask("Player"); // TODO : 임시 추후 수정 필요

@@ -105,8 +105,9 @@ namespace QT.InGame
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
             var power = _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
             var bounce = (int) _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;
-            var projectileDamage = (int)_ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1).Value;
-            
+            var projectileDamage = (int)_ownerEntity.GetDmg(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1);
+            var pierce = (int) _ownerEntity.GetStat(PlayerStats.ChargeAtkPierce).Value;
+            bool isPierce = _isCharged && pierce == 1;
             int hitCount = 0;
             int ballHitCount = 0;
             int enemyHitCount = 0;
@@ -116,18 +117,23 @@ namespace QT.InGame
                 projectile.ResetBounceCount(bounce);
                 projectile.ResetProjectileDamage(projectileDamage);
                 projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
-                    _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
+                    _ownerEntity.GetStat(PlayerStats.ReflectCorrection),isPierce);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
                 hitCount++;
                 ballHitCount++;
             }
 
             
-            var damage = _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1).Value;
+            var damage = _ownerEntity.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
+            projectileDamage =
+                (int) _ownerEntity.GetDmg(_isCharged
+                    ? PlayerStats.EnemyProjectileDmg2
+                    : PlayerStats.EnemyProjectileDmg1);
             foreach (var hitEnemy in _enemyInRange)
             {
                 hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized, damage,AttackType.Swing);
-                hitEnemy.ProjectileHit(GetNewProjectileDir(hitEnemy), power, mask, ProjectileOwner.Player,_ownerEntity.GetStat(PlayerStats.ReflectCorrection));
+                hitEnemy.ResetProjectileDamage(projectileDamage);
+                hitEnemy.ProjectileHit(GetNewProjectileDir(hitEnemy), power, mask, ProjectileOwner.Player,_ownerEntity.GetStat(PlayerStats.ReflectCorrection),false);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position);
                 hitCount++;
                 enemyHitCount++;

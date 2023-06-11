@@ -14,7 +14,7 @@ namespace QT.InGame
         
         private void OnDamage(Vector2 dir, float power,AttackType attackType)
         {
-            if (_ownerEntity.CurrentStateIndex >= (int)Enemy.States.Rigid)
+            if (_ownerEntity.CurrentStateIndex >= (int)Enemy.States.Projectile)
             {
                 if (attackType != AttackType.Teleport)
                 {
