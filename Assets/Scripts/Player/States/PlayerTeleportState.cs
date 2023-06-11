@@ -43,7 +43,7 @@ namespace QT
             }
             _ownerEntity.Animator.SetFloat(AnimationMouseRotateHash, angle / 180 * 4);
             _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
-            _ownerEntity._rigidTeleportEnemy.ResetProjectileDamage((int)_ownerEntity.GetStat(PlayerStats.ChargeProjectileDmg2).Value);
+            _ownerEntity._rigidTeleportEnemy.ResetProjectileDamage((int)_ownerEntity.GetDmg(PlayerStats.EnemyProjectileDmg2));
             _ownerEntity._rigidTeleportEnemy.ProjectileHit((_ownerEntity._rigidTargetEnemy.Position - _ownerEntity._rigidTeleportEnemy.Position).normalized
                 , _ownerEntity.GetStat(PlayerStats.ChargeShootSpd2), BounceMask
                 , ProjectileOwner.PlayerTeleport

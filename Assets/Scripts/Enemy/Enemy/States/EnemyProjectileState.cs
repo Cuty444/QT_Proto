@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
-using QT.Core.Data;
 using QT.Sound;
 using UnityEngine;
 
@@ -54,7 +53,7 @@ namespace QT.InGame
                     .GetData(_ownerEntity.Data.ProjectileDataId);
             
             _size = data.ColliderRad * 0.5f;
-            _damage = data.DirectDmg;
+            _damage = data.DirectDmg; // TODO : 의미 없음
 
             _soundManager = SystemManager.Instance.SoundManager;
         }
@@ -116,6 +115,12 @@ namespace QT.InGame
                 bool isTriggerCheck = false;
                 if (hit.collider.TryGetComponent(out IHitable hitable))
                 {
+                    if (_ownerEntity._hitalbesList.Contains(hitable))
+                        return;
+                    else
+                    {
+                        _ownerEntity._hitalbesList.Clear();
+                    }
                     if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
                     {
                         isTriggerCheck = hit.collider.isTrigger;
@@ -128,7 +133,12 @@ namespace QT.InGame
                     {
                         hitable.Hit(_direction, _damage);
                     }
+                    _ownerEntity._hitalbesList.Add(hitable);
                     //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
+                }
+                else
+                {
+                    _ownerEntity._hitalbesList.Clear();
                 }
                 
                 if (isTriggerCheck)
