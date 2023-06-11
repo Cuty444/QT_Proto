@@ -20,6 +20,7 @@ namespace QT.Map
         private PlayerManager _playerManager;
         private readonly string _eliteName = "Elite";
 
+        private Dullahan _dullahan = null;
         private void Awake()
         {
             _enemyList = GetComponentsInChildren<Enemy>().ToList();
@@ -34,6 +35,12 @@ namespace QT.Map
                     }
                 }
             }
+
+            if (SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.BossRoomPosition == _cellPos)
+            {
+                _dullahan = GetComponentInChildren<Dullahan>();
+            }
+            
             for (int i = 0; i < _enemyElitList.Count; i++)
             {
                 _enemyList.Remove(_enemyElitList[i]);
@@ -73,11 +80,26 @@ namespace QT.Map
                 }
             }
 
-            if (_enemyList.Count == 0)
+            if (SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.BossRoomPosition == _cellPos)
             {
-                _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
+                if (_dullahan != null)
+                {
+                    if (_dullahan.HP <= 0)
+                    {
+                        _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
 
-                _playerManager.PlayerMapPass.Invoke(true);
+                        _playerManager.PlayerMapPass.Invoke(true);
+                    }
+                }
+            }
+            else
+            {
+                if (_enemyList.Count == 0)
+                {
+                    _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
+
+                    _playerManager.PlayerMapPass.Invoke(true);
+                }
             }
         }
 
