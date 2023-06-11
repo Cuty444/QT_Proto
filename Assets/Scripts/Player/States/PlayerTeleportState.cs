@@ -21,6 +21,7 @@ namespace QT
         public override void InitializeState()
         {
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_TeleportAttackSFX);
+            
             _ownerEntity.TeleportEffect(true);
             _ownerEntity.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0.5f);
             _ownerEntity.transform.position = _ownerEntity._rigidTeleportEnemy.Position;
@@ -30,6 +31,7 @@ namespace QT
                 _ownerEntity.Animator.ResetTrigger(AnimationTeleportHash);
             }, 0.2f));
             var aimDir = ((Vector2) _ownerEntity.transform.position - _ownerEntity._rigidTargetEnemy.Position).normalized;
+            _ownerEntity.TeleportImpulseSource.GenerateImpulse(aimDir * 0.5f);
             float flip = 180;
             var angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg - 90;
             if (angle < 0)

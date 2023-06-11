@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using FMOD.Studio;
-using FMODUnity;
 using UnityEngine;
+using EventReference = FMODUnity.EventReference;
 
 namespace QT.Sound
 {
