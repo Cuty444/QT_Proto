@@ -81,7 +81,7 @@ namespace QT.InGame
             InitInputs();
             InitStats();
             EffectSetup();
-            
+
             Inventory = new Inventory(this);
             _playerManager = SystemManager.Instance.PlayerManager;
             var items = _playerManager._playerIndexInventory;
@@ -93,6 +93,9 @@ namespace QT.InGame
             SetGlobalState(new PlayerGlobalState(this));
 
             _goldCost = _playerManager.globalGold;
+            _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
+            GetStatus(PlayerStats.HP).SetStatus(GetStatus(PlayerStats.HP).Value);
+            _playerHpCanvas.SetHp(GetStatus(PlayerStats.HP));
             
             _playerManager.CurrentRoomEnemyRegister.AddListener((hitables) =>
             {

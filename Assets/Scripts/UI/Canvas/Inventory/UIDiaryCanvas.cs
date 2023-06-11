@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks.Triggers;
 using QT.Core;
+using QT.Util;
 using UnityEngine;
 
 namespace QT.UI
@@ -139,6 +141,40 @@ namespace QT.UI
             yield return new WaitForSeconds(_releaseAnimation.SequenceLength);
             
             _backGround.SetActive(false);
+        }
+
+        public void TitleButton()
+        {
+            var _playerManager = SystemManager.Instance.PlayerManager;
+            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
+            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
+            _playerManager._playerIndexInventory.Clear();
+            _playerManager.globalGold = 0;
+            var uiManager = SystemManager.Instance.UIManager;
+            uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
+            {
+                uiManager.GetUIPanel<MinimapCanvas>().OnClose();
+                _isOpen = false;
+                StartCoroutine(CloseCorutine());
+                uiManager.GetUIPanel<FadeCanvas>().FadeIn();
+                uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
+                SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
+                SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
+                SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
+                SystemManager.Instance.ProjectileManager.ProjectileListClear();
+                SystemManager.Instance.ResourceManager.AllReleasedObject();
+
+                StartCoroutine(UnityUtil.WaitForFunc(() =>
+                {
+                    SystemManager.Instance.LoadingManager.FloorLoadScene(2);
+                        SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
+                        StartCoroutine(UnityUtil.WaitForFunc(() =>
+                        {
+                        SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
+
+                        }, 2f));
+                },5f));
+            });
         }
     }
 }
