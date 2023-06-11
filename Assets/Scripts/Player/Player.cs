@@ -4,7 +4,7 @@ using System.Linq;
 using QT.Core;
 using UnityEngine;
 using Cinemachine;
-using QT.Core.Map;
+using QT.Core.Data;
 using QT.UI;
 using UnityEngine.UI;
 
@@ -76,7 +76,7 @@ namespace QT.InGame
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             //Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
-            
+            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             InitInputs();
             InitStats();
             EffectSetup();
