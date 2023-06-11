@@ -68,7 +68,7 @@ namespace QT.InGame
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
             AtkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
-            
+            OnAim.RemoveAllListeners();
             Rigidbody = GetComponent<Rigidbody2D>();
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
@@ -86,10 +86,12 @@ namespace QT.InGame
             var items = _playerManager._playerIndexInventory;
             for (int i = 0; i < items.Count; i++)
             {
-                Inventory.AddItem(items[i]);
+                Inventory.NextCopyItem(items[i]);
             }
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
+
+            _goldCost = _playerManager.globalGold;
             
             _playerManager.CurrentRoomEnemyRegister.AddListener((hitables) =>
             {
@@ -169,6 +171,8 @@ namespace QT.InGame
         
         public void PlayerDead()
         {
+            SystemManager.Instance.PlayerManager._playerIndexInventory.Clear();
+            SystemManager.Instance.PlayerManager.globalGold = 0;
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             ChangeState(Player.States.Dead);

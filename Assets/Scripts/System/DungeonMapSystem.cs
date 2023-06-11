@@ -517,12 +517,16 @@ namespace QT.Core.Map
             if (_floorValue == 2)
                 return;
             _floorValue++;
-            var playerInventory = SystemManager.Instance.PlayerManager._playerIndexInventory;
+            var _playerManager = SystemManager.Instance.PlayerManager;
+            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
+            var playerInventory = _playerManager._playerIndexInventory;
             var itemList = SystemManager.Instance.PlayerManager.Player.Inventory.GetItemList();
             for (int i = 0; i < itemList.Length; i++)
             {
                 playerInventory.Add(itemList[i].GetItemID());
             }
+
+            _playerManager.globalGold = _playerManager.Player.GetGoldCost();
             var uiManager = SystemManager.Instance.UIManager;
             uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
             {

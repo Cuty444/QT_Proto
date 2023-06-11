@@ -51,6 +51,7 @@ namespace QT.UI
 
         public void Retry()
         {
+            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {

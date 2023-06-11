@@ -49,6 +49,13 @@ namespace QT.InGame
             AddItem(item);
         }
 
+        public void NextCopyItem(int itemDataID)
+        {
+            var item = new Item(itemDataID);
+            _items.Add(item);
+            item.ApplyItemEffect(_targetPlayer);
+        }
+        
         public void AddItem(Item item)
         {
             _items.Add(item);
