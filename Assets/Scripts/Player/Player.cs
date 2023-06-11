@@ -76,7 +76,7 @@ namespace QT.InGame
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             //Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
-            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
+            _attackSpeedColorGradient = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.AttackSpeedColorCurve;
             InitInputs();
             InitStats();
             EffectSetup();

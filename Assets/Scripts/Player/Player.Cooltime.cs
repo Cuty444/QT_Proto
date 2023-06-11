@@ -9,7 +9,7 @@ namespace QT.InGame
 {
     public partial class Player
     {
-        private GlobalDataSystem _globalDataSystem;
+        private Gradient _attackSpeedColorGradient;
         private void UpdateCoolTime()
         {
             if (CurrentStateIndex == (int) States.Dead)
@@ -51,7 +51,7 @@ namespace QT.InGame
                 _attackSpeedBackground[flip ? 0 : 1].gameObject.SetActive(true);
                 _attackSpeedBackground[flip ? 1 : 0].gameObject.SetActive(false);
                 var attackCoolTime = GetStatus(PlayerStats.SwingCooldown);
-                Color color = _globalDataSystem.GlobalData.AttackSpeedColorCurve.Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value);
+                Color color = _attackSpeedColorGradient.Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value);
                 float remap = Util.Math.Remap(attackCoolTime.StatusValue, attackCoolTime.Value, 0f);
                 for (int i = 0; i < _attackGaugeImages.Length; i++)
                 {

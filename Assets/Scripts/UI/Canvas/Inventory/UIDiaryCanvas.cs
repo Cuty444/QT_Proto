@@ -76,9 +76,9 @@ namespace QT.UI
             StopAllCoroutines();
             
             _isOpen = !_isOpen;
+            SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(_isOpen);
             if (_isOpen)
             {
-                SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(true);
 
                 SetPage();
 
