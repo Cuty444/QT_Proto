@@ -47,7 +47,7 @@ namespace QT
             _ownerEntity._rigidTeleportEnemy.ProjectileHit((_ownerEntity._rigidTargetEnemy.Position - _ownerEntity._rigidTeleportEnemy.Position).normalized
                 , _ownerEntity.GetStat(PlayerStats.ChargeShootSpd2), BounceMask
                 , ProjectileOwner.PlayerTeleport
-                , _ownerEntity.GetStat(PlayerStats.ReflectCorrection));
+                , _ownerEntity.GetStat(PlayerStats.ReflectCorrection),false);
             SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, _ownerEntity._rigidTeleportEnemy.Position);
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() =>

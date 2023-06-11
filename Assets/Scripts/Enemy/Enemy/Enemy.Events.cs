@@ -18,7 +18,7 @@ namespace QT.InGame
             return transform.position;
         }
         
-        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection)
+        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce)
         {
             OnDamageEvent.Invoke(dir, power,AttackType.Swing);
             OnHitEvent.Invoke(dir, power, bounceMask);

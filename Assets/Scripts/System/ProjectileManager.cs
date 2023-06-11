@@ -19,7 +19,7 @@ namespace QT
         public Vector2 Position { get; }
         public float ColliderRad { get; }
         
-        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection);
+        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce);
 
         public void ResetBounceCount(int maxBounce);
         

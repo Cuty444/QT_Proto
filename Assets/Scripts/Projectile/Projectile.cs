@@ -66,6 +66,8 @@ namespace QT.InGame
         private float _currentStretch;
 
         private SoundManager _soundManager;
+
+        private bool _isPierce;
         
         private void Awake()
         {
@@ -145,7 +147,7 @@ namespace QT.InGame
             return transform.position;
         }
         
-        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection = 0)
+        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection = 0,bool isPierce = false)
         {
             _ballTransform.up  = _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);
@@ -157,7 +159,7 @@ namespace QT.InGame
             _bounceMask = bounceMask;
             _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _isReleased = false;
-            
+            _isPierce = isPierce;
             SetOwnerColor();
         }
         
@@ -200,6 +202,11 @@ namespace QT.InGame
         
         private void CheckHit()
         {
+            if (_isPierce)
+            {
+                PierceCheckHit();
+                return;
+            }
             var hit = Physics2D.CircleCast(transform.position, ColliderRad, _direction, _speed * Time.deltaTime, _bounceMask);
 
             if (hit.collider != null)
@@ -235,6 +242,67 @@ namespace QT.InGame
                 
                 SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
                 
+                if (_reflectCorrection != 0)
+                {
+                    var targetDir = ((Vector2) _playerTransform.transform.position - hit.point).normalized;
+                    _direction = Vector3.RotateTowards(_direction, targetDir, _reflectCorrection, 0);
+                }
+                
+                if (!_isReleased && --_bounceCount <= 0)
+                {
+                    _isReleased = true;
+                    _releaseStartTime = Time.time;
+
+                    if (_releaseDelay > 0)
+                    {
+                        _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
+                    }
+                }
+            }
+        }
+
+        private void PierceCheckHit()
+        {
+             var hit = Physics2D.CircleCast(transform.position, ColliderRad, _direction, _speed * Time.deltaTime, _bounceMask);
+
+            if (hit.collider != null)
+            {
+                bool isTriggerCheck = false;
+                bool isPass = false;
+                if (hit.collider.TryGetComponent(out IHitable hitable))
+                {
+                    if (hitable is Enemy)
+                    {
+                        isPass = true;
+                        //Debug.Log("ID : " + hit.collider.gameObject.GetInstanceID() + " Damage : " + _damage);
+                    }
+                    hitable.Hit(_direction, _damage);
+                    if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
+                    {
+                        isTriggerCheck = hit.collider.isTrigger;
+                    }
+                    else if(_owner == ProjectileOwner.Player)
+                    {
+                        SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
+                        _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
+                    }
+
+                }
+                else
+                {
+                    _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX,hit.transform.position);
+                }
+
+                if (isTriggerCheck || isPass)
+                    return;
+                _ballTransform.up = hit.normal;
+                _currentStretch = -1;
+                _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
+
+                _direction = Vector2.Reflect(_direction, hit.normal);
+                    
+                SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
+
                 if (_reflectCorrection != 0)
                 {
                     var targetDir = ((Vector2) _playerTransform.transform.position - hit.point).normalized;
