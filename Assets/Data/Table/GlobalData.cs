@@ -121,6 +121,6 @@ namespace QT.Core.Data
         /// </summary>
         [field: SerializeField]
         [Tooltip("공속 게이지 그래프")]
-        public AnimationCurve[] AttackSpeedColorCurve { get; private set; }
+        public Gradient AttackSpeedColorCurve { get; private set; }
     }
 }
