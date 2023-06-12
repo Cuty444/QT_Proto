@@ -40,6 +40,10 @@ namespace QT.InGame
         [field: SerializeField] public GameObject RushTrailObject{ get; private set; }
         [field:SerializeField] public CinemachineImpulseSource RushShockImpulseSource { get; private set; }
         
+        // 사망 연출에 시네 머신 같은 것을 사용 하자
+        [field:SerializeField] public CinemachineImpulseSource DeadImpulseSource { get; private set; }
+        [field:SerializeField] public CinemachineImpulseSource ExplosionImpulseSource { get; private set; }
+        
         [field: SerializeField] public Transform DullahanObject{ get; private set; }
         [field: SerializeField] public SpriteRenderer Shadow{ get; private set; }
 
