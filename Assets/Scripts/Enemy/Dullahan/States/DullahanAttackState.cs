@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.InGame
@@ -12,9 +13,11 @@ namespace QT.InGame
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
 
         private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Smash.prefab";
-
-
+        
         private List<EnemyAtkGameData> _atkList;
+        private Coroutine _atkSeqence;
+        
+        private SoundManager _soundManager;
         
         public DullahanAttackState(IFSMEntity owner) : base(owner)
         {
@@ -23,15 +26,18 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
+            _soundManager = SystemManager.Instance.SoundManager;
+            
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
             
-            _ownerEntity.StartCoroutine(AttackSequence());
+            _atkSeqence = _ownerEntity.StartCoroutine(AttackSequence());
         }
         
         public override void ClearState()
         {
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            _ownerEntity.StopCoroutine(_atkSeqence);
         }
         
         private IEnumerator AttackSequence()
@@ -46,6 +52,8 @@ namespace QT.InGame
                 if (data.BeforeDelay > 0)
                 {
                     _ownerEntity.Animator.SetTrigger(AttackAnimHash);
+                    _soundManager.PlayOneShot(_soundManager.SoundData.Boss_BatAttack, _ownerEntity.transform.position);
+                    
                     yield return new WaitForSeconds(data.BeforeDelay);
 
                 SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
@@ -61,6 +69,7 @@ namespace QT.InGame
             }
 
             _ownerEntity.Animator.ResetTrigger(AttackAnimHash);
+            
             _ownerEntity.ChangeState(Dullahan.States.Normal);
         }
     }

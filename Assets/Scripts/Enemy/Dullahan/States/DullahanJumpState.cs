@@ -1,5 +1,6 @@
 using System.Timers;
 using QT.Core;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.InGame
@@ -27,6 +28,7 @@ namespace QT.InGame
         private Color _shadowColor;
         private Vector2 _shadowScale;
 
+        private SoundManager _soundManager;
 
         public DullahanJumpState(IFSMEntity owner) : base(owner)
         {
@@ -41,14 +43,16 @@ namespace QT.InGame
         {
             _state = 0;
             _time = 0;
-            
+            _soundManager = SystemManager.Instance.SoundManager;
+
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
+            _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
             
             _ownerEntity.Animator.SetTrigger(JumpReadyAnimHash);
             _ownerEntity.Animator.SetBool(IsJumpingAnimHash, false);
-            _playerTransform = SystemManager.Instance.PlayerManager.Player.transform;
             
             SystemManager.Instance.ResourceManager.EmitParticle(ChargingEffectPath, _transform.position);
+            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_JumpReady, _ownerEntity.transform.position);
             
             _shadowColor = _ownerEntity.Shadow.color;
             _shadowScale = _ownerEntity.Shadow.transform.localScale;
@@ -82,6 +86,8 @@ namespace QT.InGame
             {
                 _state++;
                 _ownerEntity.Animator.SetBool(IsJumpingAnimHash, true);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Jump, _ownerEntity.transform.position);
+                
                 _ownerEntity.SetPhysics(false);
                 _time = 0;
             }
@@ -143,6 +149,7 @@ namespace QT.InGame
                 _ownerEntity.SetPhysics(true);
 
                 _ownerEntity.ChangeState(Dullahan.States.Normal);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Landing, _ownerEntity.transform.position);
             }
         }
 

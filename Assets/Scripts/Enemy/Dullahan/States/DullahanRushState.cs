@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Timers;
 using QT.Core;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.InGame
@@ -25,6 +26,8 @@ namespace QT.InGame
         private float _size;
         private float _damage;
 
+        private SoundManager _soundManager;
+        
         public DullahanRushState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
@@ -37,23 +40,19 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
+            _soundManager = SystemManager.Instance.SoundManager;
+            
             _dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
             _ownerEntity.SetDir(_dir,2);
 
             _dir.Normalize();
-            // if (Mathf.Abs(_dir.x) > Mathf.Abs(_dir.y))
-            // {
-            //     _dir = new Vector2(_dir.x > 0 ? 1 : -1, 0);
-            // }
-            // else
-            // {
-            //     _dir = new Vector2(0, _dir.y > 0 ? 1 : -1);
-            // }
 
             _isReady = false;
             _time = 0;
 
             _ownerEntity.Animator.SetTrigger(RushReadyAnimHash);
+            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_RushReady, _ownerEntity.transform.position);
+            
             _ownerEntity.RushTrailObject.SetActive(true);
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
@@ -77,6 +76,7 @@ namespace QT.InGame
                     _isReady = true;
                     _ownerEntity.RushTrailObject.SetActive(true);
                     _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
+                    _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush, _ownerEntity.transform.position);
                     _ownerEntity.SetPhysics(false);
                     _time = 0;
                 }
@@ -102,13 +102,14 @@ namespace QT.InGame
 
         private bool CheckHit()
         {
-            var hits = Physics2D.CircleCastAll(_rushCenter.position, _size, _dir, _speed * Time.deltaTime, _ownerEntity.HitMask);
+            var hits = Physics2D.CircleCastAll(_rushCenter.position, _size, _dir, _speed * Time.deltaTime,
+                _ownerEntity.HitMask);
 
-            Debug.DrawRay(_rushCenter.position, _dir * (_size +_speed * Time.deltaTime), Color.magenta, 1);
+            Debug.DrawRay(_rushCenter.position, _dir * (_size + _speed * Time.deltaTime), Color.magenta, 1);
             Debug.DrawRay(_rushCenter.position, new Vector3(-_dir.y, _dir.x) * (_size), Color.magenta, 1);
             Debug.DrawRay(_rushCenter.position, new Vector3(_dir.y, -_dir.x) * (_size), Color.magenta, 1);
-            
-            foreach (var hit in hits)  
+
+            foreach (var hit in hits)
             {
                 if (hit.collider != null)
                 {
@@ -118,14 +119,20 @@ namespace QT.InGame
                     }
 
                     var normal = hit.normal;
-                    var angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg + 90;
+                    var angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90;
 
                     SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
                     _ownerEntity.RushShockImpulseSource.GenerateImpulse(normal);
                 }
             }
-            
-            return hits.Length > 0;
+
+            if (hits.Length > 0)
+            {
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush_Crash, _ownerEntity.transform.position);
+                return true;
+            }
+
+            return false;
         }
 
     }

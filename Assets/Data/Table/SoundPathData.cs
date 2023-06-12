@@ -72,6 +72,21 @@ namespace QT.Sound
         [field: SerializeField] public EventReference Monster_WaterDrop { get; private set; }
         
         
+        [field: SerializeField] public EventReference Boss_Walk { get; private set; }
+        
+        [field: SerializeField] public EventReference Boss_BatAttack { get; private set; }
+        
+        [field: SerializeField] public EventReference Boss_RushReady { get; private set; }
+        [field: SerializeField] public EventReference Boss_Rush { get; private set; }
+        [field: SerializeField] public EventReference Boss_Rush_Crash { get; private set; }
+        
+        [field: SerializeField] public EventReference Boss_JumpReady { get; private set; }
+        [field: SerializeField] public EventReference Boss_Jump { get; private set; }
+        [field: SerializeField] public EventReference Boss_Landing { get; private set; }
+        
+        [field: SerializeField] public EventReference Boss_Dead { get; private set; }
+        
+        
         
         [field: SerializeField] public string[] Bank{ get; private set; }
         
