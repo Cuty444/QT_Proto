@@ -154,7 +154,7 @@ namespace QT.InGame
             if (hitCount > 0)
             {
                 var aimDir = ((Vector2) _ownerEntity.transform.position - _ownerEntity.AimPosition).normalized;
-                _ownerEntity.AttackImpulseSource.GenerateImpulse(aimDir * 0.5f);
+                _ownerEntity.AttackImpulseSource.GenerateImpulse(aimDir * _ownerEntity.AttackImpulseForce);
             }
 
             if (ballHitCount > 0)

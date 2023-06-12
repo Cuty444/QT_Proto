@@ -32,9 +32,6 @@ namespace QT.InGame
         [SerializeField] private Transform _batTransform;
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
-        [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
-        [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
-        [field:SerializeField] public CinemachineImpulseSource TeleportImpulseSource { get; private set; }
         
         
         public Inventory Inventory { get; private set; }
@@ -60,11 +57,24 @@ namespace QT.InGame
         [SerializeField] private Transform _attackSpeedCanvas;
         [SerializeField] private Transform[] _attackSpeedBackground;
         [SerializeField] private Image[] _attackGaugeImages;
+        
+        
+        [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
+        [field: SerializeField] public float DamageImpulseForce { get; private set; } = 3;
+        [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
+        [field: SerializeField] public float AttackImpulseForce { get; private set; } = 2;
+        [field:SerializeField] public CinemachineImpulseSource TeleportImpulseSource { get; private set; }
+        [field: SerializeField] public float TeleportImpulseForce { get; private set; } = 0.2f;
+        
+        
+        
         [HideInInspector] public bool IsFall;
         [HideInInspector] public FallObject EnterFallObject;
         [HideInInspector] public Vector2 DodgePreviousPosition;
         [HideInInspector] public int FallPreviousState;
         [HideInInspector] public bool IsGarden;
+        
+        
         private void Awake()
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);

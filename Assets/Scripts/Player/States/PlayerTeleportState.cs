@@ -30,8 +30,10 @@ namespace QT
             {
                 _ownerEntity.Animator.ResetTrigger(AnimationTeleportHash);
             }, 0.2f));
+            
             var aimDir = ((Vector2) _ownerEntity.transform.position - _ownerEntity._rigidTargetEnemy.Position).normalized;
-            _ownerEntity.TeleportImpulseSource.GenerateImpulse(aimDir * 0.5f);
+            _ownerEntity.TeleportImpulseSource.GenerateImpulse(aimDir * _ownerEntity.TeleportImpulseForce);
+            
             float flip = 180;
             var angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg - 90;
             if (angle < 0)
