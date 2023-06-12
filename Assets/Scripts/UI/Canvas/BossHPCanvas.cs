@@ -11,12 +11,14 @@ namespace QT.UI
         [SerializeField] private UITweenAnimator _popAnimation;
         [SerializeField] private UITweenAnimator _releaseAnimation;
         [SerializeField] private UITweenAnimator _hitAnimation;
-        
-        private void OnEnable()
+
+        public override void OnOpen()
         {
+            base.OnOpen();
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.BossStageBGM);
             _popAnimation.ReStart();
         }
+        
         
         public void SetHPGuage(Status hp)
         {
