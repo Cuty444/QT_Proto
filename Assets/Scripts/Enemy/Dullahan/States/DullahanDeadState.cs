@@ -15,7 +15,7 @@ namespace QT.InGame
         private const string BossDeadEffectPath = "Effect/Prefabs/FX_Boss_Dead.prefab";
         
         private float _time;
-        private bool _explosion;
+        private int _state;
         
         private SoundManager _soundManager;
         
@@ -28,7 +28,7 @@ namespace QT.InGame
             _soundManager = SystemManager.Instance.SoundManager;
             
             _time = 0;
-            _explosion = false;
+            _state = 0;
             
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -43,27 +43,37 @@ namespace QT.InGame
             var camera = GameObject.FindObjectOfType<PlayerChasingCamera>();
             camera.SetTarget(_ownerEntity.CenterTransform);
             camera.SetConfiner(false);
-
-            //SystemManager.Instance.UIManager.GetUIPanel<RecordCanvas>().OnOpen();
         }
 
         public override void UpdateState()
         {
-            if (_explosion)
+            _time += Time.deltaTime;
+            
+            switch (_state)
             {
-                return;
+                case 0:
+                    if (_time > 5)
+                    {
+                        SystemManager.Instance.ResourceManager.EmitParticle(BossDeadEffectPath,
+                            _ownerEntity.CenterTransform.position);
+                        _ownerEntity.ExplosionImpulseSource.GenerateImpulse(2);
+                        
+                        _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Landing,
+                            _ownerEntity.transform.position);
+                        
+                        _state++;
+                        _time = 0;
+                    }
+                    break;
+                
+                case 1:
+                    if (_time > 5)
+                    {
+                        SystemManager.Instance.UIManager.GetUIPanel<RecordCanvas>().OnOpen();
+                    }
+                    break;
             }
             
-            _time += Time.deltaTime;
-
-            if (_time > 5)
-            {
-                SystemManager.Instance.ResourceManager.EmitParticle(BossDeadEffectPath, _ownerEntity.CenterTransform.position);
-                _ownerEntity.ExplosionImpulseSource.GenerateImpulse(2);
-                _explosion = true;
-                
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Landing, _ownerEntity.transform.position);
-            }
         }
 
         public override void ClearState()
