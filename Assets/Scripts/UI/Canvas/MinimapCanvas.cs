@@ -184,11 +184,11 @@ namespace QT.UI
                 }
             }
 
-            if (_currentPlayerPosition ==
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.ShopRoomPosition)
-            {
-                SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
-            }
+            //if (_currentPlayerPosition ==
+            //    SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.ShopRoomPosition)
+            //{
+            //    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
+            //}
         }
 
         private void MiniMapCellCenterPositionChagne(Vector2Int position)

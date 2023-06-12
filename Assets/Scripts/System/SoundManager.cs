@@ -21,6 +21,7 @@ namespace QT.Sound
 
         private Transform _poolRootTransform;
 
+        private EventReference _currentBgm;
         [HideInInspector] public SoundPathData SoundData;
         public void Initialize(SoundPathData soundPathData)
         {
@@ -72,6 +73,12 @@ namespace QT.Sound
         
         public void PlayBGM(EventReference data, bool isFade = false)
         {
+            if (!_currentBgm.IsNull)
+            {
+                if (data.Path == _currentBgm.Path)
+                    return;
+            }
+
             ChangeBGM(data, isFade);
             _bgmEmitter.Play();
         }
@@ -80,6 +87,7 @@ namespace QT.Sound
         public void ChangeBGM(EventReference data,bool isFade = false)
         {
             _bgmEmitter.ChangeEvent(data,isFade);
+            _currentBgm = data;
         }
         
         public void StopBGM(bool fadeOut = false)

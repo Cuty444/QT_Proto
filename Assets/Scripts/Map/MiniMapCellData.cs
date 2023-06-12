@@ -155,6 +155,14 @@ namespace QT.Map
                 {
                     SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.ShopStageBGM);
                 }
+                else if (pos == _dungeonMapSystem.DungeonMapData.BossRoomPosition)
+                {
+                    //TODO : BossHPCanavas 에서 제어중
+                }
+                else
+                {
+                    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
+                }
                 _lineRenders.SetActive(true);
                 _mapImage.enabled = true;
                 _iconsTransform.gameObject.SetActive(true);
