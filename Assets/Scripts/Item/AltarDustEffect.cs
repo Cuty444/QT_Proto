@@ -14,5 +14,10 @@ namespace QT
         {
             SystemManager.Instance.ResourceManager.EmitParticle(AltarDustEffectPath, transform.position);
         }
+
+        public void Sound()
+        {
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Altar_AppearSFX);
+        }
     }
 }
