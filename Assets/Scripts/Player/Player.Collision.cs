@@ -38,6 +38,7 @@ namespace QT.InGame
                 if (isNextMap)
                     return;
                 SystemManager.Instance.PlayerManager.StairNextRoomEvent.Invoke();
+                SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
                 isNextMap = true;
                 OnMove = null;
                 ClearAction(Player.ButtonActions.Swing);

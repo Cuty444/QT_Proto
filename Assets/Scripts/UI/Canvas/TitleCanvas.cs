@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Ranking;
 using QT.Util;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace QT.UI
     {
         [SerializeField] private ButtonTrigger _startButton;
         [SerializeField] private ButtonTrigger _tutorialButton;
+        [SerializeField] private ButtonTrigger _rankingButton;
         public override void PostSystemInitialize()
         {
             OnOpen();
@@ -18,9 +20,12 @@ namespace QT.UI
         public override void OnOpen()
         {
             base.OnOpen();
+            SystemManager.Instance.RankingManager.ResetRankingTime();
+            SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
             _startButton.InteractableOn();
             _tutorialButton.InteractableOn();
+            _rankingButton.InteractableOn();
         }
 
         public void GameStart()
@@ -36,6 +41,16 @@ namespace QT.UI
         public void GameEnd()
         {
             QT.Util.UnityUtil.ProgramExit();
+        }
+
+        public void RankingOpen()
+        {
+            SystemManager.Instance.UIManager.GetUIPanel<RankingCanvas>().OnOpen();
+        }
+
+        public void RankignClose()
+        {
+            _rankingButton.InteractableOn();
         }
     }
 }

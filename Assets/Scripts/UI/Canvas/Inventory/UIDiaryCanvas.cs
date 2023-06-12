@@ -11,18 +11,16 @@ namespace QT.UI
     public class UIDiaryCanvas : UIPanel
     {
         [SerializeField] private GameObject _backGround;
-        
+
         [SerializeField] private GameObject _settingGameobject;
         [SerializeField] private UIInventoryPage _inventoryPage;
-        
-        [Space]
-        [SerializeField] private UITweenAnimator _popAnimation;
+
+        [Space] [SerializeField] private UITweenAnimator _popAnimation;
         [SerializeField] private UITweenAnimator _releaseAnimation;
         [SerializeField] private UITweenAnimator _switchAnimation;
 
-        [Space]
-        public Transform MapTransform;
-        
+        [Space] public Transform MapTransform;
+
         private bool _isOpen = false;
 
         private bool _isInventory = true;
@@ -31,7 +29,7 @@ namespace QT.UI
         {
             gameObject.SetActive(true);
             _inventoryPage.Initialize();
-            
+
             _backGround.SetActive(false);
         }
 
@@ -59,7 +57,7 @@ namespace QT.UI
                     CheckOpen();
                 }
             }
-            
+
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 if (_isOpen && !_isInventory)
@@ -77,13 +75,12 @@ namespace QT.UI
         private void CheckOpen()
         {
             StopAllCoroutines();
-            
+
             _isOpen = !_isOpen;
             SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(_isOpen);
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UITabSFX);
             if (_isOpen)
             {
-
                 SetPage();
 
                 _backGround.SetActive(true);
@@ -99,7 +96,7 @@ namespace QT.UI
         {
             _settingGameobject.SetActive(!_isInventory);
             _inventoryPage.gameObject.SetActive(_isInventory);
-                
+
             if (_isInventory)
             {
                 _inventoryPage.SetInventoryUI();
@@ -115,24 +112,23 @@ namespace QT.UI
             _isInventory = isInventory;
             StartCoroutine(SwitchCorutine());
         }
-        
+
         private IEnumerator SwitchCorutine()
         {
             _switchAnimation.ReStart();
 
             yield return new WaitForSeconds(0.2f);
-            
+
             SetPage();
         }
-        
-        
-        
+
+
         private IEnumerator CloseCorutine()
         {
             _releaseAnimation.ReStart();
-            
+
             yield return new WaitForSeconds(_releaseAnimation.SequenceLength);
-            
+
             _backGround.SetActive(false);
         }
 
@@ -144,6 +140,8 @@ namespace QT.UI
             _playerManager._playerIndexInventory.Clear();
             _playerManager.globalGold = 0;
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
+            SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
+            SystemManager.Instance.RankingManager.ResetRankingTime();
             var uiManager = SystemManager.Instance.UIManager;
             uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
             {
@@ -158,16 +156,16 @@ namespace QT.UI
                 SystemManager.Instance.ProjectileManager.ProjectileListClear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
-                StartCoroutine(UnityUtil.WaitForFunc(() =>
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().StartCoroutine(UnityUtil.WaitForFunc(() =>
                 {
                     SystemManager.Instance.LoadingManager.FloorLoadScene(2);
-                        StartCoroutine(UnityUtil.WaitForFunc(() =>
-                        {
+                    SystemManager.Instance.GetSystem<DungeonMapSystem>().StartCoroutine(UnityUtil.WaitForFunc(() =>
+                    {
                         SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
                         SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
                         SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
-                        }, 2f));
-                },5f));
+                    }, 2f));
+                }, 5f));
             });
         }
     }

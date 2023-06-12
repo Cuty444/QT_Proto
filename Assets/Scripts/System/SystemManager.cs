@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using QT.InGame;
+using QT.Ranking;
 using QT.Sound;
 using QT.UI;
 using UnityEngine;
@@ -23,6 +24,8 @@ namespace QT.Core
         public SoundManager SoundManager { get; } = new();
 
         public StageLoadManager StageLoadManager { get; } = new();
+
+        public RankingManager RankingManager { get; } = new();
         
         [field:SerializeField]public UIManager UIManager { get; private set; }
         [SerializeField] private SoundPathData _soundPathData;
@@ -42,7 +45,8 @@ namespace QT.Core
             LoadingManager.DataLoadCheck();
             SoundManager.Initialize(_soundPathData);
             ItemDataManager.Initialize();
-            
+            RankingManager.Initialize();
+            RankingManager.DataLoad();
             ResourceManager.Initialize();
             DataManager.Initialize();
 

@@ -41,6 +41,8 @@ namespace QT.UI
             var buttonTrigger = _canvasGroup.GetComponentsInChildren<ButtonTrigger>()[1];
             buttonTrigger.InteractableOff();
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
+            SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
+            SystemManager.Instance.RankingManager.ResetRankingTime();
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
                 StartCoroutine(UnityUtil.FadeCanvasGroup(_canvasGroup, 0f, 1f, 1.0f,()=>

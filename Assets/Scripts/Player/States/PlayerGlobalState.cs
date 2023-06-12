@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Data;
+using QT.Ranking;
 using QT.UI;
 using Unity.VisualScripting;
 using UnityEngine.UI;
@@ -20,11 +21,12 @@ namespace QT.InGame
         
         private GlobalDataSystem _globalDataSystem;
 
+        private RankingManager _rankingManager;
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
-            
+            _rankingManager = SystemManager.Instance.RankingManager;
             SystemManager.Instance.ResourceManager.CacheAsset(TeleportLinePath);
 
             _ownerEntity.SetBatActive(false);
@@ -39,6 +41,7 @@ namespace QT.InGame
         public override void UpdateState()
         {
             _playerHpCanvas.SetHpUpdate(_ownerEntity.GetStatus(PlayerStats.HP));
+            _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
         }
 
         private void OnAim(Vector2 aimPos)
