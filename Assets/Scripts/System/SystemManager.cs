@@ -4,6 +4,7 @@ using System;
 using QT.InGame;
 using QT.Ranking;
 using QT.Sound;
+using QT.Splash;
 using QT.UI;
 using UnityEngine;
 
@@ -42,6 +43,7 @@ namespace QT.Core
 #else
             _debugConsole.SetActive(false);   
 #endif
+            
             LoadingManager.DataLoadCheck();
             SoundManager.Initialize(_soundPathData);
             ItemDataManager.Initialize();
@@ -56,6 +58,7 @@ namespace QT.Core
             
             LoadingManager.Initialize();
             
+            UIManager.GetUIPanel<SplashCanvas>().OnOpen();
             
             _PostInitializeSystems();
             
