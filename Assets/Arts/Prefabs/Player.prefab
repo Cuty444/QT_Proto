@@ -749,6 +749,9 @@ GameObject:
   - component: {fileID: 1737616435241376935}
   - component: {fileID: 8676274802100005107}
   - component: {fileID: 3010554887599638763}
+  - component: {fileID: 5364908188172864487}
+  - component: {fileID: 5679507686163470076}
+  - component: {fileID: 7000023868937344174}
   m_Layer: 0
   m_Name: Spine Mecanim GameObject (player_dummy)
   m_TagString: Untagged
@@ -854,6 +857,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 7781006472481742598}
+  _studioEventEmitter: {fileID: 5364908188172864487}
+  _stone: {fileID: 5679507686163470076}
+  _flower: {fileID: 7000023868937344174}
 --- !u!114 &1737616435241376935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -923,6 +929,77 @@ MonoBehaviour:
   _baseMaterial: {fileID: 2100000, guid: b3d3577795757ab47805f0a58407b58e, type: 2}
   _hitMaterial: {fileID: 2100000, guid: e90d786236736544b809d4ab22ae2c7b, type: 2}
   _rigidMaterial: {fileID: 2100000, guid: e90d786236736544b809d4ab22ae2c7b, type: 2}
+--- !u!114 &5364908188172864487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5588212210452170156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1985693278
+      Data2: 1224438858
+      Data3: -1337880922
+      Data4: -2007520609
+    Path: event:/SFX/Player/Player_Walk/Player_Walk
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params:
+  - Name: Player_Walk
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &5679507686163470076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5588212210452170156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 744a208c85da6d04c861d81b992e4ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Emitters:
+  - Target: {fileID: 5364908188172864487}
+    Params:
+    - Name: Player_Walk
+      Value: 0
+  TriggerEvent: 0
+--- !u!114 &7000023868937344174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5588212210452170156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 744a208c85da6d04c861d81b992e4ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Emitters:
+  - Target: {fileID: 5364908188172864487}
+    Params:
+    - Name: Player_Walk
+      Value: 1
+  TriggerEvent: 0
 --- !u!1 &5745219808118954928
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,7 +1464,7 @@ MonoBehaviour:
   <DamageImpulseSource>k__BackingField: {fileID: 4929062616781592802}
   <DamageImpulseForce>k__BackingField: 3
   <AttackImpulseSource>k__BackingField: {fileID: 1385383193845319107}
-  <AttackImpulseForce>k__BackingField: 3
+  <AttackImpulseForce>k__BackingField: 2
   <TeleportImpulseSource>k__BackingField: {fileID: 605583733125246051}
   <TeleportImpulseForce>k__BackingField: 0.2
   IsFall: 0
