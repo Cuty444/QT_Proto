@@ -72,6 +72,7 @@ namespace QT.InGame
             }
             
             Move(targetDistance);
+            CheckBodyContact();
             
             if (CheckAttackStart(targetDistance))
             {
@@ -176,6 +177,19 @@ namespace QT.InGame
             return result.normalized;
         }
 
+        private void CheckBodyContact()
+        {
+            var hit = Physics2D.OverlapCircle(_ownerEntity.transform.position, _ownerEntity.ColliderRad,
+                _ownerEntity.Shooter.BounceMask);
+
+            var ownerPos = _ownerEntity.transform.position;
+            
+            if (hit != null && hit.TryGetComponent(out IHitable hitable))
+            {
+                hitable.Hit((ownerPos - hit.transform.position).normalized, _data.BodyContactDmg);
+            }
+        }
+        
         private bool CheckAttackStart(float targetDistance)
         {
             if (_data.AtkDataId == 0 || _atkCheckTimer < _data.AtkCheckDelay)
