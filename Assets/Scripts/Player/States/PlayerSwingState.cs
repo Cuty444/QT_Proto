@@ -10,6 +10,7 @@ namespace QT.InGame
     {
         private const string HitLinePath = "Prefabs/HitLine.prefab";
         private const string SwingProjectileHitPath = "Effect/Prefabs/FX_Ball_Attack.prefab";
+        private const string SwingNormalProjectileHitPath = "Effect/Prefabs/FX_Ball_Normal_Attack.prefab";
         private const string SwingBatHitPath = "Effect/Prefabs/FX_Bat_Hit.prefab";
         
         private const int Segments = 32;
@@ -118,7 +119,14 @@ namespace QT.InGame
                 projectile.ResetProjectileDamage(projectileDamage);
                 projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
                     _ownerEntity.GetStat(PlayerStats.ReflectCorrection),isPierce);
-                SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
+                if (_isCharged)
+                {
+                    SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
+                }
+                else
+                {
+                    SystemManager.Instance.ResourceManager.EmitParticle(SwingNormalProjectileHitPath, projectile.Position);
+                }
                 hitCount++;
                 ballHitCount++;
             }
