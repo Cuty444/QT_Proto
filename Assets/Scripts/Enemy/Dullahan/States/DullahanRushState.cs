@@ -122,7 +122,7 @@ namespace QT.InGame
                     var angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90;
 
                     SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
-                    _ownerEntity.RushShockImpulseSource.GenerateImpulse(normal);
+                    _ownerEntity.RushShockImpulseSource.GenerateImpulse(normal * 3);
                 }
             }
 

@@ -38,7 +38,13 @@ namespace QT.InGame
         [field: SerializeField] public Transform CenterTransform{ get; private set; }
         [field: SerializeField] public float RushColliderSize{ get; private set; }
         [field: SerializeField] public GameObject RushTrailObject{ get; private set; }
+        
         [field:SerializeField] public CinemachineImpulseSource RushShockImpulseSource { get; private set; }
+        [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
+        
+        [field:SerializeField] public CinemachineImpulseSource JumpReadyImpulseSource { get; private set; }
+        [field:SerializeField] public CinemachineImpulseSource JumpImpulseSource { get; private set; }
+        [field:SerializeField] public CinemachineImpulseSource LandingImpulseSource { get; private set; }
         
         // 사망 연출에 시네 머신 같은 것을 사용 하자
         [field:SerializeField] public CinemachineImpulseSource DeadImpulseSource { get; private set; }
