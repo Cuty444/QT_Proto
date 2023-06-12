@@ -22,12 +22,13 @@ namespace QT.InGame
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
             
             _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
+            _hpCanvas = SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>();
+            _hpCanvas.SetHPGuage(_ownerEntity.HP);
         }
         
         public override void InitializeState()
         {
-            _hpCanvas = SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>();
-            _hpCanvas.gameObject.SetActive(true);
+            _hpCanvas.OnOpen();
         }
         
         private void OnDamage(Vector2 dir, float power,AttackType attackType)
