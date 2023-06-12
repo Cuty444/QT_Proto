@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks.Triggers;
 using QT.Core;
 using QT.Core.Map;
+using QT.Sound;
 using QT.Tutorial;
 using QT.Util;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QT.UI
 {
@@ -24,19 +26,46 @@ namespace QT.UI
 
         [SerializeField] private ButtonTrigger _tutorialButtonTrigger;
         [SerializeField] private ButtonTrigger _titleButtonTrigger;
+
+        [SerializeField] private Slider[] _soundSliders;
         private bool _isOpen = false;
 
         private bool _isInventory = true;
 
         public bool _isTutorial { get; private set; } = false;
+
+        private SoundManager _soundManager;
         public override void PostSystemInitialize()
         {
             gameObject.SetActive(true);
             _inventoryPage.Initialize();
 
             _backGround.SetActive(false);
+            _soundManager = SystemManager.Instance.SoundManager;
+            float volume = 0;
+            _soundManager.GetMasterVolume(out volume);
+            _soundSliders[0].value = volume;
+            _soundManager.GetBGMVolume(out volume);
+            _soundSliders[1].value = volume;
+            _soundManager.GetSFXVolume(out volume);
+            _soundSliders[2].value = volume;
         }
 
+        public void SetMasterVolume(float volume)
+        {
+            _soundManager.SetMasterVolume(volume);
+        }
+        
+        public void SetBGMVolume(float volume)
+        {
+            _soundManager.SetBGMVolume(volume);
+        }
+        
+        public void SetSFXVolume(float volume)
+        {
+            _soundManager.SetSFXVolume(volume);
+        }
+        
         private void Update()
         {
             CheckInput();

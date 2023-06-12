@@ -58,6 +58,7 @@ namespace QT.Splash
             }
             _canvasGroup.alpha = 0f;
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
+            OnClose();
             //SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().RestartAnimation();
         }
     }
