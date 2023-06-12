@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks.Triggers;
 using QT.Core;
 using QT.Core.Map;
+using QT.Tutorial;
 using QT.Util;
 using UnityEngine;
 
@@ -21,10 +22,13 @@ namespace QT.UI
 
         [Space] public Transform MapTransform;
 
+        [SerializeField] private ButtonTrigger _tutorialButtonTrigger;
+        [SerializeField] private ButtonTrigger _titleButtonTrigger;
         private bool _isOpen = false;
 
         private bool _isInventory = true;
 
+        public bool _isTutorial { get; private set; } = false;
         public override void PostSystemInitialize()
         {
             gameObject.SetActive(true);
@@ -74,6 +78,8 @@ namespace QT.UI
 
         private void CheckOpen()
         {
+            if (_isTutorial)
+                return;
             StopAllCoroutines();
 
             _isOpen = !_isOpen;
@@ -82,7 +88,8 @@ namespace QT.UI
             if (_isOpen)
             {
                 SetPage();
-
+                _tutorialButtonTrigger.InteractableOn();
+                _titleButtonTrigger.InteractableOn();
                 _backGround.SetActive(true);
                 _popAnimation.ReStart();
             }
@@ -130,6 +137,20 @@ namespace QT.UI
             yield return new WaitForSeconds(_releaseAnimation.SequenceLength);
 
             _backGround.SetActive(false);
+        }
+
+        public void TutorialButton()
+        {
+            SystemManager.Instance.UIManager.GetUIPanel<TutorialCanvas>().OnOpen();
+            CheckOpen();
+            _isTutorial = true;
+        }
+
+        public void TutorialClose()
+        {
+            _isTutorial = false;
+            _tutorialButtonTrigger.InteractableOn();
+            CheckOpen();
         }
 
         public void TitleButton()
