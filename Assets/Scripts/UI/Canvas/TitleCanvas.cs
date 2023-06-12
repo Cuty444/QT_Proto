@@ -18,7 +18,6 @@ namespace QT.UI
         public override void OnOpen()
         {
             base.OnOpen();
-            GetComponent<Canvas>().worldCamera = Camera.main;
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
             _startButton.InteractableOn();
             _tutorialButton.InteractableOn();

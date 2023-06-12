@@ -371,6 +371,23 @@ namespace QT.InGame
             {
                 if (hitable is not Enemy)
                 {
+                    if (hitable is Dullahan)
+                    {
+                        var hitDullhanCheckRange = range + 1.4f;
+                        var hitDullhanTargetDir = hitable.GetPosition() - origin;
+
+                        if (hitDullhanTargetDir.sqrMagnitude < hitDullhanCheckRange * hitDullhanCheckRange)
+                        {
+                            var dot = Vector2.Dot((hitDullhanTargetDir).normalized, dir);
+                            var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
+
+                            if (degrees < angle)
+                            {
+                                _hitableRange.Add(hitable);
+                            }
+                        }
+                        return;
+                    }
                     var hitCheckRange = range + 0.5f;
                     var hitTargetDir = hitable.GetPosition() - origin;
 
