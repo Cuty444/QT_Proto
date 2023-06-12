@@ -44,6 +44,11 @@ namespace QT
         
         public void SetRigidMaterial()
         {
+            if (!gameObject.activeInHierarchy)
+            {
+                return;
+            }
+            
             StopAllCoroutines();
             
             _skeletonRenderer.CustomMaterialOverride.Remove(_baseMaterial);
@@ -52,6 +57,11 @@ namespace QT
         
         public void SetHitMaterial()
         {
+            if (!gameObject.activeInHierarchy)
+            {
+                return;
+            }
+            
             StopAllCoroutines();
             
             _skeletonRenderer.CustomMaterialOverride.Remove(_baseMaterial);
