@@ -115,6 +115,7 @@ namespace QT.InGame
             
             _playerManager.FloorAllHitalbeRegister.AddListener((hitalbes) =>
             {
+                _floorAllHit.Clear();
                 _floorAllHit.AddRange(hitalbes);
             });
             
