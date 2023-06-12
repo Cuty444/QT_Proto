@@ -12,12 +12,15 @@ namespace QT
 {
     public class RecordCanvas : UIPanel
     {
+        [SerializeField] private TextMeshProUGUI _time;
         [SerializeField] private TextMeshProUGUI _clearTimeText;
 
         private bool isSelected = false;
 
         private string _name = string.Empty;
 
+        [Space] [SerializeField] private UITweenAnimator _popAnimation;
+        
         public override void OnOpen()
         {
             base.OnOpen();
@@ -30,10 +33,14 @@ namespace QT
             _playerManager._playerIndexInventory.Clear();
             _playerManager.globalGold = 0;
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
+            
+            _popAnimation.ReStart();
         }
 
         private void Update()
         {
+            _time.text = DateTime.Now.ToString(@"hh:mm");
+            
             if (Input.GetKeyDown(KeyCode.Return) && !isSelected)
             {
                 if (_name == string.Empty)

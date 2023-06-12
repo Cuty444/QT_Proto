@@ -2,16 +2,21 @@ using System;
 using System.Collections.Generic;
 using QT.Core;
 using QT.UI;
+using TMPro;
 using UnityEngine;
 
 namespace QT.Ranking
 {
     public class RankingCanvas : UIPanel
     {
+        [SerializeField] private TextMeshProUGUI _time;
         [SerializeField] private GameObject _rankingNot;
         [SerializeField] private Transform _rankingPool;
         [SerializeField] private GameObject _rankingObject;
         private List<GameObject> _rankingObjectList = new List<GameObject>();
+        
+        [Space] [SerializeField] private UITweenAnimator _popAnimation;
+        
         public override void OnOpen()
         {
             base.OnOpen();
@@ -50,6 +55,13 @@ namespace QT.Ranking
             {
                 _rankingNot.SetActive(true);
             }
+            
+            _popAnimation.ReStart();
+        }
+
+        private void Update()
+        {
+            _time.text = DateTime.Now.ToString(@"hh:mm");
         }
 
         public override void OnClose()

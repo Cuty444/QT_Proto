@@ -75,6 +75,7 @@ namespace QT.Sound
         [field: SerializeField] public EventReference Boss_Walk { get; private set; }
         
         [field: SerializeField] public EventReference Boss_BatAttack { get; private set; }
+        [field: SerializeField] public EventReference Boss_Throw { get; private set; }
         
         [field: SerializeField] public EventReference Boss_RushReady { get; private set; }
         [field: SerializeField] public EventReference Boss_Rush { get; private set; }
