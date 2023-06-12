@@ -23,6 +23,9 @@ namespace QT.Sound
 
         private EventReference _currentBgm;
         [HideInInspector] public SoundPathData SoundData;
+        
+        private string bgmKey = "bgmKey";
+        private string sfxKey = "sfxKey";
         public void Initialize(SoundPathData soundPathData)
         {
             _poolRootTransform = new GameObject("AudioSourcePoolRoot").transform;
@@ -37,8 +40,26 @@ namespace QT.Sound
             _bgmBus = RuntimeManager.GetBus(SoundData.Bank[1]);
             _sfxBus = RuntimeManager.GetBus(SoundData.Bank[2]);
             GameObject.DontDestroyOnLoad(_poolRootTransform);
+            if (PlayerPrefs.HasKey(bgmKey))
+            {
+                _bgmBus.setVolume(PlayerPrefs.GetFloat(bgmKey));
+            }
+
+            if (PlayerPrefs.HasKey(sfxKey))
+            {
+                _sfxBus.setVolume(PlayerPrefs.GetFloat(sfxKey));
+            }
         }
 
+        public void VolumeSave()
+        {
+            float value = 0f;
+            _bgmBus.getVolume(out value);
+            PlayerPrefs.SetFloat(bgmKey, value);
+            _sfxBus.getVolume(out value);
+            PlayerPrefs.SetFloat(sfxKey,value);
+            PlayerPrefs.Save();
+        }
 
         public void PlayOneShot(EventReference data,Vector3 position = default)
         {

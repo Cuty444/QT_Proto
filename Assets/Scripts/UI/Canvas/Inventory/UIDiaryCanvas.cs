@@ -103,6 +103,8 @@ namespace QT.UI
                     CheckOpen();
                 }
             }
+            
+            SystemManager.Instance.SoundManager.VolumeSave();
         }
 
         private void CheckOpen()
