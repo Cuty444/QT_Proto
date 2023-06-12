@@ -2,6 +2,7 @@ using System.Timers;
 using Cinemachine;
 using QT.Core;
 using QT.Sound;
+using QT.UI;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -69,6 +70,7 @@ namespace QT.InGame
                 case 1:
                     if (_time > 5)
                     {
+                        SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>().OnClose();
                         SystemManager.Instance.UIManager.GetUIPanel<RecordCanvas>().OnOpen();
                     }
                     break;
