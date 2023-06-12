@@ -39,6 +39,10 @@ namespace QT.Map
             if (SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.BossRoomPosition == _cellPos)
             {
                 _dullahan = GetComponentInChildren<Dullahan>();
+                if (_dullahan != null)
+                {
+                    SystemManager.Instance.PlayerManager.Player._hitableList.Add(_dullahan);
+                }
             }
             
             for (int i = 0; i < _enemyElitList.Count; i++)
