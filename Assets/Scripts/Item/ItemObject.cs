@@ -31,6 +31,7 @@ namespace QT
         [SerializeField] private Image _buyImage;
         [SerializeField] private Image _gainImage;
         [SerializeField] private Animator _buyFailAnimator;
+        [SerializeField] private Animator _buyFailBackgroundAnimator;
         private PlayerManager _playerManager;
         [HideInInspector]public ItemSelectMapData _itemSelectMapData;
         public ItemGameData ItemGameData { get; private set; }
@@ -60,6 +61,7 @@ namespace QT
                 //    _hpTransform.gameObject.SetActive(true);
                 //}
                 _buyFailAnimator.Play("ItemFailAnimation", -1, 1f);
+                _buyFailBackgroundAnimator.Play("ItemFailBackGroundAnimation", -1, 1f);
                 _altarObject.gameObject.SetActive(false);
                 _buyImage.gameObject.SetActive(true);
                 _gainImage.gameObject.SetActive(false);
@@ -152,6 +154,7 @@ namespace QT
                 {
                     SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Shop_BuyErrorSFX);
                     _buyFailAnimator.Play("ItemFailAnimation", -1, 0f);
+                    _buyFailBackgroundAnimator.Play("ItemFailBackGroundAnimation", -1, 0f);
                     return;
                 }
                 _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);
