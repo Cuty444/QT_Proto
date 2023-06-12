@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Ranking;
+using QT.Tutorial;
 using QT.Util;
 using UnityEngine;
 
@@ -66,6 +67,16 @@ namespace QT.UI
         public void RankignClose()
         {
             _rankingButton.InteractableOn();
+        }
+
+        public void TutorialOpen()
+        {
+            SystemManager.Instance.UIManager.GetUIPanel<TutorialCanvas>().OnOpen();
+        }
+
+        public void TutorialClose()
+        {
+            _tutorialButton.InteractableOn();
         }
     }
 }
