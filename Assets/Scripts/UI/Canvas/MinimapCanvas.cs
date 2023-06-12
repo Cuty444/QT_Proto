@@ -52,6 +52,10 @@ namespace QT.UI
                     _miniMapOnOff.SetActive(false);
                 }
             });
+            _playerManager.PlayerDoorEnter.AddListener((arg) =>
+            {
+                MapCreate();
+            });
             _playerManager.PlayerCreateEvent.AddListener((player) =>
             {
                 _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
@@ -145,6 +149,10 @@ namespace QT.UI
             {
                 cell.name = cell.name + "_Start";
                 cell.SetRoomType(RoomType.Start);
+            }
+            else
+            {
+                cell.SetRoomType(RoomType.None);
             }
             cell.Setting();
             _cellList.Add(cell);

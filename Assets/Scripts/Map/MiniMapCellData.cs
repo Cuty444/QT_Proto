@@ -32,7 +32,7 @@ namespace QT.Map
         [SerializeField] private Transform _iconsTransform;
         [HideInInspector]public Vector2Int CellPos;
 
-        private const string IconPath = "Prefabs/Map/MiniMap/MiniMapIcon.prefab";
+        //private const string IconPath = "Prefabs/Map/MiniMap/MiniMapIcon.prefab";
 
         private PlayerManager _playerManager;
         private DungeonMapSystem _dungeonMapSystem;
@@ -44,7 +44,7 @@ namespace QT.Map
 
         private RoomType _roomType;
 
-        private Image _iconObject;
+        [SerializeField] private Image _iconObject;
 
         private UnityEvent _startColliderShapeSetting = new UnityEvent();
 
@@ -58,13 +58,9 @@ namespace QT.Map
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
             _mapImage.enabled = false;
             _iconsTransform.gameObject.SetActive(false);
-            _iconObject = null;
-            var image = _iconsTransform.GetComponentInChildren<Image>();
-            if (image != null)
+            if (RoomType.None == _roomType)
             {
-                image.enabled = false;
-                image.gameObject.SetActive(false);
-                SystemManager.Instance.ResourceManager.ReleaseObject(IconPath, image);
+                _iconObject.sprite = _mapIconSprite?[0];
             }
         }
 
@@ -105,13 +101,8 @@ namespace QT.Map
         {
             _playerManager.PlayerCreateEvent.RemoveListener(PlayerCreateEvent);
             _playerManager.PlayerMapPosition.RemoveListener(CellPosCheck);
-            if (_iconObject != null)
-            {
-                _iconObject.gameObject.SetActive(false);
-                //SystemManager.Instance.ResourceManager.ReleaseObject(IconPath, _iconObject);
-                Destroy(_iconObject.gameObject);
-                _iconObject = null;
-            }
+            _roomType = RoomType.None;
+
 
             for (int i = 0; i < _mapLineImages.Length; i++)
             {
@@ -165,6 +156,7 @@ namespace QT.Map
                 }
                 _lineRenders.SetActive(true);
                 _mapImage.enabled = true;
+                _iconObject.sprite = _mapIconSprite[6];
                 _iconsTransform.gameObject.SetActive(true);
                 _mapImage.color = _mapColors[0];
                 _mapImage.sprite = _mapSprites[3];
@@ -188,6 +180,7 @@ namespace QT.Map
                 _mapImage.enabled = true;
                 _mapImage.color = _mapColors[0];
                 _mapImage.sprite = _mapSprites[0];
+                _iconObject.sprite = _mapIconSprite?[(int) _roomType];
                 _iconsTransform.gameObject.SetActive(true);
                 //ColorSetLineRender(_mapColors[1]);
             }
@@ -197,6 +190,7 @@ namespace QT.Map
                 _mapImage.enabled = true;
                 _mapImage.color = _mapColors[1];
                 _mapImage.sprite = _mapSprites[1];
+                _iconObject.sprite = _mapIconSprite?[(int) _roomType];
                 _iconsTransform.gameObject.SetActive(true);
             }
             else if (_dungeonMapSystem.MultiPathClearCheck(CellPos))
@@ -204,7 +198,7 @@ namespace QT.Map
                 _mapImage.enabled = true;
                 _mapImage.color = _mapColors[1];
                 _mapImage.sprite = _mapSprites[2];
-                _iconsTransform.gameObject.SetActive(true);
+                //_iconsTransform.gameObject.SetActive(true);
             }
         }
 
@@ -216,12 +210,9 @@ namespace QT.Map
             }
         }
 
-        public async void SetRoomType(RoomType roomType)
+        public void SetRoomType(RoomType roomType)
         {
             _roomType = roomType;
-            _iconObject = await SystemManager.Instance.ResourceManager.GetFromPool<Image>(IconPath,_iconsTransform);
-            _iconObject.transform.localPosition = Vector3.zero;
-            _iconObject.transform.localScale = Vector3.one;
             _iconObject.gameObject.SetActive(true);
             _iconObject.sprite = _mapIconSprite?[(int) _roomType];
         }
