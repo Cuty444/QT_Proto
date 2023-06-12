@@ -15,6 +15,8 @@ namespace QT.InGame
 
 
         private List<EnemyAtkGameData> _atkList;
+
+        private Coroutine _atkSeqence;
         
         public DullahanAttackState(IFSMEntity owner) : base(owner)
         {
@@ -26,12 +28,13 @@ namespace QT.InGame
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
             
-            _ownerEntity.StartCoroutine(AttackSequence());
+            _atkSeqence = _ownerEntity.StartCoroutine(AttackSequence());
         }
         
         public override void ClearState()
         {
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            _ownerEntity.StopCoroutine(_atkSeqence);
         }
         
         private IEnumerator AttackSequence()
@@ -61,6 +64,7 @@ namespace QT.InGame
             }
 
             _ownerEntity.Animator.ResetTrigger(AttackAnimHash);
+            
             _ownerEntity.ChangeState(Dullahan.States.Normal);
         }
     }
