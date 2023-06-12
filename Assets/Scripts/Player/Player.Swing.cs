@@ -158,17 +158,23 @@ namespace QT.InGame
             switch (playerRotation)
             {
                 case > 0.35f and < 0.7f:
+                    _batSpriteRenderer.sortingOrder = 21;
                     return false;
                 case > 0.7f and < 0.95f:
+                    _batSpriteRenderer.sortingOrder = 21;
                     return true;
                 case > 0.95f:
                 case < -0.95f:
+                    _batSpriteRenderer.sortingOrder = 21;
                     return true;
                 case > -0.95f and < -0.7f:
+                    _batSpriteRenderer.sortingOrder = 20;
                     return false;
                 case > -0.7f and < -0.35f:
+                    _batSpriteRenderer.sortingOrder = 20;
                     return true;
                 default:
+                    _batSpriteRenderer.sortingOrder = 20;
                     return false;
             }
         }
