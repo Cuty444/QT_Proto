@@ -33,6 +33,9 @@ namespace QT.Sound
             var bgm = GameObject.Instantiate(new GameObject(), _poolRootTransform);
             _bgmEmitter = bgm.AddComponent<StudioEventEmitter>();
             bgm.name = "BGMEmitter";
+            //_masterBus = RuntimeManager.GetBus(SoundData.Bank[0]);
+            _bgmBus = RuntimeManager.GetBus(SoundData.Bank[1]);
+            _sfxBus = RuntimeManager.GetBus(SoundData.Bank[2]);
             GameObject.DontDestroyOnLoad(_poolRootTransform);
         }
 
@@ -97,6 +100,21 @@ namespace QT.Sound
         }
         public void SetMasterVolume(float value) => _masterBus.setVolume(value);
         public void SetBGMVolume(float value) => _bgmBus.setVolume(value);
-        public void SetSFXVolume(float value) => _sfxBus.setVolume(value);
+        public void SetSFXVolume(float value)
+        {
+            if (value > 0f)
+            {
+                _sfxBus.setMute(false);
+                _sfxBus.setVolume(value);
+            }
+            else
+            {
+                _sfxBus.setMute(true);
+            }
+        }
+
+        public void GetMasterVolume(out float value) => _masterBus.getVolume(out value);
+        public void GetBGMVolume(out float value) => _bgmBus.getVolume(out value);
+        public void GetSFXVolume(out float value) => _sfxBus.getVolume(out value);
     }
 }
