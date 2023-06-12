@@ -52,14 +52,17 @@ namespace QT.InGame
                 if (data.BeforeDelay > 0)
                 {
                     _ownerEntity.Animator.SetTrigger(AttackAnimHash);
-                    _soundManager.PlayOneShot(_soundManager.SoundData.Boss_BatAttack, _ownerEntity.transform.position);
-                    
+
                     yield return new WaitForSeconds(data.BeforeDelay);
 
-                SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
-                    _ownerEntity.Shooter.ShootPoint.position);
+                    _soundManager.PlayOneShot(_soundManager.SoundData.Boss_BatAttack, _ownerEntity.transform.position);
+                    
+                    SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
+                        _ownerEntity.Shooter.ShootPoint.position);
+                    
+                    _ownerEntity.AttackImpulseSource.GenerateImpulse(0.7f);
                 }
-                
+
                 _ownerEntity.Shooter.Shoot(data.ShootDataId, data.AimType, ProjectileOwner.Boss);
 
                 if (data.AfterDelay > 0)

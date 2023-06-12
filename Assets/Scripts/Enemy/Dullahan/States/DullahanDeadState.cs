@@ -52,7 +52,7 @@ namespace QT.InGame
             if (_time > 5)
             {
                 SystemManager.Instance.ResourceManager.EmitParticle(BossDeadEffectPath, _ownerEntity.CenterTransform.position);
-                _ownerEntity.ExplosionImpulseSource.GenerateImpulse(1);
+                _ownerEntity.ExplosionImpulseSource.GenerateImpulse(2);
                 _explosion = true;
                 
                 _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Landing, _ownerEntity.transform.position);

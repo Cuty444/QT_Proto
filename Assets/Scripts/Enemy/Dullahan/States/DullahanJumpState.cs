@@ -53,6 +53,7 @@ namespace QT.InGame
             
             SystemManager.Instance.ResourceManager.EmitParticle(ChargingEffectPath, _transform.position);
             _soundManager.PlayOneShot(_soundManager.SoundData.Boss_JumpReady, _ownerEntity.transform.position);
+            _ownerEntity.JumpReadyImpulseSource.GenerateImpulse(1);
             
             _shadowColor = _ownerEntity.Shadow.color;
             _shadowScale = _ownerEntity.Shadow.transform.localScale;
@@ -87,6 +88,7 @@ namespace QT.InGame
                 _state++;
                 _ownerEntity.Animator.SetBool(IsJumpingAnimHash, true);
                 _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Jump, _ownerEntity.transform.position);
+                _ownerEntity.JumpImpulseSource.GenerateImpulse(1);
                 
                 _ownerEntity.SetPhysics(false);
                 _time = 0;
@@ -131,7 +133,7 @@ namespace QT.InGame
                 _ownerEntity.Animator.SetBool(IsJumpingAnimHash, false);
                 
                 SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath, _transform.position);
-                _ownerEntity.RushShockImpulseSource.GenerateImpulse(Vector2.up);
+                _ownerEntity.LandingImpulseSource.GenerateImpulse(2);
                 
                 _ownerEntity.Shadow.color = _shadowColor;
                 _ownerEntity.Shadow.transform.localScale = _shadowScale;
