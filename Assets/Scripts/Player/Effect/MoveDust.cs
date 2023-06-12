@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using QT.Core;
 using QT.Sound;
 using UnityEngine;
@@ -12,6 +13,9 @@ namespace QT
         private const string MoveGardenEffectPath = "Effect/Prefabs/FX_P_Move_Garden.prefab";
         [SerializeField] private Transform playerTransform;
 
+        [SerializeField] private StudioEventEmitter _studioEventEmitter;
+        [SerializeField] private StudioParameterTrigger _stone;
+        [SerializeField] private StudioParameterTrigger _flower;
         private ResourceManager _resourceManager;
         private SoundManager _soundManager;
         private PlayerManager _playerManager;
@@ -51,12 +55,17 @@ namespace QT
 
         private void MoveSoundOn()
         {
+            _studioEventEmitter.Play();
             if (_playerManager.Player.IsGarden)
             {
+                _flower.TriggerParameters();
+                _soundManager.PlayOneShot(_flower.Emitters[0].Target.EventReference);
             }
             else
             {
-                _soundManager.PlayOneShot(_soundManager.SoundData.WalkSFX);
+                _stone.TriggerParameters();
+                //Lookup(_soundManager.SoundData.WalkSFX,"Stone");
+                _soundManager.PlayOneShot(_stone.Emitters[0].Target.EventReference);
             }
         }
     }
