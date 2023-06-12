@@ -25,14 +25,6 @@ namespace QT.UI
         private bool _isOpen = false;
 
         private bool _isInventory = true;
-        
-        public override void Initialize()
-        {
-            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((arg) =>
-            {
-                GetComponent<Canvas>().worldCamera = Camera.main;
-            });
-        }
 
         public override void PostSystemInitialize()
         {

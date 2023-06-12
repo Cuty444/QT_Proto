@@ -33,15 +33,7 @@ namespace QT.UI
         private List<Image> _playerHpList = new List<Image>();
         private int beforeHp = 0;
         [SerializeField] private UITweenAnimator _goldAnimation;
-
-
-        public override void Initialize()
-        {
-            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((arg) =>
-            {
-                GetComponent<Canvas>().worldCamera = Camera.main;
-            });
-        }
+        
 
         private void Start()
         {

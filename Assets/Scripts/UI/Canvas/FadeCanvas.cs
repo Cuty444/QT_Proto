@@ -16,11 +16,6 @@ namespace QT.UI
         public override void Initialize()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
-
-            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((arg) =>
-            {
-                GetComponent<Canvas>().worldCamera = Camera.main;
-            });
         }
 
         public override void PostSystemInitialize()

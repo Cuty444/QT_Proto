@@ -75,7 +75,7 @@ namespace QT.Sound
         {
             if (!_currentBgm.IsNull)
             {
-                if (data.Path == _currentBgm.Path)
+                if (data.Guid == _currentBgm.Guid)
                     return;
             }
 

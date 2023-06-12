@@ -57,7 +57,6 @@ namespace QT.UI
                 _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
                 _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
-                GetComponent<Canvas>().worldCamera = Camera.main;
                 MapCreate();
             });
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
