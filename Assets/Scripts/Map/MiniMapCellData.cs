@@ -76,14 +76,10 @@ namespace QT.Map
                     _cellMapObject = _dungeonMapSystem.StartMapObject();
                     break;
                 case RoomType.Boss:
-                    if (_dungeonMapSystem.GetFloor() == 2)
-                    {
-                        _cellMapObject = _dungeonMapSystem.BossMapObject();
-                    }
-                    else
-                    {
-                        _cellMapObject = _dungeonMapSystem.StairsMapObject();
-                    }
+                    _cellMapObject = _dungeonMapSystem.BossMapObject();
+                    break;
+                case RoomType.Stairs:
+                    _cellMapObject = _dungeonMapSystem.StairsMapObject();
                     break;
                 case RoomType.None:
                 case RoomType.Normal:
@@ -156,10 +152,15 @@ namespace QT.Map
                 }
                 _lineRenders.SetActive(true);
                 _mapImage.enabled = true;
-                _iconObject.sprite = _mapIconSprite[6];
+                _iconObject.sprite = _mapIconSprite[7];
                 _iconsTransform.gameObject.SetActive(true);
                 _mapImage.color = _mapColors[0];
                 _mapImage.sprite = _mapSprites[3];
+                if (_roomType == RoomType.Stairs)
+                {
+                    _mapImage.sprite = _mapSprites[4];
+                }
+
                 if (_mapCellData == null)
                 {
                     _startColliderShapeSetting.AddListener(() =>
@@ -180,6 +181,10 @@ namespace QT.Map
                 _mapImage.enabled = true;
                 _mapImage.color = _mapColors[0];
                 _mapImage.sprite = _mapSprites[0];
+                if (_roomType == RoomType.Stairs)
+                {
+                    _mapImage.sprite = _mapSprites[4];
+                }
                 _iconObject.sprite = _mapIconSprite?[(int) _roomType];
                 _iconsTransform.gameObject.SetActive(true);
                 //ColorSetLineRender(_mapColors[1]);
@@ -190,6 +195,10 @@ namespace QT.Map
                 _mapImage.enabled = true;
                 _mapImage.color = _mapColors[1];
                 _mapImage.sprite = _mapSprites[1];
+                if (_roomType == RoomType.Stairs)
+                {
+                    _mapImage.sprite = _mapSprites[4];
+                }
                 _iconObject.sprite = _mapIconSprite?[(int) _roomType];
                 _iconsTransform.gameObject.SetActive(true);
             }
@@ -214,6 +223,13 @@ namespace QT.Map
         {
             _roomType = roomType;
             _iconObject.gameObject.SetActive(true);
+            if (_roomType == RoomType.Boss)
+            {
+                if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() < 2)
+                {
+                    _roomType = RoomType.Stairs;
+                }
+            }
             _iconObject.sprite = _mapIconSprite?[(int) _roomType];
         }
     }
