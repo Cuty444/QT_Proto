@@ -53,7 +53,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    m_ImpulseDuration: 0.2
+    m_ImpulseDuration: 0.3
     m_ImpulseType: 0
     m_DissipationRate: 0.25
     m_RawSignal: {fileID: 0}
@@ -321,7 +321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ImpulseDefinition:
     m_ImpulseChannel: 1
-    m_ImpulseShape: 3
+    m_ImpulseShape: 4
     m_CustomImpulseShape:
       serializedVersion: 2
       m_Curve: []
@@ -1040,7 +1040,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    m_ImpulseDuration: 0.3
+    m_ImpulseDuration: 0.2
     m_ImpulseType: 0
     m_DissipationRate: 0.25
     m_RawSignal: {fileID: 0}
@@ -1376,9 +1376,6 @@ MonoBehaviour:
   _batTransform: {fileID: 7781006472145116645}
   _batSpriteRenderer: {fileID: 7781006471382150582}
   <TeleportLineTransform>k__BackingField: {fileID: 866138246295670245}
-  <DamageImpulseSource>k__BackingField: {fileID: 4929062616781592802}
-  <AttackImpulseSource>k__BackingField: {fileID: 1385383193845319107}
-  <TeleportImpulseSource>k__BackingField: {fileID: 605583733125246051}
   Animator: {fileID: 419690527243971413}
   _attackSpeedCanvas: {fileID: 8793631384815868497}
   _attackSpeedBackground:
@@ -1387,6 +1384,12 @@ MonoBehaviour:
   _attackGaugeImages:
   - {fileID: 6609393007300857756}
   - {fileID: 4575384226378967396}
+  <DamageImpulseSource>k__BackingField: {fileID: 4929062616781592802}
+  <DamageImpulseForce>k__BackingField: 3
+  <AttackImpulseSource>k__BackingField: {fileID: 1385383193845319107}
+  <AttackImpulseForce>k__BackingField: 3
+  <TeleportImpulseSource>k__BackingField: {fileID: 605583733125246051}
+  <TeleportImpulseForce>k__BackingField: 0.2
   IsFall: 0
   EnterFallObject: {fileID: 0}
   DodgePreviousPosition: {x: 0, y: 0}

@@ -90,7 +90,7 @@ namespace QT.InGame
             hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);
 
-            _ownerEntity.DamageImpulseSource.GenerateImpulse(dir);
+            _ownerEntity.DamageImpulseSource.GenerateImpulse(dir * _ownerEntity.DamageImpulseForce);
             
             if (hp <= 0)
             {
