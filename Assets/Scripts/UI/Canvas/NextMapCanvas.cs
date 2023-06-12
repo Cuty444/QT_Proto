@@ -24,6 +24,7 @@ namespace QT.NextMap
         public void OnDirection(Vector2Int direction)
         {
             OnOpen();
+            Time.timeScale = 0f;
             if (direction == Vector2Int.up)
             {
                 panel[1].gameObject.SetActive(true);
@@ -64,26 +65,26 @@ namespace QT.NextMap
 
         private IEnumerator MapBlur(Transform target,float start,float end,float duration,bool isUPLR,Action func = null)
         {
-            float startTime = Time.time;
+            float startTime = Time.realtimeSinceStartup;
             if (isUPLR)
             {
-                while (Time.time - startTime < duration)
+                while (Time.realtimeSinceStartup - startTime < duration)
                 {
                     target.transform.position =
-                        new Vector2(Mathf.Lerp(start, end, (Time.time - startTime) / duration), 0f);
+                        new Vector2(Mathf.Lerp(start, end, (Time.realtimeSinceStartup - startTime) / duration), 0f);
                     yield return null;
                 }
             }
             else
             {
-                while (Time.time - startTime < duration)
+                while (Time.realtimeSinceStartup - startTime < duration)
                 {
                     target.transform.position =
-                        new Vector2(0f, Mathf.Lerp(start, end, (Time.time - startTime) / duration));
+                        new Vector2(0f, Mathf.Lerp(start, end, (Time.realtimeSinceStartup - startTime) / duration));
                     yield return null;
                 }
             }
-
+            Time.timeScale = 1f;
             func?.Invoke();
         }
     }
