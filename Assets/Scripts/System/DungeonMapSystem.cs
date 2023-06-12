@@ -20,6 +20,7 @@ namespace QT.Core.Map
         GoldShop,
         HpShop,
         Start,
+        Stairs,
     }
 
     public class BFSCellData
