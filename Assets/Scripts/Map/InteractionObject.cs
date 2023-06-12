@@ -22,16 +22,20 @@ namespace QT
             _circleCollider2D = GetComponent<CircleCollider2D>();
         }
 
-        public void Hit(Vector2 dir, float power,AttackType attackType)
+        public void Hit(Vector2 dir, float power, AttackType attackType)
         {
             if (isHit)
                 return;
-            
-            _animator.SetTrigger(AnimationHitHash);
+
             isHit = true;
-            _circleCollider2D.enabled = false;
+
+            if (_circleCollider2D != null)
+            {
+                _circleCollider2D.enabled = false;
+                _animator.SetTrigger(AnimationHitHash);
+            }
         }
-        
+
         public Vector2 GetPosition()
         {
             return transform.position;
