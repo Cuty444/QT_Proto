@@ -15,7 +15,7 @@ namespace QT.UI
         [SerializeField] private ButtonTrigger _rankingButton;
         
         [SerializeField] private UITweenAnimator _popAnimation;
-        
+        private bool isFirst = false;
         public override void PostSystemInitialize()
         {
             OnOpen();
@@ -26,11 +26,10 @@ namespace QT.UI
             base.OnOpen();
             SystemManager.Instance.RankingManager.ResetRankingTime();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
-            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
+            //SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
             _startButton.InteractableOn();
             _tutorialButton.InteractableOn();
             _rankingButton.InteractableOn();
-
             if (!SystemManager.Instance.LoadingManager.IsJsonLoad())
             {
                 SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.AddListener(() =>
@@ -42,8 +41,19 @@ namespace QT.UI
             {
                 _popAnimation.ReStart();
             }
+            if (!isFirst)
+                isFirst = true;
+            else
+            {
+                SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
+            }
         }
 
+        public void RestartAnimation()
+        {
+            _popAnimation.ReStart();
+        }
+        
         public void GameStart()
         {
             if (SystemManager.Instance.LoadingManager.IsJsonLoad())
