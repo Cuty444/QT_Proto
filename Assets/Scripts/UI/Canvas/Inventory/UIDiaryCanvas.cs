@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks.Triggers;
 using QT.Core;
+using QT.Core.Map;
 using QT.Util;
 using UnityEngine;
 
@@ -142,6 +143,7 @@ namespace QT.UI
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             _playerManager._playerIndexInventory.Clear();
             _playerManager.globalGold = 0;
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             var uiManager = SystemManager.Instance.UIManager;
             uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
             {
@@ -159,11 +161,11 @@ namespace QT.UI
                 StartCoroutine(UnityUtil.WaitForFunc(() =>
                 {
                     SystemManager.Instance.LoadingManager.FloorLoadScene(2);
-                        SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
                         StartCoroutine(UnityUtil.WaitForFunc(() =>
                         {
                         SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
-
+                        SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+                        SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
                         }, 2f));
                 },5f));
             });
