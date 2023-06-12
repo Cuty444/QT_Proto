@@ -25,6 +25,7 @@ namespace QT
         public float AgroRange { get; set; }
         public MoveTypes MoveType { get; set; }
         public float MovementSpd { get; set; }
+        public float BodyContactDmg { get; set; }
         public float SpacingRad { get; set; }
         public float MoveTargetUpdatePeroid { get; set; }
 
