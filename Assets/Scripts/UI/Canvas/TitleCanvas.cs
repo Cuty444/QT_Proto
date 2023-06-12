@@ -12,6 +12,9 @@ namespace QT.UI
         [SerializeField] private ButtonTrigger _startButton;
         [SerializeField] private ButtonTrigger _tutorialButton;
         [SerializeField] private ButtonTrigger _rankingButton;
+        
+        [SerializeField] private UITweenAnimator _popAnimation;
+        
         public override void PostSystemInitialize()
         {
             OnOpen();
@@ -26,6 +29,18 @@ namespace QT.UI
             _startButton.InteractableOn();
             _tutorialButton.InteractableOn();
             _rankingButton.InteractableOn();
+
+            if (!SystemManager.Instance.LoadingManager.IsJsonLoad())
+            {
+                SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.AddListener(() =>
+                {
+                    _popAnimation.ReStart();
+                });
+            }
+            else
+            {
+                _popAnimation.ReStart();
+            }
         }
 
         public void GameStart()
