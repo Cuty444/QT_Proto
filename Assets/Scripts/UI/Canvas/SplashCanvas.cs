@@ -49,6 +49,7 @@ namespace QT.Splash
                 _logoCanvansGroup.alpha = 0f;
                 _logoImages[index++].gameObject.SetActive(false);
             }
+            SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().RestartAnimation();
             startTime = Time.time;
             while (Time.time - startTime < 0.5f)
             {
@@ -57,6 +58,7 @@ namespace QT.Splash
             }
             _canvasGroup.alpha = 0f;
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
+            //SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().RestartAnimation();
         }
     }
 }
