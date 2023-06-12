@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Ranking;
+using QT.Tutorial;
 using QT.Util;
 using UnityEngine;
 
@@ -12,8 +13,9 @@ namespace QT.UI
         [SerializeField] private ButtonTrigger _startButton;
         [SerializeField] private ButtonTrigger _tutorialButton;
         [SerializeField] private ButtonTrigger _rankingButton;
-
-        private bool isFirst = false;
+        
+        [SerializeField] private UITweenAnimator _popAnimation;
+        
         public override void PostSystemInitialize()
         {
             OnOpen();
@@ -24,17 +26,22 @@ namespace QT.UI
             base.OnOpen();
             SystemManager.Instance.RankingManager.ResetRankingTime();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
-            if (!isFirst)
-            {
-                isFirst = true;
-            }
-            else
-            {
-                SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
-            }
+            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
             _startButton.InteractableOn();
             _tutorialButton.InteractableOn();
             _rankingButton.InteractableOn();
+
+            if (!SystemManager.Instance.LoadingManager.IsJsonLoad())
+            {
+                SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.AddListener(() =>
+                {
+                    _popAnimation.ReStart();
+                });
+            }
+            else
+            {
+                _popAnimation.ReStart();
+            }
         }
 
         public void GameStart()
@@ -60,6 +67,16 @@ namespace QT.UI
         public void RankignClose()
         {
             _rankingButton.InteractableOn();
+        }
+
+        public void TutorialOpen()
+        {
+            SystemManager.Instance.UIManager.GetUIPanel<TutorialCanvas>().OnOpen();
+        }
+
+        public void TutorialClose()
+        {
+            _tutorialButton.InteractableOn();
         }
     }
 }

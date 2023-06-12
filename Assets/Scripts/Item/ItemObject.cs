@@ -28,6 +28,10 @@ namespace QT
         [SerializeField] private BoxCollider2D _boxCollider2D;
         [SerializeField] private BoxCollider2D _characterCollider2D;
         [SerializeField] private Transform _textPanel;
+        [SerializeField] private GameObject _buyObject;
+        [SerializeField] private Image _gainImage;
+        [SerializeField] private Animator _buyFailAnimator;
+        [SerializeField] private Animator _buyFailBackgroundAnimator;
         private PlayerManager _playerManager;
         [HideInInspector]public ItemSelectMapData _itemSelectMapData;
         public ItemGameData ItemGameData { get; private set; }
@@ -56,7 +60,11 @@ namespace QT
                 //    _goldTransform.gameObject.SetActive(false);
                 //    _hpTransform.gameObject.SetActive(true);
                 //}
+                _buyFailAnimator.Play("ItemFailAnimation", -1, 1f);
+                _buyFailBackgroundAnimator.Play("ItemFailBackGroundAnimation", -1, 1f);
                 _altarObject.gameObject.SetActive(false);
+                _buyObject.SetActive(true);
+                _gainImage.gameObject.SetActive(false);
             }
             else if (DropType == DropGameType.Start || DropType == DropGameType.Select)
             {
@@ -64,6 +72,8 @@ namespace QT
                 _goldTransform.gameObject.SetActive(false);
                 _hpTransform.gameObject.SetActive(false);
                 _blankTransform.gameObject.SetActive(true);
+                _buyObject.SetActive(false);
+                _gainImage.gameObject.SetActive(true);
                 Destroy(_boxCollider2D);
                 _altarItemCollider2D = gameObject.AddComponent<CircleCollider2D>();
                 _altarItemCollider2D.radius = 0.75f;
@@ -143,6 +153,8 @@ namespace QT
                 if (!_playerManager.Player.GetGoldComparison(ItemGameData.CostGold))
                 {
                     SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Shop_BuyErrorSFX);
+                    _buyFailAnimator.Play("ItemFailAnimation", -1, 0f);
+                    _buyFailBackgroundAnimator.Play("ItemFailBackGroundAnimation", -1, 0f);
                     return;
                 }
                 _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);

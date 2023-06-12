@@ -91,6 +91,7 @@ namespace QT.UI
                     Destroy(_playerHpList.Last().gameObject);
                     _playerHpList.Remove(_playerHpList.Last());
                 }
+                hp.AddStatus(-(beforeHp - maxHp));
             }
             beforeHp = maxHp;
 

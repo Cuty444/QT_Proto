@@ -109,4 +109,13 @@ public class PlayerChasingCamera : MonoBehaviour
         _vignette.smoothness.value = _volumDatas[index].Smooothness;
     }
 
+    public void SetTarget(Transform target)
+    {
+        _cinemachineVirtualCamera.Follow = target;
+    }
+    
+    public void SetConfiner(bool enable)
+    {
+        _cinemachineConfiner.enabled = enable;
+    }
 }

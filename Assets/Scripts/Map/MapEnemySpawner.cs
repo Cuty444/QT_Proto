@@ -89,7 +89,7 @@ namespace QT.Map
                         _playerManager.PlayerMapClearPosition.Invoke(_cellPos); // TODO : 추후 적 처치시 맵 클리어 부분에 옮겨야함
                         SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Door_OpenSFX);
                         _playerManager.PlayerMapPass.Invoke(true);
-                        SystemManager.Instance.UIManager.GetUIPanel<RecordCanvas>().OnOpen();
+                        //SystemManager.Instance.UIManager.GetUIPanel<RecordCanvas>().OnOpen();
                     }
                 }
                 else
