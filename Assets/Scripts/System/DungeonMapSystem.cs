@@ -111,7 +111,7 @@ namespace QT.Core.Map
                 StartCoroutine(UnityUtil.WaitForFunc(() =>
                 {
                     SystemManager.Instance.PlayerManager.FloorAllHitalbeRegister.Invoke(_mapCellsTransform
-                        .GetComponentsInChildren<IHitable>().ToList());
+                        .GetComponentsInChildren<IHitable>(true).ToList());
                 }, 5f));
             });
         }
