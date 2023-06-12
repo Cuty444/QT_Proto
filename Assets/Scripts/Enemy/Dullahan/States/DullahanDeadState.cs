@@ -1,5 +1,7 @@
 using System.Timers;
 using QT.Core;
+using QT.Sound;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace QT.InGame
@@ -14,12 +16,16 @@ namespace QT.InGame
         private float _time;
         private bool _explosion;
         
+        private SoundManager _soundManager;
+        
         public DullahanDeadState(IFSMEntity owner) : base(owner)
         {
         }
 
         public override void InitializeState()
         {
+            _soundManager = SystemManager.Instance.SoundManager;
+            
             _time = 0;
             _explosion = false;
             
@@ -30,6 +36,8 @@ namespace QT.InGame
 
             SystemManager.Instance.ResourceManager.EmitParticle(BossEndEffectPath, _ownerEntity.CenterTransform.position);
             _ownerEntity.DeadImpulseSource.GenerateImpulse(1);
+            
+            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Dead, _ownerEntity.transform.position);
         }
 
         public override void UpdateState()
@@ -46,6 +54,8 @@ namespace QT.InGame
                 SystemManager.Instance.ResourceManager.EmitParticle(BossDeadEffectPath, _ownerEntity.CenterTransform.position);
                 _ownerEntity.ExplosionImpulseSource.GenerateImpulse(1);
                 _explosion = true;
+                
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Landing, _ownerEntity.transform.position);
             }
         }
 
