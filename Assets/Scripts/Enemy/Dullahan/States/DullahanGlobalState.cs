@@ -1,3 +1,4 @@
+using Cinemachine;
 using QT.Core;
 using QT.Core.Data;
 using QT.UI;
@@ -29,6 +30,8 @@ namespace QT.InGame
         public override void InitializeState()
         {
             _hpCanvas.OnOpen();
+
+            GameObject.FindObjectOfType<CinemachineVirtualCamera>().m_Lens.OrthographicSize = 10;
         }
         
         private void OnDamage(Vector2 dir, float power,AttackType attackType)

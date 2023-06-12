@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.InGame
@@ -12,6 +13,8 @@ namespace QT.InGame
 
         private List<EnemyAtkGameData> _atkList;
         
+        private SoundManager _soundManager;
+
         public DullahanThrowState(IFSMEntity owner) : base(owner)
         {
             _atkList = SystemManager.Instance.DataManager.GetDataBase<EnemyAtkGameDataBase>().GetData(_ownerEntity.DullahanData.ThrowAtkId);
@@ -19,6 +22,8 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
+            _soundManager = SystemManager.Instance.SoundManager;
+
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
             
@@ -40,6 +45,8 @@ namespace QT.InGame
             {  
                 _ownerEntity.Animator.SetTrigger(ThrowAnimHash);
                 yield return new WaitForSeconds(data.BeforeDelay);
+
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Throw, _ownerEntity.transform.position);
 
                 _ownerEntity.Shooter.Shoot(data.ShootDataId, data.AimType, ProjectileOwner.Boss);
                 

@@ -1,4 +1,5 @@
 using System.Timers;
+using Cinemachine;
 using QT.Core;
 using QT.Sound;
 using Unity.VisualScripting;
@@ -38,6 +39,12 @@ namespace QT.InGame
             _ownerEntity.DeadImpulseSource.GenerateImpulse(1);
             
             _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Dead, _ownerEntity.transform.position);
+            
+            var camera = GameObject.FindObjectOfType<PlayerChasingCamera>();
+            camera.SetTarget(_ownerEntity.CenterTransform);
+            camera.SetConfiner(false);
+
+            //SystemManager.Instance.UIManager.GetUIPanel<RecordCanvas>().OnOpen();
         }
 
         public override void UpdateState()
