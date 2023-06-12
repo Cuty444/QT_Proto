@@ -28,6 +28,9 @@ namespace QT
         [SerializeField] private BoxCollider2D _boxCollider2D;
         [SerializeField] private BoxCollider2D _characterCollider2D;
         [SerializeField] private Transform _textPanel;
+        [SerializeField] private Image _buyImage;
+        [SerializeField] private Image _gainImage;
+        [SerializeField] private Animator _buyFailAnimator;
         private PlayerManager _playerManager;
         [HideInInspector]public ItemSelectMapData _itemSelectMapData;
         public ItemGameData ItemGameData { get; private set; }
@@ -56,7 +59,10 @@ namespace QT
                 //    _goldTransform.gameObject.SetActive(false);
                 //    _hpTransform.gameObject.SetActive(true);
                 //}
+                _buyFailAnimator.Play("ItemFailAnimation", -1, 1f);
                 _altarObject.gameObject.SetActive(false);
+                _buyImage.gameObject.SetActive(true);
+                _gainImage.gameObject.SetActive(false);
             }
             else if (DropType == DropGameType.Start || DropType == DropGameType.Select)
             {
@@ -64,6 +70,8 @@ namespace QT
                 _goldTransform.gameObject.SetActive(false);
                 _hpTransform.gameObject.SetActive(false);
                 _blankTransform.gameObject.SetActive(true);
+                _buyImage.gameObject.SetActive(false);
+                _gainImage.gameObject.SetActive(true);
                 Destroy(_boxCollider2D);
                 _altarItemCollider2D = gameObject.AddComponent<CircleCollider2D>();
                 _altarItemCollider2D.radius = 0.75f;
@@ -143,6 +151,7 @@ namespace QT
                 if (!_playerManager.Player.GetGoldComparison(ItemGameData.CostGold))
                 {
                     SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Shop_BuyErrorSFX);
+                    _buyFailAnimator.Play("ItemFailAnimation", -1, 0f);
                     return;
                 }
                 _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);
