@@ -60,6 +60,9 @@
 		<property name="maxVoices">
 			<value>4</value>
 		</property>
+		<property name="maximumDistance">
+			<value>10000</value>
+		</property>
 		<property name="triggerCooldown">
 			<value>20</value>
 		</property>
@@ -193,6 +196,13 @@
 	</object>
 	<object class="MixerBusPanner" id="{2c5a9eb6-19b2-4462-9b81-6e69749380fc}" />
 	<object class="MixerBusFader" id="{4e872dae-a016-48d8-badf-8df04921d88b}" />
-	<object class="SpatialiserEffect" id="{5c999af8-b41e-46fe-9402-468938c52bc2}" />
+	<object class="SpatialiserEffect" id="{5c999af8-b41e-46fe-9402-468938c52bc2}">
+		<property name="distanceRolloffType">
+			<value>1</value>
+		</property>
+		<property name="maximumDistance">
+			<value>10000</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{562cfd20-c037-4799-a09f-6d356d6b9493}" />
 </objects>
