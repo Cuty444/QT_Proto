@@ -12,6 +12,8 @@ namespace QT.UI
         [SerializeField] private ButtonTrigger _startButton;
         [SerializeField] private ButtonTrigger _tutorialButton;
         [SerializeField] private ButtonTrigger _rankingButton;
+
+        private bool isFirst = false;
         public override void PostSystemInitialize()
         {
             OnOpen();
@@ -22,7 +24,14 @@ namespace QT.UI
             base.OnOpen();
             SystemManager.Instance.RankingManager.ResetRankingTime();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
-            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
+            if (!isFirst)
+            {
+                isFirst = true;
+            }
+            else
+            {
+                SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
+            }
             _startButton.InteractableOn();
             _tutorialButton.InteractableOn();
             _rankingButton.InteractableOn();
