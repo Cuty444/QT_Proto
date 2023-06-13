@@ -80,10 +80,10 @@ namespace QT.UI
             {
                 SystemManager.Instance.LoadingManager.LoadScene(2,()=>
                 {
-                    OnClose();
-                    SystemManager.Instance.GetSystem<DungeonMapSystem>().StartCoroutine(UnityUtil.WaitForFunc(() =>
+                    StartCoroutine(UnityUtil.WaitForFunc(() =>
                     {
                         SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
+                        OnClose();
                     }, 1f));
                 });
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();

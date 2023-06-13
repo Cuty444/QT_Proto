@@ -78,22 +78,23 @@ namespace QT.UI
                 _playerHpList.Add(Instantiate(_playerHpObject,_playerHpTransform).GetComponent<Image>());
             }
 
-            var maxHp = (int) hp.Value;
-            if (beforeHp < maxHp)
+            int beforeValue = beforeHp / 25;
+            int afterValue = (int) (hp.Value / 25);
+            if (beforeValue < afterValue)
             {
-                hp.AddStatus(maxHp-beforeHp);
+                hp.AddStatus((afterValue - beforeValue) * 25);
             }
-            else if (beforeHp > maxHp)
+            else if (beforeValue > afterValue)
             {
-                int index = (beforeHp - maxHp) / 25;
+                int index = beforeValue-afterValue;
                 for (int i = 0; i < index; i++)
                 {
                     Destroy(_playerHpList.Last().gameObject);
                     _playerHpList.Remove(_playerHpList.Last());
                 }
-                hp.AddStatus(-(beforeHp - maxHp));
+                hp.AddStatus(-(index * 25));
             }
-            beforeHp = maxHp;
+            beforeHp = afterValue * 25;
 
             CurrentHpImageChange(hp);
         }
@@ -153,6 +154,38 @@ namespace QT.UI
             }
         }
 
+        /// <summary>
+        /// a 가 높은지
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private bool FloatHighEqual(float a,float b)
+        {
+            if (a - 1f >= b || a + 1f >= b)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// a 가 낮은지
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private bool FloatLowEqual(float a,float  b)
+        {
+            if (a - 1f <= b || a + 1 <= b)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
     }
 
 }
