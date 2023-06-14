@@ -41,10 +41,10 @@ public class PlayerChasingCamera : MonoBehaviour
     private void Start()
     {
         PlayerManager playerManager = SystemManager.Instance.PlayerManager;
-        playerManager.PlayerDoorEnterCameraShapeChange.AddListener((colliderTemp) =>
-        {
-            _cinemachineConfiner.m_BoundingShape2D = colliderTemp;
-        });
+        // playerManager.PlayerDoorEnterCameraShapeChange.AddListener((colliderTemp) =>
+        // {
+        //     _cinemachineConfiner.m_BoundingShape2D = colliderTemp;
+        // });
         playerManager.PlayerCreateEvent.AddListener((obj) =>
         {
             _cinemachineVirtualCamera.Follow = obj.transform;
@@ -116,6 +116,6 @@ public class PlayerChasingCamera : MonoBehaviour
     
     public void SetConfiner(bool enable)
     {
-        _cinemachineConfiner.enabled = enable;
+        //_cinemachineConfiner.enabled = enable;
     }
 }
