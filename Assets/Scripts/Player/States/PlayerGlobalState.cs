@@ -18,10 +18,11 @@ namespace QT.InGame
         private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
 
         private PlayerHPCanvas _playerHpCanvas;
-        
-        private GlobalDataSystem _globalDataSystem;
-
         private RankingManager _rankingManager;
+
+        private InputAngleDamper _roationDamper = new (5);
+        
+        
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
@@ -34,7 +35,6 @@ namespace QT.InGame
             //SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.AddListener(arg0 => TeleportLineClear());
             //SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
             SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainItem);
-            _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             _ownerEntity.OnAim.AddListener(OnAim);
         }
 
@@ -65,12 +65,13 @@ namespace QT.InGame
                 return;
             }
             var angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg - 90;
+            angle = _roationDamper.GetDampedValue(angle, Time.deltaTime);
             
             if (angle < 0)
             {
                 angle += 360;
             }
-            
+
             _ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle + 270);
 
             if (angle > 180)
@@ -80,6 +81,7 @@ namespace QT.InGame
             }
 
             var aimValue = (angle / 180 * 4) + (_ownerEntity.CurrentStateIndex == (int)Player.States.Swing ? 5 : 0);
+            
             _ownerEntity.Animator.SetFloat(AnimationMouseRotateHash, aimValue);
             _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
         }
