@@ -166,6 +166,11 @@ namespace QT.InGame
             _playerManager.OnDamageEvent.Invoke(dir, power);
         }
 
+        public float GetHp()
+        {
+            return GetStatus(PlayerStats.HP).StatusValue;
+        }
+
         public Vector2 GetPosition()
         {
             return transform.position;

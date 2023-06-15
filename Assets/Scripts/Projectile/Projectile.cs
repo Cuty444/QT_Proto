@@ -149,6 +149,11 @@ namespace QT.InGame
             return transform.position;
         }
         
+        public float GetHp()
+        {
+            return 0f;
+        }
+        
         public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection = 0,bool isPierce = false)
         {
             _ballTransform.up  = _direction = dir;

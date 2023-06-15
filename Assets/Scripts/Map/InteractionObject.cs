@@ -40,5 +40,10 @@ namespace QT
         {
             return transform.position;
         }
+        
+        public float GetHp()
+        {
+            return 0f;
+        }
     }
 }

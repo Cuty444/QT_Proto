@@ -16,5 +16,10 @@ namespace QT.InGame
         {
             return transform.position;
         }
+        
+        public float GetHp()
+        {
+            return HP.StatusValue;
+        }
     }
 }
