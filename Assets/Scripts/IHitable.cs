@@ -15,5 +15,7 @@ namespace QT
         public void Hit(Vector2 dir, float power,AttackType attackType = AttackType.Ball);
 
         public Vector2 GetPosition();
+
+        public float GetHp();
     }
 }

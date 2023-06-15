@@ -33,6 +33,7 @@ namespace QT
             _playerManager._playerIndexInventory.Clear();
             _playerManager.globalGold = 0;
             _playerManager.FloorAllHitalbeRegister.Invoke(new List<IHitable>());
+            _playerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             
             _popAnimation.ReStart();
@@ -68,7 +69,6 @@ namespace QT
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
                 SystemManager.Instance.ProjectileManager.ProjectileListClear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 

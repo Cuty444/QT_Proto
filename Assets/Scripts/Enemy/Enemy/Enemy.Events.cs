@@ -40,5 +40,10 @@ namespace QT.InGame
         {
             return LayerMask.GetMask("Wall") | LayerMask.GetMask("Player"); // TODO : 임시 추후 수정 필요
         }
+        
+        public float GetHp()
+        {
+            return HP.StatusValue;
+        }
     }
 }
