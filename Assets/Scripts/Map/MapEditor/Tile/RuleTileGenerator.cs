@@ -1,6 +1,7 @@
 //This tool is a part of the VinTools Unity Package: https://vinarkgames.itch.io/vintools
 // 출처 : https://github.com/Vinark117/Tutorials/blob/main/RuleTileGenerator/RuleTileGenerator.cs
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -76,6 +77,11 @@ public class RuleTileGenerator : EditorWindow
         //if there is a preset loaded 
         if (templ_neighbors.Count > 0)
         {
+            if (tileSprites == null)
+            {
+                tileSprites = Array.Empty<Sprite>();
+            }
+            
             EditorGUILayout.Space();
             GUILayout.Label("Preview", EditorStyles.boldLabel);
             EditorGUILayout.Space();
@@ -87,7 +93,7 @@ public class RuleTileGenerator : EditorWindow
             EditorGUILayout.Space();
 
             //show textures
-            if (templateSprites.Length != tileSprites.Length)
+            if ((templateSprites.Length) != tileSprites.Length)
             {
                 DisplayTilemapPreview(collumns, templateSprites);
             }
@@ -341,7 +347,13 @@ public class RuleTileGenerator : EditorWindow
 
     public static void SaveTile(RuleTile tile, string name)
     {
-        AssetDatabase.CreateAsset(tile, $"Assets/{name}.asset");
+        var folderPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
+        if (folderPath.Contains("."))
+        {
+            folderPath = folderPath.Remove(folderPath.LastIndexOf('/'));
+        }
+
+        AssetDatabase.CreateAsset(tile, $"{folderPath}/{name}.asset");
         AssetDatabase.SaveAssets();
 
         EditorUtility.FocusProjectWindow();
