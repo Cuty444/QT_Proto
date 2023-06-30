@@ -10,7 +10,7 @@ namespace QT.Map
 {
     public class MapEditor : EditorWindow
     {
-        private const string LevelToolScenePath = "Assets/Scenes/MapEditScene.unity";
+        private const string LevelToolScenePath = "Assets/Scenes/RDScene/MapEditScene.unity";
         private const string MapCellPrefabPath = "Assets/Scenes/MapEditScene.unity";
         private const string MapCellParentName = "MapCell";
 
@@ -18,7 +18,7 @@ namespace QT.Map
 
         private Transform _mapCellParent;
 
-        [MenuItem("¸Ê ¿¡µğÅÍ/¸Ê ¿¡µğÅÍ ¿­±â", false, 0)]
+        [MenuItem("ë§µ ì—ë””í„°/ë§µ ì—ë””í„° ì—´ê¸°", false, 0)]
         public static void OpenMapEditor()
         {
             GetWindow(typeof(MapEditor));
@@ -33,7 +33,7 @@ namespace QT.Map
         {
             if (EditorSceneManager.GetActiveScene().path != LevelToolScenePath)
             {
-                if (GUILayout.Button("·¹º§ Åø ¾À ¿­±â"))
+                if (GUILayout.Button("ë ˆë²¨ íˆ´ ì”¬ ì—´ê¸°"))
                 {
                     OpenLevelToolScene();
                 }
@@ -43,12 +43,12 @@ namespace QT.Map
 
             if (_target == null)
             {
-                EditorGUILayout.HelpBox("Å¸°ÙÀÌ ¾ø½À´Ï´Ù.", MessageType.Warning);
+                EditorGUILayout.HelpBox("ì”¬ì— í¸ì§‘í•  MapCellì´ ì—†ìŠµë‹ˆë‹¤.", MessageType.Warning);
                 GetTarget();
 
                 GUILayout.Space(20);
                 
-                if (GUILayout.Button("»õ·Î¿î MapCell ¸¸µé±â"))
+                if (GUILayout.Button("ìƒˆë¡œìš´ MapCell ë§Œë“¤ê¸°"))
                 {
                     
                 }
@@ -57,7 +57,7 @@ namespace QT.Map
             }
 
             
-            if (GUILayout.Button("Å¸ÀÏ ÆÈ·¹Æ® ¿­±â"))
+            if (GUILayout.Button("íƒ€ì¼ íŒ”ë ˆíŠ¸ ì—´ê¸°"))
             {
                 EditorApplication.ExecuteMenuItem("Window/2D/Tile Palette");
             }
