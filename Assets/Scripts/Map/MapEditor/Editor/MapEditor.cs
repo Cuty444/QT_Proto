@@ -12,11 +12,12 @@ namespace QT.Map
     {
         private const string LevelToolScenePath = "Assets/Scenes/RDScene/MapEditScene.unity";
         private const string MapCellPrefabPath = "Assets/Scenes/MapEditScene.unity";
-        private const string MapCellParentName = "MapCell";
 
         private MapCellData _target;
 
-        private Transform _mapCellParent;
+        private MapEditorSceneManager _sceneManager;
+        private PrefabStage _prefabStage;
+        
 
         [MenuItem("맵 에디터/맵 에디터 열기", false, 0)]
         public static void OpenMapEditor()
@@ -31,66 +32,136 @@ namespace QT.Map
 
         private void OnGUI()
         {
-            if (EditorSceneManager.GetActiveScene().path != LevelToolScenePath)
+            UnityEditor.Tilemaps.GridPaintingState.scenePaintTargetChanged -= CheckCurrentTileMap;
+            UnityEditor.Tilemaps.GridPaintingState.scenePaintTargetChanged += CheckCurrentTileMap;
+           
+            
+            if (!CheckScene())
             {
-                if (GUILayout.Button("레벨 툴 씬 열기"))
-                {
-                    OpenLevelToolScene();
-                }
-
                 return;
             }
-
-            if (_target == null)
+            
+            if (!CheckMapCell())
             {
-                EditorGUILayout.HelpBox("씬에 편집할 MapCell이 없습니다.", MessageType.Warning);
-                GetTarget();
-
-                GUILayout.Space(20);
-                
-                if (GUILayout.Button("새로운 MapCell 만들기"))
-                {
-                    
-                }
-                
                 return;
             }
-
             
             if (GUILayout.Button("타일 팔레트 열기"))
             {
                 EditorApplication.ExecuteMenuItem("Window/2D/Tile Palette");
             }
+            
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal( );
+            
+            if (_prefabStage == null)
+            { 
+                if (GUILayout.Button("저장", GUILayout.Width(100),GUILayout.ExpandWidth(true)))
+                {
+                }
+
+                if (GUILayout.Button("다른 이름으로 저장",GUILayout.Width(100),GUILayout.ExpandWidth(true)))
+                {
+                }
+            }
+
+            GUILayout.EndHorizontal();
         }
 
-        private void OpenLevelToolScene()
+        // private void Update()
+        // {
+        //     var tools = UnityEditor.Tilemaps.TilemapEditorTool.tilemapEditorTools;
+        //     
+        //     if (!UnityEditor.Tilemaps.GridPaintingState.activeBrushEditor)
+        //     {
+        //         CheckCurrentTileMap(null);
+        //     }
+        // }
+
+
+        private bool CheckScene()
         {
-            EditorSceneManager.OpenScene(LevelToolScenePath);
-
-            _mapCellParent = GameObject.Find(MapCellParentName)?.transform;
-
-            if (_mapCellParent == null)
+            _prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            
+            if (_prefabStage == null && EditorSceneManager.GetActiveScene().path != LevelToolScenePath)
             {
-                _mapCellParent = new GameObject(MapCellParentName).transform;
+                if (GUILayout.Button("레벨 툴 씬 열기"))
+                {
+                    OpenLevelToolScene();
+                }
+                return false;
             }
+
+            if (_sceneManager == null)
+            {
+                _sceneManager = FindObjectOfType<MapEditorSceneManager>();
+            }
+
+            return true;
+        }
+
+        private bool CheckMapCell()
+        {
+            if (_target == null)
+            {
+                EditorGUILayout.HelpBox("씬에 편집할 MapCell이 없습니다.\nMapCell 프리팹을 씬에 배치해주세요!", MessageType.Warning);
+                
+                if (_prefabStage != null)
+                {
+                    GetPrefabStageTarget();
+                }
+                else
+                {
+                    GUILayout.Space(20);
+                
+                    _target = _sceneManager.Target;
+                    
+                    if (GUILayout.Button("새로운 MapCell 만들기"))
+                    {
+                    
+                    }
+                }
+                return false;
+            }
+
+            return true;
         }
         
-        private void GetTarget()
+        
+        private void OpenLevelToolScene()
         {
-            var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
-
-            if (prefabStage != null)
+            if (EditorSceneManager.GetActiveScene().path != LevelToolScenePath)
             {
-                _target = prefabStage.FindComponentOfType<MapCellData>();
+                EditorSceneManager.OpenScene(LevelToolScenePath);
             }
-            else
+
+            _sceneManager = FindObjectOfType<MapEditorSceneManager>();
+        }
+        
+        private void GetPrefabStageTarget()
+        {
+            if (_prefabStage != null)
             {
-                _target = FindObjectOfType<MapCellData>();
+                _target = _prefabStage.FindComponentOfType<MapCellData>();
+            }
+        }
+
+        private void CheckCurrentTileMap(GameObject currentTilemap)
+        {
+            var targets = FindObjectsOfType<Tilemap>();
+            
+            foreach (var target in targets)
+            {
+                var color = target.color;
+                color.a = target.gameObject == currentTilemap ? 1 : 0.5f;
+                
+                target.color = color;
             }
         }
 
         private void ShowMapCells()
         {
+            Debug.Log(UnityEditor.Tilemaps.GridSelection.active);
         }
     }
 }
