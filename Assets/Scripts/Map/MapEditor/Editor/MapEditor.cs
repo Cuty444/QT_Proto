@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine.Tilemaps;
+
+using UnityEditor;
+using UnityEditor.Tilemaps;
+using UnityEditor.EditorTools;
+using UnityEditor.SceneManagement;
 
 namespace QT.Map
 {
@@ -17,6 +20,8 @@ namespace QT.Map
 
         private MapEditorSceneManager _sceneManager;
         private PrefabStage _prefabStage;
+
+        private bool _isTileEditing = false;
         
 
         [MenuItem("맵 에디터/맵 에디터 열기", false, 0)]
@@ -32,9 +37,13 @@ namespace QT.Map
 
         private void OnGUI()
         {
-            UnityEditor.Tilemaps.GridPaintingState.scenePaintTargetChanged -= CheckCurrentTileMap;
-            UnityEditor.Tilemaps.GridPaintingState.scenePaintTargetChanged += CheckCurrentTileMap;
-           
+            if (Application.isPlaying)
+            {
+                EditorGUILayout.HelpBox("플레이 모드에서는 맵 에디터 기능을 사용할 수 없습니다!", MessageType.Warning);
+                return;
+            }
+            
+            SetEvents();
             
             if (!CheckScene())
             {
@@ -68,15 +77,14 @@ namespace QT.Map
             GUILayout.EndHorizontal();
         }
 
-        // private void Update()
-        // {
-        //     var tools = UnityEditor.Tilemaps.TilemapEditorTool.tilemapEditorTools;
-        //     
-        //     if (!UnityEditor.Tilemaps.GridPaintingState.activeBrushEditor)
-        //     {
-        //         CheckCurrentTileMap(null);
-        //     }
-        // }
+        private void SetEvents()
+        {
+            GridPaintingState.scenePaintTargetChanged -= CheckCurrentTileMap;
+            GridPaintingState.scenePaintTargetChanged += CheckCurrentTileMap;
+            
+            ToolManager.activeToolChanged -= OnToolChanged;
+            ToolManager.activeToolChanged += OnToolChanged;
+        }
 
 
         private bool CheckScene()
@@ -146,8 +154,35 @@ namespace QT.Map
             }
         }
 
+        private void OnToolChanged()
+        {
+            _isTileEditing = ToolManager.activeToolType.IsSubclassOf(typeof(TilemapEditorTool));
+
+            if (_isTileEditing)
+            {
+                CheckCurrentTileMap(GridPaintingState.scenePaintTarget);
+            }
+            else
+            {
+                var targets = FindObjectsOfType<Tilemap>();
+            
+                foreach (var target in targets)
+                {
+                    var color = target.color;
+                    color.a = 1;
+                
+                    target.color = color;
+                }
+            }
+        }
+        
         private void CheckCurrentTileMap(GameObject currentTilemap)
         {
+            if (!_isTileEditing)
+            {
+                return;
+            }
+            
             var targets = FindObjectsOfType<Tilemap>();
             
             foreach (var target in targets)
