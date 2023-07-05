@@ -12,6 +12,7 @@ using UnityEngine.Tilemaps;
 public class RuleTileGenerator : EditorWindow
 {
     private const string DefaultTemplatePath = "Assets/Scripts/Map/MapEditor/Template.png";
+    private const string DefaultWallTemplatePath = "Assets/Scripts/Map/MapEditor/Template_Wall.png";
     
     private Vector2 scrollpos;
 
@@ -57,16 +58,18 @@ public class RuleTileGenerator : EditorWindow
 
             EditorGUILayout.Space();
             
-            if (GUILayout.Button("기본 템플릿 가져오기"))
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("기본 템플릿 가져오기", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
             {
-                var sprites = AssetDatabase.LoadAllAssetsAtPath(DefaultTemplatePath);
-                templateSprites = new Sprite[sprites.Length-1];
-                for (int i = 1; i < sprites.Length; i++)
-                {
-                    templateSprites[i - 1] = sprites[i] as Sprite;
-                }
-                //LoadTemplate();
+                SetTemplate(DefaultTemplatePath);
             }
+
+            if (GUILayout.Button("기본 벽 템플릿 가져오기", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+            {
+                SetTemplate(DefaultWallTemplatePath);
+            }
+            
+            GUILayout.EndHorizontal();
             
             if (GUILayout.Button("템플릿 로드하기"))
             {
@@ -158,6 +161,16 @@ public class RuleTileGenerator : EditorWindow
         GUILayout.EndScrollView();
     }
 
+    private void SetTemplate(string path)
+    {
+        var sprites = AssetDatabase.LoadAllAssetsAtPath(path);
+        templateSprites = new Sprite[sprites.Length-1];
+        for (int i = 1; i < sprites.Length; i++)
+        {
+            templateSprites[i - 1] = sprites[i] as Sprite;
+        }
+    }
+    
 
     public Sprite[] templateSprites = new Sprite[0];
 

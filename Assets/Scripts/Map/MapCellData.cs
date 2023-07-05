@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Map;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.Rendering;
 
 namespace QT.Map
 {
     public class MapCellData : MonoBehaviour
     {
+        [field: SerializeField] public Tilemap TilemapHardCollider { get; private set; }
+        [field: SerializeField] public Tilemap TilemapTop { get; private set; }
+
         [SerializeField] private Transform[] _doorTransforms;
         [SerializeField] private Transform[] _doorExitTransforms;
         [SerializeField] private Transform _enemySpawnersTransform;
