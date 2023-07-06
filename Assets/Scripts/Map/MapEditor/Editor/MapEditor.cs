@@ -159,13 +159,13 @@ namespace QT.Map
                     GUILayout.Space(20);
 
                     _target = _sceneManager.Target;
-
-                    if (GUILayout.Button("새로운 MapCell 만들기"))
+                    
+                    if (_target == null && GUILayout.Button("새로운 MapCell 만들기"))
                     {
                     }
                 }
 
-                return false;
+                return _target != null;
             }
 
             return true;
@@ -227,6 +227,11 @@ namespace QT.Map
 
         private void OnTilemapTileChanged(Tilemap target, Tilemap.SyncTile[] tiles)
         {
+            if (!CheckMapCell())
+            {
+                return;
+            }
+            
             if (target == _target.TilemapHardCollider)
             {
                 TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
