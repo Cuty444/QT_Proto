@@ -298,11 +298,11 @@ public class RuleTileGenerator : EditorWindow
                 if (i < tiles.Length)
                 {
                     //get slice data
-                    Rect slice = tiles[i].rect;
-                    if (!tiles[i].texture.isReadable)
+                    if (!tiles[i] || !tiles[i].texture.isReadable)
                     {
                         return false;
                     }
+                    Rect slice = tiles[i].rect;
                     
                     Color[] cols = tiles[i].texture.GetPixels((int)slice.x, (int)slice.y, (int)slice.width, (int)slice.height);
 
@@ -360,17 +360,13 @@ public class RuleTileGenerator : EditorWindow
 
     public static void SaveTile(RuleTile tile, string name)
     {
-        var folderPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
-        if (folderPath.Contains("."))
-        {
-            folderPath = folderPath.Remove(folderPath.LastIndexOf('/'));
-        }
-
-        AssetDatabase.CreateAsset(tile, $"{folderPath}/{name}.asset");
+        var path = EditorUtility.SaveFilePanelInProject("룰타일 저장", $"{name}.asset", "asset", "룰티일 저장");
+        
+        AssetDatabase.CreateAsset(tile, path);
         AssetDatabase.SaveAssets();
-
+        
         EditorUtility.FocusProjectWindow();
-
+        
         Selection.activeObject = tile;
     }
 }
