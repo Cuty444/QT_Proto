@@ -20,12 +20,14 @@ namespace QT.Map
         private MapEditorSceneManager _sceneManager;
         private PrefabStage _prefabStage;
 
-        private bool _isTileEditing = false;
+        private bool _isTileEditing;
 
         private Palette _palette;
 
-        private int _wallHeight = 4;
+        private int _wallHeight = 3;
         private Color _deactivatedColor = new Color(0.8f, 0.8f, 0.8f, 0.8f);
+
+        private bool _isPrefab = false;
 
         [MenuItem("맵 에디터/맵 에디터 열기", false, 0)]
         public static void OpenMapEditor()
@@ -35,7 +37,7 @@ namespace QT.Map
 
         private void Awake()
         {
-            OpenLevelToolScene();
+            //OpenLevelToolScene();
             SetPalette(GridPaintingState.palette);
         }
 
@@ -70,24 +72,9 @@ namespace QT.Map
             {
                 SetPalette(GridPaintingState.palette);
             }
-
-            GUILayout.Space(5);
-            GUILayout.BeginHorizontal();
-
-            if (_prefabStage == null)
-            {
-                if (GUILayout.Button("저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
-                {
-                }
-
-                if (GUILayout.Button("다른 이름으로 저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
-                {
-                }
-            }
-
-            GUILayout.EndHorizontal();
-
             
+            SavePrefab();
+
             GUILayout.Space(20);
             
             _deactivatedColor = EditorGUILayout.ColorField("비 활성화된 레이어 색상", _deactivatedColor);
@@ -159,9 +146,17 @@ namespace QT.Map
                     GUILayout.Space(20);
 
                     _target = _sceneManager.Target;
-                    
-                    if (_target == null && GUILayout.Button("새로운 MapCell 만들기"))
+
+                    if (_target == null)
                     {
+                        if (GUILayout.Button("새로운 MapCell 만들기"))
+                        {
+                            
+                        }
+                    }
+                    else
+                    {
+                        _isPrefab = PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject);
                     }
                 }
 
@@ -187,6 +182,7 @@ namespace QT.Map
             if (_prefabStage != null)
             {
                 _target = _prefabStage.FindComponentOfType<MapCellData>();
+                _isPrefab = true;
             }
         }
 
@@ -338,5 +334,43 @@ namespace QT.Map
             
             _target.TilemapTop.SetTiles(datas.ToArray(), false);
         }
+
+        private void SavePrefab()
+        {
+            if (_prefabStage != null)
+            {
+                return;
+            }
+            
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal();
+            
+            if (_isPrefab && GUILayout.Button("저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+            {
+                PrefabUtility.ApplyPrefabInstance(_target.gameObject, InteractionMode.UserAction);
+            }
+
+            if (GUILayout.Button("다른 이름으로 저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+            {
+                var path = EditorUtility.SaveFilePanelInProject("맵 셀 저장", $"{_target.gameObject.name}.prefab", "prefab", "MapCell 저장");
+
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    PrefabUtility.UnpackPrefabInstance(_target.gameObject, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
+                        
+                    var target = PrefabUtility.SaveAsPrefabAssetAndConnect(_target.gameObject, path, InteractionMode.UserAction);
+                    AssetDatabase.SaveAssets();
+        
+                    EditorUtility.FocusProjectWindow();
+                    Selection.activeObject = target;
+                        
+                    _isPrefab = true;
+
+                    _target.gameObject.name = path.Split('\\', '/', '.')[^2];
+                }
+            }
+            GUILayout.EndHorizontal();
+        }
+        
     }
 }
