@@ -1,47 +1,99 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using QT.Core;
+using QT.Map;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEditor.Tilemaps;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace QT.Tilemaps
 {
     [CustomGridBrush(true, false, false, "Enemy Brush")]
     public class EnemyBrush : GridBrush
     {
+        [SerializeField] private Vector3 _offset = Vector3.zero;
+        [SerializeField] private Vector3 _scale = Vector3.one;
+        [SerializeField] private Quaternion _orientation = Quaternion.identity;
+        
+        public Vector3 m_Anchor = new Vector3(0.5f, 0.5f, 0.0f);
+        
+
+        
         public override void Paint(GridLayout grid, GameObject brushTarget, Vector3Int position)
         {
-            base.Paint(grid, brushTarget, position);
+            Vector3Int min = position - pivot;
+            BoundsInt bounds = new BoundsInt(min, Vector3Int.one);
+
+            BoxFill(grid, brushTarget, bounds);
         }
         
-        
-        
-        private static void SetSceneCell(GridLayout grid, Transform parent, Vector3Int position, GameObject go, Vector3 offset, Vector3 scale, Quaternion orientation, Vector3 anchor)
+        private void PaintCell(GridLayout grid, Vector3Int position, Transform parent)
         {
-            if (go == null)
-                return;
-
-            GameObject instance;
-            if (PrefabUtility.IsPartOfPrefabAsset(go))
+            var existingGO = GetObjectInCell(grid, parent, position, m_Anchor);
+            if (existingGO == null)
             {
-                instance = (GameObject) PrefabUtility.InstantiatePrefab(go, parent != null ? parent.root.gameObject.scene : SceneManager.GetActiveScene());
-                instance.transform.parent = parent;
+                SetSceneCell(grid, parent, position, _offset, _scale, _orientation, m_Anchor);
             }
-            else
-            {
-                instance = Instantiate(go, parent);
-                instance.name = go.name;
-                instance.SetActive(true);
-                foreach (var renderer in instance.GetComponentsInChildren<Renderer>())
-                {
-                    renderer.enabled = true;
-                }
-            }
+        }
 
+        public override void Erase(GridLayout gridLayout, GameObject brushTarget, Vector3Int position)
+        {
+            Vector3Int min = position - pivot;
+            BoundsInt bounds = new BoundsInt(min, Vector3Int.one);
+
+            GetGrid(ref gridLayout, ref brushTarget);
+            BoxErase(gridLayout, brushTarget, bounds);
+        }
+        
+        private void EraseCell(GridLayout grid, Vector3Int position, Transform parent)
+        {
+            ClearSceneCell(grid, parent, position);
+        }
+
+        public override void BoxFill(GridLayout gridLayout, GameObject brushTarget, BoundsInt position)
+        {
+            GetGrid(ref gridLayout, ref brushTarget);
+            
+            foreach (Vector3Int location in position.allPositionsWithin)
+            {
+                Vector3Int local = location - position.min;
+                PaintCell(gridLayout, location, brushTarget != null ? brushTarget.transform : null);
+            }
+        }
+        
+        public override void BoxErase(GridLayout gridLayout, GameObject brushTarget, BoundsInt position)
+        {
+            GetGrid(ref gridLayout, ref brushTarget);
+            
+            foreach (Vector3Int location in position.allPositionsWithin)
+            {
+                EraseCell(gridLayout, location, brushTarget != null ? brushTarget.transform : null);
+            }
+        }
+        
+        private void GetGrid(ref GridLayout gridLayout, ref GameObject brushTarget)
+        {
+            if (brushTarget != null)
+            {
+                var targetGridLayout = brushTarget.GetComponent<GridLayout>();
+                if (targetGridLayout != null)
+                    gridLayout = targetGridLayout;
+            }
+        }
+        
+        private static void SetSceneCell(GridLayout grid, Transform parent, Vector3Int position, Vector3 offset, Vector3 scale, Quaternion orientation, Vector3 anchor)
+        {
+            GameObject instance = new GameObject("Enemy");
+            instance.transform.parent = parent;
+          
+            
+            
             Undo.RegisterCreatedObjectUndo(instance, "Paint Enemy");
             var anchorRatio = GetAnchorRatio(grid, anchor);
             
@@ -51,6 +103,12 @@ namespace QT.Tilemaps
             instance.transform.Translate(offset);
         }
         
+        private void ClearSceneCell(GridLayout grid, Transform parent, Vector3Int position)
+        {
+            var erased = GetObjectInCell(grid, parent, position, m_Anchor);
+            if (erased != null)
+                Undo.DestroyObjectImmediate(erased);
+        }
 
         private GameObject GetObjectInCell(GridLayout grid, Transform parent, Vector3Int position, Vector3 anchor)
         {
@@ -115,7 +173,28 @@ namespace QT.Tilemaps
 
         public override void OnPaintInspectorGUI()
         {
+            GUILayout.Space(30);
+            base.OnPaintInspectorGUI();
             //Debug.LogError(SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(500).Index);
+        }
+        
+        public override GameObject[] validTargets
+        {
+            get
+            {
+                StageHandle currentStageHandle = StageUtility.GetCurrentStageHandle();
+                var mapcell = currentStageHandle.FindComponentOfType<MapCellData>();
+
+                return new[] {mapcell.Enemy.gameObject};
+                
+                // var results = currentStageHandle.FindComponentsOfType<GridLayout>().Where(x =>
+                // {
+                //     GameObject gameObject;
+                //     return (gameObject = x.gameObject).scene.isLoaded
+                //            && gameObject.activeInHierarchy && ;
+                // }).Select(x => x.gameObject);
+                // return results.ToArray();
+            }
         }
     }
 }
