@@ -66,11 +66,8 @@ namespace QT.Map
                 if (GUILayout.Button("타일 팔레트 열기"))
                 {
                     EditorApplication.ExecuteMenuItem("Window/2D/Tile Palette");
+                    SetPalette(GridPaintingState.palette);
                 }
-            }
-            else
-            {
-                SetPalette(GridPaintingState.palette);
             }
             
             SavePrefab();
@@ -87,6 +84,8 @@ namespace QT.Map
             {
                 ResetTilemapTop();
             }
+            
+            
         }
 
         private void SetEvents()
@@ -186,6 +185,102 @@ namespace QT.Map
             }
         }
 
+        private void SavePrefab()
+        {
+            if (_prefabStage != null)
+            {
+                return;
+            }
+            
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal();
+            
+            if (_isPrefab && GUILayout.Button("저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+            {
+                PrefabUtility.ApplyPrefabInstance(_target.gameObject, InteractionMode.UserAction);
+            }
+
+            if (GUILayout.Button("다른 이름으로 저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+            {
+                var path = EditorUtility.SaveFilePanelInProject("맵 셀 저장", $"{_target.gameObject.name}.prefab", "prefab", "MapCell 저장");
+
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    PrefabUtility.UnpackPrefabInstance(_target.gameObject, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
+                        
+                    var target = PrefabUtility.SaveAsPrefabAssetAndConnect(_target.gameObject, path, InteractionMode.UserAction);
+                    AssetDatabase.SaveAssets();
+        
+                    EditorUtility.FocusProjectWindow();
+                    Selection.activeObject = target;
+                        
+                    _isPrefab = true;
+
+                    _target.gameObject.name = path.Split('\\', '/', '.')[^2];
+                }
+            }
+            GUILayout.EndHorizontal();
+        }
+        
+        private void ResetTilemapTop()
+        {
+            TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
+            {
+                return new TileChangeData(pos, tile, Color.white, Matrix4x4.identity);
+            }
+
+            Undo.RecordObject(_target.TilemapTop, "Reset Top");
+
+            var targetMap = _target.TilemapHardCollider;
+            var bound = targetMap.cellBounds;
+            var datas = new List<TileChangeData>();
+
+            _target.TilemapTop.ClearAllTiles();
+
+            for (int x = bound.xMin; x < bound.xMax; x++)
+            {
+                for (int y = bound.yMax; y >= bound.yMin; y--)
+                {
+                    var pos = new Vector3Int(x, y);
+
+                    if (!targetMap.HasTile(pos))
+                    {
+                        continue;
+                    }
+
+                    if (!targetMap.HasTile(pos + Vector3Int.up))
+                    {
+                        datas.Add(CreateTileData(pos + Vector3Int.up, _palette.TopTile));
+                    }
+
+                    if (!targetMap.HasTile(pos + Vector3Int.left) ||
+                        !targetMap.HasTile(pos + Vector3Int.right))
+                    {
+                        bool heightCheck = true;
+
+                        var checkPos = pos;
+                        for (int i = 0; i < _wallHeight; i++)
+                        {
+                            checkPos += Vector3Int.down;
+                            if (!targetMap.HasTile(checkPos))
+                            {
+                                heightCheck = false;
+                                break;
+                            }
+                        }
+
+                        if (heightCheck)
+                        {
+                            datas.Add(CreateTileData(pos, _palette.TopTile));
+                        }
+                    }
+                }
+            }
+            
+            _target.TilemapTop.SetTiles(datas.ToArray(), false);
+        }
+        
+        
         private void OnToolChanged()
         {
             _isTileEditing = ToolManager.activeToolType.IsSubclassOf(typeof(TilemapEditorTool));
@@ -275,101 +370,6 @@ namespace QT.Map
                 
                 _target.TilemapTop.SetTiles(datas.ToArray(), false);
             }
-        }
-
-        private void ResetTilemapTop()
-        {
-            TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
-            {
-                return new TileChangeData(pos, tile, Color.white, Matrix4x4.identity);
-            }
-
-            Undo.RecordObject(_target.TilemapTop, "Reset Top");
-
-            var targetMap = _target.TilemapHardCollider;
-            var bound = targetMap.cellBounds;
-            var datas = new List<TileChangeData>();
-
-            _target.TilemapTop.ClearAllTiles();
-
-            for (int x = bound.xMin; x < bound.xMax; x++)
-            {
-                for (int y = bound.yMax; y >= bound.yMin; y--)
-                {
-                    var pos = new Vector3Int(x, y);
-
-                    if (!targetMap.HasTile(pos))
-                    {
-                        continue;
-                    }
-
-                    if (!targetMap.HasTile(pos + Vector3Int.up))
-                    {
-                        datas.Add(CreateTileData(pos + Vector3Int.up, _palette.TopTile));
-                    }
-
-                    if (!targetMap.HasTile(pos + Vector3Int.left) ||
-                        !targetMap.HasTile(pos + Vector3Int.right))
-                    {
-                        bool heightCheck = true;
-
-                        var checkPos = pos;
-                        for (int i = 0; i < _wallHeight; i++)
-                        {
-                            checkPos += Vector3Int.down;
-                            if (!targetMap.HasTile(checkPos))
-                            {
-                                heightCheck = false;
-                                break;
-                            }
-                        }
-
-                        if (heightCheck)
-                        {
-                            datas.Add(CreateTileData(pos, _palette.TopTile));
-                        }
-                    }
-                }
-            }
-            
-            _target.TilemapTop.SetTiles(datas.ToArray(), false);
-        }
-
-        private void SavePrefab()
-        {
-            if (_prefabStage != null)
-            {
-                return;
-            }
-            
-            GUILayout.Space(5);
-            GUILayout.BeginHorizontal();
-            
-            if (_isPrefab && GUILayout.Button("저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
-            {
-                PrefabUtility.ApplyPrefabInstance(_target.gameObject, InteractionMode.UserAction);
-            }
-
-            if (GUILayout.Button("다른 이름으로 저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
-            {
-                var path = EditorUtility.SaveFilePanelInProject("맵 셀 저장", $"{_target.gameObject.name}.prefab", "prefab", "MapCell 저장");
-
-                if (!string.IsNullOrWhiteSpace(path))
-                {
-                    PrefabUtility.UnpackPrefabInstance(_target.gameObject, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
-                        
-                    var target = PrefabUtility.SaveAsPrefabAssetAndConnect(_target.gameObject, path, InteractionMode.UserAction);
-                    AssetDatabase.SaveAssets();
-        
-                    EditorUtility.FocusProjectWindow();
-                    Selection.activeObject = target;
-                        
-                    _isPrefab = true;
-
-                    _target.gameObject.name = path.Split('\\', '/', '.')[^2];
-                }
-            }
-            GUILayout.EndHorizontal();
         }
         
     }
