@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEditor;
@@ -13,7 +11,7 @@ namespace QT.Map
     public class MapEditor : EditorWindow
     {
         private const string LevelToolScenePath = "Assets/Scenes/RDScene/MapEditScene.unity";
-        private const string MapCellPrefabPath = "Assets/Scenes/MapEditScene.unity";
+        private const string MapCellPrefabPath = "Assets/Scripts/Map/MapEditor/MapCell.prefab";
 
         private MapCellData _target;
 
@@ -41,6 +39,11 @@ namespace QT.Map
             SetPalette(GridPaintingState.palette);
         }
 
+        private void OnValidate()
+        {
+            SetEvents();
+        }
+
         private void OnGUI()
         {
             if (Application.isPlaying)
@@ -49,15 +52,21 @@ namespace QT.Map
                 return;
             }
 
-            SetEvents();
-
             if (!CheckScene())
             {
                 return;
             }
-
-            if (!CheckMapCell())
+            
+            if (_target == null && !CheckMapCell())
             {
+                EditorGUILayout.HelpBox("씬에 편집할 MapCell이 없습니다.\nMapCell 프리팹을 씬에 배치해주세요!", MessageType.Warning);
+                
+                if (GUILayout.Button("새로운 MapCell 만들기"))
+                {
+                    var target = PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(MapCellPrefabPath)) as GameObject;
+                    PrefabUtility.UnpackPrefabInstance(target, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
+                }
+
                 return;
             }
 
@@ -132,37 +141,17 @@ namespace QT.Map
 
         private bool CheckMapCell()
         {
-            if (_target == null)
+            if (_prefabStage != null)
             {
-                EditorGUILayout.HelpBox("씬에 편집할 MapCell이 없습니다.\nMapCell 프리팹을 씬에 배치해주세요!", MessageType.Warning);
-
-                if (_prefabStage != null)
-                {
-                    GetPrefabStageTarget();
-                }
-                else
-                {
-                    GUILayout.Space(20);
-
-                    _target = _sceneManager.Target;
-
-                    if (_target == null)
-                    {
-                        if (GUILayout.Button("새로운 MapCell 만들기"))
-                        {
-                            
-                        }
-                    }
-                    else
-                    {
-                        _isPrefab = PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject);
-                    }
-                }
-
-                return _target != null;
+                GetPrefabStageTarget();
+            }
+            else
+            {
+                _target = _sceneManager.Target;
+                if (_target != null) _isPrefab = PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject);
             }
 
-            return true;
+            return _target != null;
         }
 
 
