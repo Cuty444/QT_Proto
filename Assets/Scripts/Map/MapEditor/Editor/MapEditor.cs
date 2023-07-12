@@ -25,7 +25,7 @@ namespace QT.Map
         private Palette _palette;
 
         private int _wallHeight = 3;
-        private Color _deactivatedColor = new Color(0.8f, 0.8f, 0.8f, 0.8f);
+        private Color _deactivatedColor = new Color(0.8f, 0.8f, 0.8f, 0.2f);
 
         private bool _isPrefab = false;
 
@@ -197,6 +197,7 @@ namespace QT.Map
             
             if (_isPrefab && GUILayout.Button("저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
             {
+                CompressMapCell();
                 PrefabUtility.ApplyPrefabInstance(_target.gameObject, InteractionMode.UserAction);
             }
 
@@ -206,6 +207,7 @@ namespace QT.Map
 
                 if (!string.IsNullOrWhiteSpace(path))
                 {
+                    CompressMapCell();
                     PrefabUtility.UnpackPrefabInstance(_target.gameObject, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
                         
                     var target = PrefabUtility.SaveAsPrefabAssetAndConnect(_target.gameObject, path, InteractionMode.UserAction);
@@ -220,6 +222,16 @@ namespace QT.Map
                 }
             }
             GUILayout.EndHorizontal();
+        }
+
+        private void CompressMapCell()
+        {
+            var targets = FindObjectsOfType<Tilemap>();
+
+            foreach (var target in targets)
+            {
+                target.CompressBounds();
+            }
         }
         
         private void ResetTilemapTop()
