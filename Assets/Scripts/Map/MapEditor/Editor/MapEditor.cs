@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -90,7 +91,11 @@ namespace QT.Map
             GUILayout.Space(10);
             
             _target.VolumeProfile = EditorGUILayout.ObjectField("맵 볼륨", _target.VolumeProfile, typeof(VolumeProfile), false) as VolumeProfile;
-            if (_volume)
+            if (!_volume)
+            {
+                _volume = FindObjectOfType<Volume>();
+            }
+            else
             {
                 _volume.profile = _target.VolumeProfile;
             }
