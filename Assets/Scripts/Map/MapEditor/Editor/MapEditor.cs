@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.Tilemaps;
 using UnityEditor.EditorTools;
 using UnityEditor.SceneManagement;
+using UnityEngine.Rendering;
 
 namespace QT.Map
 {
@@ -17,15 +18,18 @@ namespace QT.Map
 
         private MapEditorSceneManager _sceneManager;
         private PrefabStage _prefabStage;
-
-        private bool _isTileEditing;
-
-        private Palette _palette;
+        
+        private Volume _volume;
 
         private int _wallHeight = 3;
         private Color _deactivatedColor = new Color(0.8f, 0.8f, 0.8f, 0.2f);
 
         private bool _isPrefab = false;
+
+        private string _command;
+        
+        private Palette _palette;
+        private bool _isTileEditing;
 
         [MenuItem("맵 에디터/맵 에디터 열기", false, 0)]
         public static void OpenMapEditor()
@@ -42,6 +46,8 @@ namespace QT.Map
         private void OnValidate()
         {
             SetEvents();
+            
+            _volume = FindObjectOfType<Volume>();
         }
 
         private void OnGUI()
@@ -80,8 +86,16 @@ namespace QT.Map
             }
             
             SavePrefab();
-
-            GUILayout.Space(20);
+            
+            GUILayout.Space(10);
+            
+            _target.VolumeProfile = EditorGUILayout.ObjectField("맵 볼륨", _target.VolumeProfile, typeof(VolumeProfile), false) as VolumeProfile;
+            if (_volume)
+            {
+                _volume.profile = _target.VolumeProfile;
+            }
+            
+            GUILayout.Space(15);
             
             _deactivatedColor = EditorGUILayout.ColorField("비 활성화된 레이어 색상", _deactivatedColor);
 
@@ -94,7 +108,17 @@ namespace QT.Map
                 ResetTilemapTop();
             }
             
+            GUILayout.Space(20);
+
+            GUILayout.Label("디버그 커맨드");
+            _command = EditorGUILayout.TextArea(_command,GUILayout.Height(60));
+
+            GUILayout.Space(5);
             
+            if (GUILayout.Button("플레이 테스트"))
+            {
+                
+            }
         }
 
         private void SetEvents()
@@ -105,8 +129,8 @@ namespace QT.Map
             GridPaintingState.scenePaintTargetChanged -= CheckCurrentTileMap;
             GridPaintingState.scenePaintTargetChanged += CheckCurrentTileMap;
 
-            Tilemap.tilemapTileChanged -= OnTilemapTileChanged;
-            Tilemap.tilemapTileChanged += OnTilemapTileChanged;
+            Tilemap.tilemapTileChanged -= CheckHardColliderLayer;
+            Tilemap.tilemapTileChanged += CheckHardColliderLayer;
 
             ToolManager.activeToolChanged -= OnToolChanged;
             ToolManager.activeToolChanged += OnToolChanged;
@@ -148,7 +172,10 @@ namespace QT.Map
             else
             {
                 _target = _sceneManager.Target;
-                if (_target != null) _isPrefab = PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject);
+                if (_target != null)
+                {
+                    _isPrefab = PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject);
+                }
             }
 
             return _target != null;
@@ -197,8 +224,12 @@ namespace QT.Map
                 if (!string.IsNullOrWhiteSpace(path))
                 {
                     CompressMapCell();
-                    PrefabUtility.UnpackPrefabInstance(_target.gameObject, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
-                        
+                    
+                    if(PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject))
+                    {
+                        PrefabUtility.UnpackPrefabInstance(_target.gameObject, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
+                    }
+                    
                     var target = PrefabUtility.SaveAsPrefabAssetAndConnect(_target.gameObject, path, InteractionMode.UserAction);
                     AssetDatabase.SaveAssets();
         
@@ -317,7 +348,7 @@ namespace QT.Map
         }
 
 
-        private void OnTilemapTileChanged(Tilemap target, Tilemap.SyncTile[] tiles)
+        private void CheckHardColliderLayer(Tilemap target, Tilemap.SyncTile[] tiles)
         {
             if (!CheckMapCell())
             {
