@@ -91,7 +91,8 @@ namespace QT.Tilemaps
         {
             GameObject instance = new GameObject("Enemy");
             instance.transform.parent = parent;
-          
+
+            instance.AddComponent<EnemySpawner>().EnemyId = 500;
             
             
             Undo.RegisterCreatedObjectUndo(instance, "Paint Enemy");
