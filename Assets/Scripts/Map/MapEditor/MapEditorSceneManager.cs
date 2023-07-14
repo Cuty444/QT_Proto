@@ -1,24 +1,53 @@
-using System;
+#if UNITY_EDITOR
+
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using QT.Core;
+using QT.InGame;
+using UnityEditor;
 using UnityEngine;
 
-#if UNITY_EDITOR
 
 namespace QT.Map
 {
-    [ExecuteInEditMode]
     public class MapEditorSceneManager : MonoBehaviour
     {
         public MapCellData Target { get; private set; }
 
-        private void Update()
+        private string _command;
+        private Player _player;
+
+        public void StartGame(string command)
         {
+            _command = command;
+            
+            EditorApplication.EnterPlaymode();
+        }
+        
+        private void Awake()
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
             CheckTarget();
+
+            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener(OnPlayerCreated);
+            
+            StartCoroutine(Loading());
         }
 
-        private void CheckTarget()
+        IEnumerator Loading()
+        {
+            yield return new WaitUntil(() => SystemManager.Instance.LoadingManager.IsJsonLoad());
+            
+            SystemManager.Instance.PlayerManager.CreatePlayer();
+        }
+
+        private void OnPlayerCreated(Player player)
+        {
+            _player = player;
+            Target.DoorExitDirection(Vector2Int.up);
+        }
+        
+
+        public void CheckTarget()
         {
             var datas = FindObjectsOfType<MapCellData>();
 

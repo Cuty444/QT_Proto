@@ -51,6 +51,14 @@ namespace QT.Map
             _volume = FindObjectOfType<Volume>();
         }
 
+        private void Update()
+        {
+            if (!Application.isPlaying)
+            {
+                _sceneManager?.CheckTarget();
+            }
+        }
+
         private void OnGUI()
         {
             if (Application.isPlaying)
@@ -90,7 +98,7 @@ namespace QT.Map
             
             GUILayout.Space(10);
             
-            _target.VolumeProfile = EditorGUILayout.ObjectField("맵 볼륨", _target.VolumeProfile, typeof(VolumeProfile), false) as VolumeProfile;
+            _target.VolumeProfile = EditorGUILayout.ObjectField("MapCell 볼륨 프로필", _target.VolumeProfile, typeof(VolumeProfile), false) as VolumeProfile;
             if (!_volume)
             {
                 _volume = FindObjectOfType<Volume>();
@@ -122,7 +130,7 @@ namespace QT.Map
             
             if (GUILayout.Button("플레이 테스트"))
             {
-                
+                _sceneManager.StartGame("");
             }
         }
 
