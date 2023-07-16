@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using QT.Core;
 using QT.Map;
 using UnityEngine;
 using UnityEditor;
@@ -17,13 +13,14 @@ namespace QT.Tilemaps
     [CustomGridBrush(true, false, false, "Enemy Brush")]
     public class EnemyBrush : GridBrush
     {
+        [HideInInspector] public int EnemyId;
+
         [SerializeField] private Vector3 _offset = Vector3.zero;
         [SerializeField] private Vector3 _scale = Vector3.one;
         [SerializeField] private Quaternion _orientation = Quaternion.identity;
         
         public Vector3 m_Anchor = new Vector3(0.5f, 0.5f, 0.0f);
         
-
         
         public override void Paint(GridLayout grid, GameObject brushTarget, Vector3Int position)
         {
@@ -38,7 +35,7 @@ namespace QT.Tilemaps
             var existingGO = GetObjectInCell(grid, parent, position, m_Anchor);
             if (existingGO == null)
             {
-                SetSceneCell(grid, parent, position, _offset, _scale, _orientation, m_Anchor);
+                SetSceneCell(grid, parent, position, _offset, _scale, _orientation, m_Anchor, EnemyId);
             }
         }
 
@@ -87,12 +84,12 @@ namespace QT.Tilemaps
             }
         }
         
-        private static void SetSceneCell(GridLayout grid, Transform parent, Vector3Int position, Vector3 offset, Vector3 scale, Quaternion orientation, Vector3 anchor)
+        private static void SetSceneCell(GridLayout grid, Transform parent, Vector3Int position, Vector3 offset, Vector3 scale, Quaternion orientation, Vector3 anchor, int EnemyId)
         {
             GameObject instance = new GameObject("Enemy");
             instance.transform.parent = parent;
 
-            instance.AddComponent<EnemySpawner>().EnemyId = 500;
+            instance.AddComponent<EnemySpawner>().EnemyId = EnemyId;
             
             
             Undo.RegisterCreatedObjectUndo(instance, "Paint Enemy");
@@ -159,6 +156,7 @@ namespace QT.Tilemaps
     public class EnemyBrushEditor : GridBrushEditor
     {
         private EnemyBrush _enemyBrush => target as EnemyBrush;
+        private bool _isFoldout = false;
 
         public override void OnPaintSceneGUI(GridLayout gridLayout, GameObject brushTarget, BoundsInt position, GridBrushBase.Tool tool, bool executing)
         {
@@ -174,9 +172,15 @@ namespace QT.Tilemaps
 
         public override void OnPaintInspectorGUI()
         {
+            _enemyBrush.EnemyId = EditorGUILayout.IntField("적 아이디", _enemyBrush.EnemyId);
+            
             GUILayout.Space(30);
-            base.OnPaintInspectorGUI();
-            //Debug.LogError(SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(500).Index);
+            
+            _isFoldout = EditorGUILayout.Foldout(_isFoldout, "기타 설정");
+            if (_isFoldout)
+            {
+                base.OnPaintInspectorGUI();
+            }
         }
         
         public override GameObject[] validTargets
@@ -186,15 +190,10 @@ namespace QT.Tilemaps
                 StageHandle currentStageHandle = StageUtility.GetCurrentStageHandle();
                 var mapcell = currentStageHandle.FindComponentOfType<MapCellData>();
 
-                return new[] {mapcell.Enemy.gameObject};
+                if(mapcell == null || mapcell.EnemyLayer == null)
+                    return Array.Empty<GameObject>();
                 
-                // var results = currentStageHandle.FindComponentsOfType<GridLayout>().Where(x =>
-                // {
-                //     GameObject gameObject;
-                //     return (gameObject = x.gameObject).scene.isLoaded
-                //            && gameObject.activeInHierarchy && ;
-                // }).Select(x => x.gameObject);
-                // return results.ToArray();
+                return new[] {mapcell.EnemyLayer};
             }
         }
     }

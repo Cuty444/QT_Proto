@@ -13,7 +13,7 @@ namespace QT.Map
     {
         [field: SerializeField] public Tilemap TilemapHardCollider { get; private set; }
         [field: SerializeField] public Tilemap TilemapTop { get; private set; }
-        [field: SerializeField] public Tilemap Enemy { get; private set; }
+        [field: SerializeField] public GameObject EnemyLayer { get; private set; }
 
         [SerializeField] private Transform[] _doorTransforms;
         [SerializeField] private Transform[] _doorExitTransforms;
