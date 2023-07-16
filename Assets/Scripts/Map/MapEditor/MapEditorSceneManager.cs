@@ -9,16 +9,26 @@ using UnityEngine;
 
 namespace QT.Map
 {
+    public enum TestStartDoor
+    {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+    
     public class MapEditorSceneManager : MonoBehaviour
     {
         public MapCellData Target { get; private set; }
 
-        private string _command;
+        [HideInInspector] [SerializeField] private string _command;
+        [HideInInspector] [SerializeField] private TestStartDoor _startDoor;
         private Player _player;
 
-        public void StartGame(string command)
+        public void StartGame(string command, TestStartDoor startDoor)
         {
             _command = command;
+            _startDoor = startDoor;
             
             EditorApplication.EnterPlaymode();
         }
@@ -43,7 +53,26 @@ namespace QT.Map
         private void OnPlayerCreated(Player player)
         {
             _player = player;
-            Target.DoorExitDirection(Vector2Int.up);
+
+            Vector2Int exit = Vector2Int.up;
+            switch (_startDoor)
+            {
+                case TestStartDoor.Left:
+                    exit = Vector2Int.left;
+                    break;
+                case TestStartDoor.Right:
+                    exit = Vector2Int.right;
+                    break;
+                case TestStartDoor.Down:
+                    exit = Vector2Int.down;
+                    break;
+                case TestStartDoor.Up:
+                    exit = Vector2Int.up;
+                    break;
+
+            }
+            
+            Target.DoorExitDirection(exit);
         }
         
 

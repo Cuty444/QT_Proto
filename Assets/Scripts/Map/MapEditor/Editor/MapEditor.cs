@@ -32,6 +32,8 @@ namespace QT.Map
         private Palette _palette;
         private bool _isTileEditing;
 
+        private TestStartDoor _startDoor;
+
         [MenuItem("맵 에디터/맵 에디터 열기", false, 0)]
         public static void OpenMapEditor()
         {
@@ -127,10 +129,13 @@ namespace QT.Map
             _command = EditorGUILayout.TextArea(_command,GUILayout.Height(60));
 
             GUILayout.Space(5);
+
+            _startDoor = (TestStartDoor)EditorGUILayout.EnumPopup("테스트 시작 위치",  _startDoor);
+            
             
             if (GUILayout.Button("플레이 테스트"))
             {
-                _sceneManager.StartGame("");
+                _sceneManager.StartGame("", _startDoor);
             }
         }
 
