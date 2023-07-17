@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using QT.Tilemaps;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEditor;
@@ -109,6 +111,21 @@ namespace QT.Map
             {
                 _volume.profile = _target.VolumeProfile;
             }
+            
+            // GUILayout.Space(15);
+            // GUILayout.BeginHorizontal();
+            //
+            // if (GUILayout.Button("기본 브러시", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+            // {
+            //     GridPaintingState.gridBrush = GridPaintingState.brushes.First((x)=> x is GridBrush);
+            // }
+            //
+            // if (GUILayout.Button("적 브러시", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+            // {
+            //     GridPaintingState.gridBrush = GridPaintingState.brushes.First((x)=> x is EnemyBrush);
+            // }
+            //
+            // GUILayout.EndHorizontal();
             
             GUILayout.Space(15);
             

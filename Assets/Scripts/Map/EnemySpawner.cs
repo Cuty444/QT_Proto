@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
+using QT.InGame;
 using UnityEngine;
 
 namespace QT
@@ -8,8 +11,32 @@ namespace QT
     {
         public int EnemyId;
         
-        
-        #if UNITY_EDITOR
+        public Enemy Target { get; private set; }
+
+        private void Start()
+        {
+            SetTarget();
+        }
+
+        private async void SetTarget()
+        {
+            var data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(EnemyId);
+
+            if (data == null)
+            {
+                Debug.LogError($"{EnemyId} EnemyData를 찾을 수 없습니다.");
+                return;
+            }
+
+            Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(data.PrefabPath, transform);
+            
+            Target.initialization(EnemyId);
+            
+            Target.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            Target.transform.localScale = Vector3.one;
+        }
+
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;

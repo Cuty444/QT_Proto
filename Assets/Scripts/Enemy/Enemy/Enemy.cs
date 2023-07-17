@@ -59,9 +59,10 @@ namespace QT.InGame
         public int _damage { get; private set; }
 
         public List<IHitable> _hitalbesList { get; private set; } = new List<IHitable>();
-        private void Start()
+        
+        
+        private void Awake()
         {
-            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
             Rigidbody = GetComponent<Rigidbody2D>();
             
             _colliders = new Collider2D[Rigidbody.attachedColliderCount];
@@ -71,7 +72,23 @@ namespace QT.InGame
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
+            
+            HpCanvas.worldCamera = Camera.main;
+            HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+            HpCanvas.gameObject.SetActive(false);
 
+            enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
+            LoadSound();
+            
+            initialization(_enemyId);
+        }
+        
+        public void initialization(int enemyId)
+        {
+            _enemyId = enemyId;
+            
+            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
+            
             ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
                 .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
             
@@ -80,12 +97,6 @@ namespace QT.InGame
             SetUpStats();
             SetUp(States.Normal);
             SetGlobalState(new EnemyGlobalState(this));
-            HpCanvas.worldCamera = Camera.main;
-            HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
-            HpCanvas.gameObject.SetActive(false);
-
-            enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
-            LoadSound();
         }
         
         public void SetPhysics(bool enable)
