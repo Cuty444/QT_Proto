@@ -152,7 +152,7 @@ namespace QT.Map
             
             if (GUILayout.Button("플레이 테스트"))
             {
-                _sceneManager.StartGame("", _startDoor);
+                _sceneManager.StartGame(_command, _startDoor);
             }
         }
 

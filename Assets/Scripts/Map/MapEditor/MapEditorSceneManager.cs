@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using System.Collections;
+using IngameDebugConsole;
 using QT.Core;
 using QT.InGame;
 using UnityEditor;
@@ -73,6 +74,12 @@ namespace QT.Map
             }
             
             Target.DoorExitDirection(exit);
+            Target.RoomPlay(Vector2Int.zero);
+
+            foreach (var command in _command.Split('\n'))
+            {
+                DebugLogConsole.ExecuteCommand( command );
+            }
         }
         
 
