@@ -30,8 +30,6 @@ namespace QT.Core
         
         public Player Player { get; private set; }
 
-        public List<int> _playerIndexInventory = new List<int>();
-
         public UnityEvent AddItemEvent { get; } = new();
         
         public UnityEvent<List<IHitable>> FloorAllHitalbeRegister { get; } = new();

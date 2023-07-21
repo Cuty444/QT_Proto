@@ -1,22 +1,28 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using QT.Core;
+using QT.InGame;
 using UnityEngine;
+using Conditions = QT.ItemEffectGameData.Conditions;
 
 namespace QT
 {
     public class ItemEffectGameData : IGameData
-    { 
+    {
         public enum ApplyTypes
         {
-            None,
-            ResourceChange,
-            PlayerStat,
-            Reverse,
+            Buff,
+            Active
         }
 
-        public enum ApplyPoints
+        public enum TriggerTypes
         {
             Equip,
+            
+            OnActiveKey,
+            
             OnCharging,
             OnGoldChanged,
             OnHpChanged,
@@ -25,55 +31,44 @@ namespace QT
             OnChargeBounceCountChanged
         }
         
+        public enum Conditions
+        {
+            None,
+            LessThan,
+            GreaterThan,
+            Equal,
+            NotEqual
+        }
+        
         public int Index { get; set; }
         
         public ApplyTypes ApplyType { get; set; }
+        public int ApplyId { get; set; }
         
-        public string ApplyStat { get; set; }
-        public string ApplyValue { get; set; }
+        public float CoolTime { get; set; }
         
-        public StatModifier.ModifierType ValueOperatorType { get; set; }
-        public ApplyPoints ApplyPoint { get; set; }
+        public TriggerTypes TriggerType { get; set; }
+        public Conditions Condition { get; set; }
+        public float ConditionTarget { get; set; }
     }
 
 
     [GameDataBase(typeof(ItemEffectGameData), "ItemEffectGameData")]
     public class ItemEffectGameDataBase : IGameDataBase
     {
-        private readonly Dictionary<int, List<ItemEffectOld>> _datas = new();
+        private readonly Dictionary<int, List<ItemEffectGameData>> _datas = new();
 
         public void RegisterData(IGameData data)
         {
-            // ItemEffectOld effect;
-            //
-            // var effectData = data as ItemEffectGameData;
-            // switch (effectData.ApplyType)
-            // {
-            //     case ItemEffectGameData.ApplyTypes.PlayerStat:
-            //         effect = new ItemEffectStat(effectData);
-            //         break;
-            //     case ItemEffectGameData.ApplyTypes.Reverse:
-            //         effect = new ItemEffectReverse(effectData);
-            //         break;
-            //     default:
-            //         return;
-            // }
-            //
-            // if(!effect.IsAvailable)
-            // {
-            //     Debug.LogError($"아이템 이펙트 데이터 오류 : {effectData.Index}");
-            //     return;
-            // }
-            //
-            // if(!_datas.TryGetValue(data.Index, out var list))
-            // {
-            //     _datas.Add(data.Index, list = new List<ItemEffectOld>());
-            // }
-            //
-            // list.Add(effect);
+            if(!_datas.TryGetValue(data.Index, out var list))
+            {
+                _datas.Add(data.Index, list = new List<ItemEffectGameData>());
+            }
+            
+            list.Add(data as ItemEffectGameData);
         }
 
-        public List<ItemEffectOld> GetData(int id)
+        public List<ItemEffectGameData> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
             {

@@ -100,7 +100,7 @@ namespace QT
                     bool bCheck = false;
                     for (int j = 0; j < itemArray.Length; j++)
                     {
-                        if (itemArray[j].GetItemID() == itemID)
+                        if (itemArray[j].ItemGameData.Index == itemID)
                         {
                             bCheck = true;
                             break;

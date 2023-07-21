@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using QT.Core;
+using QT.InGame;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,7 +36,7 @@ namespace QT
         private PlayerManager _playerManager;
         [HideInInspector]public ItemSelectMapData _itemSelectMapData;
         public ItemGameData ItemGameData { get; private set; }
-        public List<ItemEffectOld> ItemEffectData { get; private set; } = new ();
+        
 
         private Animator _animator;
         private readonly int AnimationExitHash = Animator.StringToHash("Exit");
@@ -89,11 +90,6 @@ namespace QT
             //    //var list = SystemManager.Instance.ItemDataManager.GetDropItemList(DropType, 1);
             //    //ItemGameData = dataManager.GetDataBase<ItemGameDataBase>().GetData(list[0]);
             //}
-            if (ItemGameData != null)
-            {
-                ItemEffectData = dataManager.GetDataBase<ItemEffectGameDataBase>()
-                    .GetData(ItemGameData.ItemEffectDataId);
-            }
 
             ResourceManager resourceManager = SystemManager.Instance.ResourceManager;
             resourceManager.LoadSprite(ItemGameData.ItemIconPath, _itemSprite);

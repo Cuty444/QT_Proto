@@ -100,11 +100,7 @@ namespace QT.InGame
 
             Inventory = new Inventory(this);
             _playerManager = SystemManager.Instance.PlayerManager;
-            var items = _playerManager._playerIndexInventory;
-            for (int i = 0; i < items.Count; i++)
-            {
-                Inventory.NextCopyItem(items[i]);
-            }
+            
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
 
@@ -199,7 +195,7 @@ namespace QT.InGame
         
         public void PlayerDead()
         {
-            SystemManager.Instance.PlayerManager._playerIndexInventory.Clear();
+            Inventory.ClearItems();
             SystemManager.Instance.PlayerManager.globalGold = 0;
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();

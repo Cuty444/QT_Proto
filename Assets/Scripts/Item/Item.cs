@@ -11,9 +11,9 @@ namespace QT
     {
         private readonly int _itemDataId;
         public ItemGameData ItemGameData { get; private set; }
-        public List<ItemEffectOld> ItemEffectData { get; private set; } = new ();
+        public List<ItemEffect> ItemEffectData { get; private set; } = new ();
         
-        private readonly Dictionary<ItemEffectGameData.ApplyPoints, UnityEvent> _applyPointEvents = new ();
+        private readonly Dictionary<ItemEffectGameData.TriggerTypes, UnityEvent> _applyPointEvents = new ();
 
         public Item(int itemDataId)
         {
@@ -21,73 +21,73 @@ namespace QT
 
             _itemDataId = itemDataId;
             ItemGameData = dataManager.GetDataBase<ItemGameDataBase>().GetData(_itemDataId);
-            if (ItemGameData != null)
-            {
-                ItemEffectData = dataManager.GetDataBase<ItemEffectGameDataBase>()
-                    .GetData(ItemGameData.ItemEffectDataId);
-            }
-            else
-            {
-                Debug.LogError($"존재하지 않는 아이템 아이디 : {itemDataId}");
-            }
-        }
-
-        public void ApplyItemEffect(Player player)
-        {
-            foreach (var effect in ItemEffectData)
-            {
-                effect.ApplyEffect(player, this);
-
-                SetApplyPoint(effect, player);
-            }
-        }
-
-        private void SetApplyPoint(ItemEffectOld effect, Player player)
-        {
-            if (effect.ApplyPoints == ItemEffectGameData.ApplyPoints.Equip)
-            {
-                return;
-            }
-            
-            if (!_applyPointEvents.TryGetValue(effect.ApplyPoints, out var events))
-            {
-                events = new UnityEvent();
-                _applyPointEvents.Add(effect.ApplyPoints, events);
-            }
-
-            events.AddListener(() => ReapplyItemEffect(player, effect));
+            // if (ItemGameData != null)
+            // {
+            //     ItemEffectData = dataManager.GetDataBase<ItemEffectGameDataBase>()
+            //         .GetData(ItemGameData.ItemEffectDataId);
+            // }
+            // else
+            // {
+            //     Debug.LogError($"존재하지 않는 아이템 아이디 : {itemDataId}");
+            // }
         }
         
-        private void ReapplyItemEffect(Player player, ItemEffectOld effect)
-        {
-            effect.RemoveEffect(player, this);
-            effect.ApplyEffect(player, this);
-        }
-        
-        public void InvokeApplyPoint(ItemEffectGameData.ApplyPoints applyPoints)
-        {
-            if (applyPoints == ItemEffectGameData.ApplyPoints.Equip)
-            {
-                return;
-            }
-            
-            if (_applyPointEvents.TryGetValue(applyPoints, out var events))
-            {
-                events.Invoke();
-            }
-        }
-        
-        public void RemoveItemEffect(Player player)
-        {
-            foreach (var effect in ItemEffectData)
-            {
-                effect.RemoveEffect(player, this);
-            }
-        }
-
-        public int GetItemID()
-        {
-            return _itemDataId;
-        }
+        // public void ApplyItemEffect(Player player)
+        // {
+        //     foreach (var effect in ItemEffectData)
+        //     {
+        //         effect.ApplyEffect(player, this);
+        //
+        //         SetApplyPoint(effect, player);
+        //     }
+        // }
+        //
+        // private void SetApplyPoint(ItemEffect effect, Player player)
+        // {
+        //     if (effect.ApplyPoints == ItemEffectGameData.TriggerTypes.Equip)
+        //     {
+        //         return;
+        //     }
+        //     
+        //     if (!_applyPointEvents.TryGetValue(effect.ApplyPoints, out var events))
+        //     {
+        //         events = new UnityEvent();
+        //         _applyPointEvents.Add(effect.ApplyPoints, events);
+        //     }
+        //
+        //     events.AddListener(() => ReapplyItemEffect(player, effect));
+        // }
+        //
+        // private void ReapplyItemEffect(Player player, ItemEffectOld effect)
+        // {
+        //     effect.RemoveEffect(player, this);
+        //     effect.ApplyEffect(player, this);
+        // }
+        //
+        // public void InvokeApplyPoint(ItemEffectGameData.TriggerTypes triggerTypes)
+        // {
+        //     if (triggerTypes == ItemEffectGameData.TriggerTypes.Equip)
+        //     {
+        //         return;
+        //     }
+        //     
+        //     if (_applyPointEvents.TryGetValue(triggerTypes, out var events))
+        //     {
+        //         events.Invoke();
+        //     }
+        // }
+        //
+        // public void RemoveItemEffect(Player player)
+        // {
+        //     foreach (var effect in ItemEffectData)
+        //     {
+        //         effect.RemoveEffect(player, this);
+        //     }
+        // }
+        //
+        // public int GetItemID()
+        // {
+        //     return _itemDataId;
+        // }
     }
 }

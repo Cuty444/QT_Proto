@@ -30,7 +30,6 @@ namespace QT
             var _playerManager = SystemManager.Instance.PlayerManager;
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
-            _playerManager._playerIndexInventory.Clear();
             _playerManager.globalGold = 0;
             _playerManager.FloorAllHitalbeRegister.Invoke(new List<IHitable>());
             _playerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());

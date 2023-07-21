@@ -34,7 +34,6 @@ namespace QT.UI
             _canvasGroup.interactable = false;
             _retryButtonTrigger.InteractableOff();
             _titleButtonTrigger.InteractableOff();
-            SystemManager.Instance.PlayerManager._playerIndexInventory.Clear();
             SystemManager.Instance.PlayerManager.globalGold = 0;
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();

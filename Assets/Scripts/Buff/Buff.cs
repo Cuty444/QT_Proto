@@ -27,7 +27,7 @@ namespace QT.InGame
             _calculator.RemoveEffect(_statComponent, this);
         }
         
-        public void RefreshBuff()
+        public void ReapplyItemEffect()
         {
             _calculator.RemoveEffect(_statComponent, this);
             _calculator.ApplyEffect(_statComponent, this);
