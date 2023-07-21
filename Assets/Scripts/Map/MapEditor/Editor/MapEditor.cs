@@ -210,6 +210,11 @@ namespace QT.Map
                 if (_target != null)
                 {
                     _isPrefab = PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject);
+
+                    foreach (var tileMap in _target.GetComponentsInChildren<Tilemap>())
+                    {
+                        SceneVisibilityManager.instance.DisablePicking(tileMap.gameObject, true);
+                    }
                 }
             }
 
