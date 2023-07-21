@@ -40,40 +40,40 @@ namespace QT
     [GameDataBase(typeof(ItemEffectGameData), "ItemEffectGameData")]
     public class ItemEffectGameDataBase : IGameDataBase
     {
-        private readonly Dictionary<int, List<ItemEffect>> _datas = new();
+        private readonly Dictionary<int, List<ItemEffectOld>> _datas = new();
 
         public void RegisterData(IGameData data)
         {
-            ItemEffect effect;
-            
-            var effectData = data as ItemEffectGameData;
-            switch (effectData.ApplyType)
-            {
-                case ItemEffectGameData.ApplyTypes.PlayerStat:
-                    effect = new ItemEffectStat(effectData);
-                    break;
-                case ItemEffectGameData.ApplyTypes.Reverse:
-                    effect = new ItemEffectReverse(effectData);
-                    break;
-                default:
-                    return;
-            }
-            
-            if(!effect.IsAvailable)
-            {
-                Debug.LogError($"아이템 이펙트 데이터 오류 : {effectData.Index}");
-                return;
-            }
-            
-            if(!_datas.TryGetValue(data.Index, out var list))
-            {
-                _datas.Add(data.Index, list = new List<ItemEffect>());
-            }
-            
-            list.Add(effect);
+            // ItemEffectOld effect;
+            //
+            // var effectData = data as ItemEffectGameData;
+            // switch (effectData.ApplyType)
+            // {
+            //     case ItemEffectGameData.ApplyTypes.PlayerStat:
+            //         effect = new ItemEffectStat(effectData);
+            //         break;
+            //     case ItemEffectGameData.ApplyTypes.Reverse:
+            //         effect = new ItemEffectReverse(effectData);
+            //         break;
+            //     default:
+            //         return;
+            // }
+            //
+            // if(!effect.IsAvailable)
+            // {
+            //     Debug.LogError($"아이템 이펙트 데이터 오류 : {effectData.Index}");
+            //     return;
+            // }
+            //
+            // if(!_datas.TryGetValue(data.Index, out var list))
+            // {
+            //     _datas.Add(data.Index, list = new List<ItemEffectOld>());
+            // }
+            //
+            // list.Add(effect);
         }
 
-        public List<ItemEffect> GetData(int id)
+        public List<ItemEffectOld> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
             {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using QT.Core;
+using QT.InGame;
 
 namespace QT
 {
@@ -19,14 +20,20 @@ namespace QT
     [GameDataBase(typeof(BuffEffectGameData), "BuffEffectGameData")]
     public class BuffEffectGameDataBase : IGameDataBase
     {
-        private readonly Dictionary<int, BuffEffectGameData> _datas = new();
+        private readonly Dictionary<int, BuffCalculator> _datas = new();
 
         public void RegisterData(IGameData data)
         {
-            _datas.Add(data.Index, (BuffEffectGameData)data);
+            var effectData = data as BuffEffectGameData;
+            var buffEffect = new BuffCalculator(effectData);
+
+            if (buffEffect.IsAvailable)
+            {
+                _datas.Add(data.Index, buffEffect);
+            }
         }
 
-        public BuffEffectGameData GetData(int id)
+        public BuffCalculator GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
             {

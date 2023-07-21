@@ -34,6 +34,8 @@ namespace QT.InGame
         [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
         
         public PlayerStatComponent StatComponent { get; private set; }
+        public BuffComponent BuffComponent { get; private set; }
+        
         public Inventory Inventory { get; private set; }
         public Animator Animator;
         public Rigidbody2D Rigidbody { get; private set; }
@@ -79,6 +81,9 @@ namespace QT.InGame
             _data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
             _atkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
             StatComponent = new PlayerStatComponent(_data, _atkData);
+
+            BuffComponent = GetComponent<BuffComponent>();
+            BuffComponent.Init(StatComponent);
             
             OnAim.RemoveAllListeners();
             Rigidbody = GetComponent<Rigidbody2D>();
