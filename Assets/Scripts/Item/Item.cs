@@ -11,7 +11,7 @@ namespace QT
     {
         private readonly int _itemDataId;
         public ItemGameData ItemGameData { get; private set; }
-        public List<ItemEffect> ItemEffectData { get; private set; } = new ();
+        public List<ItemEffectOld> ItemEffectData { get; private set; } = new ();
         
         private readonly Dictionary<ItemEffectGameData.ApplyPoints, UnityEvent> _applyPointEvents = new ();
 
@@ -42,7 +42,7 @@ namespace QT
             }
         }
 
-        private void SetApplyPoint(ItemEffect effect, Player player)
+        private void SetApplyPoint(ItemEffectOld effect, Player player)
         {
             if (effect.ApplyPoints == ItemEffectGameData.ApplyPoints.Equip)
             {
@@ -58,7 +58,7 @@ namespace QT
             events.AddListener(() => ReapplyItemEffect(player, effect));
         }
         
-        private void ReapplyItemEffect(Player player, ItemEffect effect)
+        private void ReapplyItemEffect(Player player, ItemEffectOld effect)
         {
             effect.RemoveEffect(player, this);
             effect.ApplyEffect(player, this);

@@ -22,16 +22,16 @@ namespace QT.InGame
             _playerManager = SystemManager.Instance.PlayerManager;
 
             
-            _targetPlayer.GetStatus(PlayerStats.HP).OnStatusChanged
+            _targetPlayer.StatComponent.GetStatus(PlayerStats.HP).OnStatusChanged
                 .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnHpChanged));
             
             _playerManager.OnGoldValueChanged.AddListener((value) =>
                 InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnGoldChanged));
             
-            _targetPlayer.GetStat(PlayerStats.MovementSpd).OnValueChanged
+            _targetPlayer.StatComponent.GetStat(PlayerStats.MovementSpd).OnValueChanged
                 .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnMovementSpdChanged));
             
-            _targetPlayer.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
+            _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
                 .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnChargeBounceCountChanged));
         }
 

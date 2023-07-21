@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace QT
+namespace QT.InGame
 {
     public class Stat
     {

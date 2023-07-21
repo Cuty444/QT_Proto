@@ -7,7 +7,7 @@ using ApplyTypes = QT.ItemEffectGameData.ApplyTypes;
 
 namespace QT
 {
-    public class ItemEffectReverse : ItemEffect
+    public class ItemEffectReverse : ItemEffectOld
     {
         public override ApplyTypes ApplyType => ApplyTypes.Reverse;
         

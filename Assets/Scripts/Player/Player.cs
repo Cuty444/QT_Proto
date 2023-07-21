@@ -33,18 +33,17 @@ namespace QT.InGame
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
         
-        
+        public PlayerStatComponent StatComponent { get; private set; }
         public Inventory Inventory { get; private set; }
         public Animator Animator;
         public Rigidbody2D Rigidbody { get; private set; }
-        public CharacterGameData Data { get; private set; }
-        public CharacterAtkGameData AtkData { get; private set; }
         
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
         
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
 
-
+        private CharacterGameData _data;
+        private CharacterAtkGameData _atkData;
         private PlayerManager _playerManager;
 
         private bool _isEnterDoor;
@@ -77,8 +76,10 @@ namespace QT.InGame
         
         private void Awake()
         {
-            Data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
-            AtkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
+            _data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
+            _atkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
+            StatComponent = new PlayerStatComponent(_data, _atkData);
+            
             OnAim.RemoveAllListeners();
             Rigidbody = GetComponent<Rigidbody2D>();
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
@@ -89,7 +90,7 @@ namespace QT.InGame
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             _attackSpeedColorGradient = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.AttackSpeedColorCurve;
             InitInputs();
-            InitStats();
+            
             EffectSetup();
 
             Inventory = new Inventory(this);
@@ -104,8 +105,8 @@ namespace QT.InGame
 
             _goldCost = _playerManager.globalGold;
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
-            GetStatus(PlayerStats.HP).SetStatus(GetStatus(PlayerStats.HP).Value);
-            _playerHpCanvas.SetHp(GetStatus(PlayerStats.HP));
+            StatComponent.GetStatus(PlayerStats.HP).SetStatus(StatComponent.GetStatus(PlayerStats.HP).Value);
+            _playerHpCanvas.SetHp(StatComponent.GetStatus(PlayerStats.HP));
             
             _playerManager.CurrentRoomEnemyRegister.AddListener((hitables) =>
             {
@@ -144,7 +145,7 @@ namespace QT.InGame
 
         private void Start()
         {
-            MaterialChanger.SetHitDuration(Data.MercyInvincibleTime);
+            MaterialChanger.SetHitDuration(_data.MercyInvincibleTime);
         }
 
         protected override void Update()
@@ -161,14 +162,14 @@ namespace QT.InGame
             {
                 return;
             }
-            GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
+            StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
  
             _playerManager.OnDamageEvent.Invoke(dir, power);
         }
 
         public float GetHp()
         {
-            return GetStatus(PlayerStats.HP).StatusValue;
+            return StatComponent.GetStatus(PlayerStats.HP).StatusValue;
         }
 
         public Vector2 GetPosition()
@@ -188,7 +189,7 @@ namespace QT.InGame
 
         public bool GetHpComparision(int hpCost)
         {
-            return GetStatus(PlayerStats.HP) > hpCost;
+            return StatComponent.GetStatus(PlayerStats.HP) > hpCost;
         }
         
         public void PlayerDead()

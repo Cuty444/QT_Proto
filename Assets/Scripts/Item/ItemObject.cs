@@ -35,7 +35,7 @@ namespace QT
         private PlayerManager _playerManager;
         [HideInInspector]public ItemSelectMapData _itemSelectMapData;
         public ItemGameData ItemGameData { get; private set; }
-        public List<ItemEffect> ItemEffectData { get; private set; } = new ();
+        public List<ItemEffectOld> ItemEffectData { get; private set; } = new ();
 
         private Animator _animator;
         private readonly int AnimationExitHash = Animator.StringToHash("Exit");

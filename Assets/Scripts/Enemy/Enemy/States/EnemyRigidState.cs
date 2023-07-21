@@ -90,7 +90,7 @@ namespace QT.InGame
             {
                 Vector2 targetPosition = _playerManager.Player.transform.position;
                 SetTeleportLine(_ownerEntity.TeleportLineRenderer,targetPosition,
-                    _playerManager.Player.GetStat(PlayerStats.TeleportAllowableDistance)
+                    _playerManager.Player.StatComponent.GetStat(PlayerStats.TeleportAllowableDistance)
                     < Vector2.Distance(targetPosition, _ownerEntity.transform.position));
             }
         }

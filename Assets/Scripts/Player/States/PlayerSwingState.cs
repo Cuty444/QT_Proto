@@ -104,10 +104,10 @@ namespace QT.InGame
             }
 
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
-            var power = _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
-            var bounce = (int) _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;
-            var projectileDamage = (int)_ownerEntity.GetDmg(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1);
-            var pierce = (int) _ownerEntity.GetStat(PlayerStats.ChargeAtkPierce).Value;
+            var power = _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
+            var bounce = (int) _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;
+            var projectileDamage = (int)_ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1);
+            var pierce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeAtkPierce).Value;
             bool isPierce = _isCharged && pierce == 1;
             int hitCount = 0;
             int ballHitCount = 0;
@@ -118,7 +118,7 @@ namespace QT.InGame
                 projectile.ResetBounceCount(bounce);
                 projectile.ResetProjectileDamage(projectileDamage);
                 projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
-                    _ownerEntity.GetStat(PlayerStats.ReflectCorrection),isPierce);
+                    _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection),isPierce);
                 if (_isCharged)
                 {
                     SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
@@ -132,16 +132,16 @@ namespace QT.InGame
             }
 
             
-            var damage = _ownerEntity.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
+            var damage = _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
             projectileDamage =
-                (int) _ownerEntity.GetDmg(_isCharged
+                (int) _ownerEntity.StatComponent.GetDmg(_isCharged
                     ? PlayerStats.EnemyProjectileDmg2
                     : PlayerStats.EnemyProjectileDmg1);
             foreach (var hitEnemy in _enemyInRange)
             {
                 hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized, damage,AttackType.Swing);
                 hitEnemy.ResetProjectileDamage(projectileDamage);
-                hitEnemy.ProjectileHit(GetNewProjectileDir(hitEnemy), power, mask, ProjectileOwner.Player,_ownerEntity.GetStat(PlayerStats.ReflectCorrection),false);
+                hitEnemy.ProjectileHit(GetNewProjectileDir(hitEnemy), power, mask, ProjectileOwner.Player,_ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection),false);
                 SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position);
                 hitCount++;
                 enemyHitCount++;
@@ -157,7 +157,7 @@ namespace QT.InGame
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Move);
 
-            _ownerEntity.GetStatus(PlayerStats.SwingCooldown).SetStatus(0);
+            _ownerEntity.StatComponent.GetStatus(PlayerStats.SwingCooldown).SetStatus(0);
 
             if (hitCount > 0)
             {
@@ -198,7 +198,7 @@ namespace QT.InGame
                 return;
             }
             
-            if (_ownerEntity.GetStat(PlayerStats.ChargeTime).Value < _chargingTime)
+            if (_ownerEntity.StatComponent.GetStat(PlayerStats.ChargeTime).Value < _chargingTime)
             {
                 _isCharged = true;
                 _soundManager.StopSFX(_soundManager.SoundData.ChargeSFX);
@@ -216,8 +216,8 @@ namespace QT.InGame
             _enemyInRange.Clear();
             _hitableRange.Clear();
             
-            float swingRad = _ownerEntity.GetStat(PlayerStats.SwingRad);
-            float swingCentralAngle = _ownerEntity.GetStat(PlayerStats.SwingCentralAngle);
+            float swingRad = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingRad);
+            float swingCentralAngle = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingCentralAngle);
             
             SystemManager.Instance.ProjectileManager.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
             GetInEnemyRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _enemyInRange);
@@ -226,7 +226,7 @@ namespace QT.InGame
 
         private void SetLines()
         {
-            var bounceCount = (int) _ownerEntity.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;;
+            var bounceCount = (int) _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;;
             
             for (int i = 0; i < _lines.Count; i++)
             {
@@ -271,7 +271,7 @@ namespace QT.InGame
                 lineRenderer.SetPosition(i, hit.point + (hit.normal * 0.5f));
                 dir = Vector2.Reflect(dir, hit.normal);
 
-                float reflectCorrection = _ownerEntity.GetStat(PlayerStats.ReflectCorrection);
+                float reflectCorrection = _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection);
                 
                 if (reflectCorrection != 0)
                 {
@@ -296,8 +296,8 @@ namespace QT.InGame
 
         private void CheckSwingAreaMesh()
         {
-            float swingRad = _ownerEntity.GetStat(PlayerStats.SwingRad);
-            float swingAngle = _ownerEntity.GetStat(PlayerStats.SwingCentralAngle);
+            float swingRad = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingRad);
+            float swingAngle = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingCentralAngle);
 
             if (_currentSwingRad != swingRad || _currentSwingCentralAngle != swingAngle)
             {

@@ -40,7 +40,7 @@ namespace QT.InGame
 
         public override void UpdateState()
         {
-            _playerHpCanvas.SetHpUpdate(_ownerEntity.GetStatus(PlayerStats.HP));
+            _playerHpCanvas.SetHpUpdate(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP));
             _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
         }
 
@@ -91,7 +91,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(AnimationRigidHash);
             //_ownerEntity.PlayerHitEffectPlay();
             
-            var hp = _ownerEntity.GetStatus(PlayerStats.HP);
+            var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);
 

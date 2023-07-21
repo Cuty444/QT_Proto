@@ -23,7 +23,7 @@ namespace QT.InGame
         
         public void PlayBatAnimation()
         {
-            float halfAngle = GetStat(PlayerStats.SwingCentralAngle) * 0.5f;
+            float halfAngle = StatComponent.GetStat(PlayerStats.SwingCentralAngle) * 0.5f;
             float startAngle, endAngel;
             float rotationSpeed = 1;
             
@@ -87,7 +87,7 @@ namespace QT.InGame
                 
                 if (enemy.CurrentStateIndex == (int) Enemy.States.Rigid && enemy.HP <= 0)
                 {
-                    if (GetStat(PlayerStats.TeleportAllowableDistance) <
+                    if (StatComponent.GetStat(PlayerStats.TeleportAllowableDistance) <
                         Vector2.Distance(transform.position, enemy.transform.position))
                     {
                         continue;

@@ -1,6 +1,7 @@
 using QT.Core;
 using UnityEngine;
 using UnityEngine.UI;
+using QT.InGame;
 
 namespace QT.UI
 {

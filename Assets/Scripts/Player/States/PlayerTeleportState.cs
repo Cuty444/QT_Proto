@@ -23,7 +23,7 @@ namespace QT
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_TeleportAttackSFX);
             
             _ownerEntity.TeleportEffect(true);
-            _ownerEntity.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0.5f);
+            _ownerEntity.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0.5f);
             _ownerEntity.transform.position = _ownerEntity._rigidTeleportEnemy.Position;
             _ownerEntity.Animator.SetTrigger(AnimationTeleportHash);
             _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
@@ -48,11 +48,11 @@ namespace QT
             }
             _ownerEntity.Animator.SetFloat(AnimationMouseRotateHash, angle / 180 * 4);
             _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
-            _ownerEntity._rigidTeleportEnemy.ResetProjectileDamage((int)_ownerEntity.GetDmg(PlayerStats.EnemyProjectileDmg2));
+            _ownerEntity._rigidTeleportEnemy.ResetProjectileDamage((int)_ownerEntity.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg2));
             _ownerEntity._rigidTeleportEnemy.ProjectileHit((_ownerEntity._rigidTargetEnemy.Position - _ownerEntity._rigidTeleportEnemy.Position).normalized
-                , _ownerEntity.GetStat(PlayerStats.ChargeShootSpd2), BounceMask
+                , _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeShootSpd2), BounceMask
                 , ProjectileOwner.PlayerTeleport
-                , _ownerEntity.GetStat(PlayerStats.ReflectCorrection),false);
+                , _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection),false);
             SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, _ownerEntity._rigidTeleportEnemy.Position);
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() =>

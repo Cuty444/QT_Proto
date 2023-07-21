@@ -137,7 +137,7 @@ namespace QT.Core
             for (int i = 0; i <= (int) PlayerStats.AtkDmgPer; i++)
             {
                 var statKey = (PlayerStats) i;
-                var stat = PlayerManager.Player.GetStat(statKey);
+                var stat = PlayerManager.Player.StatComponent.GetStat(statKey);
 
                 var y = (Screen.height - height + startY) + cellHeight * i;
 
