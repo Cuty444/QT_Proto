@@ -2,25 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using QT.InGame;
 using UnityEngine;
 using ModifierType = QT.StatModifier.ModifierType;
+
 
 namespace QT.InGame
 {
     public class BuffCalculator
     {
-        private enum StatValueType
-        {
-            Value,
-            Base
-        }
-        
         public readonly bool IsAvailable = false;
         
         private PlayerStats _applyStat;
         private string _applyValue;
-        private (PlayerStats, StatValueType)[] _params;
+        private StatParameter[] _params;
         private ModifierType _valueOperatorType;
         
         private StatModifier _modifier;
@@ -43,36 +37,16 @@ namespace QT.InGame
             _applyValue = effectData.ApplyValue;
             var paramString = ParseApplyValue(ref _applyValue);
 
-            var temp = new List<(PlayerStats, StatValueType)>();
+            var temp = new List<StatParameter>();
             
             foreach (var str in paramString)
             {
-                var parts = str.Split('_');
-
-                if (parts.Length <= 0 || parts.Length > 2)
+                if (!StatParameter.ParseStatParam(str, out var param))
                 {
                     Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
                     return false;
                 }
-                
-                if (!Enum.TryParse(parts[0], out PlayerStats stat))
-                {
-                    Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
-                    return false;
-                }
-
-                StatValueType type = StatValueType.Value;
-                
-                if (parts.Length == 2)
-                {
-                    if (!Enum.TryParse(parts[1], out type))
-                    {
-                        Debug.LogError($" {effectData.Index} : 아이템 이펙트 데이터 수식 오류 : {effectData.ApplyValue} ({str})");
-                        return false;
-                    }
-                }
-                
-                temp.Add((stat, type));
+                temp.Add(param);
             }
 
             _params = temp.ToArray();
@@ -90,18 +64,9 @@ namespace QT.InGame
             for (var i = 0; i < _params.Length; i++)
             {
                 var param = _params[i];
-                float value = 0;
-                
-                Stat stat = statComponent.GetStat(param.Item1);
+                Stat stat = statComponent.GetStat(param.Stat);
 
-                if(stat is Status)
-                {
-                    value = param.Item2 == StatValueType.Base ? (stat as Status).Value : (stat as Status).StatusValue;
-                }
-                else
-                {
-                    value =  stat;
-                }
+                float value = StatParameter.GetStatValue(stat, param.Type);
 
                 expression = expression.Replace($"[{i}]", value.ToString());
             }
@@ -119,6 +84,7 @@ namespace QT.InGame
         }
 
 
+        // 스탯 파라미터와 수식을 분리
         private static List<string> ParseApplyValue(ref string applyValue)
         {
             bool IsAlpha(char c) => c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
