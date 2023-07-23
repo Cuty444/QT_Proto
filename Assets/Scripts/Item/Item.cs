@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
-using QT.InGame;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace QT
+namespace QT.InGame
 {
     public class Item
     {
