@@ -38,14 +38,9 @@ namespace QT.InGame
             }
         }
 
-        public static IEffectCondition GetCondition(string condition)
+        public static IEffectCondition GetCondition(EffectConditions condition)
         {
-            if (EffectConditions.TryParse(condition, out EffectConditions type))
-            {
-                return _conditionTypes[type];
-            }
-            
-            return null;
+            return _conditionTypes[condition];
         }
     }
     
