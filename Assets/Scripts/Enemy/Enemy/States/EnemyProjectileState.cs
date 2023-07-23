@@ -36,8 +36,8 @@ namespace QT.InGame
         private float _damage;
         
         private bool _isReleased;
-        private float _releaseStartTime;
         private float _releaseDelay;
+        private float _releaseTimer;
         
         
         private Transform _transform;
@@ -100,7 +100,8 @@ namespace QT.InGame
         
         public override void UpdateState()
         {
-            if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
+            _releaseTimer += Time.deltaTime;
+            if (_isReleased && _releaseTimer > _releaseDelay)
             {
                 _ownerEntity.ChangeState(Enemy.States.Dead);
             }
@@ -165,7 +166,8 @@ namespace QT.InGame
                     {
                         _isReleased = true;
                     }
-                    _releaseStartTime = Time.time;
+
+                    _releaseTimer = 0;
 
                     if (_releaseDelay > 0)
                     {
@@ -193,14 +195,14 @@ namespace QT.InGame
                     {
                         _ownerEntity.HP.SetStatus(0);
                         _isReleased = true;
-                        _releaseStartTime = Time.time;
+                        _releaseTimer = 0;
                         _ownerEntity.ChangeState(Enemy.States.Dead);
                         return;
                     }
                     if (_ownerEntity.HP <= 0)
                     {
                         _isReleased = true;
-                        _releaseStartTime = Time.time;
+                        _releaseTimer = 0;
 
                         _speed = MinSpeed;
                     }

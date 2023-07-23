@@ -56,8 +56,8 @@ namespace QT.InGame
         private float _damage;
 
         private bool _isReleased;
-        private float _releaseStartTime;
         private float _releaseDelay;
+        private float _releaseTimer;
 
         private float _reflectCorrection;
         private Transform _playerTransform;
@@ -196,7 +196,8 @@ namespace QT.InGame
         
         private void Update()
         {
-            if (_isReleased && Time.time - _releaseStartTime >= _releaseDelay)
+            _releaseTimer += Time.deltaTime;
+            if (_isReleased && _releaseTimer > _releaseDelay)
             {
                 SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
                 TrailRendersSetEmitting(false);
@@ -265,7 +266,7 @@ namespace QT.InGame
                 if (!_isReleased && --_bounceCount <= 0)
                 {
                     _isReleased = true;
-                    _releaseStartTime = Time.time;
+                    _releaseTimer = 0;
 
                     if (_releaseDelay > 0)
                     {
@@ -339,7 +340,7 @@ namespace QT.InGame
                 if (!_isReleased && --_bounceCount <= 0)
                 {
                     _isReleased = true;
-                    _releaseStartTime = Time.time;
+                    _releaseTimer = 0;
 
                     if (_releaseDelay > 0)
                     {
@@ -364,7 +365,7 @@ namespace QT.InGame
                 if (_speed <= 0)
                 {
                     _isReleased = true;
-                    _releaseStartTime = Time.time;
+                    _releaseTimer = 0;
                 
                     _speed = MinSpeed;
                 }
