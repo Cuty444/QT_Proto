@@ -4,12 +4,17 @@ using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Map;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.Rendering;
 
 namespace QT.Map
 {
     public class MapCellData : MonoBehaviour
     {
+        [field: SerializeField] public Tilemap TilemapHardCollider { get; private set; }
+        [field: SerializeField] public Tilemap TilemapTop { get; private set; }
+        [field: SerializeField] public GameObject EnemyLayer { get; private set; }
+
         [SerializeField] private Transform[] _doorTransforms;
         [SerializeField] private Transform[] _doorExitTransforms;
         [SerializeField] private Transform _enemySpawnersTransform;
@@ -84,7 +89,7 @@ namespace QT.Map
 
         public void RoomPlay(Vector2Int position)
         {
-            _mapEnemySpawner.SetPos(position);
+            _mapEnemySpawner?.SetPos(position);
             _playerManager.PlayerMapPass.Invoke(false);
             _enemySpawnersTransform.gameObject.SetActive(true);
         }

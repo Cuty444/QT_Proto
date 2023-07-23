@@ -11,8 +11,8 @@ namespace QT.InGame
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
 
-        private float _rigidStartTime;
         private float _rigidTime;
+        private float _rigidTimer;
 
         private SoundManager _soundManager;
         private GlobalDataSystem _globalDataSystem;
@@ -24,14 +24,14 @@ namespace QT.InGame
             _globalDataSystem = SystemManager.Instance.GetSystem<GlobalDataSystem>();
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
             {
-                _rigidTime = 0f;
+                _rigidTimer = _rigidTime;
             });
         }
 
         public override void InitializeState()
         {
             _ownerEntity.Animator.SetBool(RigidAnimHash, true);
-            _rigidStartTime = Time.time;
+            _rigidTimer = 0;
 
             if (_ownerEntity.HP <= 0)
             {
@@ -67,7 +67,8 @@ namespace QT.InGame
 
         public override void UpdateState()
         {
-            if (_rigidStartTime + _rigidTime < Time.time)
+            _rigidTimer += Time.deltaTime;
+            if (_rigidTimer > _rigidTime)
             {
                 if (_ownerEntity.HP <= 0)
                 {

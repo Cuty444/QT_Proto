@@ -139,7 +139,7 @@ namespace QT.InGame
             
             _playerManager.GainItemSprite.AddListener(GainItem);
             
-            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().OnOpen();
+            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>()?.OnOpen();
             
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(true);
         }

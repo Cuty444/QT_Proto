@@ -58,7 +58,7 @@ namespace QT.Core
             
             LoadingManager.Initialize();
             
-            UIManager.GetUIPanel<SplashCanvas>().OnOpen();
+            //UIManager.GetUIPanel<SplashCanvas>().OnOpen();
             
             _PostInitializeSystems();
             

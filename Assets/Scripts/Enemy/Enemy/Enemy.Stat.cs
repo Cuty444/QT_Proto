@@ -12,7 +12,7 @@ namespace QT.InGame
         
         private  void SetUpStats()
         {
-            HP = new Status(Data.MaxHp * SystemManager.Instance.GetSystem<DungeonMapSystem>().GetEnemyHpIncreasePer());
+            HP = new Status(Data.MaxHp);
             MoveSpd = new Stat(Data.MovementSpd);
         }
     }
