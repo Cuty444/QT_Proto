@@ -5,7 +5,6 @@ using System.Reflection;
 using QT.Core;
 using QT.InGame;
 using UnityEngine;
-using Conditions = QT.ItemEffectGameData.Conditions;
 
 namespace QT
 {
@@ -30,16 +29,7 @@ namespace QT
             OnMovementSpdChanged,
             OnChargeBounceCountChanged
         }
-        
-        public enum Conditions
-        {
-            None,
-            LessThan,
-            GreaterThan,
-            Equal,
-            NotEqual
-        }
-        
+
         public int Index { get; set; }
         
         public ApplyTypes ApplyType { get; set; }
@@ -48,7 +38,7 @@ namespace QT
         public float CoolTime { get; set; }
         
         public TriggerTypes TriggerType { get; set; }
-        public Conditions Condition { get; set; }
+        public EffectConditions Condition { get; set; }
         public float ConditionTarget { get; set; }
     }
 

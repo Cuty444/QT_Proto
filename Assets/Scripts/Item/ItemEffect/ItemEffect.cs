@@ -6,42 +6,24 @@ using System.Reflection;
 using UnityEngine;
 using ApplyTypes = QT.ItemEffectGameData.ApplyTypes;
 using TriggerTypes = QT.ItemEffectGameData.TriggerTypes;
-using Conditions = QT.ItemEffectGameData.Conditions;
 
 
 namespace QT.InGame
 {
     public abstract class ItemEffect
     {
-        private static readonly Dictionary<Conditions, ICondition> _conditionTypes = new ();
+        public readonly bool IsAvailable = false;
+
+        public readonly ApplyTypes ApplyType;
         
-        static ItemEffect()
-        {
-            var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(ICondition) != t && typeof(ICondition).IsAssignableFrom(t));
-            foreach (var type in types)
-            {
-                var condition = Activator.CreateInstance(type) as ICondition;
-                _conditionTypes.Add(condition.ConditionType, condition);
-            }
-        }
-        
-        
-        
-        public virtual ApplyTypes ApplyType => ApplyTypes.Buff;
         
         public TriggerTypes TriggerType { get; protected set; }
-        public readonly bool IsAvailable = false;
+        
+        private IEffectCondition _condition;
         
         public ItemEffect(ItemEffectGameData effectData)
         {
-            if(effectData == null || effectData.ApplyType != ApplyType)
-            {
-                return;
-            }
-            
-            TriggerType = effectData.TriggerType;
-            
-            IsAvailable = Process(effectData);
+            ApplyType = effectData.ApplyType;
         }
 
         public void OnTrigger()
