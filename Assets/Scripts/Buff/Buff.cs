@@ -7,7 +7,7 @@ namespace QT.InGame
 {
     public class Buff
     {
-        private readonly BuffCalculator _calculator;
+        private readonly List<BuffCalculator> _calculators;
         private readonly StatComponent _statComponent;
 
         public readonly float Duration;
@@ -17,8 +17,8 @@ namespace QT.InGame
 
         public Buff(int buffId, StatComponent statComponent, object source)
         {
-            _calculator = SystemManager.Instance.DataManager.GetDataBase<BuffEffectGameDataBase>().GetData(buffId);
-            Duration = _calculator.Duration;
+            _calculators = SystemManager.Instance.DataManager.GetDataBase<BuffEffectGameDataBase>().GetData(buffId);
+            Duration = _calculators[0].Duration;
             
             _statComponent = statComponent;
             Source = source;
@@ -26,24 +26,39 @@ namespace QT.InGame
         
         public void ApplyBuff()
         {
-            _calculator.ApplyEffect(_statComponent, this);
+            foreach (var calculator in _calculators)
+            {
+                calculator.ApplyEffect(_statComponent, this);
+            }
             _timer = 0;
         }
 
         public void RemoveBuff()
         {
-            _calculator.RemoveEffect(_statComponent, this);
+            foreach (var calculator in _calculators)
+            {
+                calculator.RemoveEffect(_statComponent, this);
+            }
         }
         
         public void ReapplyItemEffect()
         {
-            _calculator.RemoveEffect(_statComponent, this);
-            _calculator.ApplyEffect(_statComponent, this);
+            foreach (var calculator in _calculators)
+            {
+                calculator.RemoveEffect(_statComponent, this);
+                calculator.ApplyEffect(_statComponent, this);
+            }
+            
             _timer = 0;
         }
 
         public bool CheckDuration(float deltaTime)
         {
+            if (Duration < 0)
+            {
+                return false;
+            }
+            
             _timer += deltaTime;
             return _timer > Duration;
         }

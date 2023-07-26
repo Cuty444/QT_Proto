@@ -20,20 +20,23 @@ namespace QT
     [GameDataBase(typeof(BuffEffectGameData), "BuffEffectGameData")]
     public class BuffEffectGameDataBase : IGameDataBase
     {
-        private readonly Dictionary<int, BuffCalculator> _datas = new();
+        private readonly Dictionary<int, List<BuffCalculator>> _datas = new();
 
         public void RegisterData(IGameData data)
         {
-            var effectData = data as BuffEffectGameData;
-            var buffCalculator = new BuffCalculator(effectData);
-
+            if(!_datas.TryGetValue(data.Index, out var list))
+            {
+                _datas.Add(data.Index, list = new List<BuffCalculator>());
+            }
+            
+            var buffCalculator = new BuffCalculator(data as BuffEffectGameData);
             if (buffCalculator.IsAvailable)
             {
-                _datas.Add(data.Index, buffCalculator);
+                list.Add(buffCalculator);
             }
         }
 
-        public BuffCalculator GetData(int id)
+        public List<BuffCalculator> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
             {
