@@ -11,6 +11,7 @@ namespace QT.InGame
     public class BuffCalculator
     {
         public readonly bool IsAvailable = false;
+        public readonly float Duration;
         
         private PlayerStats _applyStat;
         private string _applyValue;
@@ -21,6 +22,7 @@ namespace QT.InGame
 
         public BuffCalculator(BuffEffectGameData effectData)
         {
+            Duration = effectData.Duration;
             IsAvailable = Process(effectData);
         }
         

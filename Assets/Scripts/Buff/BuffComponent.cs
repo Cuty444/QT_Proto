@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
@@ -15,16 +16,43 @@ namespace QT.InGame
             _statComponent = statComponent;
         }
         
-        public Buff AddBuff(int buffId)
+        public void AddBuff(int buffId, object source)
         {
-            var buff = new Buff(buffId, _statComponent);
+            var buff = new Buff(buffId, _statComponent, source);
             buff.ApplyBuff();
             
             _buffs.Add(buff);
-            
-            return buff;
+        }
+
+        public void RemoveBuff(Buff buff)
+        {
+            buff.RemoveBuff();
+            _buffs.Remove(buff);
         }
         
+        public void RemoveAllBuffsFromSource(object source)
+        {
+            for (int i = 0; i < _buffs.Count; i++)
+            {
+                if (_buffs[i].Source == source)
+                {
+                    RemoveBuff(_buffs[i]);
+                    i--;
+                }
+            }
+        }
+
+        private void Update()
+        {
+            for (int i = 0; i < _buffs.Count; i++)
+            {
+                if (_buffs[i].CheckDuration(Time.deltaTime))
+                {
+                    RemoveBuff(_buffs[i]);
+                    i--;
+                }
+            }
+        }
         
     }
 }

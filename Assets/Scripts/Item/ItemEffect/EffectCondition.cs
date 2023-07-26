@@ -24,11 +24,11 @@ namespace QT.InGame
         public bool CheckCondition(StatComponent statComponent, float target);
     }
     
-    public static class EffectConditionFactory
+    public static class EffectConditionContainer
     {
         private static readonly Dictionary<EffectConditions, IEffectCondition> _conditionTypes = new ();
         
-        static EffectConditionFactory()
+        static EffectConditionContainer()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(IEffectCondition) != t && typeof(IEffectCondition).IsAssignableFrom(t));
             foreach (var type in types)

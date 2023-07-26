@@ -17,6 +17,8 @@ namespace QT
         {
             Equip,
             
+            Update,
+            
             OnActiveKey,
             
             OnCharging,
@@ -35,8 +37,9 @@ namespace QT
         public float CoolTime { get; set; }
         
         public TriggerTypes TriggerType { get; set; }
+        
         public EffectConditions Condition { get; set; }
-        public float ConditionTarget { get; set; }
+        public float ConditionValue { get; set; }
     }
 
 
@@ -62,7 +65,7 @@ namespace QT
                 return value;
             }
 
-            return null;
+            return new List<ItemEffectGameData>();
         }
     }  
 }

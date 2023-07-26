@@ -5,8 +5,9 @@
 		"ApplyId",
 		"CoolTime",
 		"TriggerType",
-		"Condition",
 		"ConditionTarget",
+		"Condition",
+		"ConditionValue",
 	],
 	[
 		{
@@ -14,9 +15,27 @@
 			"ApplyType":"Buff",
 			"ApplyId":"7000",
 			"CoolTime":"0.7",
-			"TriggerType":"Hit",
+			"TriggerType":"Equip",
+			"ConditionTarget":"HP_Per",
 			"Condition":"GreaterThan",
-			"ConditionTarget":"0.5",
+			"ConditionValue":"0.5",
+		},
+		{
+			"Index":"7001",
+			"ApplyType":"Buff",
+			"ApplyId":"7000",
+			"CoolTime":"0.7",
+			"TriggerType":"Equip",
+			"Condition":"Random",
+			"ConditionValue":"70",
+		},
+		{
+			"Index":"7002",
+			"ApplyType":"Buff",
+			"ApplyId":"7000",
+			"CoolTime":"0.7",
+			"TriggerType":"Equip",
+			"Condition":"None",
 		},
 	]
 ]

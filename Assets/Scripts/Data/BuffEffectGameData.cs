@@ -25,11 +25,11 @@ namespace QT
         public void RegisterData(IGameData data)
         {
             var effectData = data as BuffEffectGameData;
-            var buffEffect = new BuffCalculator(effectData);
+            var buffCalculator = new BuffCalculator(effectData);
 
-            if (buffEffect.IsAvailable)
+            if (buffCalculator.IsAvailable)
             {
-                _datas.Add(data.Index, buffEffect);
+                _datas.Add(data.Index, buffCalculator);
             }
         }
 
