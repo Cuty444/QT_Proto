@@ -41,7 +41,7 @@ namespace QT.InGame
             }
         }
         
-        public void ReapplyItemEffect()
+        public void RefreshBuff()
         {
             foreach (var calculator in _calculators)
             {
@@ -54,7 +54,7 @@ namespace QT.InGame
 
         public bool CheckDuration(float deltaTime)
         {
-            if (Duration < 0)
+            if (Duration <= 0)
             {
                 return false;
             }

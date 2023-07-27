@@ -19,6 +19,7 @@ namespace QT.InGame
 
         private float _lastTime;
 
+        private Buff _buff;
 
         public ItemEffect(ItemEffectGameData effectData, Player player)
         {
@@ -44,8 +45,16 @@ namespace QT.InGame
                 switch (Data.ApplyType)
                 {
                     case ApplyTypes.Buff:
-                        _buffComponent.AddBuff(Data.ApplyId, this);
+                        if (_buff == null || _buff.Duration > 0)
+                        {
+                            _buff = _buffComponent.AddBuff(Data.ApplyId, this);
+                        }
+                        else
+                        {
+                            _buff.RefreshBuff();
+                        }
                         break;
+                    
                     case ApplyTypes.Active:
                         
                         break;

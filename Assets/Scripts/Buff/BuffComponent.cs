@@ -16,12 +16,14 @@ namespace QT.InGame
             _statComponent = statComponent;
         }
         
-        public void AddBuff(int buffId, object source)
+        public Buff AddBuff(int buffId, object source)
         {
             var buff = new Buff(buffId, _statComponent, source);
             buff.ApplyBuff();
             
             _buffs.Add(buff);
+
+            return buff;
         }
 
         public void RemoveBuff(Buff buff)
