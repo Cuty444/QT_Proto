@@ -38,6 +38,7 @@ namespace QT
         
         public TriggerTypes TriggerType { get; set; }
         
+        public  string ConditionTarget { get; set; }
         public EffectConditions Condition { get; set; }
         public float ConditionValue { get; set; }
     }

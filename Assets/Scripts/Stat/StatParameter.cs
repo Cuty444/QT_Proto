@@ -52,6 +52,12 @@ namespace QT.InGame
             return true;
         }
 
+        
+        public static float GetStatValue(StatComponent statComponent, StatParameter parameter)
+        {
+            return GetStatValue(statComponent.GetStat(parameter.Stat), parameter.Type);
+        }
+        
         public static float GetStatValue(Stat stat, StatValueType type)
         {
             if(stat is Status)

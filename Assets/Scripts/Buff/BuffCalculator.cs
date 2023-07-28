@@ -66,9 +66,7 @@ namespace QT.InGame
             for (var i = 0; i < _params.Length; i++)
             {
                 var param = _params[i];
-                Stat stat = statComponent.GetStat(param.Stat);
-
-                float value = StatParameter.GetStatValue(stat, param.Type);
+                float value = StatParameter.GetStatValue(statComponent, param);
 
                 expression = expression.Replace($"[{i}]", value.ToString());
             }

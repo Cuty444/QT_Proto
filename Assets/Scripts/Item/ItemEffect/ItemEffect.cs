@@ -12,7 +12,7 @@ namespace QT.InGame
     {
         public readonly ItemEffectGameData Data;
         
-        private readonly IEffectCondition _condition;
+        private readonly EffectCondition _condition;
         
         private readonly StatComponent _ownerStatComponent;
         private BuffComponent _buffComponent;
@@ -29,7 +29,7 @@ namespace QT.InGame
             
             if (effectData.Condition != EffectConditions.None)
             {
-                _condition = EffectConditionContainer.GetCondition(effectData.Condition);
+                _condition = EffectConditionFactory.GetCondition(effectData.Condition, effectData.ConditionTarget, effectData.ConditionValue);
             }
         }
 
@@ -40,7 +40,7 @@ namespace QT.InGame
                 return;
             }
             
-            if (_condition == null || _condition.CheckCondition(_ownerStatComponent, Data.ConditionValue))
+            if (_condition == null || _condition.CheckCondition(_ownerStatComponent))
             {
                 switch (Data.ApplyType)
                 {

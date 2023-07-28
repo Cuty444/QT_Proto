@@ -16,72 +16,110 @@ namespace QT.InGame
         
         Random
     }
-    
-    public interface IEffectCondition
-    {
-        public EffectConditions EffectConditionType { get; }
 
-        public bool CheckCondition(StatComponent statComponent, float target);
+    [AttributeUsage(AttributeTargets.Class)]
+    public class EffectConditionAttribute : Attribute
+    {
+        public EffectConditions ConditionType { get; private set; }
+
+        public EffectConditionAttribute(EffectConditions conditionType)
+        {
+            ConditionType = conditionType;
+        }
+    }
+
+    public abstract class EffectCondition
+    {
+        protected float _value;
+        
+        public EffectCondition(string target, float value)
+        {
+            _value = value;
+        }
+
+        public abstract bool CheckCondition(StatComponent statComponent);
     }
     
-    public static class EffectConditionContainer
+    public static class EffectConditionFactory
     {
-        private static readonly Dictionary<EffectConditions, IEffectCondition> _conditionTypes = new ();
+        private static readonly Dictionary<EffectConditions, Type> _conditionTypes = new ();
         
-        static EffectConditionContainer()
+        static EffectConditionFactory()
         {
-            var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(IEffectCondition) != t && typeof(IEffectCondition).IsAssignableFrom(t));
+            var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(EffectCondition) != t && typeof(EffectCondition).IsAssignableFrom(t));
             foreach (var type in types)
             {
-                var condition = Activator.CreateInstance(type) as IEffectCondition;
-                _conditionTypes.Add(condition.EffectConditionType, condition);
+                var attribute = type.GetCustomAttribute<EffectConditionAttribute>();
+                _conditionTypes.Add(attribute.ConditionType, type);
             }
         }
 
-        public static IEffectCondition GetCondition(EffectConditions condition)
+        public static EffectCondition GetCondition(EffectConditions condition, string target, float value)
         {
-            return _conditionTypes[condition];
+            return Activator.CreateInstance(_conditionTypes[condition], target, value) as EffectCondition;
         }
     }
     
     
-    public class LessThanCondition : IEffectCondition
+    [EffectCondition(EffectConditions.LessThan)]
+    public class LessThanCondition : EffectCondition
     {
-        public EffectConditions EffectConditionType => EffectConditions.LessThan;
-       
-        public bool CheckCondition(StatComponent statComponent, float target)
+        private StatParameter _statParameter;
+        
+        public LessThanCondition(string target, float value) : base(target, value)
         {
-            return statComponent.GetStat(PlayerStats.HP) < target;
+            StatParameter.ParseStatParam(target, out _statParameter);
+        }
+
+        public override bool CheckCondition(StatComponent statComponent)
+        {
+            return StatParameter.GetStatValue(statComponent, _statParameter) < _value;
         }
     }
     
-    public class GreaterThanCondition : IEffectCondition
+    [EffectCondition(EffectConditions.GreaterThan)]
+    public class GreaterThanCondition : EffectCondition
     {
-        public EffectConditions EffectConditionType => EffectConditions.GreaterThan;
-       
-        public bool CheckCondition(StatComponent statComponent, float target)
+        private StatParameter _statParameter;
+        
+        public GreaterThanCondition(string target, float value) : base(target, value)
         {
-            return statComponent.GetStat(PlayerStats.HP) > target;
+            StatParameter.ParseStatParam(target, out _statParameter);
+        }
+
+        public override bool CheckCondition(StatComponent statComponent)
+        {
+            return StatParameter.GetStatValue(statComponent, _statParameter) > _value;
         }
     }
     
-    public class EqualCondition : IEffectCondition
+    [EffectCondition(EffectConditions.Equal)]
+    public class EqualCondition : EffectCondition
     {
-        public EffectConditions EffectConditionType => EffectConditions.Equal;
-       
-        public bool CheckCondition(StatComponent statComponent, float target)
+        private StatParameter _statParameter;
+        
+        public EqualCondition(string target, float value) : base(target, value)
         {
-            return target.CompareTo(statComponent.GetStat(PlayerStats.HP)) == 0;
+            StatParameter.ParseStatParam(target, out _statParameter);
+        }
+        
+        public override bool CheckCondition(StatComponent statComponent)
+        {
+            return _value.CompareTo(StatParameter.GetStatValue(statComponent, _statParameter)) == 0;
         }
     }
     
-    public class RandomCondition : IEffectCondition
+    [EffectCondition(EffectConditions.Random)]
+    public class RandomCondition : EffectCondition
     {
-        public EffectConditions EffectConditionType => EffectConditions.Random;
-       
-        public bool CheckCondition(StatComponent statComponent, float target)
+        public RandomCondition(string target, float value) : base(target, value)
         {
-            return UnityEngine.Random.Range(0, 100) < target;
+        }
+        
+        public override bool CheckCondition(StatComponent statComponent)
+        {
+            return UnityEngine.Random.Range(0, 100) < _value;
         }
     }
+    
 }
