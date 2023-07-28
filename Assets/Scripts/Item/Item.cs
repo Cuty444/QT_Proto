@@ -48,18 +48,25 @@ namespace QT.InGame
         
         private void SetTrigger(ItemEffect effect)
         {
-            if (effect.Data.TriggerType == TriggerTypes.Equip)
+            foreach (TriggerTypes value in TriggerTypes.GetValues(typeof(TriggerTypes)))
             {
-                return;
-            }
-            
-            if (!_applyPointEvents.TryGetValue(effect.Data.TriggerType, out var events))
-            {
-                events = new UnityEvent();
-                _applyPointEvents.Add(effect.Data.TriggerType, events);
-            }
+                if (value == TriggerTypes.Equip)
+                {
+                    continue;
+                }
+                
+                if (effect.Data.TriggerType.HasFlag(value))
+                {  
+                    if (!_applyPointEvents.TryGetValue(value, out var events))
+                    {
+                        events = new UnityEvent();
+                        _applyPointEvents.Add(value, events);
+                    }
         
-            events.AddListener(effect.OnTrigger);
+                    events.AddListener(effect.OnTrigger);
+                }
+            }
+           
         }
 
         

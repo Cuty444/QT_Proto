@@ -15,7 +15,7 @@ namespace QT.InGame
         private readonly EffectCondition _condition;
         
         private readonly StatComponent _ownerStatComponent;
-        private BuffComponent _buffComponent;
+        private readonly BuffComponent _buffComponent;
 
         private float _lastTime;
 

@@ -13,20 +13,21 @@ namespace QT
             Active
         }
 
+        [Flags]
         public enum TriggerTypes
         {
-            Equip,
+            Equip = 1 << 0,
             
-            Update,
+            Update = 1 << 1,
             
-            OnActiveKey,
+            OnActiveKey = 1 << 2,
             
-            OnCharging,
-            OnGoldChanged,
-            OnHpChanged,
-            OnSwing,
-            OnMovementSpdChanged,
-            OnChargeBounceCountChanged
+            OnCharging = 1 << 3,
+            OnGoldChanged = 1 << 4,
+            OnHpChanged = 1 << 5,
+            OnSwing = 1 << 6,
+            OnMovementSpdChanged = 1 << 7,
+            OnChargeBounceCountChanged = 1 << 8
         }
 
         public int Index { get; set; }
