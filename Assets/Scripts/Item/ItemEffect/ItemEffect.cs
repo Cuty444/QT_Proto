@@ -1,31 +1,69 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using QT.Core;
+using System.Reflection;
 using UnityEngine;
-using ApplyTypes = QT.ItemEffectGameData.ApplyTypes;
 
 
 namespace QT.InGame
 {
-    public class ItemEffect
+    public enum ItemEffectTypes
+    {
+        None,
+        
+        [EffectCondition(typeof(BuffItemEffect))]
+        Buff,
+        
+        Teleport,
+        Reverse,
+        TimeScale,
+    }
+    
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ItemEffectAttribute : Attribute
+    {
+        public Type EffectType { get; private set; }
+
+        public ItemEffectAttribute(Type effectType)
+        {
+            EffectType = effectType;
+        }
+    }
+    
+    public static class ItemEffectFactory
+    {
+        private static readonly Dictionary<ItemEffectTypes, Type> _conditionTypes = new ();
+
+        static ItemEffectFactory()
+        {
+            foreach (var field in typeof(ItemEffectTypes).GetFields())
+            {
+                var attribute = field.GetCustomAttribute<EffectConditionAttribute>();
+                if (attribute != null)
+                {
+                    _conditionTypes.Add((ItemEffectTypes)field.GetValue(null), attribute.ConditionType);
+                }
+            }
+        }
+
+        public static ItemEffect GetEffect(ItemEffectTypes type, ItemEffectGameData effectData, Player player)
+        {
+            return Activator.CreateInstance(_conditionTypes[type], effectData, player) as ItemEffect;
+        }
+    }
+    
+    
+    public abstract class ItemEffect
     {
         public readonly ItemEffectGameData Data;
-        
         private readonly EffectCondition _condition;
-        
         private readonly StatComponent _ownerStatComponent;
-        private readonly BuffComponent _buffComponent;
 
-        private float _lastTime;
-
-        private Buff _buff;
+        protected float _lastTime;
 
         public ItemEffect(ItemEffectGameData effectData, Player player)
         {
             Data = effectData;
             _ownerStatComponent = player.StatComponent;
-            _buffComponent = player.BuffComponent;
             
             if (effectData.Condition != EffectConditions.None)
             {
@@ -42,45 +80,16 @@ namespace QT.InGame
             
             if (_condition == null || _condition.CheckCondition(_ownerStatComponent))
             {
-                switch (Data.ApplyType)
-                {
-                    case ApplyTypes.Buff:
-                        if (_buff == null || _buff.Duration > 0)
-                        {
-                            _buff = _buffComponent.AddBuff(Data.ApplyId, this);
-                        }
-                        else
-                        {
-                            _buff.RefreshBuff();
-                        }
-                        break;
-                    
-                    case ApplyTypes.Active:
-                        
-                        break;
-                }
+                OnTriggerAction();
                 _lastTime = Time.timeSinceLevelLoad;
             }
             
         }
 
-        public void OnEquip()
-        {
-            _lastTime = 0;
-            OnTrigger();
-        }
-
-        public void OnRemoved()
-        {
-            switch (Data.ApplyType)
-            {
-                case ApplyTypes.Buff:
-                    _buffComponent.RemoveAllBuffsFromSource(this);
-                    break;
-                case ApplyTypes.Active:
-                        
-                    break;
-            }
-        }
+        public abstract void OnEquip();
+        
+        protected abstract void OnTriggerAction();
+        
+        public abstract void OnRemoved();
     }
 }

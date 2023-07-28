@@ -1,19 +1,16 @@
 using System.Collections.Generic;
 using QT.Core;
+using QT.InGame;
 
 namespace QT
 {
-    public enum ActiveEffectTypes
-    {
-        None,
-        Teleport,
-    }
+    
     
     public class ActiveEffectGameData : IGameData
     {
         public int Index { get; set; }
         
-        public ActiveEffectTypes ActiveEffectType { get; set; }
+        public ItemEffectTypes ActiveEffectType { get; set; }
         
         public float Param1 { get; set; }
         public float Param2 { get; set; }

@@ -33,7 +33,7 @@ namespace QT.InGame
                 {
                     if (data != null)
                     {
-                        var effect = new ItemEffect(data, player);
+                        var effect = ItemEffectFactory.GetEffect(ItemEffectTypes.Buff, data, player);
                         _itemEffectList.Add(effect);
                         
                         SetTrigger(effect);
