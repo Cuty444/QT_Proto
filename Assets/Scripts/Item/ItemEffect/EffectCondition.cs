@@ -1,28 +1,30 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using UnityEngine;
 
 namespace QT.InGame
 {
     public enum EffectConditions
     {
         None,
+        
+        [EffectCondition(typeof(LessThanCondition))]
         LessThan,
+        [EffectCondition(typeof(GreaterThanCondition))]
         GreaterThan,
+        [EffectCondition(typeof(EqualCondition))]
         Equal,
         
+        [EffectCondition(typeof(RandomCondition))]
         Random
     }
 
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Field)]
     public class EffectConditionAttribute : Attribute
     {
-        public EffectConditions ConditionType { get; private set; }
+        public Type ConditionType { get; private set; }
 
-        public EffectConditionAttribute(EffectConditions conditionType)
+        public EffectConditionAttribute(Type conditionType)
         {
             ConditionType = conditionType;
         }
@@ -43,14 +45,16 @@ namespace QT.InGame
     public static class EffectConditionFactory
     {
         private static readonly Dictionary<EffectConditions, Type> _conditionTypes = new ();
-        
+
         static EffectConditionFactory()
         {
-            var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(EffectCondition) != t && typeof(EffectCondition).IsAssignableFrom(t));
-            foreach (var type in types)
+            foreach (var field in typeof(EffectConditions).GetFields())
             {
-                var attribute = type.GetCustomAttribute<EffectConditionAttribute>();
-                _conditionTypes.Add(attribute.ConditionType, type);
+                var attribute = field.GetCustomAttribute<EffectConditionAttribute>();
+                if (attribute != null)
+                {
+                    _conditionTypes.Add((EffectConditions)field.GetValue(null), attribute.ConditionType);
+                }
             }
         }
 
@@ -61,7 +65,6 @@ namespace QT.InGame
     }
     
     
-    [EffectCondition(EffectConditions.LessThan)]
     public class LessThanCondition : EffectCondition
     {
         private StatParameter _statParameter;
@@ -77,7 +80,6 @@ namespace QT.InGame
         }
     }
     
-    [EffectCondition(EffectConditions.GreaterThan)]
     public class GreaterThanCondition : EffectCondition
     {
         private StatParameter _statParameter;
@@ -93,7 +95,6 @@ namespace QT.InGame
         }
     }
     
-    [EffectCondition(EffectConditions.Equal)]
     public class EqualCondition : EffectCondition
     {
         private StatParameter _statParameter;
@@ -109,7 +110,6 @@ namespace QT.InGame
         }
     }
     
-    [EffectCondition(EffectConditions.Random)]
     public class RandomCondition : EffectCondition
     {
         public RandomCondition(string target, float value) : base(target, value)
