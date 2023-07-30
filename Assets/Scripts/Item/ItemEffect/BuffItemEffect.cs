@@ -18,7 +18,6 @@ namespace QT.InGame
         public override void OnEquip()
         {
             _lastTime = 0;
-            OnTrigger();
         }
 
         protected override void OnTriggerAction()

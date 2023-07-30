@@ -99,6 +99,11 @@ namespace QT.InGame
             foreach (var effect in _itemEffectList)
             {
                 effect.OnEquip();
+                
+                if (effect.Data.TriggerType.HasFlag(TriggerTypes.Equip))
+                {
+                    effect.OnTrigger();
+                }
             }
         }
 
