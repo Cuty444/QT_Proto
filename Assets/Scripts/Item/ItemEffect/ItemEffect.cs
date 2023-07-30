@@ -45,9 +45,9 @@ namespace QT.InGame
             }
         }
 
-        public static ItemEffect GetEffect(ItemEffectTypes type, ItemEffectGameData effectData, Player player)
+        public static ItemEffect GetEffect(ItemEffectTypes type, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData = null)
         {
-            return Activator.CreateInstance(_conditionTypes[type], effectData, player) as ItemEffect;
+            return Activator.CreateInstance(_conditionTypes[type], player, effectData, specialEffectData) as ItemEffect;
         }
     }
     
@@ -60,7 +60,7 @@ namespace QT.InGame
 
         protected float _lastTime;
 
-        public ItemEffect(ItemEffectGameData effectData, Player player)
+        public ItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData)
         {
             Data = effectData;
             _ownerStatComponent = player.StatComponent;

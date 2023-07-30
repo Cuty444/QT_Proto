@@ -10,7 +10,7 @@ namespace QT.InGame
         private readonly BuffComponent _buffComponent;
         private Buff _buff;
         
-        public BuffItemEffect(ItemEffectGameData effectData, Player player) : base(effectData, player)
+        public BuffItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
         {
             _buffComponent = player.BuffComponent;
         }
@@ -25,7 +25,7 @@ namespace QT.InGame
         {
             if (_buff == null || _buff.Duration > 0)
             {
-                _buff = _buffComponent.AddBuff(Data.ApplyId, this);
+                _buff = _buffComponent.AddBuff(Data.ApplyBuffId, this);
             }
             else
             {

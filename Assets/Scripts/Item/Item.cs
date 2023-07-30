@@ -33,10 +33,21 @@ namespace QT.InGame
                 {
                     if (data != null)
                     {
-                        var effect = ItemEffectFactory.GetEffect(ItemEffectTypes.Buff, data, player);
-                        _itemEffectList.Add(effect);
-                        
-                        SetTrigger(effect);
+                        if (data.ApplyBuffId != 0)
+                        {
+                            var effect = ItemEffectFactory.GetEffect(ItemEffectTypes.Buff, player, data);
+                            _itemEffectList.Add(effect);
+                            SetTrigger(effect);
+                        }
+
+                        if (data.ApplySpecialEffectId != 0)
+                        {
+                            var specialData = dataManager.GetDataBase<SpecialEffectGameDataBase>().GetData(data.ApplySpecialEffectId);
+
+                            var effect = ItemEffectFactory.GetEffect(specialData.ActiveEffectType, player, data, specialData);
+                            _itemEffectList.Add(effect);
+                            SetTrigger(effect);
+                        }
                     }
                 }
             }

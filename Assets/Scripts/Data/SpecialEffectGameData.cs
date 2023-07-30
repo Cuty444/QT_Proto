@@ -6,7 +6,7 @@ namespace QT
 {
     
     
-    public class ActiveEffectGameData : IGameData
+    public class SpecialEffectGameData : IGameData
     {
         public int Index { get; set; }
         
@@ -18,17 +18,17 @@ namespace QT
     }
 
 
-    [GameDataBase(typeof(ActiveEffectGameData), "ActiveEffectGameData")]
-    public class ActiveEffectGameDataBase : IGameDataBase
+    [GameDataBase(typeof(SpecialEffectGameData), "SpecialEffectGameData")]
+    public class SpecialEffectGameDataBase : IGameDataBase
     {
-        private readonly Dictionary<int, ActiveEffectGameData> _datas = new();
+        private readonly Dictionary<int, SpecialEffectGameData> _datas = new();
 
         public void RegisterData(IGameData data)
         {
-            _datas.Add(data.Index, (ActiveEffectGameData)data);
+            _datas.Add(data.Index, (SpecialEffectGameData)data);
         }
 
-        public ActiveEffectGameData GetData(int id)
+        public SpecialEffectGameData GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
             {

@@ -7,12 +7,6 @@ namespace QT
 {
     public class ItemEffectGameData : IGameData
     {
-        public enum ApplyTypes
-        {
-            Buff,
-            Active
-        }
-
         [Flags]
         public enum TriggerTypes
         {
@@ -32,8 +26,8 @@ namespace QT
 
         public int Index { get; set; }
         
-        public ApplyTypes ApplyType { get; set; }
-        public int ApplyId { get; set; }
+        public int ApplyBuffId { get; set; }
+        public int ApplySpecialEffectId { get; set; }
         
         public float CoolTime { get; set; }
         
