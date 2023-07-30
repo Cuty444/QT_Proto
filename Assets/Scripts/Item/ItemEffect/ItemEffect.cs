@@ -16,6 +16,7 @@ namespace QT.InGame
         Teleport,
         [EffectCondition(typeof(ReverseAtkDirItemEffect))]
         ReverseAtkDir,
+        [EffectCondition(typeof(TimeScaleItemEffect))]
         TimeScale,
     }
     

@@ -56,14 +56,14 @@
 			"Index":"8000",
 			"ApplyBuffId":"8000",
 			"CoolTime":"0",
-			"TriggerType":"OnMovementSpdChanged",
+			"TriggerType":"Equip, OnMovementSpdChanged",
 			"Condition":"None",
 		},
 		{
 			"Index":"8001",
 			"ApplyBuffId":"8001",
 			"CoolTime":"0",
-			"TriggerType":"OnHpChanged",
+			"TriggerType":"Equip, OnHpChanged",
 			"Condition":"None",
 		},
 		{
@@ -91,7 +91,7 @@
 			"Index":"8005",
 			"ApplyBuffId":"8005",
 			"CoolTime":"0",
-			"TriggerType":"OnChargeBounceCountChanged",
+			"TriggerType":"Equip, OnChargeBounceCountChanged",
 			"Condition":"None",
 		},
 		{
@@ -133,11 +133,10 @@
 		{
 			"Index":"9005",
 			"ApplyBuffId":"9005",
-			"CoolTime":"0",
-			"TriggerType":"OnHpChanged, OnGoldChanged",
-			"ConditionTarget":"HP_Per",
+			"ApplySpecialEffectId":"9005",
+			"CoolTime":"3",
+			"TriggerType":"OnActiveKey",
 			"Condition":"None",
-			"ConditionValue":"0.5",
 		},
 	]
 ]
