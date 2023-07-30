@@ -13,6 +13,9 @@ namespace QT.InGame
         [EffectCondition(typeof(BuffItemEffect))]
         Buff,
         
+        [EffectCondition(typeof(EnemyRigidItemEffect))]
+        EnemyRigid,
+        [EffectCondition(typeof(TeleportItemEffect))]
         Teleport,
         [EffectCondition(typeof(ReverseAtkDirItemEffect))]
         ReverseAtkDir,
