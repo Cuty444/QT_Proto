@@ -6,15 +6,6 @@
             "id": "cb8ed2bc-282f-4c47-85c9-73d5cd85d345",
             "actions": [
                 {
-                    "name": "Throw",
-                    "type": "Button",
-                    "id": "715fa5bd-0f65-4331-b87e-949f42473963",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Swing",
                     "type": "Button",
                     "id": "8580a5c1-e3c9-432c-ab24-56a187d3de70",
@@ -51,6 +42,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Active",
+                    "type": "Button",
+                    "id": "b8e0eead-454b-45bb-8f7c-9917f655c947",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Teleport",
                     "type": "Button",
                     "id": "06860180-8156-46e1-b824-6ee0835312f8",
@@ -70,17 +70,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "336fc763-2eab-4d23-997a-3b06ae02c714",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Throw",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "ebbef782-3b14-408c-815b-5e5b31e615b9",
@@ -199,6 +188,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interaction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ff3f690a-803e-4adf-a8df-0435f6446c67",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Active",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

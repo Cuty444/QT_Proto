@@ -16,13 +16,18 @@ namespace QT.InGame
         public Inventory(Player target)
         {
             _targetPlayer = target;
-            SetApplyPointEvents();
+            SetTriggerPointEvents();
         }
 
-        private void SetApplyPointEvents()
+        private void SetTriggerPointEvents()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
 
+            _targetPlayer.SetAction(Player.ButtonActions.Active,
+                (isOn) =>
+                {
+                    if (isOn) InvokeTrigger(TriggerTypes.OnActiveKey);
+                });
             
             _targetPlayer.StatComponent.GetStatus(PlayerStats.HP).OnStatusChanged
                 .AddListener(() => InvokeTrigger(ItemEffectGameData.TriggerTypes.OnHpChanged));
