@@ -27,6 +27,7 @@ namespace QT.Core
         public UnityEvent StairNextRoomEvent { get; } = new();
         
         public Player Player { get; private set; }
+        public List<int> PlayerIndexInventory = new();
 
         public UnityEvent AddItemEvent { get; } = new();
         

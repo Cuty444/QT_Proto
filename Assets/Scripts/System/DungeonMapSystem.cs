@@ -513,6 +513,8 @@ namespace QT.Core.Map
             var _playerManager = SystemManager.Instance.PlayerManager;
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             
+            _playerManager.PlayerIndexInventory = _playerManager.Player.Inventory.GetItemList().Select((x)=>x.ItemGameData.Index).ToList();
+            
             _playerManager.globalGold = _playerManager.Player.GetGoldCost();
             var uiManager = SystemManager.Instance.UIManager;
             uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>

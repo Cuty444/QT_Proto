@@ -59,7 +59,6 @@ namespace QT.InGame
             
             _playerManager.AddItemEvent.Invoke();
         }
-
         
         public void RemoveItem(int index)
         {
@@ -88,5 +87,17 @@ namespace QT.InGame
             }
             _items.Clear();
         }
+
+        public void CopyItemList(List<int> items)
+        {
+            foreach (var id in items)
+            {
+                var item = new Item(id, _targetPlayer);
+            
+                _items.Add(item);
+                item.OnEquip();
+            }
+        }
+        
     }
 }

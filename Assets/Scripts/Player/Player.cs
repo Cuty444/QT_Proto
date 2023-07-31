@@ -70,7 +70,6 @@ namespace QT.InGame
         [field: SerializeField] public float TeleportImpulseForce { get; private set; } = 0.2f;
         
         
-        
         [HideInInspector] public bool IsFall;
         [HideInInspector] public FallObject EnterFallObject;
         [HideInInspector] public Vector2 DodgePreviousPosition;
@@ -100,8 +99,10 @@ namespace QT.InGame
             
             EffectSetup();
 
-            Inventory = new Inventory(this);
             _playerManager = SystemManager.Instance.PlayerManager;
+            
+            Inventory = new Inventory(this);
+            Inventory.CopyItemList(_playerManager.PlayerIndexInventory);
             
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
@@ -168,7 +169,7 @@ namespace QT.InGame
         
         public void PlayerDead()
         {
-            Inventory.ClearItems();
+            _playerManager.PlayerIndexInventory.Clear();
             SystemManager.Instance.PlayerManager.globalGold = 0;
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
