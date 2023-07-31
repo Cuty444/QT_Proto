@@ -78,6 +78,10 @@ namespace QT.InGame
             HpCanvas.gameObject.SetActive(false);
 
             enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
+
+            SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener((arg) =>
+                SetTeleportLine(Vector2.zero, false));
+            
             LoadSound();
             
             initialization(_enemyId);
@@ -128,6 +132,35 @@ namespace QT.InGame
                 transform.localScale = new Vector3(scale, scale, scale);
                 yield return null;
                 time += Time.deltaTime;
+            }
+        }
+
+        
+        private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
+        public async void SetTeleportLine(Vector2 target, bool isActive)
+        {
+            if (isActive)
+            {
+                if (TeleportLineRenderer == null)
+                {
+                    TeleportLineRenderer =
+                        await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(TeleportLinePath);
+                }
+                
+                if (CurrentStateIndex >= (int)Player.States.Fall)
+                {
+                    TeleportLineRenderer.positionCount = 0;
+                    return;
+                }
+                TeleportLineRenderer.positionCount = 2;
+                TeleportLineRenderer.SetPosition(0, target);
+                TeleportLineRenderer.SetPosition(1, transform.position);
+            }
+            else if(TeleportLineRenderer != null)
+            {
+                TeleportLineRenderer.positionCount = 0;
+                SystemManager.Instance.ResourceManager.ReleaseObject(TeleportLinePath, TeleportLineRenderer);
+                TeleportLineRenderer = null;
             }
         }
     }    

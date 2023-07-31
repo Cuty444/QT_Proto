@@ -345,32 +345,31 @@ namespace QT.InGame
         private void GetInEnemyRange(Vector2 origin, float range, float angle, Vector2 dir,
             ref List<Enemy> outList)
         { 
-            foreach (var hitable in _ownerEntity._hitableList)
-            {
-                
-                if (hitable is not Enemy)
-                {
-                    continue;
-                }
-                
-                var enemy = (Enemy) hitable;
-                
-                if (enemy.CurrentStateIndex > (int) Enemy.States.Rigid)
-                    continue;
-                var checkRange = range + enemy.ColliderRad;
-                var targetDir = enemy.Position - origin;
-
-                if (targetDir.sqrMagnitude < checkRange * checkRange)
-                {
-                    var dot = Vector2.Dot((targetDir).normalized, dir);
-                    var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
-
-                    if (degrees < angle)
-                    {
-                        outList.Add(enemy);
-                    }
-                }
-            }
+            // foreach (var hitable in _ownerEntity._hitableList)
+            // {
+            //     if (hitable is not Enemy)
+            //     {
+            //         continue;
+            //     }
+            //     
+            //     var enemy = (Enemy) hitable;
+            //     
+            //     if (enemy.CurrentStateIndex > (int) Enemy.States.Rigid)
+            //         continue;
+            //     var checkRange = range + enemy.ColliderRad;
+            //     var targetDir = enemy.Position - origin;
+            //
+            //     if (targetDir.sqrMagnitude < checkRange * checkRange)
+            //     {
+            //         var dot = Vector2.Dot((targetDir).normalized, dir);
+            //         var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
+            //
+            //         if (degrees < angle)
+            //         {
+            //             outList.Add(enemy);
+            //         }
+            //     }
+            // }
         }
 
         private void GetInHitalbeCheck(Vector2 origin,float range,float angle,Vector2 dir)

@@ -60,8 +60,6 @@ namespace QT.InGame
             _stats.Add(PlayerStats.EnemyProjectileDmg1, new(atkData.EnemyProjectileDmg1));
             _stats.Add(PlayerStats.EnemyProjectileDmg2, new(atkData.EnemyProjectileDmg2));
 
-            _stats.Add(PlayerStats.TeleportAllowableDistance, new(atkData.TeleportAllowableDistance));
-
             _stats.Add(PlayerStats.ReflectCorrection, new(atkData.ReflectCorrection));
             _stats.Add(PlayerStats.AtkDmgPer, new(atkData.AtkDmgPer));
         }
