@@ -68,7 +68,7 @@ namespace QT
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                SystemManager.Instance.ProjectileManager.ProjectileListClear();
+                SystemManager.Instance.ProjectileManager.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().StartCoroutine(UnityUtil.WaitForFunc(() =>

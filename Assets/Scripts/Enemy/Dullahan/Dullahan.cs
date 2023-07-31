@@ -29,6 +29,11 @@ namespace QT.InGame
             Dead,
         }
         
+        public int InstanceId => gameObject.GetInstanceID();
+        public Vector2 Position => transform.position;
+        public float ColliderRad => RushColliderSize;
+        
+        
         [SerializeField] private int _enemyId;
         public EnemyGameData Data { get; private set; }
         [field: SerializeField] public DullahanData DullahanData{ get; private set; }

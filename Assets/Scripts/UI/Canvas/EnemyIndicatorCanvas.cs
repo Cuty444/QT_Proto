@@ -78,7 +78,7 @@ namespace QT.UI
                 }
 
                 Vector3 screenPosition =
-                    Util.ScreenMath.GetScreenPosition(Camera.main, target.Key.GetPosition());
+                    Util.ScreenMath.GetScreenPosition(Camera.main, target.Key.Position);
                 bool isTargetVisible = Util.ScreenMath.IsTargetVisible(screenPosition);
                 if (isTargetVisible)
                 {

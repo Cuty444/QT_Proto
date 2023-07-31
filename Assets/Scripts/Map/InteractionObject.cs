@@ -8,6 +8,11 @@ namespace QT
 {
     public class InteractionObject : MonoBehaviour, IHitable
     {
+        public int InstanceId => gameObject.GetInstanceID();
+        public Vector2 Position => transform.position;
+        [field: SerializeField] public float ColliderRad { get; private set; }
+      
+        
         protected bool isHit = false;
         protected SkeletonMecanim _skeletonMecanim;
         protected Animator _animator;
@@ -34,11 +39,6 @@ namespace QT
                 _circleCollider2D.enabled = false;
                 _animator.SetTrigger(AnimationHitHash);
             }
-        }
-
-        public Vector2 GetPosition()
-        {
-            return transform.position;
         }
         
         public float GetHp()

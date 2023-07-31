@@ -13,16 +13,16 @@ namespace QT
         PlayerTeleport,
     }
     
-    public interface IProjectile : IHitable
+    public interface IProjectile
     {
-        public int ProjectileId { get; }
+        public int InstanceId { get; }
+        
         public Vector2 Position { get; }
         public float ColliderRad { get; }
         
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce);
 
         public void ResetBounceCount(int maxBounce);
-        
         public void ResetProjectileDamage(int damage);
 
         public LayerMask GetLayerMask();
@@ -35,15 +35,15 @@ namespace QT
 
         public void Register(IProjectile projectile)
         {
-            _projectiles.Add(projectile.ProjectileId, projectile);
+            _projectiles.Add(projectile.InstanceId, projectile);
         }
         
         public void UnRegister(IProjectile projectile)
         {
-            _projectiles.Remove(projectile.ProjectileId);
+            _projectiles.Remove(projectile.InstanceId);
         }
 
-        public void ProjectileListClear()
+        public void Clear()
         {
             _projectiles.Clear();
         }
@@ -67,10 +67,26 @@ namespace QT
                             outList.Add(projectile);
                         }
                     }
-                    
                 }
-                
             }
         }
+        
+        public void GetInRange(Vector2 origin, float range, ref List<IProjectile> outList, int layerMask)
+        {
+            foreach (var projectile in _projectiles.Values)
+            {
+                if ((projectile.GetLayerMask() & layerMask) != 0)
+                {
+                    var checkRange = range + projectile.ColliderRad;
+                    var targetDir = projectile.Position - origin;
+                    
+                    if (targetDir.sqrMagnitude < checkRange * checkRange)
+                    {
+                        outList.Add(projectile);
+                    }
+                }
+            }
+        }
+        
     }
 }

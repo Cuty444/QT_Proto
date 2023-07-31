@@ -15,7 +15,7 @@ namespace QT.InGame
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
-        public int ProjectileId => gameObject.GetInstanceID();
+        public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
 
@@ -142,11 +142,6 @@ namespace QT.InGame
         public void Hit(Vector2 dir, float newSpeed,AttackType attackType)
         {
             ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
-        }
-        
-        public Vector2 GetPosition()
-        {
-            return transform.position;
         }
         
         public float GetHp()

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace QT.InGame
 {
-    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IProjectile
+    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IHitable, IProjectile
     {
         public enum States : int
         {
@@ -22,8 +22,8 @@ namespace QT.InGame
             Dead,
         }
         
-        public int ProjectileId => gameObject.GetInstanceID();
-        public  Vector2 Position => transform.position;
+        public int InstanceId => gameObject.GetInstanceID();
+        public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
 
         [SerializeField] private int _enemyId;

@@ -90,11 +90,5 @@ namespace QT
         {
             _skeletonRenderer.CustomMaterialOverride.Clear();
         }
-
-        public void SetHitDuration(float delta)
-        {
-            _hitDuration = delta;
-            _hitCurve = _globalData.PlayerHitEffectCurve;
-        }
     }
 }

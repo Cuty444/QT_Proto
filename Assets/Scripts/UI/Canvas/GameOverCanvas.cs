@@ -52,7 +52,7 @@ namespace QT.UI
                     _titleButtonTrigger.InteractableOn();
                     buttonTrigger.InteractableOn();
                 }));
-                SystemManager.Instance.ProjectileManager.ProjectileListClear();
+                SystemManager.Instance.ProjectileManager.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
             }, 3.0f));
         }

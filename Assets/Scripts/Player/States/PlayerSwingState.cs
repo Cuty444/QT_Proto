@@ -149,7 +149,7 @@ namespace QT.InGame
 
             foreach (var hit in _hitableRange)
             {
-                hit.Hit(((Vector2) _ownerEntity.transform.position - hit.GetPosition()).normalized,damage,AttackType.Swing);
+                hit.Hit(((Vector2) _ownerEntity.transform.position - hit.Position).normalized,damage,AttackType.Swing);
                 hitCount++;
                 enemyHitCount++;
             }
@@ -382,7 +382,7 @@ namespace QT.InGame
                     if (hitable is Dullahan)
                     {
                         var hitDullhanCheckRange = range + 1.4f;
-                        var hitDullhanTargetDir = hitable.GetPosition() - origin;
+                        var hitDullhanTargetDir = hitable.Position - origin;
 
                         if (hitDullhanTargetDir.sqrMagnitude < hitDullhanCheckRange * hitDullhanCheckRange)
                         {
@@ -397,7 +397,7 @@ namespace QT.InGame
                         return;
                     }
                     var hitCheckRange = range + 0.5f;
-                    var hitTargetDir = hitable.GetPosition() - origin;
+                    var hitTargetDir = hitable.Position - origin;
 
                     if (hitTargetDir.sqrMagnitude < hitCheckRange * hitCheckRange)
                     {

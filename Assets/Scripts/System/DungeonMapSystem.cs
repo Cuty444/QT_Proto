@@ -531,7 +531,7 @@ namespace QT.Core.Map
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
                 SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
-                SystemManager.Instance.ProjectileManager.ProjectileListClear();
+                SystemManager.Instance.ProjectileManager.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 StartCoroutine(UnityUtil.WaitForFunc(() =>

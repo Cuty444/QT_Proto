@@ -25,6 +25,10 @@ namespace QT.InGame
             Dead,
         }
 
+        public int InstanceId => gameObject.GetInstanceID();
+        public Vector2 Position => transform.position;
+        public float ColliderRad => StatComponent.GetStat(PlayerStats.PCHitboxRad) * 0.5f;
+        
         [SerializeField] private int _characterID = 100;
         [SerializeField] private int _characterAtkID = 200;
         
@@ -44,8 +48,6 @@ namespace QT.InGame
         
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
 
-        private CharacterGameData _data;
-        private CharacterAtkGameData _atkData;
         private PlayerManager _playerManager;
 
         private bool _isEnterDoor;
@@ -78,10 +80,10 @@ namespace QT.InGame
         
         private void Awake()
         {
-            _data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
-            _atkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
-            StatComponent = new PlayerStatComponent(_data, _atkData);
-
+            var data = SystemManager.Instance.DataManager.GetDataBase<CharacterGameDataBase>().GetData(_characterID);
+            var atkData = SystemManager.Instance.DataManager.GetDataBase<CharacterAtkGameDataBase>().GetData(_characterAtkID);
+            StatComponent = new PlayerStatComponent(data, atkData);
+            
             BuffComponent = GetComponent<BuffComponent>();
             BuffComponent.Init(StatComponent);
             
@@ -91,8 +93,8 @@ namespace QT.InGame
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
             SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
-            //Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
+            
             _attackSpeedColorGradient = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.AttackSpeedColorCurve;
             InitInputs();
             
@@ -144,11 +146,6 @@ namespace QT.InGame
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(true);
         }
 
-        private void Start()
-        {
-            MaterialChanger.SetHitDuration(_data.MercyInvincibleTime);
-        }
-
         protected override void Update()
         {
             base.Update();
@@ -171,11 +168,6 @@ namespace QT.InGame
         public float GetHp()
         {
             return StatComponent.GetStatus(PlayerStats.HP).StatusValue;
-        }
-
-        public Vector2 GetPosition()
-        {
-            return transform.position;
         }
         
         public int GetGoldCost()
