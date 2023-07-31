@@ -11,10 +11,5 @@ namespace QT.InGame
         {
             OnDamageEvent.Invoke(dir, power,attackType);
         }
-
-        public float GetHp()
-        {
-            return HP.StatusValue;
-        }
     }
 }

@@ -33,6 +33,7 @@ namespace QT.InGame
         public Vector2 Position => transform.position;
         public float ColliderRad => RushColliderSize;
         public bool IsClearTarget => true;
+        public bool IsDead => CurrentStateIndex == (int) States.Dead;
         
         
         [SerializeField] private int _enemyId;
@@ -84,6 +85,8 @@ namespace QT.InGame
             
             SetGlobalState(new DullahanGlobalState(this));
             SetUp(States.Normal);
+            
+            HitAbleManager.Instance.Register(this);
         }
         
         public void SetPhysics(bool enable)

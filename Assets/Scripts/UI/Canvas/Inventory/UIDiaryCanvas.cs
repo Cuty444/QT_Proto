@@ -205,6 +205,7 @@ namespace QT.UI
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
                 ProjectileManager.Instance.Clear();
+                HitAbleManager.Instance.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().StartCoroutine(UnityUtil.WaitForFunc(() =>

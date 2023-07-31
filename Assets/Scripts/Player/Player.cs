@@ -28,6 +28,8 @@ namespace QT.InGame
         public Vector2 Position => transform.position;
         public float ColliderRad => StatComponent.GetStat(PlayerStats.PCHitboxRad) * 0.5f;
         public bool IsClearTarget => false;
+        public bool IsDead => CurrentStateIndex == (int) States.Dead;
+        
         
         [SerializeField] private int _characterID = 100;
         [SerializeField] private int _characterAtkID = 200;
@@ -147,11 +149,6 @@ namespace QT.InGame
             StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
  
             _playerManager.OnDamageEvent.Invoke(dir, power);
-        }
-
-        public float GetHp()
-        {
-            return StatComponent.GetStatus(PlayerStats.HP).StatusValue;
         }
         
         public int GetGoldCost()

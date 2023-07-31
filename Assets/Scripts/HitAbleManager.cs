@@ -15,11 +15,12 @@ namespace QT
         public int InstanceId { get; }
         public Vector2 Position { get; }
         public float ColliderRad { get; }
+        
         public bool IsClearTarget { get;}
+        public bool IsDead { get; }
+        
         
         public void Hit(Vector2 dir, float power, AttackType attackType = AttackType.Ball);
-
-        public float GetHp();
     }
 
     public class HitAbleManager : Singleton<HitAbleManager>

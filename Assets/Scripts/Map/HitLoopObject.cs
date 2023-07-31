@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace QT
 {
-    public class HitLoopObject : InteractionObject, IHitAble
+    public class HitLoopObject : InteractionObject
     {
-
         private void Awake()
         {
             _skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
             _animator = GetComponentInChildren<Animator>();
         }
+        
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
             if (isHit)

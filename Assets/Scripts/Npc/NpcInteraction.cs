@@ -17,6 +17,7 @@ namespace QT
         public Vector2 Position => transform.position;
         [field: SerializeField] public float ColliderRad { get; private set; }
         public bool IsClearTarget => false;
+        public bool IsDead => false;
 
         private Animator _animator;
 
@@ -24,6 +25,16 @@ namespace QT
         {
             _animator = GetComponentInChildren<Animator>();
             SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(Sold);
+        }
+
+        private void OnEnable()
+        {
+            HitAbleManager.Instance.Register(this);
+        }
+
+        private void OnDisable()
+        {
+            HitAbleManager.Instance.UnRegister(this);
         }
 
         private void Hit()
@@ -47,11 +58,6 @@ namespace QT
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
             Hit();
-        }
-        
-        public float GetHp()
-        {
-            return 0f;
         }
     }
 }

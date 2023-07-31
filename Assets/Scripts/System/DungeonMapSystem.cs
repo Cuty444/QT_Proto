@@ -98,6 +98,7 @@ namespace QT.Core.Map
             _maxRoomValue--; // TODO : 보스방 생성에 의해 1개 줄임
             SystemManager.Instance.PlayerManager.StairNextRoomEvent.AddListener(NextFloor);
             DungenMapGenerate();
+            
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
             {
                 _map[position.y, position.x].IsClear = true;
@@ -522,6 +523,7 @@ namespace QT.Core.Map
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
                 ProjectileManager.Instance.Clear();
+                HitAbleManager.Instance.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 StartCoroutine(UnityUtil.WaitForFunc(() =>

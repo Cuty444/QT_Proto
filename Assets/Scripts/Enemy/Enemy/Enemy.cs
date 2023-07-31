@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
@@ -26,6 +27,8 @@ namespace QT.InGame
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
         public bool IsClearTarget => true;
+        public bool IsDead => HP <= 0;
+        
 
         [SerializeField] private int _enemyId;
         [field: SerializeField] public Canvas HpCanvas { get; private set; }
@@ -102,7 +105,8 @@ namespace QT.InGame
             HitAbleManager.Instance.Register(this);
             ProjectileManager.Instance.Register(this);
         }
-        
+
+
         public void SetPhysics(bool enable)
         {
             Rigidbody.simulated = enable;

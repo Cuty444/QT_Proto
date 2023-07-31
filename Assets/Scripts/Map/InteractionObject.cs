@@ -12,7 +12,8 @@ namespace QT
         public Vector2 Position => transform.position;
         [field: SerializeField] public float ColliderRad { get; private set; }
         public bool IsClearTarget => false;
-      
+        public bool IsDead => false;
+        
         
         protected bool isHit = false;
         protected SkeletonMecanim _skeletonMecanim;
@@ -27,6 +28,17 @@ namespace QT
             _animator = GetComponentInChildren<Animator>();
             _circleCollider2D = GetComponent<CircleCollider2D>();
         }
+        
+        private void OnEnable()
+        {
+            HitAbleManager.Instance.Register(this);
+        }
+
+        private void OnDisable()
+        {
+            HitAbleManager.Instance.UnRegister(this);
+        }
+        
 
         public void Hit(Vector2 dir, float power, AttackType attackType)
         {
@@ -40,11 +52,6 @@ namespace QT
                 _circleCollider2D.enabled = false;
                 _animator.SetTrigger(AnimationHitHash);
             }
-        }
-        
-        public float GetHp()
-        {
-            return 0f;
         }
     }
 }
