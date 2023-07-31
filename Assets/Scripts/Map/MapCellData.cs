@@ -54,6 +54,7 @@ namespace QT.Map
             _doorTransforms[2].gameObject.SetActive((mapDirection & MapDirection.Left) != 0);
             _doorTransforms[3].gameObject.SetActive((mapDirection & MapDirection.Right) != 0);
             _position = position;
+            
             var fallObjects = GetComponentsInChildren<FallObject>();
             for (int i = 0; i < fallObjects.Length; i++)
             {

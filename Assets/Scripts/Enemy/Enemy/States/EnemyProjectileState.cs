@@ -79,6 +79,9 @@ namespace QT.InGame
             if (_ownerEntity.HP <= 0)
             { 
                 _ownerEntity.HpCanvas.gameObject.SetActive(false);
+                _ownerEntity.MaterialChanger.SetRigidMaterial();
+                
+                _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
             
@@ -97,7 +100,7 @@ namespace QT.InGame
                 _ownerEntity.StartCoroutine(
                     Util.UnityUtil.WaitForFunc(() => { _ownerEntity.Animator.ResetTrigger(NormalAnimHash); }, 0.2f));
             }
-            ProjectileManager.Instance.UnRegister(_ownerEntity);
+            
             _ownerEntity.IsTeleportProjectile = false;
         }
         

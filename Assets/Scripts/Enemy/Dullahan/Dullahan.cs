@@ -32,6 +32,7 @@ namespace QT.InGame
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad => RushColliderSize;
+        public bool IsClearTarget => true;
         
         
         [SerializeField] private int _enemyId;

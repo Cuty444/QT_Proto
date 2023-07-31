@@ -31,32 +31,25 @@ namespace QT.InGame
             _ownerEntity.Animator.SetBool(RigidAnimHash, true);
             _rigidTimer = 0;
 
+            _ownerEntity.OnProjectileHitEvent.AddListener(OnProjectileHit);
+            
             if (_ownerEntity.HP <= 0)
             {
-                _ownerEntity.OnHitEvent.AddListener(OnDamage);
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
-                _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
                 _ownerEntity.MaterialChanger.SetRigidMaterial();
                 
-                ProjectileManager.Instance.Register(_ownerEntity);
+                _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
             else
             {
-                if (_ownerEntity.HitAttackType == AttackType.Swing)
-                {
-                    _ownerEntity.OnHitEvent.AddListener(OnDamage);
-                    _ownerEntity.Rigidbody.velocity = Vector2.zero;
-                    ProjectileManager.Instance.Register(_ownerEntity);
-                }
-
-                _ownerEntity.MaterialChanger.SetHitMaterial();
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
+                _ownerEntity.MaterialChanger.SetHitMaterial();
             }
         }
 
         public override void ClearState()
         {
-            _ownerEntity.OnHitEvent.RemoveListener(OnDamage);
+            _ownerEntity.OnProjectileHitEvent.RemoveListener(OnProjectileHit);
             _ownerEntity.MaterialChanger.ClearMaterial();
         }
 
@@ -68,7 +61,6 @@ namespace QT.InGame
                 if (_ownerEntity.HP <= 0)
                 {
                     _ownerEntity.ChangeState(Enemy.States.Dead);
-                    ProjectileManager.Instance.UnRegister(_ownerEntity);
                 }
                 else
                 {
@@ -78,7 +70,7 @@ namespace QT.InGame
             }
         }
 
-        private void OnDamage(Vector2 dir, float power, LayerMask bounceMask)
+        private void OnProjectileHit(Vector2 dir, float power, LayerMask bounceMask)
         {
             var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
             ((EnemyProjectileState) state)?.InitializeState(dir, power, bounceMask);

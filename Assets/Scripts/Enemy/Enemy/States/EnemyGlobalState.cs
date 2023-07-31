@@ -10,11 +10,12 @@ namespace QT.InGame
         public EnemyGlobalState(IFSMEntity owner) : base(owner)
         {
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
+            _ownerEntity.OnProjectileHitEvent.AddListener(OnProjectileHit);
         }
-        
-        private void OnDamage(Vector2 dir, float power,AttackType attackType)
+
+        private void OnDamage(Vector2 dir, float power, AttackType attackType)
         {
-            if (_ownerEntity.CurrentStateIndex >= (int)Enemy.States.Projectile)
+            if (_ownerEntity.CurrentStateIndex >= (int) Enemy.States.Projectile)
             {
                 if (attackType != AttackType.Teleport)
                 {
@@ -23,12 +24,26 @@ namespace QT.InGame
             }
 
             _ownerEntity.HP.AddStatus(-power);
-            _ownerEntity.HpImage.fillAmount = Util.Math.Remap(_ownerEntity.HP,_ownerEntity.HP.BaseValue,0f);
+            _ownerEntity.HpImage.fillAmount = Util.Math.Remap(_ownerEntity.HP, _ownerEntity.HP.BaseValue, 0f);
             _ownerEntity.HpCanvas.gameObject.SetActive(true);
-            _ownerEntity.Rigidbody.velocity = Vector2.zero; 
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.AddForce(dir, ForceMode2D.Impulse);
-            _ownerEntity.HitAttackType = attackType;
-            _ownerEntity.ChangeState(Enemy.States.Rigid);
+
+            if (attackType != AttackType.Swing)
+            {
+                _ownerEntity.ChangeState(Enemy.States.Rigid);
+            }
+        }
+        
+        private void OnProjectileHit(Vector2 dir, float power, LayerMask bounceMask)
+        {
+            if (_ownerEntity.CurrentStateIndex > (int) Enemy.States.Projectile)
+            {
+                return;
+            }
+            
+            var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
+            ((EnemyProjectileState) state)?.InitializeState(dir, power, bounceMask);
         }
     }
 }

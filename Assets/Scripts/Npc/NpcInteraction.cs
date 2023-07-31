@@ -16,6 +16,7 @@ namespace QT
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         [field: SerializeField] public float ColliderRad { get; private set; }
+        public bool IsClearTarget => false;
 
         private Animator _animator;
 

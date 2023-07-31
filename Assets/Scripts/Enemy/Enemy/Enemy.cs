@@ -25,6 +25,7 @@ namespace QT.InGame
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
+        public bool IsClearTarget => true;
 
         [SerializeField] private int _enemyId;
         [field: SerializeField] public Canvas HpCanvas { get; private set; }
@@ -45,8 +46,6 @@ namespace QT.InGame
         [field: SerializeField] public ProjectileOwner Owner { get; private set; }
 
         [HideInInspector] public Image HpImage;
-
-        [HideInInspector] public AttackType HitAttackType;
 
         [HideInInspector] public LineRenderer TeleportLineRenderer;
 
@@ -99,6 +98,9 @@ namespace QT.InGame
             SetUpStats();
             SetUp(States.Normal);
             SetGlobalState(new EnemyGlobalState(this));
+            
+            HitAbleManager.Instance.Register(this);
+            ProjectileManager.Instance.Register(this);
         }
         
         public void SetPhysics(bool enable)

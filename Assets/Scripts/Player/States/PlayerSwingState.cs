@@ -17,8 +17,7 @@ namespace QT.InGame
         private const int MaxLineCount = 10;
 
         private List<IProjectile> _projectiles = new();
-        private List<Enemy> _enemyInRange = new ();
-        private List<IHitAble> _hitableRange = new();
+        private List<IHitAble> _hitAbles = new();
         private List<LineRenderer> _lines = new();
 
 
@@ -93,8 +92,7 @@ namespace QT.InGame
 
             SetLines();
         }
-
-
+        
 
         protected override void OnSwing(bool isOn)
         {
@@ -104,21 +102,39 @@ namespace QT.InGame
             }
 
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
+            var damage = _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
             var power = _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
             var bounce = (int) _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;
             var projectileDamage = (int)_ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1);
+            var enemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.EnemyProjectileDmg2 : PlayerStats.EnemyProjectileDmg1);
             var pierce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeAtkPierce).Value;
-            bool isPierce = _isCharged && pierce == 1;
+            bool isPierce = _isCharged && pierce >= 1;
+            
             int hitCount = 0;
             int ballHitCount = 0;
             int enemyHitCount = 0;
 
+            foreach (var hitAble in _hitAbles)
+            {
+                var hitDir = ((Vector2) _ownerEntity.transform.position - hitAble.Position).normalized;
+                
+                hitAble.Hit(hitDir, damage, AttackType.Swing);
+                hitCount++;
+
+                if (hitAble.IsClearTarget)
+                {
+                    SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitAble.Position);
+                    enemyHitCount++;
+                }
+            }
+            
             foreach (var projectile in _projectiles)
             {
                 projectile.ResetBounceCount(bounce);
-                projectile.ResetProjectileDamage(projectileDamage);
+                projectile.ResetProjectileDamage(projectile is Enemy ? enemyProjectileDamage : projectileDamage);
                 projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
-                    _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection),isPierce);
+                    _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
+                
                 if (_isCharged)
                 {
                     SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
@@ -127,32 +143,11 @@ namespace QT.InGame
                 {
                     SystemManager.Instance.ResourceManager.EmitParticle(SwingNormalProjectileHitPath, projectile.Position);
                 }
+                
                 hitCount++;
                 ballHitCount++;
             }
 
-            
-            var damage = _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
-            projectileDamage =
-                (int) _ownerEntity.StatComponent.GetDmg(_isCharged
-                    ? PlayerStats.EnemyProjectileDmg2
-                    : PlayerStats.EnemyProjectileDmg1);
-            foreach (var hitEnemy in _enemyInRange)
-            {
-                hitEnemy.Hit(((Vector2) _ownerEntity.transform.position - hitEnemy.Position).normalized, damage,AttackType.Swing);
-                hitEnemy.ResetProjectileDamage(projectileDamage);
-                hitEnemy.ProjectileHit(GetNewProjectileDir(hitEnemy), power, mask, ProjectileOwner.Player,_ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection),false);
-                SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitEnemy.Position);
-                hitCount++;
-                enemyHitCount++;
-            }
-
-            foreach (var hit in _hitableRange)
-            {
-                hit.Hit(((Vector2) _ownerEntity.transform.position - hit.Position).normalized,damage,AttackType.Swing);
-                hitCount++;
-                enemyHitCount++;
-            }
             
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Move);
@@ -169,11 +164,11 @@ namespace QT.InGame
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.BallAttackSFX);
             }
-
             if (enemyHitCount > 0)
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.PlayerSwingHitSFX);
             }
+            
             if(ballHitCount == 0 && enemyHitCount == 0)
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.SwingSFX);
@@ -213,15 +208,13 @@ namespace QT.InGame
             Transform eye = _ownerEntity.EyeTransform;
 
             _projectiles.Clear();
-            _enemyInRange.Clear();
-            _hitableRange.Clear();
+            _hitAbles.Clear();
             
             float swingRad = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingRad);
             float swingCentralAngle = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingCentralAngle);
             
             ProjectileManager.Instance.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
-            // GetInEnemyRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _enemyInRange);
-            // GetInHitalbeCheck(eye.position,swingRad,swingCentralAngle * 0.5f,eye.right);
+            HitAbleManager.Instance.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _hitAbles);
         }
 
         private void SetLines()

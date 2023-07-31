@@ -6,7 +6,7 @@ namespace QT.InGame
     public partial class Enemy
     {
         public UnityEvent<Vector2, float,AttackType> OnDamageEvent { get; } = new();
-        public UnityEvent<Vector2, float, LayerMask> OnHitEvent { get; } = new();
+        public UnityEvent<Vector2, float, LayerMask> OnProjectileHitEvent { get; } = new();
 
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
@@ -16,7 +16,7 @@ namespace QT.InGame
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce)
         {
             //OnDamageEvent.Invoke(dir, power,AttackType.Swing);
-            OnHitEvent.Invoke(dir, power, bounceMask);
+            OnProjectileHitEvent.Invoke(dir, power, bounceMask);
             if (owner == ProjectileOwner.PlayerTeleport)
                 IsTeleportProjectile = true;
         }

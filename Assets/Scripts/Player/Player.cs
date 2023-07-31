@@ -27,6 +27,7 @@ namespace QT.InGame
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad => StatComponent.GetStat(PlayerStats.PCHitboxRad) * 0.5f;
+        public bool IsClearTarget => false;
         
         [SerializeField] private int _characterID = 100;
         [SerializeField] private int _characterAtkID = 200;
