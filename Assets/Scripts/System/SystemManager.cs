@@ -16,8 +16,6 @@ namespace QT.Core
         public ResourceManager ResourceManager { get; } = new ();
         public GameDataManager DataManager { get; } = new ();
         public PlayerManager PlayerManager { get; } = new();
-        public ProjectileManager ProjectileManager { get; } = new();
-
         public ItemDataManager ItemDataManager { get; } = new();
 
         public LoadingManager LoadingManager { get; } = new();
@@ -137,7 +135,7 @@ namespace QT.Core
             for (int i = 0; i <= (int) PlayerStats.AtkDmgPer; i++)
             {
                 var statKey = (PlayerStats) i;
-                var stat = PlayerManager.Player.GetStat(statKey);
+                var stat = PlayerManager.Player.StatComponent.GetStat(statKey);
 
                 var y = (Screen.height - height + startY) + cellHeight * i;
 

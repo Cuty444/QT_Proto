@@ -13,8 +13,7 @@ namespace QT.InGame
         {
             Swing,
             Dodge,
-            Throw,
-            Teleport,
+            Active,
             Interaction,
         }
 
@@ -61,9 +60,8 @@ namespace QT.InGame
             lookInputAction = inputActions.Player.Look;
 
             SetButtonAction(inputActions.Player.Swing, ButtonActions.Swing);
-            SetButtonAction(inputActions.Player.Throw, ButtonActions.Throw);
             SetButtonAction(inputActions.Player.Dodge, ButtonActions.Dodge);
-            SetButtonAction(inputActions.Player.Teleport, ButtonActions.Teleport);
+            SetButtonAction(inputActions.Player.Active, ButtonActions.Active);
             SetButtonAction(inputActions.Player.Interaction, ButtonActions.Interaction);
 
             _camera = Camera.main;

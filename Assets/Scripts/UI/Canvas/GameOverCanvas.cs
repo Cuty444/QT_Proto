@@ -34,8 +34,8 @@ namespace QT.UI
             _canvasGroup.interactable = false;
             _retryButtonTrigger.InteractableOff();
             _titleButtonTrigger.InteractableOff();
-            SystemManager.Instance.PlayerManager._playerIndexInventory.Clear();
             SystemManager.Instance.PlayerManager.globalGold = 0;
+            SystemManager.Instance.PlayerManager.PlayerIndexInventory.Clear();
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             var buttonTrigger = _canvasGroup.GetComponentsInChildren<ButtonTrigger>()[1];
@@ -43,7 +43,7 @@ namespace QT.UI
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
             SystemManager.Instance.RankingManager.ResetRankingTime();
-            SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
+            
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
                 StartCoroutine(UnityUtil.FadeCanvasGroup(_canvasGroup, 0f, 1f, 1.0f,()=>
@@ -53,7 +53,8 @@ namespace QT.UI
                     _titleButtonTrigger.InteractableOn();
                     buttonTrigger.InteractableOn();
                 }));
-                SystemManager.Instance.ProjectileManager.ProjectileListClear();
+                ProjectileManager.Instance.Clear();
+                HitAbleManager.Instance.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
             }, 3.0f));
         }

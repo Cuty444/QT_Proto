@@ -69,7 +69,7 @@ namespace QT.Core
 
             if (state == null || state == _currentState)
             {
-                return null;
+                return _currentState;
             }
 
             if (_currentState != null)

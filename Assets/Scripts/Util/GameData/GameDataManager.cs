@@ -181,9 +181,9 @@ namespace QT.Core
                     return result;
                 }
             }
-            if (type.IsEnum && Enum.IsDefined(type, value))
+            if (type.IsEnum && Enum.TryParse(type, value, out var enumValue))
             {
-                return Enum.Parse(type, value, true);
+                return enumValue;
             }
 
             return null;

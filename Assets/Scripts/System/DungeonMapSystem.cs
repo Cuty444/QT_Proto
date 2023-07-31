@@ -98,6 +98,7 @@ namespace QT.Core.Map
             _maxRoomValue--; // TODO : 보스방 생성에 의해 1개 줄임
             SystemManager.Instance.PlayerManager.StairNextRoomEvent.AddListener(NextFloor);
             DungenMapGenerate();
+            
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
             {
                 _map[position.y, position.x].IsClear = true;
@@ -105,15 +106,6 @@ namespace QT.Core.Map
             SystemManager.Instance.PlayerManager.PlayerMapVisitedPosition.AddListener(position =>
             {
                 _map[position.y, position.x].IsVisited = true;
-            });
-            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((player) =>
-            {
-                _mapCellsTransform = GameObject.FindWithTag("MapCells").transform;
-                StartCoroutine(UnityUtil.WaitForFunc(() =>
-                {
-                    SystemManager.Instance.PlayerManager.FloorAllHitalbeRegister.Invoke(_mapCellsTransform
-                        .GetComponentsInChildren<IHitable>(true).ToList());
-                }, 5f));
             });
         }
 
@@ -520,14 +512,9 @@ namespace QT.Core.Map
             _floorValue++;
             var _playerManager = SystemManager.Instance.PlayerManager;
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
-            _playerManager._playerIndexInventory.Clear();
-            var playerInventory = _playerManager._playerIndexInventory;
-            var itemList = SystemManager.Instance.PlayerManager.Player.Inventory.GetItemList();
-            for (int i = 0; i < itemList.Length; i++)
-            {
-                playerInventory.Add(itemList[i].GetItemID());
-            }
-
+            
+            _playerManager.PlayerIndexInventory = _playerManager.Player.Inventory.GetItemList().Select((x)=>x.ItemGameData.Index).ToList();
+            
             _playerManager.globalGold = _playerManager.Player.GetGoldCost();
             var uiManager = SystemManager.Instance.UIManager;
             uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
@@ -537,8 +524,8 @@ namespace QT.Core.Map
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
-                SystemManager.Instance.ProjectileManager.ProjectileListClear();
+                ProjectileManager.Instance.Clear();
+                HitAbleManager.Instance.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 StartCoroutine(UnityUtil.WaitForFunc(() =>

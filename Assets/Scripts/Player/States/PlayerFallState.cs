@@ -46,7 +46,7 @@ namespace QT
             _ownerEntity.transform.position = _ownerEntity.EnterFallObject.FallingExitDistanceCheck(_ownerEntity.DodgePreviousPosition);
             yield return new WaitForSeconds(0.5f);
             _ownerEntity.Animator.SetTrigger(AnimationFallEndHash);
-            var hp = _ownerEntity.GetStatus(PlayerStats.HP);
+            var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-25);
             _playerHpCanvas.CurrentHpImageChange(hp);
             if (hp <= 0)
@@ -69,7 +69,7 @@ namespace QT
 
             },0.2f));
 
-            _ownerEntity.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
+            _ownerEntity.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
 
             _ownerEntity.transform.localScale = new Vector3(1f, 1f, 1f);
         }

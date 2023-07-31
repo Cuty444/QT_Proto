@@ -40,16 +40,12 @@ namespace QT.InGame
 
         public override void UpdateState()
         {
-            _playerHpCanvas.SetHpUpdate(_ownerEntity.GetStatus(PlayerStats.HP));
+            _playerHpCanvas.SetHpUpdate(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP));
             _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
         }
 
         private void OnAim(Vector2 aimPos)
         {
-            if (_ownerEntity.CurrentStateIndex == (int)Player.States.Teleport)
-            {
-                return;
-            }
             var aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
 
             if (_ownerEntity.IsReverseLookDir)
@@ -91,7 +87,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(AnimationRigidHash);
             //_ownerEntity.PlayerHitEffectPlay();
             
-            var hp = _ownerEntity.GetStatus(PlayerStats.HP);
+            var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);
 

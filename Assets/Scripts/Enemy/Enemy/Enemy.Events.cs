@@ -6,22 +6,17 @@ namespace QT.InGame
     public partial class Enemy
     {
         public UnityEvent<Vector2, float,AttackType> OnDamageEvent { get; } = new();
-        public UnityEvent<Vector2, float, LayerMask> OnHitEvent { get; } = new();
+        public UnityEvent<Vector2, float, LayerMask> OnProjectileHitEvent { get; } = new();
 
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
             OnDamageEvent.Invoke(dir, power,attackType);
         }
-        
-        public Vector2 GetPosition()
-        {
-            return transform.position;
-        }
-        
+
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce)
         {
             //OnDamageEvent.Invoke(dir, power,AttackType.Swing);
-            OnHitEvent.Invoke(dir, power, bounceMask);
+            OnProjectileHitEvent.Invoke(dir, power, bounceMask);
             if (owner == ProjectileOwner.PlayerTeleport)
                 IsTeleportProjectile = true;
         }
@@ -39,11 +34,6 @@ namespace QT.InGame
         public LayerMask GetLayerMask()
         {
             return LayerMask.GetMask("Wall") | LayerMask.GetMask("Player"); // TODO : 임시 추후 수정 필요
-        }
-        
-        public float GetHp()
-        {
-            return HP.StatusValue;
         }
     }
 }

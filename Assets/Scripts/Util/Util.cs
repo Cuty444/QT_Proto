@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core.Map;
 using UnityEngine;
 
 namespace QT.Util
 {
     public static class AddressablesDataPath
     {
-        
         public static readonly string[] DoorPaths = {"Map/Sculpture/Stage1/Door/Normal/NormalUp.prefab",
             "Map/Sculpture/Stage1/Door/Normal/NormalDown.prefab",
             "Map/Sculpture/Stage1/Door/Normal/NormalLeft.prefab",
@@ -20,7 +20,25 @@ namespace QT.Util
             "Map/Sculpture/Stage1/Door/Boss/BossDown.prefab",
             "Map/Sculpture/Stage1/Door/Boss/BossUp.prefab",
             "Map/Sculpture/Stage1/Door/Boss/BossUp.prefab"};
+        
+        public static string[] GetDoorPath(RoomType doorType)
+        {
+            switch (doorType)
+            {
+                case RoomType.Normal:
+                    return DoorPaths;
+                case RoomType.HpShop:
+                case RoomType.GoldShop:
+                    return StoreDoorPaths;
+                case RoomType.Boss:
+                    return BossDoorPaths;
+                
+                default:
+                    return DoorPaths;
+            }
+        }
     }
+    
     public static class UnityUtil
     {
         public static readonly Vector2Int[] PathDirections = new Vector2Int[4] {Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right};

@@ -29,8 +29,8 @@ namespace QT.InGame
         {
             _ownerEntity.DodgePreviousPosition = _ownerEntity.transform.position;
             _ownerEntity.gameObject.layer = _dodgeLayer;
-            _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
-            _ownerEntity.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
+            _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
+            _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
             _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
             _soundManager.PlayOneShot(_soundManager.SoundData.PlayerDashSFX);
             float tempX = dir.x;
@@ -97,11 +97,11 @@ namespace QT.InGame
             _ownerEntity.IsFlip = dir.x > 0;
             _ownerEntity.DodgeEffectPlay(dir);
 
-            var force = _ownerEntity.GetStat(PlayerStats.DodgeAddForce).Value;
+            var force = _ownerEntity.StatComponent.GetStat(PlayerStats.DodgeAddForce).Value;
 
             _ownerEntity.Rigidbody.velocity = dir * force;
 
-            var duration = _ownerEntity.GetStat(PlayerStats.DodgeDurationTime).Value;
+            var duration = _ownerEntity.StatComponent.GetStat(PlayerStats.DodgeDurationTime).Value;
 
             _ownerEntity.StartCoroutine( Util.UnityUtil.WaitForFunc(() =>
             {

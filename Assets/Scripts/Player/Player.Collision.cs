@@ -41,11 +41,9 @@ namespace QT.InGame
                 SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
                 isNextMap = true;
                 OnMove = null;
-                ClearAction(Player.ButtonActions.Swing);
-                //_ownerEntity.ClearAction(Player.ButtonActions.Throw);
-                ClearAction(Player.ButtonActions.Dodge);
-                ClearAction(Player.ButtonActions.Teleport);
-                ClearAction(Player.ButtonActions.Interaction);
+                ClearAction(ButtonActions.Swing);
+                ClearAction(ButtonActions.Dodge);
+                ClearAction(ButtonActions.Interaction);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_Walk_StairSFX);
                 //Rigidbody.velocity = Vector2.zero;
             }

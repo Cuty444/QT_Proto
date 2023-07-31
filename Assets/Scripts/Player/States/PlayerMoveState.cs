@@ -21,7 +21,6 @@ namespace QT.InGame
             _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing);
             //_ownerEntity.SetAction(Player.ButtonActions.Throw, OnThrow);
             _ownerEntity.SetAction(Player.ButtonActions.Dodge, OnDodge);
-            _ownerEntity.SetAction(Player.ButtonActions.Teleport,OnTeleport);
             _ownerEntity.SetAction(Player.ButtonActions.Interaction,OnInteraction);
 
             _moveDirection = Vector2.zero;
@@ -33,7 +32,6 @@ namespace QT.InGame
             _ownerEntity.ClearAction(Player.ButtonActions.Swing);
             //_ownerEntity.ClearAction(Player.ButtonActions.Throw);
             _ownerEntity.ClearAction(Player.ButtonActions.Dodge);
-            _ownerEntity.ClearAction(Player.ButtonActions.Teleport);
             _ownerEntity.ClearAction(Player.ButtonActions.Interaction);
 
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
@@ -41,7 +39,7 @@ namespace QT.InGame
 
         public override void FixedUpdateState()
         {
-            var speed = _ownerEntity.GetStat(PlayerStats.MovementSpd).Value;
+            var speed = _ownerEntity.StatComponent.GetStat(PlayerStats.MovementSpd).Value;
             var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
             
             _ownerEntity.Animator.SetFloat(AnimationMoveSpeedHash, currentNormalizedSpeed);
@@ -57,7 +55,7 @@ namespace QT.InGame
 
         protected virtual void OnSwing(bool isOn)
         {
-            if (isOn && _ownerEntity.GetStatus(PlayerStats.SwingCooldown).IsFull())
+            if (isOn && _ownerEntity.StatComponent.GetStatus(PlayerStats.SwingCooldown).IsFull())
             {
                 _ownerEntity.ChangeState(Player.States.Swing);
             }
@@ -65,7 +63,7 @@ namespace QT.InGame
         
         protected virtual void OnThrow(bool isOn)
         {
-            if (isOn&& _ownerEntity.GetStatus(PlayerStats.ThrowCooldown).IsFull())
+            if (isOn&& _ownerEntity.StatComponent.GetStatus(PlayerStats.ThrowCooldown).IsFull())
             {
                 _ownerEntity.ChangeState(Player.States.Throw);
             }
@@ -73,17 +71,9 @@ namespace QT.InGame
         
         protected virtual void OnDodge(bool isOn)
         {
-            if (isOn && _ownerEntity.GetStatus(PlayerStats.DodgeCooldown).IsFull() && _moveDirection != Vector2.zero)
+            if (isOn && _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeCooldown).IsFull() && _moveDirection != Vector2.zero)
             {
                 (_ownerEntity.ChangeState(Player.States.Dodge) as PlayerDodgeState).InitializeState(_moveDirection);
-            }
-        }
-
-        protected virtual void OnTeleport(bool isOn)
-        {
-            if (isOn && !_ownerEntity.RigidEnemyCheck())
-            {
-                _ownerEntity.ChangeState(Player.States.Teleport);
             }
         }
 

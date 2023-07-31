@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using IngameDebugConsole;
 using QT.Core;
+using QT.Core.Map;
 using QT.InGame;
 using UnityEditor;
 using UnityEngine;
@@ -75,22 +76,18 @@ namespace QT.Map
             }
             
             Target.DoorExitDirection(exit);
-            Target.RoomPlay(Vector2Int.zero);
+            Target.CellDataSet(MapDirection.All, Vector2Int.zero, RoomType.Normal);
+            Target.PlayRoom(Vector2Int.zero);
 
-            StartCoroutine(Loading2());
-        }
-        
-        // MapCell 로딩이 끝나는 시간을 고려해야 함...
-        IEnumerator Loading2()
-        {
-            yield return new WaitForSeconds(0.5f);
             
-            SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(Target.gameObject.GetComponentsInChildren<IHitable>(true).ToList());
-            
-            foreach (var command in _command.Split('\n'))
+            // MapCell 로딩이 끝나는 시간을 고려해야 함...
+            StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
             {
-                DebugLogConsole.ExecuteCommand( command );
-            }
+                foreach (var command in _command.Split('\n'))
+                {
+                    DebugLogConsole.ExecuteCommand(command);
+                }
+            }, 0.5f));
         }
         
 
@@ -113,6 +110,7 @@ namespace QT.Map
                 }
             }
         }
+        
     }
 }
 #endif

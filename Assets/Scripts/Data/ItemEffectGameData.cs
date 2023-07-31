@@ -1,86 +1,67 @@
+using System;
 using System.Collections.Generic;
 using QT.Core;
-using UnityEngine;
+using QT.InGame;
 
 namespace QT
 {
     public class ItemEffectGameData : IGameData
-    { 
-        public enum ApplyTypes
+    {
+        [Flags]
+        public enum TriggerTypes
         {
-            None,
-            ResourceChange,
-            PlayerStat,
-            Reverse,
+            Equip = 1 << 0,
+            
+            Update = 1 << 1,
+            
+            OnActiveKey = 1 << 2,
+            
+            OnCharging = 1 << 3,
+            OnGoldChanged = 1 << 4,
+            OnHpChanged = 1 << 5,
+            OnSwing = 1 << 6,
+            OnMovementSpdChanged = 1 << 7,
+            OnChargeBounceCountChanged = 1 << 8
         }
 
-        public enum ApplyPoints
-        {
-            Equip,
-            OnCharging,
-            OnGoldChanged,
-            OnHpChanged,
-            OnSwing,
-            OnMovementSpdChanged,
-            OnChargeBounceCountChanged
-        }
-        
         public int Index { get; set; }
         
-        public ApplyTypes ApplyType { get; set; }
+        public int ApplyBuffId { get; set; }
+        public int ApplySpecialEffectId { get; set; }
         
-        public string ApplyStat { get; set; }
-        public string ApplyValue { get; set; }
+        public float CoolTime { get; set; }
         
-        public StatModifier.ModifierType ValueOperatorType { get; set; }
-        public ApplyPoints ApplyPoint { get; set; }
+        public TriggerTypes TriggerType { get; set; }
+        
+        public  string ConditionTarget { get; set; }
+        public EffectConditions Condition { get; set; }
+        public float ConditionValue { get; set; }
     }
 
 
     [GameDataBase(typeof(ItemEffectGameData), "ItemEffectGameData")]
     public class ItemEffectGameDataBase : IGameDataBase
     {
-        private readonly Dictionary<int, List<ItemEffect>> _datas = new();
+        private readonly Dictionary<int, List<ItemEffectGameData>> _datas = new();
 
         public void RegisterData(IGameData data)
         {
-            ItemEffect effect;
-            
-            var effectData = data as ItemEffectGameData;
-            switch (effectData.ApplyType)
-            {
-                case ItemEffectGameData.ApplyTypes.PlayerStat:
-                    effect = new ItemEffectStat(effectData);
-                    break;
-                case ItemEffectGameData.ApplyTypes.Reverse:
-                    effect = new ItemEffectReverse(effectData);
-                    break;
-                default:
-                    return;
-            }
-            
-            if(!effect.IsAvailable)
-            {
-                Debug.LogError($"아이템 이펙트 데이터 오류 : {effectData.Index}");
-                return;
-            }
-            
             if(!_datas.TryGetValue(data.Index, out var list))
             {
-                _datas.Add(data.Index, list = new List<ItemEffect>());
+                _datas.Add(data.Index, list = new List<ItemEffectGameData>());
             }
             
-            list.Add(effect);
+            list.Add(data as ItemEffectGameData);
         }
 
-        public List<ItemEffect> GetData(int id)
+        public List<ItemEffectGameData> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
             {
                 return value;
             }
 
-            return null;
+            return new List<ItemEffectGameData>();
         }
     }  
 }

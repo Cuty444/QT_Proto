@@ -113,7 +113,7 @@ namespace QT.InGame
             {
                 if (hit.collider != null)
                 {
-                    if (hit.collider.TryGetComponent(out IHitable hitable))
+                    if (hit.collider.TryGetComponent(out IHitAble hitable))
                     {
                         hitable.Hit(_dir, _damage);
                     }

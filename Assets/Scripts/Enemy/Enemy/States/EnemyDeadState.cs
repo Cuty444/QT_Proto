@@ -31,6 +31,9 @@ namespace QT.InGame
                 _ownerEntity.FallScale();
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Monster_WaterDrop);
             }
+            
+            HitAbleManager.Instance.UnRegister(_ownerEntity);
+            ProjectileManager.Instance.UnRegister(_ownerEntity);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 using UnityEngine.Events;
+using TriggerTypes = QT.ItemEffectGameData.TriggerTypes;
 
 namespace QT.InGame
 {
@@ -11,57 +12,52 @@ namespace QT.InGame
         private Player _targetPlayer;
         private List<Item> _items = new List<Item>();
         private PlayerManager _playerManager;
+        
         public Inventory(Player target)
         {
             _targetPlayer = target;
-            SetApplyPointEvents();
+            SetTriggerPointEvents();
         }
 
-        private void SetApplyPointEvents()
+        private void SetTriggerPointEvents()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
 
+            _targetPlayer.SetAction(Player.ButtonActions.Active,
+                (isOn) =>
+                {
+                    if (isOn) InvokeTrigger(TriggerTypes.OnActiveKey);
+                });
             
-            _targetPlayer.GetStatus(PlayerStats.HP).OnStatusChanged
-                .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnHpChanged));
+            _targetPlayer.StatComponent.GetStatus(PlayerStats.HP).OnStatusChanged
+                .AddListener(() => InvokeTrigger(ItemEffectGameData.TriggerTypes.OnHpChanged));
             
             _playerManager.OnGoldValueChanged.AddListener((value) =>
-                InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnGoldChanged));
+                InvokeTrigger(ItemEffectGameData.TriggerTypes.OnGoldChanged));
             
-            _targetPlayer.GetStat(PlayerStats.MovementSpd).OnValueChanged
-                .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnMovementSpdChanged));
+            _targetPlayer.StatComponent.GetStat(PlayerStats.MovementSpd).OnValueChanged
+                .AddListener(() => InvokeTrigger(ItemEffectGameData.TriggerTypes.OnMovementSpdChanged));
             
-            _targetPlayer.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
-                .AddListener(() => InvokeApplyPoint(ItemEffectGameData.ApplyPoints.OnChargeBounceCountChanged));
+            _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
+                .AddListener(() => InvokeTrigger(ItemEffectGameData.TriggerTypes.OnChargeBounceCountChanged));
         }
 
-        private void InvokeApplyPoint(ItemEffectGameData.ApplyPoints applyPoints)
+        private void InvokeTrigger(TriggerTypes triggerTypes)
         {
             foreach (var item in _items)
             {
-                item.InvokeApplyPoint(applyPoints);
+                item.InvokeTrigger(triggerTypes);
             }
         }
         
         public void AddItem(int itemDataId)
         {
-            var item = new Item(itemDataId);
-            AddItem(item);
-        }
-
-        public void NextCopyItem(int itemDataID)
-        {
-            var item = new Item(itemDataID);
+            var item = new Item(itemDataId, _targetPlayer);
+            
             _items.Add(item);
-            item.ApplyItemEffect(_targetPlayer);
-        }
-        
-        public void AddItem(Item item)
-        {
-            _items.Add(item);
+            item.OnEquip();
             
             _playerManager.AddItemEvent.Invoke();
-            item.ApplyItemEffect(_targetPlayer);
         }
         
         public void RemoveItem(int index)
@@ -71,7 +67,7 @@ namespace QT.InGame
                 return;
             }
             
-            _items[index].RemoveItemEffect(_targetPlayer);
+            _items[index].OnRemoved();
             _items.RemoveAt(index);
         }
         
@@ -82,5 +78,26 @@ namespace QT.InGame
             
             return result;
         }
+
+        public void ClearItems()
+        {
+            foreach (var item in _items)
+            {
+                item.OnRemoved();
+            }
+            _items.Clear();
+        }
+
+        public void CopyItemList(List<int> items)
+        {
+            foreach (var id in items)
+            {
+                var item = new Item(id, _targetPlayer);
+            
+                _items.Add(item);
+                item.OnEquip();
+            }
+        }
+        
     }
 }

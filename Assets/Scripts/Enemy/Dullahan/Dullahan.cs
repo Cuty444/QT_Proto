@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IHitable
+    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IHitAble
     {
         public LayerMask HitMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "Enemy", "InteractionCollider");
 
@@ -28,6 +28,13 @@ namespace QT.InGame
             
             Dead,
         }
+        
+        public int InstanceId => gameObject.GetInstanceID();
+        public Vector2 Position => transform.position;
+        public float ColliderRad => RushColliderSize;
+        public bool IsClearTarget => true;
+        public bool IsDead => CurrentStateIndex == (int) States.Dead;
+        
         
         [SerializeField] private int _enemyId;
         public EnemyGameData Data { get; private set; }
@@ -78,6 +85,8 @@ namespace QT.InGame
             
             SetGlobalState(new DullahanGlobalState(this));
             SetUp(States.Normal);
+            
+            HitAbleManager.Instance.Register(this);
         }
         
         public void SetPhysics(bool enable)

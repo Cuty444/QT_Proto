@@ -18,7 +18,7 @@ namespace QT.InGame
             {
                 SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().ThrowProjectileGauge(true);
                 
-                _ownerEntity.GetStatus(PlayerStats.BallStack).AddStatus(1);
+                _ownerEntity.StatComponent.GetStatus(PlayerStats.BallStack).AddStatus(1);
             });
         }
 
@@ -26,9 +26,9 @@ namespace QT.InGame
         {
             base.InitializeState();
             
-            _ownerEntity.GetStatus(PlayerStats.ThrowCooldown).SetStatus(0);
+            _ownerEntity.StatComponent.GetStatus(PlayerStats.ThrowCooldown).SetStatus(0);
             
-            var stack = _ownerEntity.GetStatus(PlayerStats.BallStack);
+            var stack = _ownerEntity.StatComponent.GetStatus(PlayerStats.BallStack);
 
             if (stack <= 0)
             {
@@ -40,8 +40,8 @@ namespace QT.InGame
             
             _ownerEntity.Animator.SetTrigger(AnimationThrowHash);
             
-            var throwSpd = _ownerEntity.GetStat(PlayerStats.ThrowSpd).Value;
-            var throwBounceCount = (int)_ownerEntity.GetStat(PlayerStats.ThrowBounceCount).Value;
+            var throwSpd = _ownerEntity.StatComponent.GetStat(PlayerStats.ThrowSpd).Value;
+            var throwBounceCount = (int)_ownerEntity.StatComponent.GetStat(PlayerStats.ThrowBounceCount).Value;
             
             _ownerEntity.ProjectileShooter.ShootProjectile(200, Util.Math.ZAngleToGetDirection(_ownerEntity.EyeTransform), throwSpd, 0, throwBounceCount,ProjectileOwner.Player, 2.5f);
             

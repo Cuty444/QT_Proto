@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 
 namespace QT.InGame
 {
-    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IProjectile
+    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IHitAble, IProjectile
     {
         public enum States : int
         {
@@ -22,9 +23,12 @@ namespace QT.InGame
             Dead,
         }
         
-        public int ProjectileId => gameObject.GetInstanceID();
-        public  Vector2 Position => transform.position;
+        public int InstanceId => gameObject.GetInstanceID();
+        public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
+        public bool IsClearTarget => true;
+        public bool IsDead => HP <= 0;
+        
 
         [SerializeField] private int _enemyId;
         [field: SerializeField] public Canvas HpCanvas { get; private set; }
@@ -46,8 +50,6 @@ namespace QT.InGame
 
         [HideInInspector] public Image HpImage;
 
-        [HideInInspector] public AttackType HitAttackType;
-
         [HideInInspector] public LineRenderer TeleportLineRenderer;
 
         [HideInInspector] public bool IsTeleportProjectile = false;
@@ -57,8 +59,6 @@ namespace QT.InGame
         private Collider2D[] _colliders;
 
         public int _damage { get; private set; }
-
-        public List<IHitable> _hitalbesList { get; private set; } = new List<IHitable>();
         
         
         private void Awake()
@@ -78,6 +78,10 @@ namespace QT.InGame
             HpCanvas.gameObject.SetActive(false);
 
             enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
+
+            SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener((arg) =>
+                SetTeleportLine(Vector2.zero, false));
+            
             LoadSound();
             
             initialization(_enemyId);
@@ -97,8 +101,12 @@ namespace QT.InGame
             SetUpStats();
             SetUp(States.Normal);
             SetGlobalState(new EnemyGlobalState(this));
+            
+            HitAbleManager.Instance.Register(this);
+            ProjectileManager.Instance.Register(this);
         }
-        
+
+
         public void SetPhysics(bool enable)
         {
             Rigidbody.simulated = enable;
@@ -128,6 +136,35 @@ namespace QT.InGame
                 transform.localScale = new Vector3(scale, scale, scale);
                 yield return null;
                 time += Time.deltaTime;
+            }
+        }
+
+        
+        private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
+        public async void SetTeleportLine(Vector2 target, bool isActive)
+        {
+            if (isActive)
+            {
+                if (TeleportLineRenderer == null)
+                {
+                    TeleportLineRenderer =
+                        await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(TeleportLinePath);
+                }
+                
+                if (CurrentStateIndex >= (int)Player.States.Fall)
+                {
+                    TeleportLineRenderer.positionCount = 0;
+                    return;
+                }
+                TeleportLineRenderer.positionCount = 2;
+                TeleportLineRenderer.SetPosition(0, target);
+                TeleportLineRenderer.SetPosition(1, transform.position);
+            }
+            else if(TeleportLineRenderer != null)
+            {
+                TeleportLineRenderer.positionCount = 0;
+                SystemManager.Instance.ResourceManager.ReleaseObject(TeleportLinePath, TeleportLineRenderer);
+                TeleportLineRenderer = null;
             }
         }
     }    

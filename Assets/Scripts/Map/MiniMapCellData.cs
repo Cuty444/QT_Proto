@@ -19,6 +19,8 @@ namespace QT.Map
         Down = 2,
         Left = 4,
         Right = 8,
+        
+        All = Up | Down | Left | Right
     }
     
     public class MiniMapCellData : MonoBehaviour
@@ -46,8 +48,6 @@ namespace QT.Map
 
         [SerializeField] private Image _iconObject;
 
-        private UnityEvent _startColliderShapeSetting = new UnityEvent();
-
         public void Setting()
         {
             _lineRenders.SetActive(false);
@@ -58,6 +58,7 @@ namespace QT.Map
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
             _mapImage.enabled = false;
             _iconsTransform.gameObject.SetActive(false);
+            
             if (RoomType.None == _roomType)
             {
                 _iconObject.sprite = _mapIconSprite?[0];
@@ -90,7 +91,6 @@ namespace QT.Map
             _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();
             _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
             _mapCellData.CellDataSet(_pathOpenDirection,CellPos,_roomType);
-            _startColliderShapeSetting.Invoke();
         }
         
         public void ListenerClear()
@@ -129,7 +129,7 @@ namespace QT.Map
         {
             _mapCellData.DoorExitDirection(pos);
             if (!_dungeonMapSystem.GetCellData(CellPos).IsClear)
-                _mapCellData.RoomPlay(CellPos);
+                _mapCellData.PlayRoom(CellPos);
             _playerManager.PlayerMapVisitedPosition.Invoke(CellPos);
             _playerManager.PlayerMapPosition.Invoke(CellPos);
         }
@@ -156,24 +156,16 @@ namespace QT.Map
                 _iconsTransform.gameObject.SetActive(true);
                 _mapImage.color = _mapColors[0];
                 _mapImage.sprite = _mapSprites[3];
+                
                 if (_roomType == RoomType.Stairs)
                 {
                     _mapImage.sprite = _mapSprites[4];
                 }
 
-                if (_mapCellData == null)
+                if (_mapCellData != null)
                 {
-                    _startColliderShapeSetting.AddListener(() =>
-                    {
-                        _mapCellData.SetCameraCollider2D();
-                    });
-                }
-                else
-                {
-                    _mapCellData.SetCameraCollider2D();
                     _playerManager.OnVolumeProfileChange.Invoke(_mapCellData.VolumeProfile);
                 }
-                //ColorSetLineRender(_mapColors[0]);
             }
             else if (_dungeonMapSystem.GetCellData(CellPos).IsClear)
             {

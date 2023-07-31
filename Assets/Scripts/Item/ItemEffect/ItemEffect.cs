@@ -1,79 +1,100 @@
+using System;
 using System.Collections.Generic;
-using System.Text;
-using QT.InGame;
-using ApplyTypes = QT.ItemEffectGameData.ApplyTypes;
-using ApplyPoints = QT.ItemEffectGameData.ApplyPoints;
+using System.Reflection;
+using UnityEngine;
 
-namespace QT
+
+namespace QT.InGame
 {
+    public enum ItemEffectTypes
+    {
+        None,
+        
+        [EffectCondition(typeof(BuffItemEffect))]
+        Buff,
+        
+        [EffectCondition(typeof(EnemyRigidItemEffect))]
+        EnemyRigid,
+        [EffectCondition(typeof(TeleportItemEffect))]
+        Teleport,
+        [EffectCondition(typeof(ReverseAtkDirItemEffect))]
+        ReverseAtkDir,
+        [EffectCondition(typeof(TimeScaleItemEffect))]
+        TimeScale,
+    }
+    
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ItemEffectAttribute : Attribute
+    {
+        public Type EffectType { get; private set; }
+
+        public ItemEffectAttribute(Type effectType)
+        {
+            EffectType = effectType;
+        }
+    }
+    
+    public static class ItemEffectFactory
+    {
+        private static readonly Dictionary<ItemEffectTypes, Type> _conditionTypes = new ();
+
+        static ItemEffectFactory()
+        {
+            foreach (var field in typeof(ItemEffectTypes).GetFields())
+            {
+                var attribute = field.GetCustomAttribute<EffectConditionAttribute>();
+                if (attribute != null)
+                {
+                    _conditionTypes.Add((ItemEffectTypes)field.GetValue(null), attribute.ConditionType);
+                }
+            }
+        }
+
+        public static ItemEffect GetEffect(ItemEffectTypes type, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData = null)
+        {
+            return Activator.CreateInstance(_conditionTypes[type], player, effectData, specialEffectData) as ItemEffect;
+        }
+    }
+    
+    
     public abstract class ItemEffect
     {
-        public virtual ApplyTypes ApplyType => ApplyTypes.None;
-        
-        public ApplyPoints ApplyPoints { get; protected set; }
-        public readonly bool IsAvailable = false;
-        
-        public ItemEffect(ItemEffectGameData effectData)
+        public readonly ItemEffectGameData Data;
+        private readonly EffectCondition _condition;
+        private readonly StatComponent _ownerStatComponent;
+
+        protected float _lastTime;
+
+        public ItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData)
         {
-            if(effectData == null || effectData.ApplyType != ApplyType)
+            Data = effectData;
+            _ownerStatComponent = player.StatComponent;
+            
+            if (effectData.Condition != EffectConditions.None)
+            {
+                _condition = EffectConditionFactory.GetCondition(effectData.Condition, effectData.ConditionTarget, effectData.ConditionValue);
+            }
+        }
+
+        public void OnTrigger()
+        {
+            if (Time.timeSinceLevelLoad - _lastTime < Data.CoolTime)
             {
                 return;
             }
             
-            ApplyPoints = effectData.ApplyPoint;
+            if (_condition == null || _condition.CheckCondition(_ownerStatComponent))
+            {
+                OnTriggerAction();
+                _lastTime = Time.timeSinceLevelLoad;
+            }
             
-            IsAvailable = Process(effectData);
         }
 
-        protected abstract bool Process(ItemEffectGameData effectData);
+        public abstract void OnEquip();
         
-        public abstract void ApplyEffect(Player player, object source);
-        public abstract void RemoveEffect(Player player, object source);
+        protected abstract void OnTriggerAction();
         
-        protected static List<string> ParseApplyValue(ref string applyValue)
-        {
-            bool IsAlpha(char c) => c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
-            bool IsNumber(char c) => c is >= '0' and <= '9';
-
-            var param = new List<string>();
-
-            var value = new StringBuilder(applyValue.Length);
-            var temp = new StringBuilder(20);
-
-            bool isLastCharIsAlpha = false;
-            foreach (var c in applyValue)
-            {
-                var isAlpha = IsAlpha(c);
-                
-                if (!isAlpha && c != '_' && !(isLastCharIsAlpha && IsNumber(c)))
-                {
-                    if (temp.Length > 0)
-                    {
-                        param.Add(temp.ToString());
-                        value.Append($"[{param.Count - 1}]");
-                        
-                        temp.Clear();
-                    }
-
-                    value.Append(c);
-                }
-                else
-                {
-                    temp.Append(c);
-                }
-
-                isLastCharIsAlpha = isAlpha;
-            }
-
-            if (temp.Length > 0)
-            {
-                param.Add(temp.ToString());
-                value.Append($"[{param.Count - 1}]");
-            }
-
-            applyValue = value.ToString();
-            
-            return param;
-        }
+        public abstract void OnRemoved();
     }
 }
