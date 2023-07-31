@@ -56,8 +56,6 @@ namespace QT.InGame
         EnemyProjectileDmg1,
         EnemyProjectileDmg2,
         
-        TeleportAllowableDistance,
-            
         AtkDmgPer,
     }
     

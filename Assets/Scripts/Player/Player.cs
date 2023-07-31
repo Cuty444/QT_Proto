@@ -19,7 +19,6 @@ namespace QT.InGame
             Swing,
             Throw,
             Gain,
-            Teleport,
             Dodge,
             Fall,
             Dead,
@@ -111,26 +110,17 @@ namespace QT.InGame
             StatComponent.GetStatus(PlayerStats.HP).SetStatus(StatComponent.GetStatus(PlayerStats.HP).Value);
             _playerHpCanvas.SetHp(StatComponent.GetStatus(PlayerStats.HP));
             
-            _playerManager.CurrentRoomEnemyRegister.AddListener((hitables) =>
-            {
-                _hitableList.Clear();
-                _hitableList.AddRange(hitables);
-            });
-            
             _playerManager.FloorAllHitalbeRegister.AddListener((hitalbes) =>
             {
                 _floorAllHit.Clear();
                 _floorAllHit.AddRange(hitalbes);
             });
             
-            _playerManager.PlayerMapClearPosition.AddListener((arg) =>
-            {
-                _hitableList.Clear();
-            });
             _playerManager.PlayerMapPass.AddListener((isBool) =>
             {
                 _isEnterDoor = isBool;
             });
+            
             _isEnterDoor = true;
             
             _playerManager.OnGoldValueChanged.Invoke(_goldCost);

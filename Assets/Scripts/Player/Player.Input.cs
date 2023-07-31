@@ -14,7 +14,6 @@ namespace QT.InGame
             Swing,
             Dodge,
             Active,
-            Teleport,
             Interaction,
         }
 
@@ -62,7 +61,6 @@ namespace QT.InGame
 
             SetButtonAction(inputActions.Player.Swing, ButtonActions.Swing);
             SetButtonAction(inputActions.Player.Dodge, ButtonActions.Dodge);
-            SetButtonAction(inputActions.Player.Teleport, ButtonActions.Teleport);
             SetButtonAction(inputActions.Player.Active, ButtonActions.Active);
             SetButtonAction(inputActions.Player.Interaction, ButtonActions.Interaction);
 

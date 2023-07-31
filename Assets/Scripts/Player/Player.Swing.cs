@@ -12,10 +12,7 @@ namespace QT.InGame
         
         public MeshFilter SwingAreaMeshFilter { get; private set; }
         public MeshRenderer SwingAreaMeshRenderer { get; private set; }
-
-        public List<IHitable> _hitableList = new ();
-        public Enemy _rigidTeleportEnemy;
-        public Enemy _rigidTargetEnemy;
+        
         public void SetBatActive(bool isActive)
         {
             _batSpriteRenderer.enabled = isActive;
@@ -53,7 +50,6 @@ namespace QT.InGame
         {
             _batSpriteRenderer.enabled = true;
             
-            
             Animator.SetTrigger(AnimationSwingHash);
             
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
@@ -74,83 +70,6 @@ namespace QT.InGame
             _batSpriteRenderer.enabled = false;
         }
         
-        public bool RigidEnemyCheck()
-        {
-            foreach (var hitable in _hitableList)
-            {
-                if (hitable is not Enemy)
-                {
-                    continue;
-                }
-
-                var enemy = (Enemy) hitable;
-                
-                if (enemy.CurrentStateIndex == (int) Enemy.States.Rigid && enemy.HP <= 0)
-                {
-                    if (StatComponent.GetStat(PlayerStats.TeleportAllowableDistance) <
-                        Vector2.Distance(transform.position, enemy.transform.position))
-                    {
-                        continue;
-                    }
-                    _rigidTeleportEnemy = enemy;
-                    _rigidTargetEnemy = null;
-                    float lowHp = float.MaxValue;
-                    foreach (var targetHitable in _hitableList)
-                    {
-                        if (targetHitable is not Enemy)
-                        {
-                            continue;
-                        }
-
-                        var targetEnemy = (Enemy) targetHitable;
-                        
-                        if (targetEnemy.CurrentStateIndex < (int) Enemy.States.Projectile)
-                        {
-                            if (targetEnemy.HP > 0)
-                            {
-                                float percentageHp = targetEnemy.HP / targetEnemy.HP.BaseValue;
-                                if (lowHp > percentageHp)
-                                {
-                                    lowHp = percentageHp;
-                                    _rigidTargetEnemy = targetEnemy;
-                                }
-                            }
-                        }
-                    }
-
-                    if (_rigidTargetEnemy != null)
-                    {
-                        return false;
-                    }
-                    return true;
-                }
-            }
-
-            return true;
-        }
-
-        // public (List<Enemy>,List<Enemy>) GetRigidEnemyList()
-        // {
-        //     List<Enemy> rigidList = new List<Enemy>();
-        //     List<Enemy> distanceList = new List<Enemy>();
-        //     foreach (var enemy in _hitableList)
-        //     {
-        //         if (enemy.CurrentStateIndex == (int) Enemy.States.Rigid && enemy.HP <= 0)
-        //         {
-        //             if (GetStat(PlayerStats.TeleportAllowableDistance) <
-        //                 Vector2.Distance(transform.position, enemy.transform.position))
-        //             {
-        //                 rigidList.Add(enemy);
-        //             }
-        //             else
-        //             {
-        //                 distanceList.Add(enemy);
-        //             }
-        //         }
-        //     }
-        //
-        //     return (rigidList,distanceList);
-        // }
         
         private bool PlayerSwingAngle()
         {
