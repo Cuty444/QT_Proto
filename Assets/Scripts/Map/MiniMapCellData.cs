@@ -19,6 +19,8 @@ namespace QT.Map
         Down = 2,
         Left = 4,
         Right = 8,
+        
+        All = Up | Down | Left | Right
     }
     
     public class MiniMapCellData : MonoBehaviour
@@ -156,24 +158,16 @@ namespace QT.Map
                 _iconsTransform.gameObject.SetActive(true);
                 _mapImage.color = _mapColors[0];
                 _mapImage.sprite = _mapSprites[3];
+                
                 if (_roomType == RoomType.Stairs)
                 {
                     _mapImage.sprite = _mapSprites[4];
                 }
 
-                if (_mapCellData == null)
+                if (_mapCellData != null)
                 {
-                    _startColliderShapeSetting.AddListener(() =>
-                    {
-                        _mapCellData.SetCameraCollider2D();
-                    });
-                }
-                else
-                {
-                    _mapCellData.SetCameraCollider2D();
                     _playerManager.OnVolumeProfileChange.Invoke(_mapCellData.VolumeProfile);
                 }
-                //ColorSetLineRender(_mapColors[0]);
             }
             else if (_dungeonMapSystem.GetCellData(CellPos).IsClear)
             {
