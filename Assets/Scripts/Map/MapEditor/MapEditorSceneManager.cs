@@ -85,7 +85,7 @@ namespace QT.Map
         {
             yield return new WaitForSeconds(0.5f);
             
-            SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(Target.gameObject.GetComponentsInChildren<IHitable>(true).ToList());
+            //SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(Target.gameObject.GetComponentsInChildren<IHitable>(true).ToList());
             
             foreach (var command in _command.Split('\n'))
             {

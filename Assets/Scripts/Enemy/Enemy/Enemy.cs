@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace QT.InGame
 {
-    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IHitable, IProjectile
+    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IHitAble, IProjectile
     {
         public enum States : int
         {
@@ -57,8 +57,6 @@ namespace QT.InGame
         private Collider2D[] _colliders;
 
         public int _damage { get; private set; }
-
-        public List<IHitable> _hitalbesList { get; private set; } = new List<IHitable>();
         
         
         private void Awake()

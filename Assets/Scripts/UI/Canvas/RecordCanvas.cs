@@ -31,8 +31,6 @@ namespace QT
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             _playerManager.globalGold = 0;
-            _playerManager.FloorAllHitalbeRegister.Invoke(new List<IHitable>());
-            _playerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             
             _popAnimation.ReStart();
@@ -53,10 +51,6 @@ namespace QT
             }
         }
 
-        private void OpenReset()
-        {
-            
-        }
         private void Title()
         {
             var uiManager = SystemManager.Instance.UIManager;
@@ -68,7 +62,7 @@ namespace QT
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                SystemManager.Instance.ProjectileManager.Clear();
+                ProjectileManager.Instance.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().StartCoroutine(UnityUtil.WaitForFunc(() =>

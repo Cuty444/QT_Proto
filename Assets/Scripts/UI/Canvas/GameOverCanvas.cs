@@ -42,7 +42,7 @@ namespace QT.UI
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
             SystemManager.Instance.RankingManager.ResetRankingTime();
-            SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
+            
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
                 StartCoroutine(UnityUtil.FadeCanvasGroup(_canvasGroup, 0f, 1f, 1.0f,()=>
@@ -52,7 +52,7 @@ namespace QT.UI
                     _titleButtonTrigger.InteractableOn();
                     buttonTrigger.InteractableOn();
                 }));
-                SystemManager.Instance.ProjectileManager.Clear();
+                ProjectileManager.Instance.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
             }, 3.0f));
         }

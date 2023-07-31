@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IHitable
+    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IHitAble
     {
         public LayerMask HitMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "Enemy", "InteractionCollider");
 

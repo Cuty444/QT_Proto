@@ -18,7 +18,7 @@ namespace QT.InGame
 
         private List<IProjectile> _projectiles = new();
         private List<Enemy> _enemyInRange = new ();
-        private List<IHitable> _hitableRange = new();
+        private List<IHitAble> _hitableRange = new();
         private List<LineRenderer> _lines = new();
 
 
@@ -219,9 +219,9 @@ namespace QT.InGame
             float swingRad = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingRad);
             float swingCentralAngle = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingCentralAngle);
             
-            SystemManager.Instance.ProjectileManager.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
-            GetInEnemyRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _enemyInRange);
-            GetInHitalbeCheck(eye.position,swingRad,swingCentralAngle * 0.5f,eye.right);
+            ProjectileManager.Instance.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
+            // GetInEnemyRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _enemyInRange);
+            // GetInHitalbeCheck(eye.position,swingRad,swingCentralAngle * 0.5f,eye.right);
         }
 
         private void SetLines()
@@ -341,75 +341,6 @@ namespace QT.InGame
 
             return mesh;
         }
-
-        private void GetInEnemyRange(Vector2 origin, float range, float angle, Vector2 dir,
-            ref List<Enemy> outList)
-        { 
-            // foreach (var hitable in _ownerEntity._hitableList)
-            // {
-            //     if (hitable is not Enemy)
-            //     {
-            //         continue;
-            //     }
-            //     
-            //     var enemy = (Enemy) hitable;
-            //     
-            //     if (enemy.CurrentStateIndex > (int) Enemy.States.Rigid)
-            //         continue;
-            //     var checkRange = range + enemy.ColliderRad;
-            //     var targetDir = enemy.Position - origin;
-            //
-            //     if (targetDir.sqrMagnitude < checkRange * checkRange)
-            //     {
-            //         var dot = Vector2.Dot((targetDir).normalized, dir);
-            //         var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            //
-            //         if (degrees < angle)
-            //         {
-            //             outList.Add(enemy);
-            //         }
-            //     }
-            // }
-        }
-
-        private void GetInHitalbeCheck(Vector2 origin,float range,float angle,Vector2 dir)
-        {
-            foreach (var hitable in _ownerEntity._floorAllHit)
-            {
-                if (hitable is not Enemy)
-                {
-                    if (hitable is Dullahan)
-                    {
-                        var hitDullhanCheckRange = range + 1.4f;
-                        var hitDullhanTargetDir = hitable.Position - origin;
-
-                        if (hitDullhanTargetDir.sqrMagnitude < hitDullhanCheckRange * hitDullhanCheckRange)
-                        {
-                            var dot = Vector2.Dot((hitDullhanTargetDir).normalized, dir);
-                            var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
-
-                            if (degrees < angle)
-                            {
-                                _hitableRange.Add(hitable);
-                            }
-                        }
-                        return;
-                    }
-                    var hitCheckRange = range + 0.5f;
-                    var hitTargetDir = hitable.Position - origin;
-
-                    if (hitTargetDir.sqrMagnitude < hitCheckRange * hitCheckRange)
-                    {
-                        var dot = Vector2.Dot((hitTargetDir).normalized, dir);
-                        var degrees = Mathf.Acos(dot) * Mathf.Rad2Deg;
-
-                        if (degrees < angle)
-                        {
-                            _hitableRange.Add(hitable);
-                        }
-                    }
-                }
-            }
-        }
+        
     }
 }

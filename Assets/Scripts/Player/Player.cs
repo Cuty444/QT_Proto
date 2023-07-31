@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace QT.InGame
 {
-    public partial class Player : FSMPlayer<Player>, IFSMEntity, IHitable
+    public partial class Player : FSMPlayer<Player>, IFSMEntity, IHitAble
     {
         public enum States : int
         {
@@ -53,8 +53,6 @@ namespace QT.InGame
 
         private int _goldCost = 0;
         private PlayerHPCanvas _playerHpCanvas;
-
-        [HideInInspector]public List<IHitable> _floorAllHit = new List<IHitable>();
 
         [SerializeField] private Transform _attackSpeedCanvas;
         [SerializeField] private Transform[] _attackSpeedBackground;
@@ -110,11 +108,6 @@ namespace QT.InGame
             StatComponent.GetStatus(PlayerStats.HP).SetStatus(StatComponent.GetStatus(PlayerStats.HP).Value);
             _playerHpCanvas.SetHp(StatComponent.GetStatus(PlayerStats.HP));
             
-            _playerManager.FloorAllHitalbeRegister.AddListener((hitalbes) =>
-            {
-                _floorAllHit.Clear();
-                _floorAllHit.AddRange(hitalbes);
-            });
             
             _playerManager.PlayerMapPass.AddListener((isBool) =>
             {

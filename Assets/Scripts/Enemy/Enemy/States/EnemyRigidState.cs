@@ -38,7 +38,7 @@ namespace QT.InGame
                 _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
                 _ownerEntity.MaterialChanger.SetRigidMaterial();
                 
-                SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
+                ProjectileManager.Instance.Register(_ownerEntity);
             }
             else
             {
@@ -46,7 +46,7 @@ namespace QT.InGame
                 {
                     _ownerEntity.OnHitEvent.AddListener(OnDamage);
                     _ownerEntity.Rigidbody.velocity = Vector2.zero;
-                    SystemManager.Instance.ProjectileManager.Register(_ownerEntity);
+                    ProjectileManager.Instance.Register(_ownerEntity);
                 }
 
                 _ownerEntity.MaterialChanger.SetHitMaterial();
@@ -68,7 +68,7 @@ namespace QT.InGame
                 if (_ownerEntity.HP <= 0)
                 {
                     _ownerEntity.ChangeState(Enemy.States.Dead);
-                    SystemManager.Instance.ProjectileManager.UnRegister(_ownerEntity);
+                    ProjectileManager.Instance.UnRegister(_ownerEntity);
                 }
                 else
                 {

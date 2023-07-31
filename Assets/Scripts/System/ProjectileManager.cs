@@ -29,7 +29,7 @@ namespace QT
         
     }
     
-    public class ProjectileManager
+    public class ProjectileManager : Singleton<ProjectileManager>
     {
         private Dictionary<int, IProjectile> _projectiles = new();
 

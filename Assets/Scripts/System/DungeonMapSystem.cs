@@ -106,15 +106,6 @@ namespace QT.Core.Map
             {
                 _map[position.y, position.x].IsVisited = true;
             });
-            SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener((player) =>
-            {
-                _mapCellsTransform = GameObject.FindWithTag("MapCells").transform;
-                StartCoroutine(UnityUtil.WaitForFunc(() =>
-                {
-                    SystemManager.Instance.PlayerManager.FloorAllHitalbeRegister.Invoke(_mapCellsTransform
-                        .GetComponentsInChildren<IHitable>(true).ToList());
-                }, 5f));
-            });
         }
 
         public void DungenMapGenerate()
@@ -530,8 +521,7 @@ namespace QT.Core.Map
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
-                SystemManager.Instance.ProjectileManager.Clear();
+                ProjectileManager.Instance.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 StartCoroutine(UnityUtil.WaitForFunc(() =>

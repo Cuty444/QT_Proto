@@ -193,7 +193,7 @@ namespace QT.UI
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
             SystemManager.Instance.RankingManager.ResetRankingTime();
-            SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.Invoke(new List<IHitable>());
+            
             var uiManager = SystemManager.Instance.UIManager;
             uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
             {
@@ -204,7 +204,7 @@ namespace QT.UI
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
                 SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                SystemManager.Instance.ProjectileManager.Clear();
+                ProjectileManager.Instance.Clear();
                 SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().StartCoroutine(UnityUtil.WaitForFunc(() =>

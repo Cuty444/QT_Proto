@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QT
 {
-    public class HitLoopObject : InteractionObject, IHitable
+    public class HitLoopObject : InteractionObject, IHitAble
     {
 
         private void Awake()

@@ -69,7 +69,8 @@ namespace QT.InGame
 
         private bool _isPierce;
 
-        private List<IHitable> _hitables = new List<IHitable>();
+        private List<IHitAble> _hitAbles = new List<IHitAble>();
+        
         
         private void Awake()
         {
@@ -88,12 +89,12 @@ namespace QT.InGame
 
         private void OnEnable()
         {
-            SystemManager.Instance.ProjectileManager.Register(this);
+            ProjectileManager.Instance.Register(this);
         }
 
         private void OnDisable()
         {
-            SystemManager.Instance?.ProjectileManager.UnRegister(this);
+            ProjectileManager.Instance.UnRegister(this);
             if (_trailRenderer != null)
             {
                 for (int i = 0; i < _trailRenderer.Length; i++)
@@ -215,13 +216,13 @@ namespace QT.InGame
             if (hit.collider != null)
             {
                 bool isTriggerCheck = false;
-                if (hit.collider.TryGetComponent(out IHitable hitable))
+                if (hit.collider.TryGetComponent(out IHitAble hitable))
                 {
-                    if (_hitables.Contains(hitable))
+                    if (_hitAbles.Contains(hitable))
                         return;
                     else
                     {
-                        _hitables.Clear();
+                        _hitAbles.Clear();
                     }
                     hitable.Hit(_direction, _damage);
                     if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
@@ -233,11 +234,11 @@ namespace QT.InGame
                         SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
                         _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
                     }
-                    _hitables.Add(hitable);
+                    _hitAbles.Add(hitable);
                 }
                 else
                 {
-                    _hitables.Clear();
+                    _hitAbles.Clear();
                     _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX,hit.transform.position);
                 }
 
@@ -279,15 +280,15 @@ namespace QT.InGame
             {
                 bool isTriggerCheck = false;
                 bool isPass = false;
-                if (hit.collider.TryGetComponent(out IHitable hitable))
+                if (hit.collider.TryGetComponent(out IHitAble hitable))
                 {
-                    if (_hitables.Contains(hitable))
+                    if (_hitAbles.Contains(hitable))
                     {
                         return;
                     }
                     else
                     {
-                        _hitables.Clear();
+                        _hitAbles.Clear();
                     }
                     if (hitable is Enemy)
                     {
@@ -308,11 +309,11 @@ namespace QT.InGame
                         SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
                         _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
                     }
-                    _hitables.Add(hitable);
+                    _hitAbles.Add(hitable);
                 }
                 else
                 {
-                    _hitables.Clear();
+                    _hitAbles.Clear();
                     _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX,hit.transform.position);
                 }
 

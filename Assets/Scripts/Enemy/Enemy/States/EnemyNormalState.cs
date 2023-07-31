@@ -184,7 +184,7 @@ namespace QT.InGame
 
             var ownerPos = _ownerEntity.transform.position;
             
-            if (hit != null && hit.TryGetComponent(out IHitable hitable))
+            if (hit != null && hit.TryGetComponent(out IHitAble hitable))
             {
                 hitable.Hit((ownerPos - hit.transform.position).normalized, _data.BodyContactDmg);
             }

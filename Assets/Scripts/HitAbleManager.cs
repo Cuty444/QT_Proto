@@ -10,7 +10,7 @@ namespace QT
         Teleport
     }
 
-    public interface IHitable
+    public interface IHitAble
     {
         public int InstanceId { get; }
 
@@ -22,28 +22,28 @@ namespace QT
         public float GetHp();
     }
 
-    public class HitableManager
+    public class HitAbleManager : Singleton<HitAbleManager>
     {
-        private readonly Dictionary<int, IHitable> _hitables = new();
+        private readonly Dictionary<int, IHitAble> _hitAbles = new();
 
-        public void Register(IHitable hitable)
+        public void Register(IHitAble hitAble)
         {
-            _hitables.Add(hitable.InstanceId, hitable);
+            _hitAbles.Add(hitAble.InstanceId, hitAble);
         }
 
-        public void UnRegister(IHitable hitable)
+        public void UnRegister(IHitAble hitAble)
         {
-            _hitables.Remove(hitable.InstanceId);
+            _hitAbles.Remove(hitAble.InstanceId);
         }
 
         public void Clear()
         {
-            _hitables.Clear();
+            _hitAbles.Clear();
         }
 
-        public void GetInRange(Vector2 origin, float range, float angle, Vector2 dir, ref List<IHitable> outList)
+        public void GetInRange(Vector2 origin, float range, float angle, Vector2 dir, ref List<IHitAble> outList)
         {
-            foreach (var hitable in _hitables.Values)
+            foreach (var hitable in _hitAbles.Values)
             {
                 var checkRange = range + hitable.ColliderRad;
                 var targetDir = hitable.Position - origin;
@@ -58,9 +58,9 @@ namespace QT
             }
         }
         
-        public void GetInRange(Vector2 origin, float range, ref List<IHitable> outList)
+        public void GetInRange(Vector2 origin, float range, ref List<IHitAble> outList)
         {
-            foreach (var hitable in _hitables.Values)
+            foreach (var hitable in _hitAbles.Values)
             {
                 var checkRange = range + hitable.ColliderRad;
                 var targetDir = hitable.Position - origin;

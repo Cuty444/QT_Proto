@@ -16,8 +16,6 @@ namespace QT.Core
         public ResourceManager ResourceManager { get; } = new ();
         public GameDataManager DataManager { get; } = new ();
         public PlayerManager PlayerManager { get; } = new();
-        public ProjectileManager ProjectileManager { get; } = new();
-
         public ItemDataManager ItemDataManager { get; } = new();
 
         public LoadingManager LoadingManager { get; } = new();

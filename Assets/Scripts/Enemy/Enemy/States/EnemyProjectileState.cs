@@ -47,6 +47,9 @@ namespace QT.InGame
         private SoundManager _soundManager;
 
         private bool isStuckSound = false;
+        
+        private List<IHitAble> _hitAbles = new List<IHitAble>();
+        
 
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
         {
@@ -94,7 +97,7 @@ namespace QT.InGame
                 _ownerEntity.StartCoroutine(
                     Util.UnityUtil.WaitForFunc(() => { _ownerEntity.Animator.ResetTrigger(NormalAnimHash); }, 0.2f));
             }
-            SystemManager.Instance.ProjectileManager.UnRegister(_ownerEntity);
+            ProjectileManager.Instance.UnRegister(_ownerEntity);
             _ownerEntity.IsTeleportProjectile = false;
         }
         
@@ -117,13 +120,13 @@ namespace QT.InGame
             if (hit.collider != null)
             {
                 bool isTriggerCheck = false;
-                if (hit.collider.TryGetComponent(out IHitable hitable))
+                if (hit.collider.TryGetComponent(out IHitAble hitable))
                 {
-                    if (_ownerEntity._hitalbesList.Contains(hitable))
+                    if (_hitAbles.Contains(hitable))
                         return;
                     else
                     {
-                        _ownerEntity._hitalbesList.Clear();
+                        _hitAbles.Clear();
                     }
                     if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
                     {
@@ -139,7 +142,7 @@ namespace QT.InGame
                         hitable.Hit(_direction, _damage);
                         _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayMonsterHitSFX);
                     }
-                    _ownerEntity._hitalbesList.Add(hitable);
+                    _hitAbles.Add(hitable);
                     //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
                 else
@@ -153,7 +156,7 @@ namespace QT.InGame
                             isStuckSound = false;
                         }, 0.1f));
                     }
-                    _ownerEntity._hitalbesList.Clear();
+                    _hitAbles.Clear();
                 }
                 
                 if (isTriggerCheck)

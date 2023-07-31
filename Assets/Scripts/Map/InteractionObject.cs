@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QT
 {
-    public class InteractionObject : MonoBehaviour, IHitable
+    public class InteractionObject : MonoBehaviour, IHitAble
     {
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;

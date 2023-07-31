@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QT
 {
-    public class NpcInteraction : MonoBehaviour, IHitable
+    public class NpcInteraction : MonoBehaviour, IHitAble
     {
         private readonly int AnimationHitHash = Animator.StringToHash("Hit");
         private readonly int AnimationSoldHash = Animator.StringToHash("Sold");

@@ -52,7 +52,7 @@ namespace QT.Map
             {
                 if (_cellPos == pos)
                 {
-                    _playerManager.CurrentRoomEnemyRegister.Invoke(transform.parent.parent.gameObject.GetComponentsInChildren<IHitable>().ToList());
+                    //_playerManager.CurrentRoomEnemyRegister.Invoke(transform.parent.parent.gameObject.GetComponentsInChildren<IHitable>().ToList());
                 }
             });
             //_playerManager.CurrentRoomEnemyRegister.Invoke(transform.parent.parent.gameObject.GetComponentsInChildren<IHitable>().ToList());
