@@ -77,7 +77,7 @@ namespace QT.Map
             
             Target.DoorExitDirection(exit);
             Target.CellDataSet(MapDirection.All, Vector2Int.zero, RoomType.Normal);
-            Target.RoomPlay(Vector2Int.zero);
+            Target.PlayRoom(Vector2Int.zero);
 
             
             // MapCell 로딩이 끝나는 시간을 고려해야 함...

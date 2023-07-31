@@ -48,8 +48,6 @@ namespace QT.Map
 
         [SerializeField] private Image _iconObject;
 
-        private UnityEvent _startColliderShapeSetting = new UnityEvent();
-
         public void Setting()
         {
             _lineRenders.SetActive(false);
@@ -60,6 +58,7 @@ namespace QT.Map
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
             _mapImage.enabled = false;
             _iconsTransform.gameObject.SetActive(false);
+            
             if (RoomType.None == _roomType)
             {
                 _iconObject.sprite = _mapIconSprite?[0];
@@ -92,7 +91,6 @@ namespace QT.Map
             _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();
             _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
             _mapCellData.CellDataSet(_pathOpenDirection,CellPos,_roomType);
-            _startColliderShapeSetting.Invoke();
         }
         
         public void ListenerClear()
@@ -131,7 +129,7 @@ namespace QT.Map
         {
             _mapCellData.DoorExitDirection(pos);
             if (!_dungeonMapSystem.GetCellData(CellPos).IsClear)
-                _mapCellData.RoomPlay(CellPos);
+                _mapCellData.PlayRoom(CellPos);
             _playerManager.PlayerMapVisitedPosition.Invoke(CellPos);
             _playerManager.PlayerMapPosition.Invoke(CellPos);
         }
