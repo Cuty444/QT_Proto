@@ -79,8 +79,6 @@ namespace QT.InGame
             if (_ownerEntity.HP <= 0)
             { 
                 _ownerEntity.HpCanvas.gameObject.SetActive(false);
-                _ownerEntity.MaterialChanger.SetRigidMaterial();
-                
                 _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
