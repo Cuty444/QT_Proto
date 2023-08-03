@@ -69,6 +69,7 @@ namespace QT.InGame
             _direction = dir;
             _maxSpeed = _speed = power;
             _bounceMask = bounceMask;
+            _ownerEntity.BounceMask = bounceMask;
             
             _bounceCount = _maxBounce = 2;
             _releaseDelay = 1;

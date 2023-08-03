@@ -28,7 +28,8 @@ namespace QT.InGame
         public float ColliderRad { get; private set; }
         public bool IsClearTarget => true;
         public bool IsDead => HP <= 0;
-        
+        public LayerMask BounceMask { get; set; }
+
 
         [SerializeField] private int _enemyId;
         [field: SerializeField] public Canvas HpCanvas { get; private set; }

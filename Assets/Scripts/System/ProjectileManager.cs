@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QT
@@ -19,14 +20,12 @@ namespace QT
         
         public Vector2 Position { get; }
         public float ColliderRad { get; }
-        
+        public LayerMask BounceMask { get; }
+
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce);
 
         public void ResetBounceCount(int maxBounce);
         public void ResetProjectileDamage(int damage);
-
-        public LayerMask GetLayerMask();
-        
     }
     
     public class ProjectileManager : Singleton<ProjectileManager>
@@ -52,7 +51,7 @@ namespace QT
         {
             foreach (var projectile in _projectiles.Values)
             {
-                if ((projectile.GetLayerMask() & layerMask) != 0)
+                if ((projectile.BounceMask & layerMask) != 0)
                 {
                     var checkRange = range + projectile.ColliderRad;
                     var targetDir = projectile.Position - origin;
@@ -75,7 +74,7 @@ namespace QT
         {
             foreach (var projectile in _projectiles.Values)
             {
-                if ((projectile.GetLayerMask() & layerMask) != 0)
+                if ((projectile.BounceMask & layerMask) != 0)
                 {
                     var checkRange = range + projectile.ColliderRad;
                     var targetDir = projectile.Position - origin;
@@ -88,5 +87,10 @@ namespace QT
             }
         }
         
+        public List<IProjectile> GetAllProjectile()
+        {
+            return _projectiles.Values.ToList();
+        }
+
     }
 }

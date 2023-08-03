@@ -18,6 +18,7 @@ namespace QT.InGame
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
+        public LayerMask BounceMask => _bounceMask;
 
         private string _prefabPath;
         
@@ -176,11 +177,6 @@ namespace QT.InGame
             _damage = damage;
         }
 
-        public LayerMask GetLayerMask()
-        {
-            return _bounceMask;
-        }
-        
         private void SetOwnerColor()
         {
             _player?.SetActive(_owner == ProjectileOwner.Player);
