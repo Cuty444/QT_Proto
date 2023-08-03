@@ -220,11 +220,11 @@ namespace QT.InGame
         private void SetLines()
         {
             var bounceCount = (int) _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;;
-            
+
             for (int i = 0; i < _lines.Count; i++)
             {
-                if (_projectiles.Count > i)
-                {
+                if (_projectiles.Count > i && _projectiles[i] is not Enemy)
+                {  
                     SetLine(_projectiles[i], _lines[i], bounceCount);
                 }
                 else
@@ -237,14 +237,15 @@ namespace QT.InGame
         private void SetLine(IProjectile projectile, LineRenderer lineRenderer, int bounceCount)
         {
             var dir = GetNewProjectileDir(projectile);
+            var mask = _ownerEntity.ProjectileShooter.BounceMask;
+            float reflectCorrection = _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection);
 
             lineRenderer.enabled = true;
             lineRenderer.positionCount = 0;
             lineRenderer.positionCount = bounceCount + 2;
 
             lineRenderer.SetPosition(0, projectile.Position);
-            var hit2 = Physics2D.CircleCast(lineRenderer.GetPosition((0)), 0.5f, dir, Mathf.Infinity,
-                _ownerEntity.ProjectileShooter.BounceMask);
+            var hit2 = Physics2D.CircleCast(lineRenderer.GetPosition((0)), 0.5f, dir, Mathf.Infinity, mask);
 
             if (hit2.collider)
             {
@@ -252,8 +253,7 @@ namespace QT.InGame
             }
             for (int i = 1; i < bounceCount; i++)
             {
-                var hit = Physics2D.CircleCast(lineRenderer.GetPosition((i - 1)), 0.5f, dir, Mathf.Infinity,
-                    _ownerEntity.ProjectileShooter.BounceMask);
+                var hit = Physics2D.CircleCast(lineRenderer.GetPosition((i - 1)), 0.5f, dir, Mathf.Infinity, mask);
 
                 if (hit.collider == null)
                 {
@@ -264,8 +264,6 @@ namespace QT.InGame
                 lineRenderer.SetPosition(i, hit.point + (hit.normal * 0.5f));
                 dir = Vector2.Reflect(dir, hit.normal);
 
-                float reflectCorrection = _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection);
-                
                 if (reflectCorrection != 0)
                 {
                     var targetDir = ((Vector2) _ownerEntity.transform.position - hit.point).normalized;

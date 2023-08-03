@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QT
@@ -71,6 +72,11 @@ namespace QT
                     outList.Add(hitable);
                 }
             }
+        }
+
+        public List<IHitAble> GetAllHitAble()
+        {
+            return _hitAbles.Values.ToList();
         }
     }
 }

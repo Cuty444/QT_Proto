@@ -52,8 +52,6 @@ namespace QT.InGame
 
         [HideInInspector] public LineRenderer TeleportLineRenderer;
 
-        [HideInInspector] public bool IsTeleportProjectile = false;
-
         private AnimationCurve enemyFallScaleCurve;
 
         private Collider2D[] _colliders;

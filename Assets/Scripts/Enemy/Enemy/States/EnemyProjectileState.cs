@@ -79,8 +79,6 @@ namespace QT.InGame
             if (_ownerEntity.HP <= 0)
             { 
                 _ownerEntity.HpCanvas.gameObject.SetActive(false);
-                _ownerEntity.MaterialChanger.SetRigidMaterial();
-                
                 _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
@@ -100,8 +98,6 @@ namespace QT.InGame
                 _ownerEntity.StartCoroutine(
                     Util.UnityUtil.WaitForFunc(() => { _ownerEntity.Animator.ResetTrigger(NormalAnimHash); }, 0.2f));
             }
-            
-            _ownerEntity.IsTeleportProjectile = false;
         }
         
         public override void UpdateState()
@@ -134,11 +130,6 @@ namespace QT.InGame
                     if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
                     {
                         isTriggerCheck = hit.collider.isTrigger;
-                    }
-                    else if (_ownerEntity.IsTeleportProjectile)
-                    {
-                        hitable.Hit(_direction,_damage,AttackType.Teleport);
-                        _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayMonsterHitSFX);
                     }
                     else
                     {
