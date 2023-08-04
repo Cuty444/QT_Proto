@@ -22,7 +22,7 @@ namespace QT.Core
         public UnityEvent PlayerThrowProjectileReleased { get; } = new();
         public UnityEvent<int> OnGoldValueChanged { get; } = new();
 
-        public UnityEvent<VolumeProfile> OnVolumeProfileChange { get; } = new();
+        public UnityEvent<VolumeProfile, float> OnMapCellChanged { get; } = new();
 
         public UnityEvent StairNextRoomEvent { get; } = new();
         

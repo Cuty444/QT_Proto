@@ -22,6 +22,8 @@ namespace QT.Map
         [SerializeField] private Transform[] _doorExitTransforms;
 
         [Header("맵 볼륨")] public VolumeProfile VolumeProfile;
+        [Header("카메라 크기")] public float CameraSize = 7;
+        
         private RoomType _roomType;
 
         private PlayerManager _playerManager;

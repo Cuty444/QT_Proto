@@ -18,6 +18,7 @@ namespace QT.Map
         private const string MapCellPrefabPath = "Assets/Scripts/Map/MapEditor/MapCell.prefab";
 
         private MapCellData _target;
+        private Tilemap _floorTilemap;
 
         private MapEditorSceneManager _sceneManager;
         private PrefabStage _prefabStage;
@@ -102,6 +103,8 @@ namespace QT.Map
             
             GUILayout.Space(10);
             
+            
+            _target.CameraSize = EditorGUILayout.FloatField("카메라 사이즈", _target.CameraSize);
             _target.VolumeProfile = EditorGUILayout.ObjectField("MapCell 볼륨 프로필", _target.VolumeProfile, typeof(VolumeProfile), false) as VolumeProfile;
             if (!_volume)
             {
@@ -111,7 +114,7 @@ namespace QT.Map
             {
                 _volume.profile = _target.VolumeProfile;
             }
-            
+
             // GUILayout.Space(15);
             // GUILayout.BeginHorizontal();
             //
@@ -154,6 +157,11 @@ namespace QT.Map
             {
                 _sceneManager.StartGame(_command, _startDoor);
             }
+            
+            GUILayout.Space(10);
+            
+            if(_floorTilemap)
+                GUILayout.Label($"가로 : {_floorTilemap.cellBounds.size.x} | 세로 : {_floorTilemap.cellBounds.size.y}");
         }
 
         private void SetEvents()
@@ -217,6 +225,9 @@ namespace QT.Map
                     }
                 }
             }
+            
+            if(_target)
+                _floorTilemap = _target.GetComponentsInChildren<Tilemap>().FirstOrDefault(x => x.gameObject.layer == LayerMask.NameToLayer("Fall"));
 
             return _target != null;
         }
