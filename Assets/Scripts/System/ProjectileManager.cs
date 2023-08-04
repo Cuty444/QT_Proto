@@ -35,12 +35,13 @@ namespace QT
 
         public void Register(IProjectile projectile)
         {
-            _projectiles.Add(projectile.InstanceId, projectile);
+            _projectiles.TryAdd(projectile.InstanceId, projectile);
         }
         
         public void UnRegister(IProjectile projectile)
         {
-            _projectiles.Remove(projectile.InstanceId);
+            if(_projectiles.ContainsKey(projectile.InstanceId))
+                _projectiles.Remove(projectile.InstanceId);
         }
 
         public void Clear()
