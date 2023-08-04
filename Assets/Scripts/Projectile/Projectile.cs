@@ -159,7 +159,19 @@ namespace QT.InGame
             _currentSpeedDecay = _speedDecay;
             
             _bounceCount = _maxBounce;
-            _owner = owner;
+
+            switch (owner)
+            {
+                case ProjectileOwner.Player:
+                case ProjectileOwner.PlayerTeleport:
+                case ProjectileOwner.PlayerAbsorb:
+                    _owner = ProjectileOwner.Player;
+                    break;
+                default:
+                    _owner = owner;
+                    break;
+            }
+            
             _bounceMask = bounceMask;
             _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _isReleased = false;
