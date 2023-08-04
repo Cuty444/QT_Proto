@@ -12,8 +12,10 @@ namespace QT.InGame
     // Param3 : 최대 유지 시간
     public class AbsorbItemEffect : ItemEffect
     {
-        private LayerMask TargetBounceLayer = LayerMask.GetMask("Player");
-        
+        private readonly LayerMask TargetBounceLayer = LayerMask.GetMask("Player");
+        private readonly LayerMask WallBounceLayer = LayerMask.GetMask("Wall", "HardCollider");
+        private const float Distance = 2;
+
         private readonly Player _player;
         private readonly float _absorbRange;
         private readonly float _maxPower;
@@ -37,7 +39,6 @@ namespace QT.InGame
 
         public override void OnEquip()
         {
-            _player.OnActive.AddListener(OnActive);
         }
 
         protected override void OnTriggerAction()
@@ -54,7 +55,6 @@ namespace QT.InGame
 
         public override void OnRemoved()
         {
-            _player.OnActive.RemoveListener(OnActive);
             _cancellationTokenSource?.Cancel();
         }
 
@@ -71,14 +71,24 @@ namespace QT.InGame
                 _power = (1 - _power * _power * _power) * _maxPower;
 
                 var rotation = (_chargingTime * 2) * 360;
+                var playerPos = (Vector2)_player.transform.position;
                 
                 for (var i = 0; i < _targets.Count; i++)
                 {
                     var projectile = _targets[i];
                     var angle = ((float)i / _targets.Count * 360 + rotation) * Mathf.Deg2Rad;
-                    var targetPos = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 2 + (Vector2)_player.transform.position;
+                    var targetPos = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * Distance + playerPos;
                     
-                    projectile.ProjectileHit((targetPos - projectile.Position).normalized, _power, _player.ProjectileShooter.BounceMask,
+                    var checkDir = (targetPos - playerPos).normalized;
+                    var hit = Physics2D.Raycast(playerPos, checkDir, Distance, WallBounceLayer);
+                    if (hit)
+                    {
+                        targetPos = hit.point + (-checkDir * projectile.ColliderRad);
+                    }
+                    Debug.DrawLine(playerPos, targetPos);
+
+                    projectile.ProjectileHit((targetPos - projectile.Position).normalized, _power,
+                        _player.ProjectileShooter.BounceMask,
                         ProjectileOwner.PlayerAbsorb, 0, false);
                 }
 
@@ -87,17 +97,6 @@ namespace QT.InGame
             }
 
             Shoot();
-        }
-
-        private void OnActive(bool isOn)
-        {
-            // if (isOn)
-            // {
-            //     return;
-            // }
-            //
-            // _cancellationTokenSource?.Cancel();
-            // Shoot();
         }
 
         private void CheckProjectiles()
