@@ -31,8 +31,6 @@ namespace QT.InGame
             _ownerEntity.Animator.SetBool(RigidAnimHash, true);
             _rigidTimer = 0;
 
-            _ownerEntity.OnProjectileHitEvent.AddListener(OnProjectileHit);
-            
             if (_ownerEntity.HP <= 0)
             {
                 _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
@@ -49,7 +47,6 @@ namespace QT.InGame
 
         public override void ClearState()
         {
-            _ownerEntity.OnProjectileHitEvent.RemoveListener(OnProjectileHit);
             _ownerEntity.MaterialChanger.ClearMaterial();
         }
 
@@ -68,12 +65,6 @@ namespace QT.InGame
                     _ownerEntity.RevertToPreviousState();
                 }
             }
-        }
-
-        private void OnProjectileHit(Vector2 dir, float power, LayerMask bounceMask)
-        {
-            var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
-            ((EnemyProjectileState) state)?.InitializeState(dir, power, bounceMask);
         }
         
     }

@@ -32,15 +32,15 @@ namespace QT.InGame
             }
         }
         
-        private void OnProjectileHit(Vector2 dir, float power, LayerMask bounceMask)
+        private void OnProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner)
         {
-            if (_ownerEntity.CurrentStateIndex > (int) Enemy.States.Projectile)
+            if (_ownerEntity.CurrentStateIndex >= (int) Enemy.States.Dead)
             {
                 return;
             }
             
             var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
-            ((EnemyProjectileState) state)?.InitializeState(dir, power, bounceMask);
+            ((EnemyProjectileState) state)?.InitializeState(dir, power, bounceMask, owner != ProjectileOwner.PlayerAbsorb);
         }
     }
 }

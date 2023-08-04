@@ -12,6 +12,7 @@ namespace QT
         EnemyElite,
         Boss,
         PlayerTeleport,
+        PlayerAbsorb,
     }
     
     public interface IProjectile

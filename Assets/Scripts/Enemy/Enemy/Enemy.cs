@@ -96,6 +96,7 @@ namespace QT.InGame
                 .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
             
             Shooter.Initialize(Animator);
+            BounceMask = Shooter.BounceMask;
             
             SetUpStats();
             SetUp(States.Normal);

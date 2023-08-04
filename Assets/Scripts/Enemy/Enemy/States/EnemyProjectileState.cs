@@ -64,7 +64,7 @@ namespace QT.InGame
             _soundManager = SystemManager.Instance.SoundManager;
         }
 
-        public void InitializeState(Vector2 dir, float power, LayerMask bounceMask)
+        public void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool playSound)
         {
             _direction = dir;
             _maxSpeed = _speed = power;
@@ -80,11 +80,14 @@ namespace QT.InGame
             if (_ownerEntity.HP <= 0)
             { 
                 _ownerEntity.HpCanvas.gameObject.SetActive(false);
-                _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
+                
+                if(playSound)
+                    _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
             _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
             
-            _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
+            if(playSound)
+                _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
             _isNormal = false;
 
             _damage = _ownerEntity._damage;
@@ -92,6 +95,7 @@ namespace QT.InGame
         
         public override void ClearState()
         {
+            _ownerEntity.BounceMask = _ownerEntity.Shooter.BounceMask;
             _ownerEntity.Animator.ResetTrigger(ProjectileAnimHash);
             if (_isNormal)
             {
