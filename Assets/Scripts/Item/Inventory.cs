@@ -19,6 +19,11 @@ namespace QT.InGame
             SetTriggerPointEvents();
         }
 
+        ~Inventory()
+        {
+            ClearItems();
+        }
+
         private void SetTriggerPointEvents()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
