@@ -44,7 +44,7 @@ namespace QT.InGame
                         {
                             var specialData = dataManager.GetDataBase<SpecialEffectGameDataBase>().GetData(data.ApplySpecialEffectId);
 
-                            var effect = ItemEffectFactory.GetEffect(specialData.ActiveEffectType, player, data, specialData);
+                            var effect = ItemEffectFactory.GetEffect(specialData.EffectType, player, data, specialData);
                             _itemEffectList.Add(effect);
                             SetTrigger(effect);
                         }
