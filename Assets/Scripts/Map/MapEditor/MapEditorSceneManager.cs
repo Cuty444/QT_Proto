@@ -78,8 +78,10 @@ namespace QT.Map
             Target.DoorExitDirection(exit);
             Target.CellDataSet(MapDirection.All, Vector2Int.zero, RoomType.Normal);
             Target.PlayRoom(Vector2Int.zero);
-
             
+            SystemManager.Instance.PlayerManager.OnMapCellChanged.Invoke(Target.VolumeProfile, Target.CameraSize);
+
+
             // MapCell 로딩이 끝나는 시간을 고려해야 함...
             StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
             {

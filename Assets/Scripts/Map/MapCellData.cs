@@ -22,10 +22,13 @@ namespace QT.Map
         [SerializeField] private Transform[] _doorExitTransforms;
 
         [Header("맵 볼륨")] public VolumeProfile VolumeProfile;
+        [Header("카메라 크기")] public float CameraSize = 7;
+        
         private RoomType _roomType;
 
         private PlayerManager _playerManager;
         private DungeonMapSystem _dungeonMapSystem;
+        private CellData _cellData;
         
         private List<DoorAnimator> _doorAnimators;
         private Vector2Int _cellPosition;
@@ -39,11 +42,13 @@ namespace QT.Map
         {
             _playerManager = SystemManager.Instance.PlayerManager;
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
+            
+            _cellData = _dungeonMapSystem?.GetCellData(_cellPosition);
         }
         
         private void Update()
         {
-            if (!_isPlaying || _dungeonMapSystem.GetCellData(_cellPosition).IsClear)
+            if (!_isPlaying || _cellData == null || _cellData.IsClear)
                 return;
 
             CheckMapClear();
@@ -92,12 +97,16 @@ namespace QT.Map
 
         private async void CreateDoors()
         {
+            if (_dungeonMapSystem == null)
+            {
+                return;
+            }
+            
             _doorAnimators = new();
-            DungeonMapSystem dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             
             for (int i = 0; i < _doorTransforms.Length; i++)
             {
-                RoomType nextRoomType = dungeonMapSystem.RoomCheck(_cellPosition - Util.UnityUtil.PathDirections[i]);
+                RoomType nextRoomType = _dungeonMapSystem.RoomCheck(_cellPosition - Util.UnityUtil.PathDirections[i]);
 
                 if (nextRoomType == RoomType.None)
                 {

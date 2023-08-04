@@ -164,7 +164,7 @@ namespace QT.Map
 
                 if (_mapCellData != null)
                 {
-                    _playerManager.OnVolumeProfileChange.Invoke(_mapCellData.VolumeProfile);
+                    _playerManager.OnMapCellChanged.Invoke(_mapCellData.VolumeProfile, _mapCellData.CameraSize);
                 }
             }
             else if (_dungeonMapSystem.GetCellData(CellPos).IsClear)
