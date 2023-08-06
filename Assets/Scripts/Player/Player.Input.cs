@@ -26,6 +26,7 @@ namespace QT.InGame
         public UnityAction<Vector2> OnMove { get; set; }
 
         public UnityEvent<Vector2> OnAim { get; private set; } = new();
+        public UnityEvent<bool> OnActive { get; } = new();
         public Vector2 AimPosition { get; private set; } = Vector2.zero;
 
         
@@ -59,11 +60,14 @@ namespace QT.InGame
             moveInputAction = inputActions.Player.Move;
             lookInputAction = inputActions.Player.Look;
 
+            inputActions.Player.Active.started += (x) => OnActive.Invoke(true);
+            inputActions.Player.Active.canceled += (x) => OnActive.Invoke(false);
+
             SetButtonAction(inputActions.Player.Swing, ButtonActions.Swing);
             SetButtonAction(inputActions.Player.Dodge, ButtonActions.Dodge);
             SetButtonAction(inputActions.Player.Active, ButtonActions.Active);
             SetButtonAction(inputActions.Player.Interaction, ButtonActions.Interaction);
-
+            
             _camera = Camera.main;
         }
 

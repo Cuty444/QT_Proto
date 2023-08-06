@@ -27,7 +27,7 @@ namespace QT.InGame
             _targetTransform = target;
         }
 
-        public virtual void Shoot(int shootDataId, AimTypes aimType,ProjectileOwner owenr)
+        public virtual void Shoot(int shootDataId, AimTypes aimType,ProjectileOwner owner)
         {
             var shootData = SystemManager.Instance.DataManager.GetDataBase<ShootGameDataBase>().GetData(shootDataId);
 
@@ -39,7 +39,7 @@ namespace QT.InGame
             foreach (var shoot in shootData)
             {
                 var dir = GetDirection(shoot.ShootAngle, aimType);
-                ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, 0, shoot.MaxBounceCount,owenr);
+                ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, 0, shoot.MaxBounceCount,owner);
             }
         }
 

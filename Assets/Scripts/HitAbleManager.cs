@@ -30,12 +30,13 @@ namespace QT
 
         public void Register(IHitAble hitAble)
         {
-            _hitAbles.Add(hitAble.InstanceId, hitAble);
+            _hitAbles.TryAdd(hitAble.InstanceId, hitAble);
         }
 
         public void UnRegister(IHitAble hitAble)
         {
-            _hitAbles.Remove(hitAble.InstanceId);
+            if(_hitAbles.ContainsKey(hitAble.InstanceId))
+                _hitAbles.Remove(hitAble.InstanceId);
         }
 
         public void Clear()

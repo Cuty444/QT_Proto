@@ -19,15 +19,16 @@ namespace QT.InGame
             SetTriggerPointEvents();
         }
 
+        ~Inventory()
+        {
+            ClearItems();
+        }
+
         private void SetTriggerPointEvents()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
 
-            _targetPlayer.SetAction(Player.ButtonActions.Active,
-                (isOn) =>
-                {
-                    if (isOn) InvokeTrigger(TriggerTypes.OnActiveKey);
-                });
+            _targetPlayer.OnActive.AddListener((isOn) => { if (isOn) InvokeTrigger(TriggerTypes.OnActiveKey); });
             
             _targetPlayer.StatComponent.GetStatus(PlayerStats.HP).OnStatusChanged
                 .AddListener(() => InvokeTrigger(ItemEffectGameData.TriggerTypes.OnHpChanged));

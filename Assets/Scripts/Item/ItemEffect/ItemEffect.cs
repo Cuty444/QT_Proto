@@ -15,12 +15,15 @@ namespace QT.InGame
         
         [EffectCondition(typeof(EnemyRigidItemEffect))]
         EnemyRigid,
-        [EffectCondition(typeof(TeleportItemEffect))]
-        Teleport,
         [EffectCondition(typeof(ReverseAtkDirItemEffect))]
         ReverseAtkDir,
         [EffectCondition(typeof(TimeScaleItemEffect))]
         TimeScale,
+        
+        [EffectCondition(typeof(TeleportItemEffect))]
+        Teleport,
+        [EffectCondition(typeof(AbsorbItemEffect))]
+        Absorb,
     }
     
     [AttributeUsage(AttributeTargets.Field)]

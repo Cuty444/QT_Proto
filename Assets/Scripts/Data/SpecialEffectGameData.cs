@@ -10,7 +10,7 @@ namespace QT
     {
         public int Index { get; set; }
         
-        public ItemEffectTypes ActiveEffectType { get; set; }
+        public ItemEffectTypes EffectType { get; set; }
         
         public float Param1 { get; set; }
         public float Param2 { get; set; }

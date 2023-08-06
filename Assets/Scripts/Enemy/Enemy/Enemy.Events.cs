@@ -6,7 +6,7 @@ namespace QT.InGame
     public partial class Enemy
     {
         public UnityEvent<Vector2, float,AttackType> OnDamageEvent { get; } = new();
-        public UnityEvent<Vector2, float, LayerMask> OnProjectileHitEvent { get; } = new();
+        public UnityEvent<Vector2, float, LayerMask, ProjectileOwner> OnProjectileHitEvent { get; } = new();
 
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
@@ -15,7 +15,7 @@ namespace QT.InGame
 
         public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce)
         {
-            OnProjectileHitEvent.Invoke(dir, power, bounceMask);
+            OnProjectileHitEvent.Invoke(dir, power, bounceMask, owner);
         }
         
         public void ResetBounceCount(int maxBounce)
@@ -27,10 +27,6 @@ namespace QT.InGame
         {
             _damage = damage;
 
-        }
-        public LayerMask GetLayerMask()
-        {
-            return LayerMask.GetMask("Wall") | LayerMask.GetMask("Player"); // TODO : 임시 추후 수정 필요
         }
     }
 }
