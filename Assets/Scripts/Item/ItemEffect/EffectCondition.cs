@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using QT.Core;
+using UnityEngine;
 
 namespace QT.InGame
 {
@@ -16,7 +18,12 @@ namespace QT.InGame
         Equal,
         
         [EffectCondition(typeof(RandomCondition))]
-        Random
+        Random,
+        
+        [EffectCondition(typeof(ProjectileInRange))]
+        ProjectileInRange,
+        [EffectCondition(typeof(HitAbleInRange))]
+        HitAbleInRange
     }
 
     [AttributeUsage(AttributeTargets.Field)]
@@ -119,6 +126,42 @@ namespace QT.InGame
         public override bool CheckCondition(StatComponent statComponent)
         {
             return UnityEngine.Random.Range(0, 100) < _value;
+        }
+    }
+    
+    public class ProjectileInRange : EffectCondition
+    {
+        private readonly LayerMask _bounceMask;
+        public ProjectileInRange(string target, float value) : base(target, value)
+        {
+            _bounceMask = LayerMask.GetMask(target.Split(','));
+        }
+        
+        public override bool CheckCondition(StatComponent statComponent)
+        {
+            var playerPos = SystemManager.Instance.PlayerManager.Player.transform.position;
+            var list = new List<IProjectile>();
+
+            ProjectileManager.Instance.GetInRange(playerPos, _value, ref list, _bounceMask);
+
+            return list.Count > 0;
+        }
+    }
+    
+    public class HitAbleInRange : EffectCondition
+    {
+        public HitAbleInRange(string target, float value) : base(target, value)
+        {
+        }
+        
+        public override bool CheckCondition(StatComponent statComponent)
+        {
+            var playerPos = SystemManager.Instance.PlayerManager.Player.transform.position;
+            var list = new List<IHitAble>();
+            
+            HitAbleManager.Instance.GetInRange(playerPos, _value, ref list);
+            
+            return list.Count > 0;
         }
     }
     

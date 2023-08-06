@@ -72,7 +72,7 @@ namespace QT
             }
         }
         
-        public void GetInRange(Vector2 origin, float range, ref List<IProjectile> outList, int layerMask)
+        public void GetInRange(Vector2 origin, float range, ref List<IProjectile> outList, LayerMask layerMask)
         {
             foreach (var projectile in _projectiles.Values)
             {
