@@ -143,13 +143,16 @@
 			"ApplySpecialEffectId":"10000",
 			"CoolTime":"0.1",
 			"TriggerType":"OnActiveKey",
+			"Condition":"None",
 		},
 		{
 			"Index":"10001",
 			"ApplySpecialEffectId":"10001",
 			"CoolTime":"3.5",
 			"TriggerType":"OnActiveKey",
-			"Condition":"None",
+			"ConditionTarget":"Player",
+			"Condition":"ProjectileInRange",
+			"ConditionValue":"3",
 		},
 	]
 ]
