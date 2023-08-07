@@ -92,7 +92,7 @@ namespace QT.InGame
                         ProjectileOwner.PlayerAbsorb, 0, false);
                 }
 
-                await UniTask.NextFrame();
+                await UniTask.NextFrame(_cancellationTokenSource.Token);
                 _chargingTime += Time.deltaTime;
             }
 
