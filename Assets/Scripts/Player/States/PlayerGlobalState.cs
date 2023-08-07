@@ -42,6 +42,7 @@ namespace QT.InGame
         {
             _playerHpCanvas.SetHpUpdate(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP));
             _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
+            _ownerEntity.PlayerBatAngleFlipCheck();
         }
 
         private void OnAim(Vector2 aimPos)

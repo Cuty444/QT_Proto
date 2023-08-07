@@ -45,6 +45,25 @@ namespace QT.InGame
             StartCoroutine(BatAnimation(_batTransform, rotationSpeed, endAngel));
             
         }
+
+        public void SetPlayerBatIdleSprite(bool isActive)
+        {
+            _batsTransform.gameObject.SetActive(isActive);
+        }
+
+        public void PlayerBatAngleFlipCheck()
+        {
+            if (PlayerFlipAngle())
+            {
+                _batIdleSpriteRenderers[0].enabled = false;
+                _batIdleSpriteRenderers[1].enabled = true;
+            }
+            else
+            {
+                _batIdleSpriteRenderers[0].enabled = true;
+                _batIdleSpriteRenderers[1].enabled = false;
+            }
+        }
         
         private IEnumerator BatAnimation(Transform targetTransform, float rotateSpeed, float targetAngle)
         {
@@ -68,6 +87,7 @@ namespace QT.InGame
             yield return new WaitForSeconds(0.1f);
             
             _batSpriteRenderer.enabled = false;
+            SetPlayerBatIdleSprite(true);
         }
         
         
@@ -94,6 +114,20 @@ namespace QT.InGame
                     return true;
                 default:
                     _batSpriteRenderer.sortingOrder = 20;
+                    return false;
+            }
+        }
+
+        private bool PlayerFlipAngle()
+        {
+            Vector3 playerEulerAngles = EyeTransform.rotation.eulerAngles;
+            float playerRotation = playerEulerAngles.z;
+
+            switch (playerRotation)
+            {
+                case > 90f and < 270f:
+                    return true;
+                default:
                     return false;
             }
         }

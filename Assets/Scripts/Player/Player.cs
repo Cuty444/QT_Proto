@@ -60,7 +60,8 @@ namespace QT.InGame
         [SerializeField] private Transform _attackSpeedCanvas;
         [SerializeField] private Transform[] _attackSpeedBackground;
         [SerializeField] private Image[] _attackGaugeImages;
-        
+        [SerializeField] private Transform _batsTransform;
+        [SerializeField] private SpriteRenderer[] _batIdleSpriteRenderers;
         
         [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
         [field: SerializeField] public float DamageImpulseForce { get; private set; } = 3;
@@ -131,6 +132,7 @@ namespace QT.InGame
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>()?.OnOpen();
             
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(true);
+            _batsTransform.gameObject.SetActive(true);
         }
 
         protected override void Update()
