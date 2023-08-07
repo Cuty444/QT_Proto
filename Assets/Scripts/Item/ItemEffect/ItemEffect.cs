@@ -10,20 +10,22 @@ namespace QT.InGame
     {
         None,
         
-        [EffectCondition(typeof(BuffItemEffect))]
+        [ItemEffect(typeof(BuffItemEffect))]
         Buff,
         
-        [EffectCondition(typeof(EnemyRigidItemEffect))]
+        [ItemEffect(typeof(EnemyRigidItemEffect))]
         EnemyRigid,
-        [EffectCondition(typeof(ReverseAtkDirItemEffect))]
+        [ItemEffect(typeof(ReverseAtkDirItemEffect))]
         ReverseAtkDir,
-        [EffectCondition(typeof(TimeScaleItemEffect))]
+        [ItemEffect(typeof(TimeScaleItemEffect))]
         TimeScale,
         
-        [EffectCondition(typeof(TeleportItemEffect))]
+        [ItemEffect(typeof(TeleportItemEffect))]
         Teleport,
-        [EffectCondition(typeof(AbsorbItemEffect))]
+        [ItemEffect(typeof(AbsorbItemEffect))]
         Absorb,
+        [ItemEffect(typeof(ChargeItemEffect))]
+        Charge,
     }
     
     [AttributeUsage(AttributeTargets.Field)]
@@ -39,23 +41,23 @@ namespace QT.InGame
     
     public static class ItemEffectFactory
     {
-        private static readonly Dictionary<ItemEffectTypes, Type> _conditionTypes = new ();
+        private static readonly Dictionary<ItemEffectTypes, Type> _effectTypes = new ();
 
         static ItemEffectFactory()
         {
             foreach (var field in typeof(ItemEffectTypes).GetFields())
             {
-                var attribute = field.GetCustomAttribute<EffectConditionAttribute>();
+                var attribute = field.GetCustomAttribute<ItemEffectAttribute>();
                 if (attribute != null)
                 {
-                    _conditionTypes.Add((ItemEffectTypes)field.GetValue(null), attribute.ConditionType);
+                    _effectTypes.Add((ItemEffectTypes)field.GetValue(null), attribute.EffectType);
                 }
             }
         }
 
         public static ItemEffect GetEffect(ItemEffectTypes type, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData = null)
         {
-            return Activator.CreateInstance(_conditionTypes[type], player, effectData, specialEffectData) as ItemEffect;
+            return Activator.CreateInstance(_effectTypes[type], player, effectData, specialEffectData) as ItemEffect;
         }
     }
     
