@@ -46,7 +46,7 @@ namespace QT.InGame
         public override void InitializeState()
         {
             base.InitializeState();
-
+            _ownerEntity.SetPlayerBatIdleSprite(false);
             CheckSwingAreaMesh();
             SetLineObjects();
 
@@ -74,7 +74,6 @@ namespace QT.InGame
             }
 
             _lines.Clear();
-            
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
         }
 
