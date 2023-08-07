@@ -15,7 +15,7 @@ namespace QT.InGame
 
         private void OnDamage(Vector2 dir, float power, AttackType attackType)
         {
-            if (_ownerEntity.CurrentStateIndex >= (int) Enemy.States.Projectile)
+            if (_ownerEntity.CurrentStateIndex >= (int) Enemy.States.Dead)
             {
                 return;
             }
@@ -23,6 +23,12 @@ namespace QT.InGame
             _ownerEntity.HP.AddStatus(-power);
             _ownerEntity.HpImage.fillAmount = Util.Math.Remap(_ownerEntity.HP, _ownerEntity.HP.BaseValue, 0f);
             _ownerEntity.HpCanvas.gameObject.SetActive(true);
+            
+            if (_ownerEntity.CurrentStateIndex >= (int) Enemy.States.Projectile)
+            {
+                return;
+            }
+            
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.AddForce(dir, ForceMode2D.Impulse);
 
