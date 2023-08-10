@@ -67,7 +67,7 @@ namespace QT.UI
             {
                 SystemManager.Instance.LoadingManager.LoadScene(1, OnClose);
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
-                SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
+                //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
                 _retryButtonTrigger.Clear();
                 _titleButtonTrigger.Clear();
                 _uiObject.SetActive(false);
@@ -88,7 +88,7 @@ namespace QT.UI
                     }, 1f));
                 });
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
-                SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
+                //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
                 _retryButtonTrigger.Clear();
                 _titleButtonTrigger.Clear();
                 _uiObject.SetActive(false);

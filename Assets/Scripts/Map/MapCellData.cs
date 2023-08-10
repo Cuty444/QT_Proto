@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Map;
+using QT.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.Rendering;
@@ -32,18 +33,22 @@ namespace QT.Map
         
         private List<DoorAnimator> _doorAnimators;
         private Vector2Int _cellPosition;
+        private Vector2Int _doorEnterDirection;
 
         private List<IHitAble> _targetHitAbles;
-
-
+        
         private bool _isPlaying = false;
 
         private void Awake()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
-            
             _cellData = _dungeonMapSystem?.GetCellData(_cellPosition);
+            _playerManager.PlayerDoorEnter.AddListener((direction) =>
+            {
+                _doorEnterDirection = direction;
+            });
+            _playerManager.PlayerMapPosition.AddListener(PlayerMapEnter);
         }
         
         private void Update()
@@ -149,6 +154,15 @@ namespace QT.Map
 
                 ClearRoom();
             }
+        }
+
+        private void PlayerMapEnter(Vector2Int enterPosition)
+        {
+            if (_cellPosition != enterPosition)
+                return;
+            if(!_cellData.IsClear)
+                PlayRoom(enterPosition);
+            DoorExitDirection(_doorEnterDirection);
         }
         
         public void DoorExitDirection(Vector2Int enterDirection)

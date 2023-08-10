@@ -21,13 +21,11 @@ namespace QT.UI
         private PlayerManager _playerManager;
         
         private Dictionary<Vector2Int, MapDirection> _pathDirections = new Dictionary<Vector2Int, MapDirection>();
-        private MapData _mapData;
 
         private List<MiniMapCellData> _cellList = new List<MiniMapCellData>();
         private Dictionary<MiniMapCellData, Vector2> _cellMapDictionary = new Dictionary<MiniMapCellData, Vector2>();
         private List<GameObject> _cellMapList = new List<GameObject>();
         private bool IsPreviousActive;
-        private Vector2Int _currentPlayerPosition; // TODO : DungeonMapSystem으로 옮겨야함
         
 
         public override void Initialize()
@@ -37,15 +35,12 @@ namespace QT.UI
             _pathDirections.Add(Vector2Int.right,MapDirection.Left);
             _pathDirections.Add(Vector2Int.left,MapDirection.Right);
             SystemManager.Instance.ResourceManager.CacheAsset(CellPath);
-            MinimapSetting();
             IsPreviousActive = true;
             _miniMapOnOff.SetActive(false);
             _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.PlayerDoorEnter.AddListener(NextMapWarp);
             _playerManager.PlayerMapPosition.AddListener((position) =>
             {
-                _currentPlayerPosition = position;
-                MiniMapCellCenterPositionChagne(position);
+                MiniMapCellCenterPositionChange(position);
                 if (!SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(position).IsClear)
                 {
                     IsPreviousActive = false;
@@ -58,9 +53,6 @@ namespace QT.UI
             });
             _playerManager.PlayerCreateEvent.AddListener((player) =>
             {
-                _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
-                _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
-                _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
                 MapCreate();
             });
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
@@ -88,13 +80,7 @@ namespace QT.UI
                 }
             });
         }
-
-        public void MinimapSetting()
-        {
-            _mapData = SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData;
-            _currentPlayerPosition = _mapData.StartPosition;
-            MiniMapDraw();
-        }
+        
 
 
         public void CellClear()
@@ -113,20 +99,9 @@ namespace QT.UI
         {
             gameObject.SetActive(true);
         }
-
-        private void MiniMapDraw()
-        {
-
-            for (int i = 0; i< _mapData.MapNodeList.Count; i++)
-            {
-                MapDirection direction = DirectionCheck(_mapData.MapNodeList[i]);
-                CellCreate(_mapData.MapNodeList[i],direction,i);
-            }
-            
-            MiniMapCellCenterPositionChagne(_currentPlayerPosition);
-        }
         
-        private async void CellCreate(Vector2Int createPos,MapDirection direction,int index)
+        
+        public async void CellCreate(Vector2Int createPos,MapDirection direction,int index,RoomType roomType)
         {
             Vector3 pos = new Vector3(createPos.x * 200f, createPos.y * -200f, 0f);
             var cell = await SystemManager.Instance.ResourceManager.GetFromPool<MiniMapCellData>(CellPath,_miniMapCellTransform);
@@ -135,70 +110,34 @@ namespace QT.UI
             cell.transform.localPosition = pos;
             cell.SetRouteDirection(direction);
             cell.CellPos = createPos;
-            if (createPos == _mapData.BossRoomPosition)
+            switch (roomType)
             {
-                cell.name = cell.name + "_Boss";
-                cell.SetRoomType(RoomType.Boss);
+                case RoomType.None:
+                    break;
+                case RoomType.Normal:
+                    break;
+                case RoomType.Boss:
+                    cell.name = cell.name + "_Boss";
+                    break;
+                case RoomType.GoldShop:
+                case RoomType.HpShop:
+                    cell.name = cell.name + "_Shop";
+                    break;
+                case RoomType.Start:
+                    cell.name = cell.name + "_Start";
+                    break;
+                case RoomType.Stairs:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(roomType), roomType, null);
             }
-            else if (createPos == _mapData.ShopRoomPosition)
-            {
-                cell.name = cell.name + "_Shop";
-                cell.SetRoomType(RoomType.GoldShop);
-            }
-            else if (createPos == _mapData.StartPosition)
-            {
-                cell.name = cell.name + "_Start";
-                cell.SetRoomType(RoomType.Start);
-            }
-            else
-            {
-                cell.SetRoomType(RoomType.None);
-            }
+            cell.SetRoomType(roomType);
             cell.Setting();
             _cellList.Add(cell);
             _cellMapDictionary.Add(cell,pos);
         }
 
-        private MapDirection DirectionCheck(Vector2Int position)
-        {
-            MapDirection mapDirection = MapDirection.None;
-            foreach (KeyValuePair<Vector2Int, MapDirection> direction in _pathDirections)
-            {
-                Vector2Int nodeValue = position - direction.Key;
-                if (nodeValue.x < 0 || nodeValue.x >= _mapData.Map.GetLength(1))
-                    continue;
-                if (nodeValue.y < 0 || nodeValue.y >= _mapData.Map.GetLength(0))
-                    continue;
-                if (_mapData.Map[nodeValue.y, nodeValue.x].RoomType != RoomType.Normal)
-                {
-                    continue;
-                }
-                mapDirection |= direction.Value;
-            }
-
-            return mapDirection;
-        }
-
-        private void NextMapWarp(Vector2Int nextDirection)
-        {
-            Vector2Int nextPosition = _currentPlayerPosition - nextDirection;
-            for (int i = 0; i < _cellList.Count; i++)
-            {
-                if (_cellList[i].CellPos == nextPosition)
-                {
-                    _cellList[i].PlayerEnterDoor(nextDirection);
-                    break;
-                }
-            }
-
-            //if (_currentPlayerPosition ==
-            //    SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.ShopRoomPosition)
-            //{
-            //    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
-            //}
-        }
-
-        private void MiniMapCellCenterPositionChagne(Vector2Int position)
+        public void MiniMapCellCenterPositionChange(Vector2Int position)
         {
             Vector3 pos = new Vector3(position.x * 200f, position.y * -200f, 0f);
             _miniMapCellTransform.transform.localPosition = -pos;
