@@ -22,6 +22,8 @@ namespace QT.InGame
             Dodge,
             Fall,
             Dead,
+            
+            Empty,
         }
 
         public int InstanceId => gameObject.GetInstanceID();

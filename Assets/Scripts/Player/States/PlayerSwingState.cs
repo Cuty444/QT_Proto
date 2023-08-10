@@ -37,7 +37,7 @@ namespace QT.InGame
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
             _soundManager = SystemManager.Instance.SoundManager;
 
-            _projectileLayerMask = LayerMask.GetMask("Player");
+            _projectileLayerMask = int.MaxValue;//LayerMask.GetMask("Player");
             
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
         }

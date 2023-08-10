@@ -31,6 +31,10 @@ namespace QT.InGame
             SystemManager.Instance.ResourceManager.CacheAsset(TeleportLinePath);
 
             _ownerEntity.SetBatActive(false);
+        }
+
+        public override void InitializeState()
+        {
             SystemManager.Instance.PlayerManager.OnDamageEvent.AddListener(OnDamage);
             //SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.AddListener(arg0 => TeleportLineClear());
             //SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
@@ -43,6 +47,13 @@ namespace QT.InGame
             _playerHpCanvas.SetHpUpdate(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP));
             _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
             _ownerEntity.PlayerBatAngleFlipCheck();
+        }
+        
+        public override void ClearState()
+        {
+            SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveListener(OnDamage);
+            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainItem);
+            _ownerEntity.OnAim.RemoveListener(OnAim);
         }
 
         private void OnAim(Vector2 aimPos)

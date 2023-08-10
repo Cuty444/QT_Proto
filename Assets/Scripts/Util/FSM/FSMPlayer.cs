@@ -21,7 +21,7 @@ namespace QT.Core
 
         public int PreviousStateIndex { get; private set; }
         public int CurrentStateIndex { get; private set; }
-
+        
         protected virtual void Update()
         {
             _globalState?.UpdateState();
@@ -29,7 +29,7 @@ namespace QT.Core
         }
 
         protected virtual void FixedUpdate()
-        {
+        {  
             _globalState?.FixedUpdateState();
             _currentState?.FixedUpdateState();
         }

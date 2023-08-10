@@ -54,6 +54,11 @@ namespace QT.InGame
         public void AddItem(int itemDataId)
         {
             var item = new Item(itemDataId, _targetPlayer);
+
+            if (item.ItemGameData == null)
+            {
+                return;
+            }
             
             _items.Add(item);
             item.OnEquip();

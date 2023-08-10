@@ -181,7 +181,8 @@ namespace QT.Map
 
         private void SetPalette(GameObject paletteObject)
         {
-            _palette = paletteObject.GetComponent<Palette>();
+            if(paletteObject)
+                _palette = paletteObject.GetComponent<Palette>();
         }
 
         private bool CheckScene()

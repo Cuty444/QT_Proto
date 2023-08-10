@@ -66,6 +66,9 @@ namespace QT.InGame
             
             while (_chargingTime < _maxChargingDuration)
             {
+                await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, _cancellationTokenSource.Token);
+                _chargingTime += Time.deltaTime;
+                
                 // easeOutCubic
                 _power = 1 - _chargingTime / _maxChargingDuration;
                 _power = (1 - _power * _power * _power) * _maxPower;
@@ -80,10 +83,12 @@ namespace QT.InGame
                     var targetPos = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * Distance + playerPos;
                     
                     var checkDir = (targetPos - playerPos).normalized;
-                    var hit = Physics2D.Raycast(playerPos, checkDir, Distance, WallBounceLayer);
+                    //var hit = Physics2D.Raycast(playerPos, checkDir, Distance, WallBounceLayer);
+                    var hit = Physics2D.CircleCast(playerPos, projectile.ColliderRad, checkDir, Distance,
+                        WallBounceLayer);
                     if (hit)
                     {
-                        targetPos = hit.point + (-checkDir * projectile.ColliderRad);
+                        targetPos = hit.point + (hit.normal * (projectile.ColliderRad * 2));
                     }
                     Debug.DrawLine(playerPos, targetPos);
 
@@ -91,9 +96,6 @@ namespace QT.InGame
                         _player.ProjectileShooter.BounceMask,
                         ProjectileOwner.PlayerAbsorb, 0, false);
                 }
-
-                await UniTask.NextFrame();
-                _chargingTime += Time.deltaTime;
             }
 
             Shoot();
@@ -115,6 +117,7 @@ namespace QT.InGame
                 
                 ProjectileManager.Instance.UnRegister(projectile);
                 projectile.ResetProjectileDamage(damage);
+                projectile.ResetBounceCount(int.MaxValue);
                 _targets.Add(projectile);
             }
         }
@@ -125,6 +128,7 @@ namespace QT.InGame
             {
                 ProjectileManager.Instance.Register(projectile);
                 
+                projectile.ResetBounceCount(1);
                 projectile.ProjectileHit(GetNewProjectileDir(projectile), _power, _player.ProjectileShooter.BounceMask,
                     ProjectileOwner.PlayerAbsorb, 0, false);
             }
