@@ -54,7 +54,6 @@ namespace QT.Map
             _mapImage = GetComponent<Image>();
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.PlayerCreateEvent.AddListener(PlayerCreateEvent);
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
             _mapImage.enabled = false;
             _iconsTransform.gameObject.SetActive(false);
@@ -65,37 +64,8 @@ namespace QT.Map
             }
         }
 
-        private void PlayerCreateEvent(Player obj)
-        {
-            switch (_roomType)
-            {
-                case RoomType.GoldShop:
-                case RoomType.HpShop:
-                    _cellMapObject = _dungeonMapSystem.ShopMapObject();
-                    break;
-                case RoomType.Start:
-                    _cellMapObject = _dungeonMapSystem.StartMapObject();
-                    break;
-                case RoomType.Boss:
-                    _cellMapObject = _dungeonMapSystem.BossMapObject();
-                    break;
-                case RoomType.Stairs:
-                    _cellMapObject = _dungeonMapSystem.StairsMapObject();
-                    break;
-                case RoomType.None:
-                case RoomType.Normal:
-                default:
-                    _cellMapObject = _dungeonMapSystem.GetMapObject();
-                    break;
-            }
-            _mapCellData = Instantiate(_cellMapObject, _dungeonMapSystem.MapCellsTransform).GetComponent<MapCellData>();
-            _mapCellData.transform.position = new Vector3((CellPos.x * 40.0f)- _dungeonMapSystem.GetMiniMapSizeToMapSize().x, (CellPos.y * -40.0f) - _dungeonMapSystem.GetMiniMapSizeToMapSize().y, 0f);
-            _mapCellData.CellDataSet(_pathOpenDirection,CellPos,_roomType);
-        }
-        
         public void ListenerClear()
         {
-            _playerManager.PlayerCreateEvent.RemoveListener(PlayerCreateEvent);
             _playerManager.PlayerMapPosition.RemoveListener(CellPosCheck);
             _roomType = RoomType.None;
 
@@ -124,16 +94,6 @@ namespace QT.Map
             _pathOpenDirection = mapDirection;
         }
         
-
-        public void PlayerEnterDoor(Vector2Int pos)
-        {
-            _mapCellData.DoorExitDirection(pos);
-            if (!_dungeonMapSystem.GetCellData(CellPos).IsClear)
-                _mapCellData.PlayRoom(CellPos);
-            _playerManager.PlayerMapVisitedPosition.Invoke(CellPos);
-            _playerManager.PlayerMapPosition.Invoke(CellPos);
-        }
-
         private void CellPosCheck(Vector2Int pos)
         {
             if (pos == CellPos)

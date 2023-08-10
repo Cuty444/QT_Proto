@@ -38,7 +38,7 @@ public class PlayerChasingCamera : MonoBehaviour
     private Coroutine _vignetteCoroutine = null;
     #endregion
 
-    private void Start()
+    private void Awake()
     {
         PlayerManager playerManager = SystemManager.Instance.PlayerManager;
         // playerManager.PlayerDoorEnterCameraShapeChange.AddListener((colliderTemp) =>
@@ -56,10 +56,10 @@ public class PlayerChasingCamera : MonoBehaviour
             _globalVolume.profile.TryGet(out _vignette);
             _cinemachineVirtualCamera.m_Lens.OrthographicSize = cameraSize;
         });
-        SystemManager.Instance.GetSystem<DungeonMapSystem>()?.DungeonStart();
         _globalVolume.profile.TryGet(out _vignette);
         _maxIntensity = _volumDatas[1].Intensity;
     }
+    
 
     private void Update()
     {

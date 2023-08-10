@@ -216,7 +216,7 @@ namespace QT.UI
                     {
                         SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
                         SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
-                        SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
+                        //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
                     }, 2f));
                 }, 5f));
             });

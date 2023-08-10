@@ -5,6 +5,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using QT.Core;
 using QT.Core.Data;
+using QT.Map;
 using QT.UI;
 using QT.Util;
 using UnityEngine;
@@ -81,8 +82,8 @@ namespace QT.Core.Map
         private MapData _mapData;
         public MapData DungeonMapData => _mapData;
 
-        private Transform _mapCellsTransform;
-        public Transform MapCellsTransform => _mapCellsTransform;
+        private Transform _dungeonManagerTransform;
+        public Transform DungeonManagerTransform => _dungeonManagerTransform;
 
         private Vector2 _mapSizePosition;
 
@@ -92,9 +93,16 @@ namespace QT.Core.Map
         private List<GameObject> _bossMapList;
         private List<GameObject> _stairsMapList;
         private int _mapCount;
+        private Dictionary<Vector2Int, MapDirection> _pathDirections = new Dictionary<Vector2Int, MapDirection>();
+
+        private MinimapCanvas _minimapCanvas;
         
         public override void OnInitialized()
         {
+            _pathDirections.Add(Vector2Int.up,MapDirection.Up);
+            _pathDirections.Add(Vector2Int.down,MapDirection.Down);
+            _pathDirections.Add(Vector2Int.right,MapDirection.Left);
+            _pathDirections.Add(Vector2Int.left,MapDirection.Right);
             _maxRoomValue--; // TODO : 보스방 생성에 의해 1개 줄임
             SystemManager.Instance.PlayerManager.StairNextRoomEvent.AddListener(NextFloor);
             DungenMapGenerate();
@@ -109,6 +117,13 @@ namespace QT.Core.Map
             });
         }
 
+        public override void OnPostInitialized()
+        {
+            _minimapCanvas = SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>();
+        }
+
+        #region MapGenerate
+        
         public void DungenMapGenerate()
         {
             if (_floorValue != 0)
@@ -134,11 +149,16 @@ namespace QT.Core.Map
         {
             return _mapSizePosition;
         }
-        
+
+        public void DungeonReady(Transform dungeonManagerTransform)
+        {
+            _dungeonManagerTransform = dungeonManagerTransform;
+            SystemManager.Instance.PlayerManager.CreatePlayer();
+        }
         
         public void DungeonStart()
         {
-            SystemManager.Instance.PlayerManager.CreatePlayer();
+            MapCellDraw();
         }
 
         private void GenerateMap(Vector2Int startPos)
@@ -153,7 +173,7 @@ namespace QT.Core.Map
             }
 
             QT.Util.RandomSeed.SeedSetting();
-            _map[startPos.y, startPos.x].RoomType = RoomType.Normal;
+            _map[startPos.y, startPos.x].RoomType = RoomType.Start;
             _map[startPos.y, startPos.x].IsVisited = true;
             _mapNodeList.Clear();
             _mapNodeList.Add(startPos);
@@ -202,10 +222,11 @@ namespace QT.Core.Map
                     continue;
                 if (nodeValue.y < 0 || nodeValue.y >= _mapHeight)
                     continue;
-                if(_map[nodeValue.y,nodeValue.x].RoomType != RoomType.Normal)
-                    continue;
+                if (_map[nodeValue.y, nodeValue.x].RoomType != RoomType.None)
+                {
+                    pathCount++;
+                }
 
-                pathCount++;
             }
 
             if (pathCount >= 2)
@@ -222,7 +243,7 @@ namespace QT.Core.Map
                     continue;
                 if (nodeValue.y < 0 || nodeValue.y >= _mapHeight)
                     continue;
-                if (_map[nodeValue.y, nodeValue.x].RoomType == RoomType.Normal)
+                if (_map[nodeValue.y, nodeValue.x].RoomType != RoomType.None)
                 {
                     if (_map[nodeValue.y, nodeValue.x].IsVisited)
                     {
@@ -336,10 +357,11 @@ namespace QT.Core.Map
                 }
             } while (bossRoom == new Vector2Int(9999,9999));
             _mapNodeList.Add(bossRoom);
-            _map[bossRoom.y, bossRoom.x].RoomType = RoomType.Normal;
+            _map[bossRoom.y, bossRoom.x].RoomType = _floorValue >= 2 ? RoomType.Boss : RoomType.Stairs; // TODO : 계단 층 타입이랑 추후 체크 필요
             farthestRoomPosList.RemoveAt(randomIndex);
             randomIndex = UnityEngine.Random.Range(0, farthestRoomPosList.Count);
             var shopRoom = farthestRoomPosList[randomIndex].Position;
+            _map[shopRoom.y, shopRoom.x].RoomType = RoomType.GoldShop;
             return (bossRoom,shopRoom);
         }
 
@@ -440,6 +462,11 @@ namespace QT.Core.Map
             _mapNodeList.Add(pos);
             _map[pos.y, pos.x].RoomType = RoomType.Normal;
         }
+
+        #endregion
+        
+        #region MapDataLoad
+        
         public async UniTask MapLoad()
         {
             var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : 추후 레이블 스테이지 리스트로 관리
@@ -474,7 +501,11 @@ namespace QT.Core.Map
             var stairsObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageStairsLocationList);
             _stairsMapList = stairsObjectList.ToList();
         }
+        
+        #endregion
 
+        #region GetMapData
+        
         public GameObject GetMapObject()
         {
             return _mapList[_mapCount++ % _mapList.Count];
@@ -504,7 +535,80 @@ namespace QT.Core.Map
         {
             return _map[pos.y, pos.x];
         }
+        
+        #endregion
 
+        #region CellCreate
+
+        private void MapCellDraw()
+        {
+            for (int i = 0; i < _mapData.MapNodeList.Count; i++)
+            {
+                MapDirection direction = DirectionCheck(_mapData.MapNodeList[i]);
+                CellCreate(_mapData.MapNodeList[i],direction);
+                Vector2Int pos = _mapData.MapNodeList[i];
+                _minimapCanvas.CellCreate(_mapData.MapNodeList[i], direction,i,_mapData.Map[pos.y,pos.x].RoomType);
+            }
+
+            _minimapCanvas.MiniMapCellCenterPositionChange(_mapData.StartPosition);
+        }
+
+        private void CellCreate(Vector2Int createPos,MapDirection direction)
+        {
+            RoomType roomType = _mapData.Map[createPos.y, createPos.x].RoomType;
+            GameObject cellMapObject = null;
+            switch (roomType)
+            {
+                case RoomType.None:
+                    return;
+                case RoomType.Normal:
+                    cellMapObject = GetMapObject();
+                    break;
+                case RoomType.Boss:
+                    cellMapObject = BossMapObject();
+                    break;
+                case RoomType.GoldShop:
+                case RoomType.HpShop:
+                    cellMapObject = ShopMapObject();
+                    break;
+                case RoomType.Start:
+                    cellMapObject = StartMapObject();
+                    break;
+                case RoomType.Stairs:
+                    cellMapObject = StairsMapObject();
+                    break;
+            }
+            
+            var mapCellData = Instantiate(cellMapObject, DungeonManagerTransform).GetComponent<MapCellData>();
+            mapCellData.transform.position = new Vector3((createPos.x * 40.0f)-GetMiniMapSizeToMapSize().x, (createPos.y * -40.0f) -GetMiniMapSizeToMapSize().y, 0f);
+            mapCellData.CellDataSet(direction,createPos,roomType);
+        }
+        
+        private MapDirection DirectionCheck(Vector2Int position)
+        {
+            MapDirection mapDirection = MapDirection.None;
+            foreach (KeyValuePair<Vector2Int, MapDirection> direction in _pathDirections)
+            {
+                Vector2Int nodeValue = position - direction.Key;
+                if (nodeValue.x < 0 || nodeValue.x >= _mapData.Map.GetLength(1))
+                    continue;
+                if (nodeValue.y < 0 || nodeValue.y >= _mapData.Map.GetLength(0))
+                    continue;
+                if (_mapData.Map[nodeValue.y, nodeValue.x].RoomType == RoomType.None)
+                {
+                    continue;
+                }
+                mapDirection |= direction.Value;
+            }
+
+            return mapDirection;
+        }
+
+        #endregion
+        
+        
+        #region Floor
+        
         public void NextFloor()
         {
             if (_floorValue == 2)
@@ -532,7 +636,7 @@ namespace QT.Core.Map
                 {
                     SystemManager.Instance.LoadingManager.FloorLoadScene(1);
                     DungenMapGenerate();
-                    SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting();
+                    //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
                 },5f));
             });
         }
@@ -542,14 +646,11 @@ namespace QT.Core.Map
             _floorValue = value;
         }
 
-        public float GetEnemyHpIncreasePer()
-        {
-            return SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>().GetData(800 + _floorValue).EnemyHpIncreasePer;
-        }
-
         public int GetFloor()
         {
             return _floorValue;
         }
+        
+        #endregion
     }
 }
