@@ -31,8 +31,6 @@ namespace QT.InGame
         private float _speed;
         private float _maxSteerAngle;
         private float _size;
-
-        private float _damage = 25;
         
 
         private Vector2 _dir;
@@ -107,7 +105,6 @@ namespace QT.InGame
                 _player.Animator.SetFloat(MoveSpeedAnimHash, _currentSpeed * 0.5f);
                 
                 var targetDir = (_aimPosition - _player.Position ).normalized;
-                //_dir = Vector2.MoveTowards(_dir, targetDir, _maxSteerAngle * Time.deltaTime);
                 _dir = Vector3.RotateTowards(_dir, targetDir, _maxSteerAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
                 
                 _player.Rigidbody.velocity = _dir * _currentSpeed;
@@ -131,6 +128,9 @@ namespace QT.InGame
 
         private void CheckHit()
         {
+            var damage = _player.StatComponent.GetDmg(PlayerStats.ChargeRigidDmg2);
+            var shootSpeed = _player.StatComponent.GetDmg(PlayerStats.ChargeShootSpd2);
+            
             Vector2 position = _player.EyeTransform.position;
     
             var hits = Physics2D.CircleCastAll(position, _size, _dir, _speed * Time.deltaTime,
@@ -148,14 +148,14 @@ namespace QT.InGame
                 {
                     if (hit.collider.TryGetComponent(out IHitAble hitAble))
                     {
-                        hitAble.Hit(_dir, _damage);
+                        hitAble.Hit(_dir, damage);
                         SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitAble.Position);
                         isHit = true;
                     }
                     
                     if (hit.collider.TryGetComponent(out IProjectile projectile))
                     {
-                        projectile.ProjectileHit(_dir, _damage, _player.ProjectileShooter.BounceMask,
+                        projectile.ProjectileHit(_dir, shootSpeed, _player.ProjectileShooter.BounceMask,
                             ProjectileOwner.Player, 0, false);
                         isHit = true;
                     }
