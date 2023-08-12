@@ -42,6 +42,13 @@ namespace QT.Map
         {
             GetWindow(typeof(MapEditor));
         }
+        
+        
+        [MenuItem("맵 에디터/타일 팔레트 열기", false, 0)]
+        public static void OpenTilePalette()
+        {
+            EditorApplication.ExecuteMenuItem("Window/2D/Tile Palette");
+        }
 
         private void Awake()
         {
@@ -94,7 +101,7 @@ namespace QT.Map
             {
                 if (GUILayout.Button("타일 팔레트 열기"))
                 {
-                    EditorApplication.ExecuteMenuItem("Window/2D/Tile Palette");
+                    OpenTilePalette();
                     SetPalette(GridPaintingState.palette);
                 }
             }
@@ -213,7 +220,7 @@ namespace QT.Map
             {
                 GetPrefabStageTarget();
             }
-            else
+            else if (_sceneManager != null)
             {
                 _target = _sceneManager.Target;
                 if (_target != null)

@@ -17,6 +17,7 @@ namespace QT
     }
     
     [Serializable]
+    [CreateAssetMenu(fileName = "WeightedRandomTile", menuName = "2D/Tiles/WeightedRandomTile")]
     public class WeightedRandomTile : TileBase
     {
         [SerializeField] public WeightedSprite[] Sprites;
