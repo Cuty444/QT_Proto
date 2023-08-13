@@ -68,7 +68,7 @@ namespace QT.InGame
         private IEnumerator BatAnimation(Transform targetTransform, float rotateSpeed, float targetAngle)
         {
             _batSpriteRenderer.enabled = true;
-            
+            SetPlayerBatIdleSprite(false);
             Animator.SetTrigger(AnimationSwingHash);
             
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);

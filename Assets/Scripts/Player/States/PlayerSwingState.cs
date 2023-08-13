@@ -46,7 +46,6 @@ namespace QT.InGame
         public override void InitializeState()
         {
             base.InitializeState();
-            _ownerEntity.SetPlayerBatIdleSprite(false);
             CheckSwingAreaMesh();
             SetLineObjects();
 
