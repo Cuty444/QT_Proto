@@ -48,6 +48,11 @@ namespace QT
 
         private void Sold()
         {
+            if (!gameObject.activeInHierarchy)
+            {
+                return;
+            }
+            
             _animator.SetTrigger(AnimationSoldHash);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
