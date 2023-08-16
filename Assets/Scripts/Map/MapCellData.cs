@@ -37,7 +37,7 @@ namespace QT.Map
 
         private List<IHitAble> _targetHitAbles;
         
-        private bool _isPlaying = false;
+        private bool _isPlaying;
 
         private void Awake()
         {
@@ -50,7 +50,12 @@ namespace QT.Map
             });
             _playerManager.PlayerMapPosition.AddListener(PlayerMapEnter);
         }
-        
+
+        private void OnDestroy()
+        {
+            _playerManager.PlayerMapPosition.RemoveListener(PlayerMapEnter);
+        }
+
         private void Update()
         {
             if (!_isPlaying || _cellData == null || _cellData.IsClear)
@@ -78,11 +83,15 @@ namespace QT.Map
             }
             _roomType = roomType;
             CreateDoors();
+            
+            gameObject.SetActive(false);
         }
 
 
         public void PlayRoom(Vector2Int position)
         {
+            gameObject.SetActive(true);
+            
             _isPlaying = true;
             _playerManager.PlayerMapPass.Invoke(false);
 
@@ -162,6 +171,7 @@ namespace QT.Map
                 return;
             if(!_cellData.IsClear)
                 PlayRoom(enterPosition);
+            
             DoorExitDirection(_doorEnterDirection);
         }
         

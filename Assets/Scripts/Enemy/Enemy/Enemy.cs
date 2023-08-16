@@ -83,9 +83,14 @@ namespace QT.InGame
             
             LoadSound();
             
+        }
+
+        // 구 버전 맵 데이터를 쓰지 않을 때 제거
+        private void Start()
+        {
             initialization(_enemyId);
         }
-        
+
         public void initialization(int enemyId)
         {
             _enemyId = enemyId;
