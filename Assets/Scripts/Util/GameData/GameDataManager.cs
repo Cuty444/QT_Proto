@@ -12,18 +12,18 @@ namespace QT.Core
 {
     public interface IGameData
     {
-        public int Index { get; set; }
+        public int Index { get; }
     }
 
     [AttributeUsage(AttributeTargets.Class)]
     public class GameDataBaseAttribute : Attribute
     {
-        public Type GameDataType { get; private set; }
-        public string JsonFileName { get; private set; }
+        public Type GameDataType { get; }
+        public string JsonFileName { get; }
 
         public GameDataBaseAttribute(Type gameDataType, string fileName)
         {
-            this.GameDataType = gameDataType;
+            GameDataType = gameDataType;
             JsonFileName = fileName;
         }
     }
@@ -38,7 +38,6 @@ namespace QT.Core
     {
         private const string JsonPath = "GameData/";
 
-        public Dictionary<Type, IGameDataBase> Databases => _databases;
         private Dictionary<Type, IGameDataBase> _databases;
 
         public void Initialize()
@@ -47,7 +46,7 @@ namespace QT.Core
 
             try
             {
-                ParseGameDatas();
+                ParseGameData();
             }
             catch (Exception e)
             {
@@ -56,7 +55,7 @@ namespace QT.Core
         }
 
 
-        private async UniTaskVoid ParseGameDatas()
+        private async UniTaskVoid ParseGameData()
         {
             var dataBaseTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(IGameDataBase) != t && typeof(IGameDataBase).IsAssignableFrom(t));
 
@@ -194,7 +193,7 @@ namespace QT.Core
         // GameDataManager.GetDataBase<TestGameDataBase>().GetData(1).Desc;
         public T GetDataBase<T>() where T : IGameDataBase
         {
-            if (Databases.TryGetValue(typeof(T), out var dataBase))
+            if (_databases.TryGetValue(typeof(T), out var dataBase))
             {
                 return (T)dataBase;
             }
