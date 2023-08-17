@@ -283,7 +283,7 @@ namespace QT.Map
                 if (!string.IsNullOrWhiteSpace(path))
                 {
                     CompressMapCell();
-                    
+
                     if(PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject))
                     {
                         PrefabUtility.UnpackPrefabInstance(_target.gameObject, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
@@ -305,10 +305,12 @@ namespace QT.Map
 
         private void CompressMapCell()
         {
+            _target.transform.position = Vector3.zero;
             var targets = FindObjectsOfType<Tilemap>();
 
             foreach (var target in targets)
             {
+                target.color = Color.white;
                 target.CompressBounds();
             }
         }
