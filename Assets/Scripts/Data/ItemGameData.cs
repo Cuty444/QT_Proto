@@ -10,21 +10,23 @@ namespace QT
             Normal,
             Rare,
             Cursed,
+            Active,
             Hp,
             Gold,
-            Weapon,
+            
+            Max
         }
         
-        public int Index { get; set; }
+        public int Index { get; }
         
-        public string Name { get; set; }
-        public string Desc { get; set; }
-        public GradeTypes GradeType { get; set; }
-        public int Value { get; set; }
-        public int CostHp { get; set; }
-        public int CostGold { get; set; }
-        public int ItemEffectDataId { get; set; }
-        public string ItemIconPath { get; set; }
+        public string Name { get; }
+        public string Desc { get; }
+        public GradeTypes GradeType { get; }
+        public int Value { get; }
+        public int CostHp { get; }
+        public int CostGold { get; }
+        public int ItemEffectDataId { get; }
+        public string ItemIconPath { get; }
     }
 
 
