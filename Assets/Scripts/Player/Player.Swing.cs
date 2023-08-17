@@ -46,29 +46,9 @@ namespace QT.InGame
             
         }
 
-        public void SetPlayerBatIdleSprite(bool isActive)
-        {
-            _batsTransform.gameObject.SetActive(isActive);
-        }
-
-        public void PlayerBatAngleFlipCheck()
-        {
-            if (PlayerFlipAngle())
-            {
-                _batIdleSpriteRenderers[0].enabled = false;
-                _batIdleSpriteRenderers[1].enabled = true;
-            }
-            else
-            {
-                _batIdleSpriteRenderers[0].enabled = true;
-                _batIdleSpriteRenderers[1].enabled = false;
-            }
-        }
-        
         private IEnumerator BatAnimation(Transform targetTransform, float rotateSpeed, float targetAngle)
         {
             _batSpriteRenderer.enabled = true;
-            SetPlayerBatIdleSprite(false);
             Animator.SetTrigger(AnimationSwingHash);
             
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
@@ -87,7 +67,6 @@ namespace QT.InGame
             yield return new WaitForSeconds(0.1f);
             
             _batSpriteRenderer.enabled = false;
-            SetPlayerBatIdleSprite(true);
         }
         
         
