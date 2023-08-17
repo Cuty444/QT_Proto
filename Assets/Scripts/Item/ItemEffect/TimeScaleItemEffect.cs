@@ -10,16 +10,18 @@ namespace QT.InGame
     // Param2: 지속시간
     public class TimeScaleItemEffect : ItemEffect
     {
+        private static Stat CurrentTimeScale = new (1);
+        
         private static readonly float DefaultFixedDeltaTime = Time.fixedDeltaTime;
         
-        private readonly float _targetTimeScale;
+        private readonly StatModifier _targetTimeScale;
         private readonly int _duration;
 
         private CancellationTokenSource _cancellationTokenSource;
         
         public TimeScaleItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
         {
-            _targetTimeScale = specialEffectData.Param1;
+            _targetTimeScale = new StatModifier( specialEffectData.Param1, StatModifier.ModifierType.Multiply, this);
             //_duration = (int) (specialEffectData.Param2 / _targetTimeScale * 1000);
             _duration = (int) (specialEffectData.Param2 * 1000);
         }
@@ -31,9 +33,10 @@ namespace QT.InGame
 
         protected override void OnTriggerAction()
         {
-            Time.fixedDeltaTime = DefaultFixedDeltaTime * Time.timeScale;
-            Time.timeScale = _targetTimeScale;
-            
+            CurrentTimeScale.RemoveModifier(_targetTimeScale);
+            CurrentTimeScale.AddModifier(_targetTimeScale);
+
+            UpdateTimeScale();
             Timer();
         }
 
@@ -49,10 +52,16 @@ namespace QT.InGame
 
         public override void OnRemoved()
         {
-            Time.fixedDeltaTime = DefaultFixedDeltaTime;
-            Time.timeScale = 1;
-            
+            CurrentTimeScale.RemoveModifier(_targetTimeScale);
+            UpdateTimeScale();
+
             _cancellationTokenSource?.Cancel();
+        }
+
+        private void UpdateTimeScale()
+        {
+            Time.timeScale = CurrentTimeScale;
+            Time.fixedDeltaTime = DefaultFixedDeltaTime * Time.timeScale;
         }
     }
 }
