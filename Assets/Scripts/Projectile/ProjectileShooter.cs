@@ -27,7 +27,7 @@ namespace QT.InGame
             _targetTransform = target;
         }
 
-        public virtual void Shoot(int shootDataId, AimTypes aimType,ProjectileOwner owner)
+        public virtual void Shoot(int shootDataId, AimTypes aimType, ProjectileOwner owner)
         {
             var shootData = SystemManager.Instance.DataManager.GetDataBase<ShootGameDataBase>().GetData(shootDataId);
 
@@ -60,13 +60,8 @@ namespace QT.InGame
             projectile.Init(projectileData, dir, speed, bounceCount, reflectCorrection, BounceMask, owner, releaseDelay, projectileData.PrefabPath);
         }
 
-        protected Vector2 GetDirection(float angle, AimTypes aimType)
+        protected virtual Vector2 GetDirection(float angle, AimTypes aimType)
         {
-            if (_targetTransform == null)
-            {
-                Destroy(gameObject);
-                return Vector2.zero;
-            }
             switch (aimType)
             {
                 case AimTypes.Target:
@@ -75,7 +70,7 @@ namespace QT.InGame
                     break;
 
                 case AimTypes.MoveDirection:
-                    angle += transform.rotation.eulerAngles.z;
+                    angle += ShootPoint.rotation.eulerAngles.z;
                     break;
             }
 
