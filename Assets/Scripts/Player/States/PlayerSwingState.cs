@@ -171,6 +171,8 @@ namespace QT.InGame
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.SwingSFX);
             }
+            
+            SystemManager.Instance.PlayerManager.OnSwing?.Invoke();
         }
 
         private async void SetLineObjects()
