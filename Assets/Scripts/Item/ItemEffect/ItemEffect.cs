@@ -19,7 +19,9 @@ namespace QT.InGame
         ReverseAtkDir,
         [ItemEffect(typeof(TimeScaleItemEffect))]
         TimeScale,
-        
+        [ItemEffect(typeof(ShootItemEffect))]
+        Shoot,
+
         [ItemEffect(typeof(TeleportItemEffect))]
         Teleport,
         [ItemEffect(typeof(AbsorbItemEffect))]

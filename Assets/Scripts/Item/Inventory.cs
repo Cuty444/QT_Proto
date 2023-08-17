@@ -31,16 +31,20 @@ namespace QT.InGame
             _targetPlayer.OnActive.AddListener((isOn) => { if (isOn) InvokeTrigger(TriggerTypes.OnActiveKey); });
             
             _targetPlayer.StatComponent.GetStatus(PlayerStats.HP).OnStatusChanged
-                .AddListener(() => InvokeTrigger(ItemEffectGameData.TriggerTypes.OnHpChanged));
-            
-            _playerManager.OnGoldValueChanged.AddListener((value) =>
-                InvokeTrigger(ItemEffectGameData.TriggerTypes.OnGoldChanged));
-            
+                .AddListener(() => InvokeTrigger(TriggerTypes.OnHpChanged));
+
             _targetPlayer.StatComponent.GetStat(PlayerStats.MovementSpd).OnValueChanged
-                .AddListener(() => InvokeTrigger(ItemEffectGameData.TriggerTypes.OnMovementSpdChanged));
+                .AddListener(() => InvokeTrigger(TriggerTypes.OnMovementSpdChanged));
             
             _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
-                .AddListener(() => InvokeTrigger(ItemEffectGameData.TriggerTypes.OnChargeBounceCountChanged));
+                .AddListener(() => InvokeTrigger(TriggerTypes.OnChargeBounceCountChanged));
+            
+            
+            _playerManager.OnGoldValueChanged.AddListener((value) =>
+                InvokeTrigger(TriggerTypes.OnGoldChanged));
+            
+            _playerManager.OnSwing.AddListener(() =>
+                InvokeTrigger(TriggerTypes.OnSwing));
         }
 
         private void InvokeTrigger(TriggerTypes triggerTypes)
