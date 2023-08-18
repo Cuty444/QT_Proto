@@ -25,6 +25,9 @@ namespace QT
         
         public string Name { get; }
         public string Desc { get; }
+        public string PlusDesc { get; }
+        public string MinusDesc { get; }
+        
         public GradeTypes GradeType { get; }
         public int Value { get; }
         public int CostHp { get; }
