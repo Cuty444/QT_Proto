@@ -8,7 +8,7 @@ namespace QT.UI
     public class UIInventoryPage : MonoBehaviour
     {
         [SerializeField] private Transform _itemListParents;
-        [SerializeField] private UIInventoryDesc _desc;
+        [SerializeField] private UIItemDesc _desc;
         
         private UIInventoryItem[] _itemFrames;
 
