@@ -13,7 +13,8 @@ namespace QT
 
         public Vector2Int MapPosition;
 
-        private List<ItemObject> _itemObjects = new List<ItemObject>();
+        private List<ItemHolder> _itemObjects = new ();
+        
         private void Awake()
         {
             if (_dropGameType == DropGameType.Select)
@@ -30,43 +31,31 @@ namespace QT
         {
             if (position == MapPosition)
             {
-                //DropGameType dropGameType = Random.Range(0, 1) == 0 ? DropGameType.GoldShop : DropGameType.HpShop;
-                List<int> itemIDs =
-                    SystemManager.Instance.ItemDataManager.GetDropItemList(_dropGameType, _shopItemTransforms.Length);
-                for (int i = 0; i < itemIDs.Count; i++)
-                {
-                    var item = Instantiate(_itemObject, _shopItemTransforms[i]).GetComponent<ItemObject>();
-                    item.gameObject.SetActive(true);
-                    item.DropType = _dropGameType;
-                    item.ItemID = itemIDs[i];
-                    item._itemSelectMapData = this;
-                    _itemObjects.Add(item);
-                }
-
-                SystemManager.Instance.PlayerManager.FadeInCanvasOut.RemoveListener(ItemCreate);
+                ItemCreate();
             }
         }
         
         private void ItemCreate()
         {
-            //if (position == MapPosition)
-            //{
-                //DropGameType dropGameType = Random.Range(0, 1) == 0 ? DropGameType.GoldShop : DropGameType.HpShop;
-                List<int> itemIDs = SystemManager.Instance.ItemDataManager.GetDropItemList(_dropGameType, _shopItemTransforms.Length);
-                for (int i = 0; i < itemIDs.Count; i++)
-                {
-                    var item = Instantiate(_itemObject, _shopItemTransforms[i]).GetComponent<ItemObject>();
-                    item.gameObject.SetActive(true);
-                    item.DropType = _dropGameType;
-                    item.ItemID = itemIDs[i];
-                    item._itemSelectMapData = this;
-                    _itemObjects.Add(item);
-                }
-                SystemManager.Instance.PlayerManager.FadeInCanvasOut.RemoveListener(ItemCreate);
-            //}
+            var percent = SystemManager.Instance.DataManager.GetDataBase<DropGameDataBase>().GetData((int)_dropGameType);
+                
+            var items = SystemManager.Instance.DataManager.GetDataBase<ItemGameDataBase>()
+                .GetItemsWithDropPercentage(percent, _shopItemTransforms.Length,
+                    SystemManager.Instance.PlayerManager.Player.Inventory);
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                var holder = Instantiate(_itemObject, _shopItemTransforms[i]).GetComponent<ItemHolder>();
+                holder.gameObject.SetActive(true);
+                holder.Init(items[i], OnGainItem);
+                
+                _itemObjects.Add(holder);
+            }
+
+            SystemManager.Instance.PlayerManager.FadeInCanvasOut.RemoveListener(ItemCreate);
         }
 
-        public void ItemSelectGainEnd()
+        public void OnGainItem()
         {
             for (int i = 0; i < _itemObjects.Count; i++)
             {

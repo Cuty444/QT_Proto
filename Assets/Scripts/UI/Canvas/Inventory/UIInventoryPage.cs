@@ -8,7 +8,7 @@ namespace QT.UI
     public class UIInventoryPage : MonoBehaviour
     {
         [SerializeField] private Transform _itemListParents;
-        [SerializeField] private UIInventoryDesc _desc;
+        [SerializeField] private UIItemDesc _desc;
         
         private UIInventoryItem[] _itemFrames;
 
@@ -48,7 +48,9 @@ namespace QT.UI
         {
             if (item.ItemGameData != null)
             {
-                _desc.Show(item);
+                _desc.transform.position = item.transform.position;
+                _desc.SetData(item.ItemGameData);
+                _desc.Show();
             }
             else
             {

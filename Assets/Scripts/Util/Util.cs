@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core.Map;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace QT.Util
 {
@@ -170,6 +171,20 @@ namespace QT.Util
             }
             
             return randomIndexes;
+        }
+        
+        
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            int n = list.Count;
+            int count = n;
+            
+            while (n > 1)
+            {
+                n--;
+                int k = Random.Range(0, count);
+                (list[k], list[n]) = (list[n], list[k]);
+            }
         }
         
     }

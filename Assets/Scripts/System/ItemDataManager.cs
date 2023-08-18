@@ -7,70 +7,14 @@ using UnityEngine;
 
 namespace QT
 {
-    [Serializable]
-    public enum DropGameType
-    {
-        Start,
-        Shop,
-        Select
-    }
-
-    public class DropPercentage
-    {
-        public float Normal;
-        public float Rare;
-        public float Cursed;
-        public float Hp;
-        public float Gold;
-
-        public DropPercentage(float normal, float rare, float cursed, float hp, float gold)
-        {
-            Normal = normal;
-            Rare = Normal + rare;
-            Cursed = Rare + cursed;
-            Hp = Cursed + hp;
-            Gold = Hp + gold;
-        }
-
-        public ItemGameData.GradeTypes RandomGradeType()
-        {
-            int key = UnityEngine.Random.Range(0, 10000);
-            if (key < Normal)
-            {
-                return ItemGameData.GradeTypes.Normal;
-            }
-            else if (key < Rare)
-            {
-                return ItemGameData.GradeTypes.Rare;
-            }
-            else if (key < Cursed)
-            {
-                return ItemGameData.GradeTypes.Cursed;
-            }
-            else if (key < Hp)
-            {
-                return ItemGameData.GradeTypes.Normal;
-            }
-            else if (key < Gold)
-            {
-                return ItemGameData.GradeTypes.Normal;
-            }
-
-            return ItemGameData.GradeTypes.Normal;
-        }
-    }
-
     public class ItemDataManager
     {
-        private Dictionary<ItemGameData.GradeTypes, List<int>> _itemGradeDictionary =
-            new Dictionary<ItemGameData.GradeTypes, List<int>>();
-
-        private Dictionary<DropGameType, DropPercentage> _dropPercentagesList =
-            new Dictionary<DropGameType, DropPercentage>();
+        private Dictionary<ItemGameData.GradeTypes, List<int>> _itemGradeDictionary = new();
+        private Dictionary<DropGameType, DropPercentage> _dropPercentagesList = new();
 
         private GameDataManager _gameDataManager;
-
         private Player _player;
+        
         public void Initialize()
         {
             SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.AddListener(() =>
@@ -122,7 +66,8 @@ namespace QT
             int index = 9000;
             for (int i = 0; i < 10; i++)
             {
-                var data = GetDropData(index + i + 1);
+                var data = _gameDataManager.GetDataBase<DropGameDataBase>().GetData(index + i + 1);
+                
                 if (data == null)
                     break;
                 _dropPercentagesList.Add((DropGameType) i, data);
@@ -155,13 +100,6 @@ namespace QT
                 }
             }
         }
-
-        private DropPercentage GetDropData(int dropID)
-        {
-            var data = _gameDataManager.GetDataBase<DropGameDataBase>().GetData(dropID);
-            if (data == null)
-                return null;
-            return new DropPercentage(data.Normal, data.Rare, data.Cursed, data.Hp, data.Gold);
-        }
+        
     }
 }

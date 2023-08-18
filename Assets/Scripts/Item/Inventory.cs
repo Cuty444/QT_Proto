@@ -80,6 +80,17 @@ namespace QT.InGame
             _items[index].OnRemoved();
             _items.RemoveAt(index);
         }
+
+        public bool Contains(int itemId)
+        {
+            foreach (var item in _items)
+            {
+                if(item.ItemGameData.Index == itemId)
+                    return true;
+            }
+
+            return false;
+        }
         
         public Item[] GetItemList()
         {
