@@ -17,13 +17,13 @@ namespace QT
     
     public class DropGameData : IGameData
     {
-        public int Index { get; }
-        public float Normal { get; }
-        public float Rare { get; }
-        public float Cursed { get; }
-        public float Active { get; }
-        public float Hp { get; }
-        public float Gold { get; }
+        public int Index { get; private set;}
+        public float Normal { get; private set; }
+        public float Rare { get; private set;}
+        public float Cursed { get; private set;}
+        public float Active { get; private set;}
+        public float Hp { get; private set;}
+        public float Gold { get; private set;}
     }
     
     

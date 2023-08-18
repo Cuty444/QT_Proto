@@ -7,14 +7,6 @@ using UnityEngine;
 
 namespace QT
 {
-    [Serializable]
-    public enum DropGameType
-    {
-        Start,
-        Shop,
-        Select
-    }
-
     public class ItemDataManager
     {
         private Dictionary<ItemGameData.GradeTypes, List<int>> _itemGradeDictionary = new();

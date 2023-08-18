@@ -11,35 +11,39 @@ namespace QT
         [SerializeField] private TextMeshProUGUI _desc;
         [SerializeField] private TextMeshProUGUI _plusDesc;
         [SerializeField] private TextMeshProUGUI _minusDesc;
+        
+        [SerializeField] private TextMeshProUGUI _goldCost;
 
         [SerializeField] private UITweenAnimator _descAnimation;
         [SerializeField] private UITweenAnimator _failButtonAnimation;
 
-        public void Show(UIInventoryItem item)
+        public void SetData(ItemGameData itemData)
         {
-            transform.position = item.transform.position;
-            _name.text = item.ItemGameData.Name;
-            _desc.text = item.ItemGameData.Desc;
+            _name.text = itemData.Name;
+            _desc.text = itemData.Desc;
+            _goldCost.text = itemData.CostGold.ToString();
 
-            if (!string.IsNullOrWhiteSpace(item.ItemGameData.PlusDesc))
+            if (!string.IsNullOrWhiteSpace(itemData.PlusDesc))
             {
-                _plusDesc.text = item.ItemGameData.PlusDesc;
+                _plusDesc.text = itemData.PlusDesc;
             }
             else
             {
                 _plusDesc.gameObject.SetActive(false);
             }
 
-            
-            if (!string.IsNullOrWhiteSpace(item.ItemGameData.MinusDesc))
+            if (!string.IsNullOrWhiteSpace(itemData.MinusDesc))
             {
-                _minusDesc.text = item.ItemGameData.MinusDesc;
+                _minusDesc.text = itemData.MinusDesc;
             }
             else
             {
                 _minusDesc.gameObject.SetActive(false);
             }
-            
+        }
+        
+        public void Show()
+        {
             _descAnimation.ReStart();
         }
 

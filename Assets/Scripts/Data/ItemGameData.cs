@@ -21,19 +21,19 @@ namespace QT
             Max
         }
         
-        public int Index { get; }
+        public int Index { get; private set;}
         
-        public string Name { get; }
-        public string Desc { get; }
-        public string PlusDesc { get; }
-        public string MinusDesc { get; }
+        public string Name { get; private set;}
+        public string Desc { get; private set;}
+        public string PlusDesc { get; private set;}
+        public string MinusDesc { get; private set;}
         
-        public GradeTypes GradeType { get; }
-        public int Value { get; }
-        public int CostHp { get; }
-        public int CostGold { get; }
-        public int ItemEffectDataId { get; }
-        public string ItemIconPath { get; }
+        public GradeTypes GradeType { get; private set;}
+        public int Value { get; private set;}
+        public int CostHp { get; private set;}
+        public int CostGold { get; private set;}
+        public int ItemEffectDataId { get; private set;}
+        public string ItemIconPath { get; private set;}
     }
 
 

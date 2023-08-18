@@ -48,7 +48,9 @@ namespace QT.UI
         {
             if (item.ItemGameData != null)
             {
-                _desc.Show(item);
+                _desc.transform.position = item.transform.position;
+                _desc.SetData(item.ItemGameData);
+                _desc.Show();
             }
             else
             {
