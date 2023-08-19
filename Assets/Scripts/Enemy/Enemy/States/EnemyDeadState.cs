@@ -9,7 +9,7 @@ namespace QT.InGame
     [FSMState((int)Enemy.States.Dead)]
     public class EnemyDeadState : FSMState<Enemy>
     {
-        private static readonly int DeadAnimHash = Animator.StringToHash("Dead");
+        private static readonly int DeadAnimHash = Animator.StringToHash("IsDead");
         
         public EnemyDeadState(IFSMEntity owner) : base(owner)
         {
@@ -17,7 +17,7 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            _ownerEntity.Animator.SetTrigger(DeadAnimHash);
+            _ownerEntity.Animator.SetBool(DeadAnimHash, true);
             _ownerEntity.SetPhysics(false);
             _ownerEntity.BallObject.localPosition = Vector3.up * _ownerEntity.BallHeightMin;
             _ownerEntity.HpCanvas.gameObject.SetActive(false);
@@ -34,6 +34,13 @@ namespace QT.InGame
             
             HitAbleManager.Instance.UnRegister(_ownerEntity);
             ProjectileManager.Instance.UnRegister(_ownerEntity);
+        }
+
+        public override void ClearState()
+        {
+            _ownerEntity.Animator.SetBool(DeadAnimHash, false);
+            _ownerEntity.SetPhysics(true);
+            _ownerEntity.ShadowSprite.DOFade(1, 1).SetEase(Ease.InQuad);
         }
     }
 }

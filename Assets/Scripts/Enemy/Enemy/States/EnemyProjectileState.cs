@@ -10,9 +10,8 @@ namespace QT.InGame
     [FSMState((int)Enemy.States.Projectile)]
     public class EnemyProjectileState : FSMState<Enemy>
     {
-        private static readonly int ProjectileAnimHash = Animator.StringToHash("Projectile");
+        private static readonly int ProjectileAnimHash = Animator.StringToHash("IsProjectile");
         private static readonly int ProjectileSpeedAnimHash = Animator.StringToHash("ProjectileSpeed");
-        private static readonly int NormalAnimHash = Animator.StringToHash("Normal");
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
 
@@ -84,7 +83,8 @@ namespace QT.InGame
                 if(playSound)
                     _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
-            _ownerEntity.Animator.SetTrigger(ProjectileAnimHash);
+
+            _ownerEntity.Animator.SetBool(ProjectileAnimHash, true);
             
             if(playSound)
                 _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
@@ -96,13 +96,7 @@ namespace QT.InGame
         public override void ClearState()
         {
             _ownerEntity.BounceMask = _ownerEntity.Shooter.BounceMask;
-            _ownerEntity.Animator.ResetTrigger(ProjectileAnimHash);
-            if (_isNormal)
-            {
-                _ownerEntity.Animator.SetTrigger(NormalAnimHash);
-                _ownerEntity.StartCoroutine(
-                    Util.UnityUtil.WaitForFunc(() => { _ownerEntity.Animator.ResetTrigger(NormalAnimHash); }, 0.2f));
-            }
+            _ownerEntity.Animator.SetBool(ProjectileAnimHash, false);
         }
         
         public override void UpdateState()
