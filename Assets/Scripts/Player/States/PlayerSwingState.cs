@@ -116,37 +116,50 @@ namespace QT.InGame
             {
                 var hitDir = (hitAble.Position - (Vector2) _ownerEntity.transform.position).normalized;
                 
-                hitAble.Hit(hitDir, damage, AttackType.Swing);
+                hitAble.Hit(hitDir, damage, _isCharged ? AttackType.PowerSwing : AttackType.Swing);
                 hitCount++;
 
                 if (hitAble.IsClearTarget)
                 {
                     SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitAble.Position);
                     enemyHitCount++;
+
+                    if (!_isCharged && hitAble.IsDead && hitAble is Enemy enemy)
+                    {
+                        enemy.ResetBounceCount(bounce);
+                        enemy.ResetProjectileDamage(enemyProjectileDamage);
+                        enemy.ProjectileHit(GetNewProjectileDir(enemy), power, mask, ProjectileOwner.Player,
+                            _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
+                    }
                 }
-            }
-            
-            foreach (var projectile in _projectiles)
-            {
-                projectile.ResetBounceCount(bounce);
-                projectile.ResetProjectileDamage(projectile is Enemy ? enemyProjectileDamage : projectileDamage);
-                projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
-                    _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
-                
-                if (_isCharged)
-                {
-                    SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
-                }
-                else
-                {
-                    SystemManager.Instance.ResourceManager.EmitParticle(SwingNormalProjectileHitPath, projectile.Position);
-                }
-                
-                hitCount++;
-                ballHitCount++;
             }
 
-            
+            if (_isCharged)
+            {
+                foreach (var projectile in _projectiles)
+                {
+                    projectile.ResetBounceCount(bounce);
+                    projectile.ResetProjectileDamage(projectile is Enemy ? enemyProjectileDamage : projectileDamage);
+                    projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
+                        _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
+
+                    if (_isCharged)
+                    {
+                        SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath,
+                            projectile.Position);
+                    }
+                    else
+                    {
+                        SystemManager.Instance.ResourceManager.EmitParticle(SwingNormalProjectileHitPath,
+                            projectile.Position);
+                    }
+
+                    hitCount++;
+                    ballHitCount++;
+                }
+            }
+
+
             _ownerEntity.PlayBatAnimation();
             _ownerEntity.ChangeState(Player.States.Move);
 

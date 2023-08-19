@@ -29,7 +29,7 @@ namespace QT.InGame
                 return;
             }
 
-            if (attackType != AttackType.Swing)
+            if (attackType != AttackType.PowerSwing)
             {
                 var state = _ownerEntity.ChangeState(Enemy.States.Rigid);
                 ((EnemyRigidState) state)?.InitializeState(dir);
