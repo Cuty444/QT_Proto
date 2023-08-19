@@ -11,6 +11,7 @@ namespace QT.InGame
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
         private readonly int DirXAnimHash = Animator.StringToHash("DirX");
         private readonly int DirYAnimHash = Animator.StringToHash("DirY");
+        private readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
         
         private readonly EnemyGameData _data;
 
@@ -130,6 +131,7 @@ namespace QT.InGame
             var dampedDir = _dirDamper.GetDampedValue(currentDir, Time.deltaTime);
             _ownerEntity.Animator.SetFloat(DirXAnimHash, dampedDir.x);
             _ownerEntity.Animator.SetFloat(DirYAnimHash, dampedDir.y);
+            _ownerEntity.Animator.SetBool(IsMoveAnimHash, dampedDir.sqrMagnitude > 0.1f);
         }
 
         private Vector2 SpacingMove(float targetDistance, bool isRotate = false)

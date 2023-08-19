@@ -21,7 +21,6 @@ namespace QT
         {
             _name.text = itemData.Name;
             _desc.text = itemData.Desc;
-            _goldCost.text = itemData.CostGold.ToString();
 
             if (!string.IsNullOrWhiteSpace(itemData.PlusDesc))
             {
@@ -40,6 +39,9 @@ namespace QT
             {
                 _minusDesc.gameObject.SetActive(false);
             }
+            
+            if(_goldCost != null)
+                _goldCost.text = itemData.CostGold.ToString();
         }
         
         public void Show()
