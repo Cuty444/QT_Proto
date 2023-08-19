@@ -9,9 +9,9 @@ namespace QT.InGame
     {
         private const float AvoidDirDampTime = 30;
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
-        private readonly int DirXAnimHash = Animator.StringToHash("DirX");
-        private readonly int DirYAnimHash = Animator.StringToHash("DirY");
-        private readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
+        private static readonly int DirXAnimHash = Animator.StringToHash("DirX");
+        private static readonly int DirYAnimHash = Animator.StringToHash("DirY");
+        private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
         
         private readonly EnemyGameData _data;
 

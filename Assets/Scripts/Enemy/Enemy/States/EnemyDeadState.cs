@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using QT.Core;
+using QT.Core.Data;
 using UnityEngine;
 
 namespace QT.InGame
@@ -10,6 +11,7 @@ namespace QT.InGame
     public class EnemyDeadState : FSMState<Enemy>
     {
         private static readonly int DeadAnimHash = Animator.StringToHash("IsDead");
+        private static readonly AnimationCurve enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
         
         public EnemyDeadState(IFSMEntity owner) : base(owner)
         {
@@ -26,9 +28,10 @@ namespace QT.InGame
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Coin_GetSFX);
             _ownerEntity.ShadowSprite.DOFade(0, 1).SetEase(Ease.InQuad);
             _ownerEntity.DeadSound();
+            
             if (_ownerEntity.Steering.IsStuck())
             {
-                _ownerEntity.FallScale();
+                _ownerEntity.StartCoroutine(ScaleReduce());
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Monster_WaterDrop);
             }
             
@@ -41,6 +44,18 @@ namespace QT.InGame
             _ownerEntity.Animator.SetBool(DeadAnimHash, false);
             _ownerEntity.SetPhysics(true);
             _ownerEntity.ShadowSprite.DOFade(1, 1).SetEase(Ease.InQuad);
+        }
+        
+        private IEnumerator ScaleReduce()
+        {
+            float time = 0f;
+            while (time < 1f)
+            {
+                float scale = Mathf.Lerp(0, 1, enemyFallScaleCurve.Evaluate(time / 1f));
+                _ownerEntity.transform.localScale = new Vector3(scale, scale, scale);
+                yield return null;
+                time += Time.deltaTime;
+            }
         }
     }
 }

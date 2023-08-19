@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using QT.Core;
 using QT.Sound;
+using QT.Util;
 using UnityEngine;
 
 namespace QT.InGame
@@ -14,8 +15,9 @@ namespace QT.InGame
     public class ChargeItemEffect : ItemEffect
     {
         private LayerMask WallLayer => LayerMask.GetMask("Default", "Wall", "HardCollider", "CharacterCollider", "Fall");
-        
-        private const string ShockEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
+      
+        private const string ChargeEffectPath = "Effect/Prefabs/FX_Active_Rush.prefab";
+        private const string ShockEffectPath = "Effect/Prefabs/FX_Active_Rush_crash.prefab";
         private const string SwingBatHitPath = "Effect/Prefabs/FX_Bat_Hit.prefab";
         
         private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
@@ -95,6 +97,11 @@ namespace QT.InGame
             _player.Animator.SetBool(PlayerIdleAnimHash, false);
             _dir = (_aimPosition - _player.Position ).normalized;
             
+            var chargeEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(ChargeEffectPath, _player.CenterTransform);
+            chargeEffect.transform.ResetLocalTransform();
+            
+            chargeEffect.Play();
+            
             while (_isCharging)
             {
                 await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, _cancellationTokenSource.Token);
@@ -109,6 +116,10 @@ namespace QT.InGame
                 
                 _player.Rigidbody.velocity = _dir * _currentSpeed;
                 
+                var angle = Mathf.Atan2(_dir.y, _dir.x) * Mathf.Rad2Deg;
+                chargeEffect.transform.rotation = Quaternion.Euler(0, 0, angle);
+                
+                
                 Aim(-_dir);
                 CheckHit();
                 
@@ -118,6 +129,8 @@ namespace QT.InGame
                 }
 
             }
+
+            SystemManager.Instance.ResourceManager.ReleaseObject(ChargeEffectPath, chargeEffect);
             
             _player.Animator.SetTrigger(PlayerSwingAnimHash);
             _player.Animator.SetBool(PlayerIdleAnimHash, true);
