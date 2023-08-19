@@ -57,6 +57,11 @@ namespace QT.InGame
                 await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
             projectile.transform.position = ShootPoint.position;
 
+            if (gameObject == null)
+            {
+                return;
+            }
+
             projectile.Init(projectileData, dir, speed, bounceCount, reflectCorrection, BounceMask, owner, releaseDelay, projectileData.PrefabPath);
         }
 

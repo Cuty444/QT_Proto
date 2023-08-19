@@ -41,7 +41,7 @@ namespace QT
         
         public float TeleportAllowableDistance { get; set; }
         public float ReflectCorrection { get; set; }
-        public int AtkDmgPer { get; set; }
+        public float AtkDmgPer { get; set; }
     }
 
     [GameDataBase((typeof(CharacterAtkGameData)),"CharacterAtkGameData")]

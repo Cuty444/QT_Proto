@@ -10,37 +10,49 @@ namespace QT.InGame
     {
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
 
-        private float _rigidTime;
-        private float _rigidTimer;
+        private float _timer;
+        
+        private bool _isKnockBack;
+        private float _knockBackTime;
+        
+        private float _clearTime;
 
         private SoundManager _soundManager;
         private PlayerManager _playerManager;
+        private GlobalData _globalData;
         
         public EnemyRigidState(IFSMEntity owner) : base(owner)
         {
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
             _soundManager = SystemManager.Instance.SoundManager;
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
             {
-                _rigidTimer = _rigidTime;
+                _clearTime = _knockBackTime;
             });
         }
 
-        public override void InitializeState()
+        public void InitializeState(Vector2 dir)
         {
+            _ownerEntity.Rigidbody.velocity = Vector2.zero;
+            _ownerEntity.Rigidbody.AddForce(dir * _globalData.KnockBackSpd, ForceMode2D.Impulse);
+            
             _ownerEntity.Animator.SetBool(RigidAnimHash, true);
-            _rigidTimer = 0;
-
+            
+            _timer = 0;
+            _knockBackTime = _globalData.KnockBackTime;
+            _isKnockBack = true;
+            
             if (_ownerEntity.HP <= 0)
             {
-                _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.DeadAfterStunTime;
+                _clearTime = _globalData.DeadAfterStunTime;
                 _ownerEntity.MaterialChanger.SetRigidMaterial();
                 
                 _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
             else
             {
-                _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
+                _clearTime = _globalData.RigidTime;
                 _ownerEntity.MaterialChanger.SetHitMaterial();
             }
         }
@@ -52,8 +64,15 @@ namespace QT.InGame
 
         public override void UpdateState()
         {
-            _rigidTimer += Time.deltaTime;
-            if (_rigidTimer > _rigidTime)
+            _timer += Time.deltaTime;
+
+            if (_isKnockBack && _timer > _knockBackTime)
+            {
+                _ownerEntity.Rigidbody.velocity *= _globalData.KnockBackDecay;
+                _isKnockBack = false;
+            }
+            
+            if (_timer > _clearTime)
             {
                 if (_ownerEntity.HP <= 0)
                 {
