@@ -406,6 +406,11 @@ namespace QT.InGame
 
         private void TrailRendersSetEmitting(bool isActive)
         {
+            if (_trailRenderer == null)
+            {
+                return;
+            }
+            
             for (int i = 0; i < _trailRenderer.Length; i++)
             {
                 _trailRenderer[i].emitting = isActive;

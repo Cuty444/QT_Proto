@@ -71,12 +71,9 @@ namespace QT.InGame
         [field:SerializeField] public CinemachineImpulseSource TeleportImpulseSource { get; private set; }
         [field: SerializeField] public float TeleportImpulseForce { get; private set; } = 0.2f;
         
-        
-        [HideInInspector] public bool IsFall;
-        [HideInInspector] public FallObject EnterFallObject;
-        [HideInInspector] public Vector2 DodgePreviousPosition;
-        [HideInInspector] public int FallPreviousState;
         [HideInInspector] public bool IsGarden;
+        
+        public Vector2 LastSafePosition { get; set; }
         
         
         private void Awake()

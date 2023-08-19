@@ -6,8 +6,8 @@ namespace QT.InGame
     [FSMState((int)Player.States.Move)]
     public class PlayerMoveState : FSMState<Player>
     {
-        private readonly int AnimationIdleHash = Animator.StringToHash("PlayerIdle");
-        private readonly int AnimationMoveSpeedHash = Animator.StringToHash("MoveSpeed");
+        private static readonly int AnimationIdleHash = Animator.StringToHash("PlayerIdle");
+        private static readonly int AnimationMoveSpeedHash = Animator.StringToHash("MoveSpeed");
         
         private Vector2 _moveDirection;
         
@@ -39,6 +39,17 @@ namespace QT.InGame
 
         public override void FixedUpdateState()
         {
+            if (_ownerEntity.CheckFall())
+            {
+                _ownerEntity.Rigidbody.velocity = Vector2.zero;
+                _ownerEntity.ChangeState(Player.States.Fall);
+                return;
+            }
+            else
+            {
+                _ownerEntity.LastSafePosition = _ownerEntity.transform.position;
+            }
+            
             var speed = _ownerEntity.StatComponent.GetStat(PlayerStats.MovementSpd).Value;
             var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
             
@@ -84,5 +95,6 @@ namespace QT.InGame
                 SystemManager.Instance.PlayerManager.PlayerItemInteraction.Invoke();
             }
         }
+
     }
 }

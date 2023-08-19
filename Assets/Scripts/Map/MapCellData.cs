@@ -72,11 +72,6 @@ namespace QT.Map
             _doorTransforms[3].gameObject.SetActive((mapDirection & MapDirection.Right) != 0);
             _cellPosition = position;
             
-            var fallObjects = GetComponentsInChildren<FallObject>();
-            for (int i = 0; i < fallObjects.Length; i++)
-            {
-                fallObjects[i].CurrentPosition = _cellPosition;
-            }
             if (TryGetComponent(out ShopMapData data))
             {
                 data.MapPosition = position;
