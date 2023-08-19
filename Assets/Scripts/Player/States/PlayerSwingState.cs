@@ -40,6 +40,8 @@ namespace QT.InGame
             _projectileLayerMask = int.MaxValue;//LayerMask.GetMask("Player");
             
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
+            
+            _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeMovementSpd);
         }
 
 

@@ -36,7 +36,6 @@ namespace QT.InGame
             _stats.Add(PlayerStats.ThrowSpd, new(atkData.ThrowSpd));
             _stats.Add(PlayerStats.ThrowBounceCount, new(atkData.ThrowBounceCount));
 
-            _stats.Add(PlayerStats.SwingAfterDelay, new(atkData.SwingAfterDelay));
             _stats.Add(PlayerStats.SwingRad, new(atkData.SwingRad));
             _stats.Add(PlayerStats.SwingCentralAngle, new(atkData.SwingCentralAngle));
 
