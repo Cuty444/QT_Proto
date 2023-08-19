@@ -53,8 +53,6 @@ namespace QT.InGame
 
         [HideInInspector] public LineRenderer TeleportLineRenderer;
 
-        private AnimationCurve enemyFallScaleCurve;
-
         private Collider2D[] _colliders;
 
         public int _damage { get; private set; }
@@ -76,7 +74,6 @@ namespace QT.InGame
             HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
             HpCanvas.gameObject.SetActive(false);
 
-            enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
 
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener((arg) =>
                 SetTeleportLine(Vector2.zero, false));
@@ -126,24 +123,7 @@ namespace QT.InGame
         {
             return UnityEngine.Random.Range(Data.GoldDropMin, Data.GoldDropMax + 1);
         }
-
-        public void FallScale()
-        {
-            StartCoroutine(ScaleReduce());
-        }
-
-        private IEnumerator ScaleReduce()
-        {
-            float time = 0f;
-            while (time < 1f)
-            {
-                float scale = Mathf.Lerp(0, 1, enemyFallScaleCurve.Evaluate(time / 1f));
-                transform.localScale = new Vector3(scale, scale, scale);
-                yield return null;
-                time += Time.deltaTime;
-            }
-        }
-
+       
         
         private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
         public async void SetTeleportLine(Vector2 target, bool isActive)

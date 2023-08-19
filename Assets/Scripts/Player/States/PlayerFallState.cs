@@ -12,8 +12,12 @@ namespace QT
     [FSMState((int)Player.States.Fall)]
     public class PlayerFallState : FSMState<Player>
     {
+        private readonly int DodgeLayer = LayerMask.NameToLayer("PlayerDodge");
+        private readonly int PlayerLayer = LayerMask.NameToLayer("Player");
+        
         private readonly int AnimationFallHash = Animator.StringToHash("PlayerFall");
         private readonly int AnimationFallEndHash = Animator.StringToHash("PlayerFallEnd");
+        
         private PlayerHPCanvas _playerHpCanvas;
         private AnimationCurve _scaleCurve;
         private LayerMask _playerLayer;
@@ -22,7 +26,6 @@ namespace QT
         {
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _scaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
-            _playerLayer = LayerMask.NameToLayer("Player");
 
         }
 
@@ -30,6 +33,8 @@ namespace QT
         {
             _ownerEntity.Animator.SetTrigger(AnimationFallHash);
             _ownerEntity.StartCoroutine(ScaleReduce());
+            
+            _ownerEntity.gameObject.layer = DodgeLayer;
         }
 
         private IEnumerator ScaleReduce()
@@ -43,11 +48,12 @@ namespace QT
                 time += Time.deltaTime;
             }
 
-            _ownerEntity.transform.position = _ownerEntity.EnterFallObject.FallingExitDistanceCheck(_ownerEntity.DodgePreviousPosition);
             yield return new WaitForSeconds(0.5f);
             _ownerEntity.Animator.SetTrigger(AnimationFallEndHash);
+            
             var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-25);
+            
             _playerHpCanvas.CurrentHpImageChange(hp);
             if (hp <= 0)
             {
@@ -55,7 +61,7 @@ namespace QT
             }
             else
             {
-                _ownerEntity.ChangeState(_ownerEntity.FallPreviousState);
+                _ownerEntity.ChangeState(Player.States.Move);
                 _ownerEntity.MaterialChanger.SetHitMaterial();
             }
         }
@@ -72,6 +78,9 @@ namespace QT
             _ownerEntity.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
 
             _ownerEntity.transform.localScale = new Vector3(1f, 1f, 1f);
+            _ownerEntity.transform.position = _ownerEntity.LastSafePosition;
+            
+            _ownerEntity.gameObject.layer = PlayerLayer;
         }
     }
 }

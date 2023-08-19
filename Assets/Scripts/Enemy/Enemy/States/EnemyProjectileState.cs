@@ -38,10 +38,7 @@ namespace QT.InGame
         private float _releaseDelay;
         private float _releaseTimer;
         
-        
         private Transform _transform;
-        
-        private bool _isNormal;
 
         private SoundManager _soundManager;
 
@@ -88,7 +85,6 @@ namespace QT.InGame
             
             if(playSound)
                 _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
-            _isNormal = false;
 
             _damage = _ownerEntity._damage;
         }
@@ -204,7 +200,6 @@ namespace QT.InGame
                     }
                     else
                     {
-                        _isNormal = true;
                         _ownerEntity.Animator.SetBool(RigidAnimHash, false);
                         _ownerEntity.Animator.SetFloat(ProjectileSpeedAnimHash, 1);
                         _ownerEntity.SetPhysics(true);
