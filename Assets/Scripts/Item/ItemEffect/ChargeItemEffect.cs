@@ -97,7 +97,7 @@ namespace QT.InGame
             _player.Animator.SetBool(PlayerIdleAnimHash, false);
             _dir = (_aimPosition - _player.Position ).normalized;
             
-            var chargeEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(ChargeEffectPath, _player.EyeTransform);
+            var chargeEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(ChargeEffectPath, _player.CenterTransform);
             chargeEffect.transform.ResetLocalTransform();
             
             chargeEffect.Play();
@@ -115,6 +115,10 @@ namespace QT.InGame
                 _dir = Vector3.RotateTowards(_dir, targetDir, _maxSteerAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
                 
                 _player.Rigidbody.velocity = _dir * _currentSpeed;
+                
+                var angle = Mathf.Atan2(_dir.y, _dir.x) * Mathf.Rad2Deg;
+                chargeEffect.transform.rotation = Quaternion.Euler(0, 0, angle);
+                
                 
                 Aim(-_dir);
                 CheckHit();

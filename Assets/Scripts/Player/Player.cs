@@ -37,6 +37,7 @@ namespace QT.InGame
         [SerializeField] private int _characterAtkID = 200;
         
         [field:SerializeField] public Transform EyeTransform { get; private set; }
+        [field:SerializeField] public Transform CenterTransform { get; private set; }
         [SerializeField] private Transform _batTransform;
         [SerializeField] private SpriteRenderer _batSpriteRenderer;
         [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
