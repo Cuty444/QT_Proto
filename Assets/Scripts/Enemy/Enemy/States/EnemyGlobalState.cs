@@ -28,13 +28,11 @@ namespace QT.InGame
             {
                 return;
             }
-            
-            _ownerEntity.Rigidbody.velocity = Vector2.zero;
-            _ownerEntity.Rigidbody.AddForce(dir, ForceMode2D.Impulse);
 
             if (attackType != AttackType.Swing)
             {
-                _ownerEntity.ChangeState(Enemy.States.Rigid);
+                var state = _ownerEntity.ChangeState(Enemy.States.Rigid);
+                ((EnemyRigidState) state)?.InitializeState(dir);
             }
         }
         

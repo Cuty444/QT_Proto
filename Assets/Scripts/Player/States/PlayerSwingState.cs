@@ -114,7 +114,7 @@ namespace QT.InGame
 
             foreach (var hitAble in _hitAbles)
             {
-                var hitDir = ((Vector2) _ownerEntity.transform.position - hitAble.Position).normalized;
+                var hitDir = (hitAble.Position - (Vector2) _ownerEntity.transform.position).normalized;
                 
                 hitAble.Hit(hitDir, damage, AttackType.Swing);
                 hitCount++;
