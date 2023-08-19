@@ -70,6 +70,14 @@ namespace QT.Util
             cg.alpha = end;
             func?.Invoke();
         }
+
+        public static void ResetLocalTransform(this Transform transform)
+        {
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+        }
+        
     }
 
     public static class Math
