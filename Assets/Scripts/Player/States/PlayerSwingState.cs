@@ -120,6 +120,7 @@ namespace QT.InGame
             int hitCount = 0;
             int ballHitCount = 0;
             int enemyHitCount = 0;
+            int stunEnemyCount = 0;
 
             foreach (var hitAble in _hitAbles)
             {
@@ -139,6 +140,8 @@ namespace QT.InGame
                         enemy.ResetProjectileDamage(powerEnemyProjectileDamage);
                         enemy.ProjectileHit(GetNewProjectileDir(enemy), powerShootSpd, mask, ProjectileOwner.Player,
                             _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
+
+                        stunEnemyCount++;
                     }
                 }
             }
@@ -178,12 +181,17 @@ namespace QT.InGame
             {
                 var aimDir = ((Vector2) _ownerEntity.transform.position - _ownerEntity.AimPosition).normalized;
                 _ownerEntity.AttackImpulseSource.GenerateImpulse(aimDir * _ownerEntity.AttackImpulseForce);
+                
+                SystemManager.Instance.PlayerManager.OnSwingHit?.Invoke();
             }
 
             if (ballHitCount > 0)
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.BallAttackSFX);
+                
+                SystemManager.Instance.PlayerManager.OnParry?.Invoke();
             }
+            
             if (enemyHitCount > 0)
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.PlayerSwingHitSFX);
@@ -192,6 +200,11 @@ namespace QT.InGame
             if(ballHitCount == 0 && enemyHitCount == 0)
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.SwingSFX);
+            }
+
+            if (stunEnemyCount > 0)
+            {
+                SystemManager.Instance.PlayerManager.OnAttackStunEnemy?.Invoke();
             }
             
             SystemManager.Instance.PlayerManager.OnSwing?.Invoke();

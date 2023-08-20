@@ -20,8 +20,11 @@ namespace QT
             OnGoldChanged = 1 << 4,
             OnHpChanged = 1 << 5,
             OnSwing = 1 << 6,
-            OnMovementSpdChanged = 1 << 7,
-            OnChargeBounceCountChanged = 1 << 8
+            OnSwingHit = 1 << 7,
+            OnAttackStunEnemy = 1 << 8,
+            OnParry = 1 << 9,
+            OnMovementSpdChanged = 1 << 10,
+            OnChargeBounceCountChanged = 1 << 11
         }
 
         public int Index { get; set; }
