@@ -24,6 +24,7 @@ namespace QT
         private AnimationCurve _hitCurve = new ();
 
         private GlobalData _globalData;
+        
         private void Awake()
         {
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;

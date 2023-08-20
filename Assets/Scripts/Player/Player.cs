@@ -7,6 +7,7 @@ using Cinemachine;
 using QT.Core.Data;
 using QT.UI;
 using UnityEngine.UI;
+using Spine.Unity;
 
 namespace QT.InGame
 {
@@ -52,6 +53,7 @@ namespace QT.InGame
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
         
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
+        public SkeletonGhost GhostEffect { get; private set; }
 
         private PlayerManager _playerManager;
 
@@ -92,6 +94,7 @@ namespace QT.InGame
             SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
             ProjectileShooter = GetComponent<PlayerProjectileShooter>();
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
+            GhostEffect = GetComponentInChildren<SkeletonGhost>();
             
             _attackSpeedColorGradient = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.AttackSpeedColorCurve;
             InitInputs();
