@@ -30,9 +30,11 @@
 // Contributed by: Mitch Thompson
 
 using System.Collections.Generic;
+using Spine.Unity;
 using UnityEngine;
 
-namespace Spine.Unity.Examples {
+namespace QT
+{
 
 	[RequireComponent(typeof(SkeletonRenderer))]
 	public class SkeletonGhost : MonoBehaviour {

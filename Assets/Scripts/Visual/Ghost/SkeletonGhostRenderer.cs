@@ -32,7 +32,8 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Spine.Unity.Examples {
+namespace QT
+{
 	public class SkeletonGhostRenderer : MonoBehaviour {
 		static readonly Color32 TransparentBlack = new Color32(0, 0, 0, 0);
 		const string colorPropertyName = "_Color";
@@ -79,7 +80,8 @@ namespace Spine.Unity.Examples {
             black.a = 0;
 
 			float t = 1f;
-			for (float hardTimeLimit = 5f; hardTimeLimit > 0; hardTimeLimit -= Time.unscaledDeltaTime) {
+			for (float hardTimeLimit = 1f; hardTimeLimit > 0; hardTimeLimit -= Time.unscaledDeltaTime) 
+            {
 				c = Color32.Lerp(black, startColor, t);
 				mpb.SetColor(colorId, c);
 				meshRenderer.SetPropertyBlock(mpb);
@@ -102,7 +104,8 @@ namespace Spine.Unity.Examples {
 
 			float t = 1f;
 
-			for (float hardTimeLimit = 5f; hardTimeLimit > 0; hardTimeLimit -= Time.unscaledDeltaTime) {
+			for (float hardTimeLimit = 1f; hardTimeLimit > 0; hardTimeLimit -= Time.unscaledDeltaTime) 
+            {
 				c = Color32.Lerp(black, startColor, t);
 				mpb.SetColor(colorId, c);
 				meshRenderer.SetPropertyBlock(mpb);

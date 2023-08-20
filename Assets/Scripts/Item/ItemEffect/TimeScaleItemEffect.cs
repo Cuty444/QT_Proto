@@ -19,11 +19,15 @@ namespace QT.InGame
 
         private CancellationTokenSource _cancellationTokenSource;
         
+        private SkeletonGhost _ghostEffect;
+        
         public TimeScaleItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
         {
             _targetTimeScale = new StatModifier( specialEffectData.Param1, StatModifier.ModifierType.Multiply, this);
             //_duration = (int) (specialEffectData.Param2 / _targetTimeScale * 1000);
             _duration = (int) (specialEffectData.Param2 * 1000);
+
+            _ghostEffect = player.GhostEffect;
         }
 
         public override void OnEquip()
@@ -35,7 +39,9 @@ namespace QT.InGame
         {
             CurrentTimeScale.RemoveModifier(_targetTimeScale);
             CurrentTimeScale.AddModifier(_targetTimeScale);
-
+            
+            _ghostEffect.ghostingEnabled = true;
+            
             UpdateTimeScale();
             Timer();
         }
@@ -52,6 +58,8 @@ namespace QT.InGame
 
         public override void OnRemoved()
         {
+            _ghostEffect.ghostingEnabled = false;
+            //_ghostEffect.ClearGhosting();
             CurrentTimeScale.RemoveModifier(_targetTimeScale);
             UpdateTimeScale();
 
