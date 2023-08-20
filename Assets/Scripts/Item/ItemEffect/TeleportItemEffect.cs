@@ -42,7 +42,7 @@ namespace QT.InGame
                 return;
             }
 
-            var damage = (int)_player.StatComponent.GetDmg(PlayerStats.ChargeProjectileDmg2);
+            var damage = (int)_player.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg2);
             var shootSpeed = _player.StatComponent.GetStat(PlayerStats.ChargeShootSpd2).Value;
 
             _player.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
