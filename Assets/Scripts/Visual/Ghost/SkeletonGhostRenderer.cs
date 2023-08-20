@@ -80,13 +80,13 @@ namespace QT
             black.a = 0;
 
 			float t = 1f;
-			for (float hardTimeLimit = 1f; hardTimeLimit > 0; hardTimeLimit -= Time.unscaledDeltaTime) 
+			for (float hardTimeLimit = 1f; hardTimeLimit > 0; hardTimeLimit -= Time.deltaTime) 
             {
 				c = Color32.Lerp(black, startColor, t);
 				mpb.SetColor(colorId, c);
 				meshRenderer.SetPropertyBlock(mpb);
 
-				t = Mathf.Lerp(t, 0, Time.unscaledDeltaTime * fadeSpeed);
+				t = Mathf.Lerp(t, 0, Time.deltaTime * fadeSpeed);
 				if (t <= 0)
 					break;
 
@@ -104,13 +104,13 @@ namespace QT
 
 			float t = 1f;
 
-			for (float hardTimeLimit = 1f; hardTimeLimit > 0; hardTimeLimit -= Time.unscaledDeltaTime) 
+			for (float hardTimeLimit = 1f; hardTimeLimit > 0; hardTimeLimit -= Time.deltaTime) 
             {
 				c = Color32.Lerp(black, startColor, t);
 				mpb.SetColor(colorId, c);
 				meshRenderer.SetPropertyBlock(mpb);
 
-				t = Mathf.Lerp(t, 0, Time.unscaledDeltaTime * fadeSpeed);
+				t = Mathf.Lerp(t, 0, Time.deltaTime * fadeSpeed);
 				if (t <= 0)
 					break;
 

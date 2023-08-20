@@ -87,7 +87,7 @@ namespace QT
 				skeletonRenderer = GetComponent<SkeletonRenderer>();
 				meshFilter = GetComponent<MeshFilter>();
 				meshRenderer = GetComponent<MeshRenderer>();
-				nextSpawnTime = Time.unscaledTime + spawnInterval;
+				nextSpawnTime = Time.deltaTime + spawnInterval;
 				pool = new SkeletonGhostRenderer[maximumGhosts];
 				for (int i = 0; i < maximumGhosts; i++) {
 					GameObject go = new GameObject(gameObject.name + " Ghost", typeof(SkeletonGhostRenderer));
@@ -129,7 +129,7 @@ namespace QT
 			if (!ghostingEnabled || poolIndex >= pool.Length)
 				return;
 
-			if (Time.unscaledTime >= nextSpawnTime) 
+			if (Time.time >= nextSpawnTime) 
             {
 				GameObject go = pool[poolIndex].gameObject;
 
@@ -157,7 +157,7 @@ namespace QT
 				Transform goTransform = go.transform;
 				goTransform.parent = transform;
 
-				pool[poolIndex].Initialize(meshFilter.sharedMesh, materials, colorGradient.Evaluate(Time.unscaledTime % 1), additive, fadeSpeed, meshRenderer.sortingLayerID, (sortWithDistanceOnly) ? meshRenderer.sortingOrder : meshRenderer.sortingOrder - 1);
+				pool[poolIndex].Initialize(meshFilter.sharedMesh, materials, colorGradient.Evaluate(Time.time % 1), additive, fadeSpeed, meshRenderer.sortingLayerID, (sortWithDistanceOnly) ? meshRenderer.sortingOrder : meshRenderer.sortingOrder - 1);
 
 				goTransform.localPosition = new Vector3(0f, 0f, zOffset);
 				goTransform.localRotation = Quaternion.identity;
@@ -170,7 +170,7 @@ namespace QT
 				if (poolIndex == pool.Length)
 					poolIndex = 0;
 
-				nextSpawnTime = Time.unscaledTime + spawnInterval;
+				nextSpawnTime = Time.time + spawnInterval;
 			}
 		}
 
