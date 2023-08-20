@@ -40,11 +40,12 @@ namespace QT.InGame
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnChargeBounceCountChanged));
             
             
-            _playerManager.OnGoldValueChanged.AddListener((value) =>
-                InvokeTrigger(TriggerTypes.OnGoldChanged));
+            _playerManager.OnGoldValueChanged.AddListener((value) => InvokeTrigger(TriggerTypes.OnGoldChanged));
             
-            _playerManager.OnSwing.AddListener(() =>
-                InvokeTrigger(TriggerTypes.OnSwing));
+            _playerManager.OnSwing.AddListener(() => InvokeTrigger(TriggerTypes.OnSwing));
+            _playerManager.OnSwingHit.AddListener(() => InvokeTrigger(TriggerTypes.OnSwingHit));
+            _playerManager.OnAttackStunEnemy.AddListener(() => InvokeTrigger(TriggerTypes.OnAttackStunEnemy));
+            _playerManager.OnParry.AddListener(() => InvokeTrigger(TriggerTypes.OnParry));
         }
 
         private void InvokeTrigger(TriggerTypes triggerTypes)
