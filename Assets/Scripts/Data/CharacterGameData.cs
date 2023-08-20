@@ -10,8 +10,8 @@ namespace QT.InGame
         public int Index { get; set; }
         public int MaxHP { get; set; }
         public float PCHitboxRad { get; set; }
-        public int MovementSpd { get; set; }
-        public int ChargeMovementSpd { get; set; }
+        public float MovementSpd { get; set; }
+        public float ChargeMovementSpd { get; set; }
         public float MercyInvincibleTime { get; set; }
         public float DodgeCooldown { get; set; }
         public float DodgeInvincibleTime { get; set; }
