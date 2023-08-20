@@ -102,11 +102,18 @@ namespace QT.InGame
             }
 
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
-            var damage = _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
-            var power = _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
+            var rigidDmg = _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
+            var shootSpd = _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
+            
             var bounce = (int) _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;
+            
             var projectileDamage = (int)_ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1);
             var enemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.EnemyProjectileDmg2 : PlayerStats.EnemyProjectileDmg1);
+            
+            var powerBounce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeBounceCount2).Value;
+            var powerEnemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg2);
+            var powerShootSpd = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeShootSpd2).Value;
+            
             var pierce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeAtkPierce).Value;
             bool isPierce = _isCharged && pierce >= 1;
             
@@ -118,7 +125,7 @@ namespace QT.InGame
             {
                 var hitDir = (hitAble.Position - (Vector2) _ownerEntity.transform.position).normalized;
                 
-                hitAble.Hit(hitDir, damage, _isCharged ? AttackType.PowerSwing : AttackType.Swing);
+                hitAble.Hit(hitDir, rigidDmg, _isCharged ? AttackType.PowerSwing : AttackType.Swing);
                 hitCount++;
 
                 if (hitAble.IsClearTarget)
@@ -128,9 +135,9 @@ namespace QT.InGame
 
                     if (!_isCharged && hitAble.IsDead && hitAble is Enemy enemy)
                     {
-                        enemy.ResetBounceCount(bounce);
-                        enemy.ResetProjectileDamage(enemyProjectileDamage);
-                        enemy.ProjectileHit(GetNewProjectileDir(enemy), power, mask, ProjectileOwner.Player,
+                        enemy.ResetBounceCount(powerBounce);
+                        enemy.ResetProjectileDamage(powerEnemyProjectileDamage);
+                        enemy.ProjectileHit(GetNewProjectileDir(enemy), powerShootSpd, mask, ProjectileOwner.Player,
                             _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
                     }
                 }
@@ -142,7 +149,7 @@ namespace QT.InGame
                 {
                     projectile.ResetBounceCount(bounce);
                     projectile.ResetProjectileDamage(projectile is Enemy ? enemyProjectileDamage : projectileDamage);
-                    projectile.ProjectileHit(GetNewProjectileDir(projectile), power, mask, ProjectileOwner.Player,
+                    projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player,
                         _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
 
                     if (_isCharged)
