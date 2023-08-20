@@ -15,7 +15,6 @@ namespace QT
         public float ThrowBounceCount { get; set; }
         
         public float SwingCooldown { get; set; }
-        public float SwingAfterDelay { get; set; }
         public float SwingRad { get; set; }
         public int SwingCentralAngle { get; set; }
         
@@ -39,7 +38,6 @@ namespace QT
         
         public int EnemyProjectileDmg2 { get; set; }
         
-        public float TeleportAllowableDistance { get; set; }
         public float ReflectCorrection { get; set; }
         public float AtkDmgPer { get; set; }
     }

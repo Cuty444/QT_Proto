@@ -31,7 +31,6 @@ namespace QT.InGame
         ThrowAfterDelay,
         ThrowSpd,
         ThrowBounceCount,
-        SwingAfterDelay,
         SwingRad,
         SwingCentralAngle,
             

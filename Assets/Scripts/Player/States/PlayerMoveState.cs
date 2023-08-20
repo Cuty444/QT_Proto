@@ -11,8 +11,11 @@ namespace QT.InGame
         
         private Vector2 _moveDirection;
         
+        protected Stat _moveSpeed;
+        
         public PlayerMoveState(IFSMEntity owner) : base(owner)
         {
+            _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.MovementSpd);
         }
 
         public override void InitializeState()
@@ -50,7 +53,7 @@ namespace QT.InGame
                 _ownerEntity.LastSafePosition = _ownerEntity.transform.position;
             }
             
-            var speed = _ownerEntity.StatComponent.GetStat(PlayerStats.MovementSpd).Value;
+            var speed = _moveSpeed.Value;
             var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
             
             _ownerEntity.Animator.SetFloat(AnimationMoveSpeedHash, currentNormalizedSpeed);
