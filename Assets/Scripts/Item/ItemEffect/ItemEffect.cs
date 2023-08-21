@@ -97,6 +97,11 @@ namespace QT.InGame
             }
             
         }
+        
+        public float GetCoolTimeProgress()
+        {
+            return 1 - Mathf.Min(1, (Time.timeSinceLevelLoad - _lastTime) / Data.CoolTime);
+        }
 
         public abstract void OnEquip();
         
