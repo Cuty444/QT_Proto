@@ -58,7 +58,7 @@ namespace QT.UI
         
             foreach (var button in _buttons)
             {
-                button.gameObject.SetActive(true);
+                button.enabled = true;
             }
             
             gameObject.SetActive(true);
@@ -72,7 +72,7 @@ namespace QT.UI
             
             foreach (var button in _buttons)
             {
-                button.gameObject.SetActive(false);
+                button.enabled = false;
             }
             
             _releaseAnimation[index == 0 ? 1 : 0].ReStart();
