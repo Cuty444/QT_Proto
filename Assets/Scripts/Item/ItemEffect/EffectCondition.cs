@@ -142,7 +142,7 @@ namespace QT.InGame
             var playerPos = SystemManager.Instance.PlayerManager.Player.transform.position;
             var list = new List<IProjectile>();
 
-            ProjectileManager.Instance.GetInRange(playerPos, _value, ref list, _bounceMask);
+            ProjectileManager.Instance.GetInRange(playerPos, _value, ref list, _bounceMask, true);
 
             return list.Count > 0;
         }
