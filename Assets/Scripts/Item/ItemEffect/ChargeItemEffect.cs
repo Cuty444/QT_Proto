@@ -14,6 +14,7 @@ namespace QT.InGame
     //Param3 : 범위
     public class ChargeItemEffect : ItemEffect
     {
+        private const float CheckIgnoreTime = 0.5f;
         private LayerMask WallLayer => LayerMask.GetMask("Default", "Wall", "HardCollider", "CharacterCollider", "Fall");
       
         private const string ChargeEffectPath = "Effect/Prefabs/FX_Active_Rush.prefab";
@@ -90,7 +91,7 @@ namespace QT.InGame
             
             _isCharging = true;
             _currentSpeed = 0;
-            
+
             _player.ChangeState(Player.States.Empty);
             _player.SetGlobalState(null);
             
@@ -101,10 +102,12 @@ namespace QT.InGame
             chargeEffect.transform.ResetLocalTransform();
             
             chargeEffect.Play();
-            
+
+            float time = 0;
             while (_isCharging)
             {
                 await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, _cancellationTokenSource.Token);
+                time += Time.deltaTime;
                 
                 _currentSpeed += Time.deltaTime * _speed;
                 _currentSpeed = Mathf.Min(_currentSpeed, _speed);
@@ -121,9 +124,10 @@ namespace QT.InGame
                 
                 
                 Aim(-_dir);
+
                 CheckHit();
                 
-                if (CheckWall())
+                if (time > CheckIgnoreTime && CheckWall())
                 {
                     _isCharging = false;
                 }
