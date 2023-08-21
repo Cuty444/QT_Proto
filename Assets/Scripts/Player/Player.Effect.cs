@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QT.InGame
 {
@@ -13,9 +14,10 @@ namespace QT.InGame
         [SerializeField] private ParticleSystem[] _chargingLevelParticle;
         [SerializeField] private ParticleSystem[] _swingSlashParticle;
         [SerializeField] private TrailRenderer[] _teleportEffectLines;
+        
         [SerializeField] private ParticleSystem _itemPickUpParticle;
-        [SerializeField] private SpriteRenderer _itemPickUpImage;
-        [SerializeField] private Animator _itemPickUpAnimator;
+        [SerializeField] private Image _itemPickUpImage;
+        [SerializeField] private UITweenAnimator _itemPickUpAnimator;
 
         private void EffectSetup()
         {
@@ -88,7 +90,7 @@ namespace QT.InGame
             _itemPickUpParticle.Play();
             _itemPickUpImage.enabled = true;
             _itemPickUpImage.sprite = sprite;
-            _itemPickUpAnimator.Play("ItemGainAnimation",-1,0f);
+            _itemPickUpAnimator.ReStart();
         }
 
         private void TeleportEffectEmitting(bool isActive)

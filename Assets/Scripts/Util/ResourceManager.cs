@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using System;
 using Object = UnityEngine.Object;
@@ -167,7 +168,7 @@ namespace QT
             return handle;
         }
         
-        public async UniTaskVoid LoadSprite(string spritePath,SpriteRenderer spriteRenderer)
+        public async UniTaskVoid LoadSpriteRenderer(string spritePath,SpriteRenderer spriteRenderer)
         {
             try
             {
@@ -179,6 +180,20 @@ namespace QT
                 Debug.LogError($"스프라이트 로드에 실패했습니다. Path : {spritePath}\n\n{e.Message}");
             }
             
+        }
+
+        public async UniTaskVoid LoadUIImage(string spritePath, Image image)
+        {
+            try
+            {
+                var loadSprite = await Addressables.LoadAssetAsync<Sprite>(spritePath);
+                image.sprite = loadSprite;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"스프라이트 로드에 실패했습니다. Path : {spritePath}\n\n{e.Message}");
+            }
+
         }
 
     }
