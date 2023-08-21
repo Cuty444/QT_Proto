@@ -19,7 +19,7 @@ namespace QT
         
         public ItemGameData ItemGameData { get; private set; }
         
-        [SerializeField] private SpriteRenderer _iconSprite;
+        [SerializeField] private Image _iconImage;
 
         [SerializeField] private Animator _alterAnimator;
         [SerializeField] private GameObject _soldObject;
@@ -36,7 +36,7 @@ namespace QT
             ItemGameData = itemGameData;
             _onGainItem = onGainItem;
             
-            SystemManager.Instance.ResourceManager.LoadSprite(ItemGameData.ItemIconPath, _iconSprite);
+            SystemManager.Instance.ResourceManager.LoadUIImage(ItemGameData.ItemIconPath, _iconImage);
 
             switch (DropType)
             {
@@ -124,12 +124,12 @@ namespace QT
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Item_GetSFX);
             
-            _playerManager.GainItemSprite.Invoke(_iconSprite.sprite);
+            _playerManager.GainItemSprite.Invoke(_iconImage.sprite);
             _playerManager.Player.Inventory.AddItem(ItemGameData.Index);
             
             _onGainItem?.Invoke();
             
-            _iconSprite.gameObject.SetActive(false);
+            _iconImage.gameObject.SetActive(false);
             SetColliders(false);
         }
         
@@ -150,7 +150,7 @@ namespace QT
          {
              _alterAnimator.SetTrigger(AnimationExitHash);
              
-             _iconSprite.gameObject.SetActive(false);
+             _iconImage.gameObject.SetActive(false);
              SetColliders(false);
              ClearItem();
          }
