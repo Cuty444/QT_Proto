@@ -110,7 +110,7 @@ namespace QT.InGame
             
             foreach (var projectile in projectiles)
             {
-                if (projectile is IHitAble {IsDead: true})
+                if (projectile is IHitAble)
                 {
                     continue;
                 }

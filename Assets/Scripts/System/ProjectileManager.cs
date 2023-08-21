@@ -72,12 +72,15 @@ namespace QT
             }
         }
         
-        public void GetInRange(Vector2 origin, float range, ref List<IProjectile> outList, LayerMask layerMask)
+        public void GetInRange(Vector2 origin, float range, ref List<IProjectile> outList, LayerMask layerMask, bool ignoreHitAble = false)
         {
             foreach (var projectile in _projectiles.Values)
             {
                 if ((projectile.BounceMask & layerMask) != 0)
                 {
+                    if(ignoreHitAble && projectile is IHitAble)
+                        continue;
+                    
                     var checkRange = range + projectile.ColliderRad;
                     var targetDir = projectile.Position - origin;
                     
