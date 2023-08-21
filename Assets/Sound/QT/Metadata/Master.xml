@@ -17,6 +17,7 @@
 	<object class="MixerBusEffectChain" id="{4aa2bc11-1628-40d5-a43b-28b805e5a78e}">
 		<relationship name="effects">
 			<destination>{f3b87008-7f0d-4e7f-94f8-673e0636bdd8}</destination>
+			<destination>{a6e9008f-ec48-4285-99c6-12cb9afa5f66}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{662a7005-aaef-410d-8fa3-e006556cd61f}">
@@ -25,4 +26,50 @@
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{f3b87008-7f0d-4e7f-94f8-673e0636bdd8}" />
+	<object class="MultibandEqEffect" id="{a6e9008f-ec48-4285-99c6-12cb9afa5f66}">
+		<property name="filterTypeA">
+			<value>4</value>
+		</property>
+		<property name="filterTypeE">
+			<value>1</value>
+		</property>
+		<property name="frequencyA">
+			<value>20</value>
+		</property>
+		<property name="frequencyE">
+			<value>22000</value>
+		</property>
+		<relationship name="modulators">
+			<destination>{fbc1d248-10b3-4677-bccb-7b762070c5cf}</destination>
+			<destination>{682411ac-ee14-47a5-bb13-ead5811cd647}</destination>
+		</relationship>
+	</object>
+	<object class="ADSRModulator" id="{fbc1d248-10b3-4677-bccb-7b762070c5cf}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>frequencyA</value>
+		</property>
+		<property name="initialValue">
+			<value>-100</value>
+		</property>
+		<property name="decayTime">
+			<value>5800</value>
+		</property>
+		<property name="finalValue">
+			<value>-100</value>
+		</property>
+	</object>
+	<object class="ADSRModulator" id="{682411ac-ee14-47a5-bb13-ead5811cd647}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>frequencyE</value>
+		</property>
+		<property name="initialValue">
+			<value>100</value>
+		</property>
+		<property name="attackTime">
+			<value>500</value>
+		</property>
+		<property name="finalValue">
+			<value>100</value>
+		</property>
+	</object>
 </objects>
