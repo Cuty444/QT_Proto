@@ -10,16 +10,17 @@ namespace QT.InGame
     // Param1 : 흡수 거리
     // Param2 : 공 최대 속도
     // Param3 : 최대 유지 시간
+    // Param4 : 거리 문제
     public class AbsorbItemEffect : ItemEffect
     {
         private readonly LayerMask TargetBounceLayer = LayerMask.GetMask("Player");
         private readonly LayerMask WallBounceLayer = LayerMask.GetMask("Wall", "HardCollider");
-        private const float Distance = 2;
 
         private readonly Player _player;
         private readonly float _absorbRange;
         private readonly float _maxPower;
         private readonly float _maxChargingDuration;
+        private readonly float _distance = 2;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -35,6 +36,7 @@ namespace QT.InGame
             _absorbRange = specialEffectData.Param1;
             _maxPower = specialEffectData.Param2;
             _maxChargingDuration = specialEffectData.Param3;
+            _distance = specialEffectData.Param4;
         }
 
         public override void OnEquip()
@@ -80,11 +82,11 @@ namespace QT.InGame
                 {
                     var projectile = _targets[i];
                     var angle = ((float)i / _targets.Count * 360 + rotation) * Mathf.Deg2Rad;
-                    var targetPos = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * Distance + playerPos;
+                    var targetPos = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * _distance + playerPos;
                     
                     var checkDir = (targetPos - playerPos).normalized;
                     //var hit = Physics2D.Raycast(playerPos, checkDir, Distance, WallBounceLayer);
-                    var hit = Physics2D.CircleCast(playerPos, projectile.ColliderRad, checkDir, Distance,
+                    var hit = Physics2D.CircleCast(playerPos, projectile.ColliderRad, checkDir, _distance,
                         WallBounceLayer);
                     if (hit)
                     {
