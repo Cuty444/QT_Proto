@@ -9,10 +9,13 @@ namespace QT.InGame
 {
     public class Inventory
     {
+        public Item ActiveItem { get; private set; }
+        
         private Player _targetPlayer;
         private List<Item> _items = new List<Item>();
         private PlayerManager _playerManager;
-        
+
+
         public Inventory(Player target)
         {
             _targetPlayer = target;
@@ -50,6 +53,7 @@ namespace QT.InGame
 
         private void InvokeTrigger(TriggerTypes triggerTypes)
         {
+            ActiveItem?.InvokeTrigger(triggerTypes);
             foreach (var item in _items)
             {
                 item.InvokeTrigger(triggerTypes);
@@ -64,12 +68,23 @@ namespace QT.InGame
             {
                 return;
             }
-            
-            _items.Add(item);
-            item.OnEquip();
-            
+
+            if (item.ItemGameData.GradeType == ItemGameData.GradeTypes.Active)
+            {
+                ActiveItem?.OnRemoved();
+                
+                ActiveItem = item;
+                ActiveItem.OnEquip();
+            }
+            else
+            {
+                _items.Add(item);
+                item.OnEquip();
+            }
+
             _playerManager.AddItemEvent.Invoke();
         }
+
         
         public void RemoveItem(int index)
         {
@@ -103,6 +118,7 @@ namespace QT.InGame
 
         public void ClearItems()
         {
+            ActiveItem?.OnRemoved();
             foreach (var item in _items)
             {
                 item.OnRemoved();

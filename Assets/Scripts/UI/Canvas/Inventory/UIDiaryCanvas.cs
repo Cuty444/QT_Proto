@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks.Triggers;
 using QT.Core;
 using QT.Core.Map;
 using QT.Sound;
@@ -49,6 +47,8 @@ namespace QT.UI
             _soundSliders[1].value = volume;
             _soundManager.GetSFXVolume(out volume);
             _soundSliders[2].value = volume;
+            
+            
         }
 
         public void SetMasterVolume(float volume)
@@ -190,7 +190,10 @@ namespace QT.UI
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             _playerManager.globalGold = 0;
+            
             _playerManager.PlayerIndexInventory.Clear();
+            _playerManager.PlayerActiveItemIndex = -1;
+            
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
             SystemManager.Instance.RankingManager.ResetRankingTime();

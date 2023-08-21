@@ -24,7 +24,12 @@ namespace QT.UI
         [SerializeField] private Sprite[] _playerHpImage;
         [SerializeField] private SkeletonGraphic _skeletonGraphicRecharge;
         [SerializeField] private TextMeshProUGUI _goldCostText;
-        
+
+        [Space]
+        [SerializeField] private GameObject _activeCoolTimeObject;
+        [SerializeField] private Image _activeImage;
+        [SerializeField] private Image _activeCoolDownImage;
+
         public Image PlayerHPImage => _playerHPImage;
         public Image PlayerInvicibleImage => _playerInvicibleImage;
         public Image PlayerDodgeCoolBarImage => _playerDodgeCoolBarImage;
@@ -33,18 +38,46 @@ namespace QT.UI
         private List<Image> _playerHpList = new List<Image>();
         private int beforeHp = 0;
         [SerializeField] private UITweenAnimator _goldAnimation;
-        
+
+        private PlayerManager _playerManager;
+
+        private int _lastActiveId;
 
         private void Start()
         {
-            var playerManager = SystemManager.Instance.PlayerManager;
-            playerManager.OnGoldValueChanged.AddListener(SetGoldText);
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.OnGoldValueChanged.AddListener(SetGoldText);
 
             //playerManager.PlayerCreateEvent.AddListener((arg) =>
             //{
             //    arg.GetStat(PlayerStats.HP).OnValueChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));
             //    arg.GetStatus(PlayerStats.HP).OnStatusChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));
             //});
+        }
+
+        private void Update()
+        {
+            CheckCoolDown();
+        }
+
+        private async void CheckCoolDown()
+        {
+            var activeItem = _playerManager?.Player.Inventory.ActiveItem;
+            
+            _activeCoolTimeObject.SetActive(activeItem != null);
+            if (activeItem != null)
+            {
+                var data = activeItem.ItemGameData;
+                if (_lastActiveId != data.Index)
+                {
+                    _activeImage.sprite = await SystemManager.Instance.ResourceManager.LoadAsset<Sprite>(data.ItemIconPath, true);
+                }
+                
+                float coolTime = activeItem.GetCoolTimeProgress();
+                _activeCoolDownImage.fillAmount = coolTime;
+                
+                _lastActiveId = activeItem.ItemGameData.Index;
+            }
         }
 
         public void SetHp(Status hp)

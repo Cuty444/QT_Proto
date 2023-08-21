@@ -114,6 +114,17 @@ namespace QT.InGame
                 effect.OnRemoved();
             }
         }
+
+        public float GetCoolTimeProgress()
+        {
+            float result = 0;
+            foreach (var effect in _itemEffectList)
+            {
+                result = Mathf.Max(result, effect.GetCoolTimeProgress());
+            }
+
+            return result;
+        }
         
     }
 }
