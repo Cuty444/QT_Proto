@@ -15,6 +15,7 @@ namespace QT
         public float Param1 { get; set; }
         public float Param2 { get; set; }
         public float Param3 { get; set; }
+        public float Param4 { get; set; }
     }
 
 
