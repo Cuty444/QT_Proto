@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -95,13 +96,32 @@ namespace QT
                     
                     return;
                 }
-                
-                _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);
-                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Shop_BuySFX);
-                
-                _soldObject.SetActive(true);
             }
 
+            if (ItemGameData.GradeType == ItemGameData.GradeTypes.Active && _playerManager.Player.Inventory.ActiveItem != null)
+            {
+                SystemManager.Instance.UIManager.GetUIPanel<UIActiveItemSelectCanvas>().Show(
+                    _playerManager.Player.Inventory.ActiveItem.ItemGameData, ItemGameData, GainItem);
+            }
+            else
+            {
+                GainItem(ItemGameData);
+            }
+        }
+        
+        private void GainItem(ItemGameData itemGameData)
+        {
+            if(itemGameData != ItemGameData) return;
+            
+            if (DropType == DropGameType.Shop)
+            {
+                _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() - ItemGameData.CostGold);
+                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData
+                    .Shop_BuySFX);
+
+                _soldObject.SetActive(true);
+            }
+            
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Item_GetSFX);
             
             _playerManager.GainItemSprite.Invoke(_iconSprite.sprite);
