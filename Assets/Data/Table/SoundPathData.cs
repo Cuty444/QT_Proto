@@ -19,6 +19,18 @@ namespace QT.Sound
         [field: SerializeField] public EventReference PlayerThrowHitSFX{ get; private set; }
         [field: SerializeField] public EventReference PlayerDashSFX{ get; private set; }
         
+        [field: SerializeField] public EventReference ActiveOneKiOkStartSFX{ get; private set; }
+        [field: SerializeField] public EventReference ActiveOneKiOkThrowSFX{ get; private set; }
+        
+        [field: SerializeField] public EventReference ActiveDashStartSFX{ get; private set; }
+        [field: SerializeField] public EventReference ActiveDashingSFX{ get; private set; }
+        [field: SerializeField] public EventReference ActiveDashExplosionSFX{ get; private set; }
+        [field: SerializeField] public EventReference ActiveDashAttackSFX{ get; private set; }
+        
+        [field: SerializeField] public EventReference ActiveTimeStopSFX{ get; private set; }
+        [field: SerializeField] public EventReference ActiveTimeStopPauseSFX{ get; private set; }
+        
+        
         [field: SerializeField] public EventReference BallBounceSFX{ get; private set; }
         
         [field: SerializeField] public EventReference GameOverSFX{ get; private set; }
@@ -86,9 +98,7 @@ namespace QT.Sound
         [field: SerializeField] public EventReference Boss_Landing { get; private set; }
         
         [field: SerializeField] public EventReference Boss_Dead { get; private set; }
-        
-        
-        
+
         [field: SerializeField] public string[] Bank{ get; private set; }
         
     }

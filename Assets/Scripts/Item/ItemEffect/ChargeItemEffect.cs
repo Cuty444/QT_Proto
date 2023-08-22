@@ -103,6 +103,8 @@ namespace QT.InGame
             
             chargeEffect.Play();
 
+            _soundManager.PlayOneShot(_soundManager.SoundData.ActiveDashStartSFX);
+            _soundManager.PlaySFX(_soundManager.SoundData.ActiveDashingSFX);
             float time = 0;
             while (_isCharging)
             {
@@ -141,6 +143,8 @@ namespace QT.InGame
             
             _player.ChangeState(Player.States.Move);
             _player.SetGlobalState(new PlayerGlobalState(_player));
+            
+            _soundManager.StopSFX(_soundManager.SoundData.ActiveDashingSFX);
         }
 
         private void CheckHit()
@@ -167,6 +171,7 @@ namespace QT.InGame
                     {
                         hitAble.Hit(_dir, damage);
                         SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitAble.Position);
+                        _soundManager.PlayOneShot(_soundManager.SoundData.ActiveDashAttackSFX, hitAble.Position);
                         isHit = true;
                     }
                     
@@ -201,7 +206,7 @@ namespace QT.InGame
                 SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
                 _player.AttackImpulseSource.GenerateImpulse(normal * 3);
 
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush_Crash, position);
+                _soundManager.PlayOneShot(_soundManager.SoundData.ActiveDashExplosionSFX, position);
                 
                 return true;
             }
