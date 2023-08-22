@@ -146,11 +146,11 @@ namespace QT
             _pool.Clear();
         }
 
-        public async UniTaskVoid EmitParticle(string path, Vector2 position, float rotation = 0)
+        public async UniTaskVoid EmitParticle(string path, Vector2 position, float rotation = 0, Transform parent = null)
         {
-            var particle = await GetFromPool<ParticleSystem>(path);
+            var particle = await GetFromPool<ParticleSystem>(path, parent);
             
-            particle.transform.position = position;
+            particle.transform.localPosition = position;
 
             if (rotation != 0)
             {

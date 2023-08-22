@@ -16,6 +16,8 @@ namespace QT.InGame
         private readonly LayerMask TargetBounceLayer = LayerMask.GetMask("Player");
         private readonly LayerMask WallBounceLayer = LayerMask.GetMask("Wall", "HardCollider");
 
+        private const string AbsorbEffectPath = "Effect/Prefabs/FX_Active_Wongiog.prefab";
+        
         private readonly Player _player;
         private readonly float _absorbRange;
         private readonly float _maxPower;
@@ -65,6 +67,8 @@ namespace QT.InGame
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
+            
+            SystemManager.Instance.ResourceManager.EmitParticle(AbsorbEffectPath, Vector2.zero, 0, _player.CenterTransform);
             
             while (_chargingTime < _maxChargingDuration)
             {
