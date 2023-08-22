@@ -41,12 +41,12 @@ namespace QT.UI
             {
                 _popAnimation.ReStart();
             }
-            if (!isFirst)
-                isFirst = true;
-            else
-            {
+            //if (!isFirst)
+            //    isFirst = true; // TODO : 스플래쉬 씬에서 브금 2번 곂치는 형상을 위한 코드
+            //else
+            //{
                 SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
-            }
+            //}
         }
 
         public void RestartAnimation()
