@@ -9,9 +9,9 @@ namespace QT.InGame
     public class PlayerSwingState : PlayerMoveState
     {
         private const string HitLinePath = "Prefabs/HitLine.prefab";
-        private const string SwingProjectileHitPath = "Effect/Prefabs/FX_Ball_Attack.prefab";
-        private const string SwingNormalProjectileHitPath = "Effect/Prefabs/FX_Ball_Normal_Attack.prefab";
-        private const string SwingBatHitPath = "Effect/Prefabs/FX_Bat_Hit.prefab";
+        private const string SwingProjectileHitPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
+        //private const string SwingNormalProjectileHitPath = "Effect/Prefabs/FX_Ball_Normal_Attack.prefab";
+        private const string SwingBatHitPath = "Effect/Prefabs/FX_M_Bat_Hit_Boom.prefab";
         
         private const int Segments = 32;
         private const int MaxLineCount = 10;
@@ -155,16 +155,16 @@ namespace QT.InGame
                     projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player,
                         _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
 
-                    if (_isCharged)
-                    {
+                    //if (_isCharged) // TODO : 차지에 따른 이펙트 변경시 코드
+                    //{
                         SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath,
                             projectile.Position);
-                    }
-                    else
-                    {
-                        SystemManager.Instance.ResourceManager.EmitParticle(SwingNormalProjectileHitPath,
-                            projectile.Position);
-                    }
+                    //}
+                    //else
+                    //{
+                    //    SystemManager.Instance.ResourceManager.EmitParticle(SwingNormalProjectileHitPath,
+                    //        projectile.Position);
+                    //}
 
                     hitCount++;
                     ballHitCount++;
