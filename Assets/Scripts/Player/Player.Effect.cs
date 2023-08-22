@@ -11,7 +11,7 @@ namespace QT.InGame
         [SerializeField] private ParticleSystem[] _dashParticle;
         [SerializeField] private ParticleSystem _playerHitParticle;
         [SerializeField] private ParticleSystem _chargingMaintainParticle;
-        [SerializeField] private ParticleSystem[] _chargingLevelParticle;
+        [SerializeField] private ParticleSystem _chargingLevelParticle;
         [SerializeField] private ParticleSystem[] _swingSlashParticle;
         [SerializeField] private TrailRenderer[] _teleportEffectLines;
         
@@ -27,10 +27,7 @@ namespace QT.InGame
             {
                 _swingSlashParticle[i].Stop();
             }
-            for (int i = 0; i < _chargingLevelParticle.Length; i++)
-            {
-                _chargingLevelParticle[i].Stop();
-            }
+            _chargingLevelParticle.Stop();
 
             for (int i = 0; i < _dashParticle.Length; i++)
             {
@@ -62,12 +59,12 @@ namespace QT.InGame
 
         public void ChargingEffectPlay()
         {
-            _chargingLevelParticle[0].Play();
+            _chargingLevelParticle.Play();
         }
 
         public void ChargingEffectStop()
         {
-            _chargingLevelParticle[0].Stop();
+            _chargingLevelParticle.Stop();
         }
         
         public void FullChargingEffectPlay()
