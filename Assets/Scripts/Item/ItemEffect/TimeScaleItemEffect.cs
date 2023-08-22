@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using QT.Core;
 using UnityEngine;
 
 namespace QT.InGame
@@ -41,7 +42,10 @@ namespace QT.InGame
             CurrentTimeScale.AddModifier(_targetTimeScale);
             
             _ghostEffect.ghostingEnabled = true;
-            
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData
+                .ActiveTimeStopSFX);
+            SystemManager.Instance.SoundManager.PlaySFX(SystemManager.Instance.SoundManager.SoundData
+                .ActiveTimeStopPauseSFX);
             UpdateTimeScale();
             Timer();
         }
@@ -60,6 +64,8 @@ namespace QT.InGame
         {
             _ghostEffect.ghostingEnabled = false;
             //_ghostEffect.ClearGhosting();
+            SystemManager.Instance.SoundManager.StopSFX(SystemManager.Instance.SoundManager.SoundData
+                .ActiveTimeStopPauseSFX);
             CurrentTimeScale.RemoveModifier(_targetTimeScale);
             UpdateTimeScale();
 
