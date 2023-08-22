@@ -65,6 +65,8 @@ namespace QT.InGame
             _player.PlayBatAnimation();
 
             PlayEffect();
+            
+            SystemManager.Instance.PlayerManager.OnAttackStunEnemy?.Invoke();
         }
         
         private async UniTaskVoid PlayEffect()
