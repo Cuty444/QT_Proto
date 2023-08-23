@@ -66,32 +66,33 @@ namespace QT.Sound
             RuntimeManager.PlayOneShot(data, position == default ? Camera.main.transform.position : position);
         }
 
-        public void PlaySFX(EventReference data)
+        public void PlaySFX(EventReference data, Vector3 position = default, Transform parent = null)
         {
-            if (_sfxLoopDictionary.TryGetValue(data, out var value))
+            if (!_sfxLoopDictionary.TryGetValue(data, out var sfx))
             {
-                value.ChangeEvent(data);
-                value.Play();
-            }
-            else
-            {
-                var sfx = GameObject.Instantiate(new GameObject(), _poolRootTransform);
+                sfx = GameObject.Instantiate(new GameObject()).AddComponent<StudioEventEmitter>();
+
                 #if UNITY_EDITOR
                 sfx.name = data.Path;
                 #endif
-                var sfxEmitter = sfx.AddComponent<StudioEventEmitter>();
-                _sfxLoopDictionary.Add(data,sfxEmitter);
-                sfxEmitter.ChangeEvent(data);
-                sfxEmitter.Play();
+
+                _sfxLoopDictionary.Add(data, sfx);
             }
+            
+            sfx.transform.parent = parent;
+            sfx.transform.localPosition = position;
+            
+            sfx.ChangeEvent(data);
+            sfx.Play();
         }
         
         public void StopSFX(EventReference data,bool fadeOut = false)
         {
-            if (_sfxLoopDictionary.ContainsKey(data))
+            if (_sfxLoopDictionary.TryGetValue(data, out var sfx))
             {
-                _sfxLoopDictionary[data].AllowFadeout = fadeOut;
-                _sfxLoopDictionary[data].Stop();
+                sfx.AllowFadeout = fadeOut;
+                sfx.Stop();
+                sfx.transform.parent = _poolRootTransform;
             }
         }
         
