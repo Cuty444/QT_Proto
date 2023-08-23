@@ -26,7 +26,6 @@ namespace QT.Map
         [Header("맵 볼륨")] public VolumeProfile VolumeProfile;
         [Header("카메라 크기")] public float CameraSize = 7;
 
-        [Header("임시 -  층별 스폰 구별")] [SerializeField]
         private MapFloorChanger _changer;
         
         private RoomType _roomType;
@@ -53,6 +52,8 @@ namespace QT.Map
                 _doorEnterDirection = direction;
             });
             _playerManager.PlayerMapPosition.AddListener(PlayerMapEnter);
+
+            _changer = GetComponentInChildren<MapFloorChanger>();
         }
 
         private void OnDestroy()
