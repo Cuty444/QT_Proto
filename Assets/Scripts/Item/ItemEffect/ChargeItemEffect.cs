@@ -14,6 +14,7 @@ namespace QT.InGame
     //Param3 : 범위
     public class ChargeItemEffect : ItemEffect
     {
+        private const string BossTag = "Boss";
         private const float CheckIgnoreTime = 0.5f;
         private LayerMask WallLayer => LayerMask.GetMask("Default", "Wall", "HardCollider", "CharacterCollider", "Fall");
       
@@ -180,6 +181,11 @@ namespace QT.InGame
                         projectile.ProjectileHit(_dir, shootSpeed, _player.ProjectileShooter.BounceMask,
                             ProjectileOwner.Player, 0, false);
                         isHit = true;
+                    }
+
+                    if (hit.collider.CompareTag(BossTag))
+                    {
+                        _isCharging = false;
                     }
                 }
             }
