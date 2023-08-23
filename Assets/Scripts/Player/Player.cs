@@ -133,7 +133,7 @@ namespace QT.InGame
             _playerManager.OnGoldValueChanged.Invoke(_goldCost);
             _playerManager.OnGoldValueChanged.AddListener((value) =>
             {
-                _goldCost = value;
+                _goldCost = (int)(value * StatComponent.GetStat(PlayerStats.GoldGain).Value);
             });
             
             _playerManager.GainItemSprite.AddListener(GainItem);
