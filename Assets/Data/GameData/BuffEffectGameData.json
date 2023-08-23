@@ -8,13 +8,6 @@
 	],
 	[
 		{
-			"Index":"7000",
-			"ApplyStat":"SwingCooldown",
-			"ApplyValue":"0.7",
-			"ValueOperatorType":"Multiply",
-			"Duration":"-1",
-		},
-		{
 			"Index":"7001",
 			"ApplyStat":"SwingRad",
 			"ApplyValue":"1.2",
@@ -37,8 +30,8 @@
 		},
 		{
 			"Index":"7004",
-			"ApplyStat":"MovementSpd",
-			"ApplyValue":"1.2",
+			"ApplyStat":"SwingCooldown",
+			"ApplyValue":"0.7",
 			"ValueOperatorType":"Addition",
 			"Duration":"-1",
 		},
@@ -52,14 +45,14 @@
 		{
 			"Index":"8000",
 			"ApplyStat":"AtkDmgPer",
-			"ApplyValue":"0.3",
+			"ApplyValue":"0.4",
 			"ValueOperatorType":"Addition",
 			"Duration":"4",
 		},
 		{
 			"Index":"8001",
 			"ApplyStat":"AtkDmgPer",
-			"ApplyValue":"(HP_Base - HP)*0.004",
+			"ApplyValue":"(HP_Base - HP)*0.006",
 			"ValueOperatorType":"Addition",
 			"Duration":"-1",
 		},
@@ -93,14 +86,7 @@
 		},
 		{
 			"Index":"8004",
-			"ApplyStat":"ChargeBounceCount1",
-			"ApplyValue":"3",
-			"ValueOperatorType":"Addition",
-			"Duration":"-1",
-		},
-		{
-			"Index":"8004",
-			"ApplyStat":"ChargeBounceCount2",
+			"ApplyStat":"ChargeBounceCount",
 			"ApplyValue":"3",
 			"ValueOperatorType":"Addition",
 			"Duration":"-1",
@@ -131,7 +117,7 @@
 			"ApplyStat":"SwingCooldown",
 			"ApplyValue":"0.85",
 			"ValueOperatorType":"Multiply",
-			"Duration":"5",
+			"Duration":"4",
 		},
 		{
 			"Index":"9101",
@@ -162,24 +148,10 @@
 			"Duration":"-1",
 		},
 		{
-			"Index":"9004",
-			"ApplyStat":"ChargeBounceCount1",
-			"ApplyValue":"-1",
-			"ValueOperatorType":"Addition",
-			"Duration":"-1",
-		},
-		{
-			"Index":"9004",
-			"ApplyStat":"ChargeBounceCount2",
-			"ApplyValue":"-1",
-			"ValueOperatorType":"Addition",
-			"Duration":"-1",
-		},
-		{
-			"Index":"9004",
-			"ApplyStat":"ChargeAtkPierce",
-			"ApplyValue":"1",
-			"ValueOperatorType":"Hard",
+			"Index":"9104",
+			"ApplyStat":"SwingCooldown",
+			"ApplyValue":"1.4",
+			"ValueOperatorType":"Multiply",
 			"Duration":"-1",
 		},
 		{
