@@ -47,7 +47,7 @@ namespace QT
             float key = Random.Range(0, _max);
             float target = 0;
 
-            for (int i = 0; i < (int) GradeTypes.Max; ++i)
+            for (int i = 0; i < (int) GradeTypes.Max; i++)
             {
                 target += Percentages[i];
                 if (key < target)
