@@ -49,6 +49,7 @@ namespace QT.InGame
             _playerManager.OnSwingHit.AddListener(() => InvokeTrigger(TriggerTypes.OnSwingHit));
             _playerManager.OnAttackStunEnemy.AddListener(() => InvokeTrigger(TriggerTypes.OnAttackStunEnemy));
             _playerManager.OnParry.AddListener(() => InvokeTrigger(TriggerTypes.OnParry));
+            _playerManager.OnDodge.AddListener(() => InvokeTrigger(TriggerTypes.OnDodge));
         }
 
         private void InvokeTrigger(TriggerTypes triggerTypes)
