@@ -19,9 +19,15 @@ namespace QT.InGame
         public virtual ProjectileOwner Owner => ProjectileOwner.Player;
 
         public Transform ShootPoint;
-
         private Transform _targetTransform;
 
+        private StatComponent _statComponent;
+
+        public void Init(StatComponent statComponent)
+        {
+            _statComponent = statComponent;
+        }
+        
         public void SetTarget(Transform target)
         {
             _targetTransform = target;
@@ -36,15 +42,24 @@ namespace QT.InGame
                 return;
             }
 
+            int bounceStat = 0;
+            bool isPierce = false;
+            if (_statComponent != null)
+            {
+                bounceStat = (int)_statComponent.GetStat(PlayerStats.ChargeBounceCount2).Value;
+                isPierce = _statComponent.GetStat(PlayerStats.ChargeAtkPierce).Value >= 1;
+            }
+            
             foreach (var shoot in shootData)
             {
                 var dir = GetDirection(shoot.ShootAngle, aimType);
-                ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, 0, shoot.MaxBounceCount,owner);
+
+                ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, 0, shoot.MaxBounceCount + bounceStat, owner, isPierce);
             }
         }
 
         public virtual async void ShootProjectile(int projectileDataId, Vector2 dir, float speed,
-            float reflectCorrection, int bounceCount,ProjectileOwner owner, float releaseDelay = 0)
+            float reflectCorrection, int bounceCount, ProjectileOwner owner, bool isPierce = false, float releaseDelay = 0)
         {
             var projectileData = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
                 .GetData(projectileDataId);
@@ -57,7 +72,7 @@ namespace QT.InGame
                 await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
             projectile.transform.position = ShootPoint.position;
 
-            projectile.Init(projectileData, dir, speed, bounceCount, reflectCorrection, BounceMask, owner, releaseDelay, projectileData.PrefabPath);
+            projectile.Init(projectileData, dir, speed, bounceCount, reflectCorrection, BounceMask, owner, isPierce, releaseDelay, projectileData.PrefabPath);
         }
 
         protected virtual Vector2 GetDirection(float angle, AimTypes aimType)

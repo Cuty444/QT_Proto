@@ -42,8 +42,11 @@ namespace QT.InGame
             
             var throwSpd = _ownerEntity.StatComponent.GetStat(PlayerStats.ThrowSpd).Value;
             var throwBounceCount = (int)_ownerEntity.StatComponent.GetStat(PlayerStats.ThrowBounceCount).Value;
-            
-            _ownerEntity.ProjectileShooter.ShootProjectile(200, Util.Math.ZAngleToGetDirection(_ownerEntity.EyeTransform), throwSpd, 0, throwBounceCount,ProjectileOwner.Player, 2.5f);
+            bool isPierce = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeAtkPierce).Value >= 1;
+
+            _ownerEntity.ProjectileShooter.ShootProjectile(200,
+                Util.Math.ZAngleToGetDirection(_ownerEntity.EyeTransform), throwSpd, 0, throwBounceCount,
+                ProjectileOwner.Player, isPierce, 2.5f);
             
             _ownerEntity.RevertToPreviousState();
         }
