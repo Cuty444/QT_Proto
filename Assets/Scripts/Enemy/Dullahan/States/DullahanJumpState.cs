@@ -57,6 +57,8 @@ namespace QT.InGame
             
             _shadowColor = _ownerEntity.Shadow.color;
             _shadowScale = _ownerEntity.Shadow.transform.localScale;
+            
+            HitAbleManager.Instance.UnRegister(_ownerEntity);
         }
 
         public override void UpdateState()
@@ -170,6 +172,8 @@ namespace QT.InGame
             _ownerEntity.Animator.ResetTrigger(JumpReadyAnimHash);
             _ownerEntity.Animator.SetBool(IsJumpingAnimHash, false);
             _ownerEntity.SetPhysics(true);
+            
+            HitAbleManager.Instance.Register(_ownerEntity);
         }
     }
 }
