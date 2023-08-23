@@ -42,7 +42,7 @@ namespace QT.Util
     
     public static class UnityUtil
     {
-        public static readonly Vector2Int[] PathDirections = new Vector2Int[4] {Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right};
+        public static readonly Vector2Int[] PathDirections = new Vector2Int[4] {Vector2Int.up, Vector2Int.down, Vector2Int.right, Vector2Int.left};
 
         public static IEnumerator WaitForFunc(Action func, float delay)
         {
