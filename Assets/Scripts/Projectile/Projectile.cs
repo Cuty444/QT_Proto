@@ -110,7 +110,7 @@ namespace QT.InGame
             }
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, ProjectileOwner owner, float releaseDelay = 0, string path = "")
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, ProjectileOwner owner, bool isPierce = false, float releaseDelay = 0, string path = "")
         {
             _ballTransform.up = _direction = dir;
             _maxSpeed = _speed = speed;
@@ -129,6 +129,8 @@ namespace QT.InGame
                 _bounceCount = _maxBounce = 0;
                 _releaseDelay = 0;
             }
+
+            _isPierce = isPierce;
 
             _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _bounceMask = bounceMask;

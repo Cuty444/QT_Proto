@@ -39,7 +39,7 @@ namespace QT.InGame
             _targetPlayer.StatComponent.GetStat(PlayerStats.MovementSpd).OnValueChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnMovementSpdChanged));
             
-            _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
+            _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount).OnValueChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnChargeBounceCountChanged));
             
             
@@ -49,6 +49,7 @@ namespace QT.InGame
             _playerManager.OnSwingHit.AddListener(() => InvokeTrigger(TriggerTypes.OnSwingHit));
             _playerManager.OnAttackStunEnemy.AddListener(() => InvokeTrigger(TriggerTypes.OnAttackStunEnemy));
             _playerManager.OnParry.AddListener(() => InvokeTrigger(TriggerTypes.OnParry));
+            _playerManager.OnDodge.AddListener(() => InvokeTrigger(TriggerTypes.OnDodge));
         }
 
         private void InvokeTrigger(TriggerTypes triggerTypes)

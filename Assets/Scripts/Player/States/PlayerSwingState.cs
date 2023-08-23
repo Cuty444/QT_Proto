@@ -105,12 +105,12 @@ namespace QT.InGame
             var rigidDmg = _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
             var shootSpd = _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
             
-            var bounce = (int) _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;
+            var bounce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeBounceCount).Value;
             
             var projectileDamage = (int)_ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1);
             var enemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.EnemyProjectileDmg2 : PlayerStats.EnemyProjectileDmg1);
             
-            var powerBounce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeBounceCount2).Value;
+            var powerBounce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeBounceCount).Value;
             var powerEnemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg2);
             var powerShootSpd = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeShootSpd2).Value;
             
@@ -254,7 +254,7 @@ namespace QT.InGame
 
         private void SetLines()
         {
-            var bounceCount = (int) _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeBounceCount2 : PlayerStats.ChargeBounceCount1).Value;;
+            var bounceCount = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeBounceCount).Value;;
 
             for (int i = 0; i < _lines.Count; i++)
             {

@@ -87,12 +87,16 @@ namespace QT.InGame
             BuffComponent = GetComponent<BuffComponent>();
             BuffComponent.Init(StatComponent);
             
+            ProjectileShooter = GetComponent<PlayerProjectileShooter>();
+            ProjectileShooter.Init(StatComponent);
+            
             OnAim.RemoveAllListeners();
             Rigidbody = GetComponent<Rigidbody2D>();
+            
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
             SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
-            ProjectileShooter = GetComponent<PlayerProjectileShooter>();
+            
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             GhostEffect = GetComponentInChildren<SkeletonGhost>();
             
@@ -109,7 +113,6 @@ namespace QT.InGame
             {
                 Inventory.AddItem(_playerManager.PlayerActiveItemIndex);
             }
-            
 
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));

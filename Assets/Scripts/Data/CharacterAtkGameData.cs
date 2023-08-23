@@ -25,8 +25,7 @@ namespace QT
         public int ChargeShootSpd1 { get; set; }
         public int ChargeShootSpd2 { get; set; }
         
-        public int ChargeBounceCount1 { get; set; }
-        public int ChargeBounceCount2 { get; set; }
+        public int ChargeBounceCount { get; set; }
         
         public int ChargeRigidDmg1 { get; set; }
         public int ChargeRigidDmg2 { get; set; }

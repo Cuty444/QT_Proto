@@ -23,8 +23,10 @@ namespace QT
             OnSwingHit = 1 << 7,
             OnAttackStunEnemy = 1 << 8,
             OnParry = 1 << 9,
-            OnMovementSpdChanged = 1 << 10,
-            OnChargeBounceCountChanged = 1 << 11
+            OnDodge = 1 << 10,
+            
+            OnMovementSpdChanged = 1 << 11,
+            OnChargeBounceCountChanged = 1 << 12
         }
 
         public int Index { get; set; }

@@ -69,6 +69,8 @@ namespace QT.InGame
                 }
                 
             },duration));
+            
+            SystemManager.Instance.PlayerManager.OnDodge?.Invoke();
         }
         
         public override void ClearState()
