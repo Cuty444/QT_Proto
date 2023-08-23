@@ -16,6 +16,7 @@ namespace QT.UI
         
         [SerializeField] private UITweenAnimator _popAnimation;
         private bool isFirst = false;
+        
         public override void PostSystemInitialize()
         {
             OnOpen();
@@ -47,6 +48,10 @@ namespace QT.UI
             //{
                 SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
             //}
+            
+            
+            // 무지성 보스 HP 버그 수정
+            SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>().OnClose();
         }
 
         public void RestartAnimation()
