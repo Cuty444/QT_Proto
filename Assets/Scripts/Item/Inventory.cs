@@ -119,7 +119,12 @@ namespace QT.InGame
 
         public void ClearItems()
         {
-            ActiveItem?.OnRemoved();
+            if (ActiveItem != null)
+            {
+                ActiveItem.OnRemoved();
+                ActiveItem = null;
+            }
+
             foreach (var item in _items)
             {
                 item.OnRemoved();
