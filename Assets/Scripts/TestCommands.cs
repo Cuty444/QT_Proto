@@ -27,6 +27,7 @@ namespace QT
         public static void PowerOver()
         {
             SystemManager.Instance.PlayerManager.Player.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).AddModifier(new StatModifier(999999,StatModifier.ModifierType.Hard,null));
+            SystemManager.Instance.PlayerManager.Player.StatComponent.GetStat(PlayerStats.AtkDmgPer).AddModifier(new StatModifier(999999,StatModifier.ModifierType.Hard,null));
             Debug.Log("Power Overwhelming");
         }
 

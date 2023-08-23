@@ -37,6 +37,8 @@ namespace QT.InGame
         {
             _targetUpdateCoolTime = 0;
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
+            
+            HitAbleManager.Instance.UnRegister(_ownerEntity);
         }
 
         public override void UpdateState()
@@ -66,6 +68,7 @@ namespace QT.InGame
 
         public override void ClearState()
         {
+            HitAbleManager.Instance.Register(_ownerEntity);
         }
 
         private void Move(float targetDistance)
