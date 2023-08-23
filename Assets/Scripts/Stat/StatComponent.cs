@@ -41,8 +41,7 @@ namespace QT.InGame
         ChargeShootSpd1,
         ChargeShootSpd2,
             
-        ChargeBounceCount1,
-        ChargeBounceCount2,
+        ChargeBounceCount,
             
         ReflectCorrection,
             

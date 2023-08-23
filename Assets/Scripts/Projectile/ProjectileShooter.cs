@@ -46,7 +46,7 @@ namespace QT.InGame
             bool isPierce = false;
             if (_statComponent != null)
             {
-                bounceStat = (int)_statComponent.GetStat(PlayerStats.ChargeBounceCount2).Value;
+                bounceStat = (int)_statComponent.GetStat(PlayerStats.ChargeBounceCount).Value;
                 isPierce = _statComponent.GetStat(PlayerStats.ChargeAtkPierce).Value >= 1;
             }
             

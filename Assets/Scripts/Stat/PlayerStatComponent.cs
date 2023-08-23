@@ -47,8 +47,7 @@ namespace QT.InGame
             _stats.Add(PlayerStats.ChargeShootSpd1, new(atkData.ChargeShootSpd1));
             _stats.Add(PlayerStats.ChargeShootSpd2, new(atkData.ChargeShootSpd2));
 
-            _stats.Add(PlayerStats.ChargeBounceCount1, new(atkData.ChargeBounceCount1));
-            _stats.Add(PlayerStats.ChargeBounceCount2, new(atkData.ChargeBounceCount2));
+            _stats.Add(PlayerStats.ChargeBounceCount, new(atkData.ChargeBounceCount));
 
             _stats.Add(PlayerStats.ChargeRigidDmg1, new(atkData.ChargeRigidDmg1));
             _stats.Add(PlayerStats.ChargeRigidDmg2, new(atkData.ChargeRigidDmg2));

@@ -39,7 +39,7 @@ namespace QT.InGame
             _targetPlayer.StatComponent.GetStat(PlayerStats.MovementSpd).OnValueChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnMovementSpdChanged));
             
-            _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount2).OnValueChanged
+            _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount).OnValueChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnChargeBounceCountChanged));
             
             
