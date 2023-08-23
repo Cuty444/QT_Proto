@@ -37,6 +37,13 @@ namespace QT
             SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(Vector2Int.up);
         }
         
+        [ConsoleMethod("Shop", "상점방 강제 이동")]
+        public static void Shop()
+        {
+            SystemManager.Instance.PlayerManager.PlayerMapPosition.Invoke(SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.ShopRoomPosition - Vector2Int.down);
+            SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(Vector2Int.up);
+        }
+        
         [ConsoleMethod("RoomMove", "방 생성순서 강제 이동")]
         public static void RoomMove(int index)
         {
