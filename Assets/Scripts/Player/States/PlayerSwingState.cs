@@ -183,6 +183,7 @@ namespace QT.InGame
                 _ownerEntity.AttackImpulseSource.GenerateImpulse(aimDir * _ownerEntity.AttackImpulseForce);
                 
                 SystemManager.Instance.PlayerManager.OnSwingHit?.Invoke();
+                _soundManager.PlayOneShot(_soundManager.SoundData.PlayerSwingHitSFX);
             }
 
             if (ballHitCount > 0)
@@ -191,12 +192,7 @@ namespace QT.InGame
                 
                 SystemManager.Instance.PlayerManager.OnParry?.Invoke();
             }
-            
-            if (enemyHitCount > 0)
-            {
-                _soundManager.PlayOneShot(_soundManager.SoundData.PlayerSwingHitSFX);
-            }
-            
+
             if(ballHitCount == 0 && enemyHitCount == 0)
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.SwingSFX);
