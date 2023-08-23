@@ -74,6 +74,7 @@ namespace QT.InGame
                     {
                         SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>().OnClose();
                         SystemManager.Instance.UIManager.GetUIPanel<RecordCanvas>().OnOpen();
+                        _state++;
                     }
                     break;
             }
