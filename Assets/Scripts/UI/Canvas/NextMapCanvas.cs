@@ -14,6 +14,8 @@ namespace QT.NextMap
         [SerializeField] private Transform[] panel;
         [SerializeField] private float _durationTime = 0.1f;
         private Vector2 panelSize = new Vector2(3000f, 1750f);
+        
+        private float _startTime;
 
         public override void PostSystemInitialize()
         {
@@ -24,7 +26,9 @@ namespace QT.NextMap
         public void OnDirection(Vector2Int direction)
         {
             OnOpen();
+            _startTime = Time.timeScale;
             Time.timeScale = 0f;
+            
             if (direction == Vector2Int.up)
             {
                 panel[1].gameObject.SetActive(true);
@@ -84,7 +88,7 @@ namespace QT.NextMap
                     yield return null;
                 }
             }
-            Time.timeScale = 1f;
+            Time.timeScale = _startTime;
             func?.Invoke();
         }
     }

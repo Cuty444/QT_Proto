@@ -8,6 +8,7 @@ using QT.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 namespace QT.Map
 {
@@ -24,6 +25,9 @@ namespace QT.Map
 
         [Header("맵 볼륨")] public VolumeProfile VolumeProfile;
         [Header("카메라 크기")] public float CameraSize = 7;
+
+        [Header("임시 -  층별 스폰 구별")] [SerializeField]
+        private MapFloorChanger _changer;
         
         private RoomType _roomType;
 
@@ -86,6 +90,7 @@ namespace QT.Map
         public void PlayRoom(Vector2Int position)
         {
             gameObject.SetActive(true);
+            _changer?.Spawn();
             
             _isPlaying = true;
             _playerManager.PlayerMapPass.Invoke(false);

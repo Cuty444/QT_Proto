@@ -69,7 +69,8 @@ namespace QT.InGame
             _cancellationTokenSource = new CancellationTokenSource();
             
             SystemManager.Instance.ResourceManager.EmitParticle(AbsorbEffectPath, Vector2.zero, 0, _player.CenterTransform);
-            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.ActiveOneKiOkStartSFX);
+            SystemManager.Instance.SoundManager.PlaySFX(SystemManager.Instance.SoundManager.SoundData.ActiveOneKiOkStartSFX, Vector3.zero, _player.CenterTransform);
+            
             while (_chargingTime < _maxChargingDuration)
             {
                 await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, _cancellationTokenSource.Token);
@@ -104,6 +105,8 @@ namespace QT.InGame
                 }
             }
 
+            SystemManager.Instance.SoundManager.StopSFX(SystemManager.Instance.SoundManager.SoundData.ActiveOneKiOkStartSFX);
+            
             Shoot();
         }
 
