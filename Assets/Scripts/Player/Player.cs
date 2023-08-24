@@ -130,10 +130,14 @@ namespace QT.InGame
             
             _isEnterDoor = true;
             
-            _playerManager.OnGoldValueChanged.Invoke(_goldCost);
             _playerManager.OnGoldValueChanged.AddListener((value) =>
             {
-                _goldCost = (int)(value * StatComponent.GetStat(PlayerStats.GoldGain).Value);
+                if (value > 0)
+                {
+                    value = (int)(value * StatComponent.GetStat(PlayerStats.GoldGain).Value);
+                }
+                
+                _goldCost += value;
             });
             
             _playerManager.GainItemSprite.AddListener(GainItem);

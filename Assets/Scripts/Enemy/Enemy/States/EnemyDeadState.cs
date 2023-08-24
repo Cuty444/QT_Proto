@@ -24,7 +24,13 @@ namespace QT.InGame
             _ownerEntity.BallObject.localPosition = Vector3.up * _ownerEntity.BallHeightMin;
             _ownerEntity.HpCanvas.gameObject.SetActive(false);
             PlayerManager _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() + _ownerEntity.RandomGoldDrop());
+
+            var gold = _ownerEntity.RandomGoldDrop();
+            if (gold > 0)
+            {
+                _playerManager.OnGoldValueChanged.Invoke(gold);
+            }
+
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Coin_GetSFX);
             _ownerEntity.ShadowSprite.DOFade(0, 1).SetEase(Ease.InQuad);
             _ownerEntity.DeadSound();
