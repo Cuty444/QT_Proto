@@ -59,7 +59,6 @@ namespace QT.InGame
 
         private bool _isEnterDoor;
 
-        private int _goldCost = 0;
         private PlayerHPCanvas _playerHpCanvas;
 
         [SerializeField] private Transform _attackSpeedCanvas;
@@ -117,7 +116,6 @@ namespace QT.InGame
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
 
-            _goldCost = _playerManager.globalGold;
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             StatComponent.GetStatus(PlayerStats.HP).SetStatus(StatComponent.GetStatus(PlayerStats.HP).Value);
             _playerHpCanvas.SetHp(StatComponent.GetStatus(PlayerStats.HP));
@@ -129,17 +127,7 @@ namespace QT.InGame
             });
             
             _isEnterDoor = true;
-            
-            _playerManager.OnGoldValueChanged.AddListener((value) =>
-            {
-                if (value > 0)
-                {
-                    value = (int)(value * StatComponent.GetStat(PlayerStats.GoldGain).Value);
-                }
-                
-                _goldCost += value;
-            });
-            
+
             _playerManager.GainItemSprite.AddListener(GainItem);
             
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>()?.OnOpen();
@@ -166,16 +154,6 @@ namespace QT.InGame
             _playerManager.OnDamageEvent.Invoke(dir, power);
         }
         
-        public int GetGoldCost()
-        {
-            return _goldCost;
-        }
-
-        public bool GetGoldComparison(int cost)
-        {
-            return _goldCost >= cost;
-        }
-
         public bool GetHpComparision(int hpCost)
         {
             return StatComponent.GetStatus(PlayerStats.HP) > hpCost;
@@ -187,7 +165,7 @@ namespace QT.InGame
             _playerManager.PlayerIndexInventory.Clear();
             _playerManager.PlayerActiveItemIndex = -1;
             
-            SystemManager.Instance.PlayerManager.globalGold = 0;
+            SystemManager.Instance.PlayerManager.Reset();;
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             ChangeState(Player.States.Dead);

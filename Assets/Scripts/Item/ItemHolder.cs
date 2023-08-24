@@ -89,7 +89,7 @@ namespace QT
         {
             if (DropType == DropGameType.Shop)
             {
-                if (!_playerManager.Player.GetGoldComparison(ItemGameData.CostGold))
+                if (_playerManager.Gold < ItemGameData.CostGold)
                 {
                     SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Shop_BuyErrorSFX);
                     _itemDesc.PlayFailButtonAnimation();

@@ -72,7 +72,7 @@ namespace QT
         public static void Gold(int value)
         {
             var _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.OnGoldValueChanged.Invoke(_playerManager.Player.GetGoldCost() + value);
+            _playerManager.OnGoldValueChanged.Invoke(value);
         }
     }
 }

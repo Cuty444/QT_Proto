@@ -189,7 +189,7 @@ namespace QT.UI
             var _playerManager = SystemManager.Instance.PlayerManager;
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
-            _playerManager.globalGold = 0;
+            _playerManager.Reset();
             
             _playerManager.Player.Inventory.ClearItems();
             _playerManager.PlayerIndexInventory.Clear();

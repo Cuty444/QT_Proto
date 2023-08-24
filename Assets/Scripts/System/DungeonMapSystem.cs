@@ -624,7 +624,6 @@ namespace QT.Core.Map
                 _playerManager.PlayerActiveItemIndex = _playerManager.Player.Inventory.ActiveItem.ItemGameData.Index;
             }
 
-            _playerManager.globalGold = _playerManager.Player.GetGoldCost();
             var uiManager = SystemManager.Instance.UIManager;
             uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
             {
