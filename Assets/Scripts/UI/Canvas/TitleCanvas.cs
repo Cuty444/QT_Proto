@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Core.Map;
 using QT.Ranking;
 using QT.Tutorial;
 using QT.Util;
@@ -63,6 +64,8 @@ namespace QT.UI
         {
             if (SystemManager.Instance.LoadingManager.IsJsonLoad())
             {
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+                
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
                 SystemManager.Instance.StageLoadManager.StageLoad(string.Empty);
                 SystemManager.Instance.LoadingManager.LoadScene(1, OnClose);
