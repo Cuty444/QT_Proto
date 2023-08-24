@@ -43,6 +43,8 @@ namespace QT.UI
             playerManager.PlayerActiveItemIndex = -1;
             
             
+            SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>().OnClose();
+            
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             var buttonTrigger = _canvasGroup.GetComponentsInChildren<ButtonTrigger>()[1];
