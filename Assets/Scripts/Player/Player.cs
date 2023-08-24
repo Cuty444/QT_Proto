@@ -179,8 +179,10 @@ namespace QT.InGame
         
         public void PlayerDead()
         {
+            Inventory.ClearItems();
             _playerManager.PlayerIndexInventory.Clear();
             _playerManager.PlayerActiveItemIndex = -1;
+            
             SystemManager.Instance.PlayerManager.globalGold = 0;
             SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
