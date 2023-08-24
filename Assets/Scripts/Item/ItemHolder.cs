@@ -115,7 +115,7 @@ namespace QT
             
             if (DropType == DropGameType.Shop)
             {
-                _playerManager.OnGoldValueChanged.Invoke(ItemGameData.CostGold);
+                _playerManager.OnGoldValueChanged.Invoke(-ItemGameData.CostGold);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData
                     .Shop_BuySFX);
 
