@@ -68,7 +68,7 @@ namespace QT.Sound
 
         public void PlaySFX(EventReference data, Vector3 position = default, Transform parent = null)
         {
-            if (!_sfxLoopDictionary.TryGetValue(data, out var sfx))
+            if (!_sfxLoopDictionary.TryGetValue(data, out var sfx) || sfx == null)
             {
                 sfx = GameObject.Instantiate(new GameObject()).AddComponent<StudioEventEmitter>();
 
@@ -76,7 +76,10 @@ namespace QT.Sound
                 sfx.name = data.Path;
                 #endif
 
-                _sfxLoopDictionary.Add(data, sfx);
+                if(_sfxLoopDictionary.ContainsKey(data))
+                    _sfxLoopDictionary[data] = sfx;
+                else
+                    _sfxLoopDictionary.Add(data, sfx);
             }
             
             sfx.transform.parent = parent;

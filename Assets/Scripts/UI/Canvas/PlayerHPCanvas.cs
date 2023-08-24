@@ -46,7 +46,6 @@ namespace QT.UI
         private void Start()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.OnGoldValueChanged.AddListener(SetGoldText);
 
             //playerManager.PlayerCreateEvent.AddListener((arg) =>
             //{
@@ -176,9 +175,9 @@ namespace QT.UI
             _playerDodgeCoolBarImage.fillAmount = value;
         }
 
-        private void SetGoldText(int goldText)
+        public void SetGoldText(int goldText)
         {
-            var str = _playerManager.Player.GetGoldCost().ToString();
+            var str = _playerManager.Gold.ToString();
 
             if (str != _goldCostText.text)
             {

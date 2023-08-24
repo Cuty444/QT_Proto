@@ -34,7 +34,7 @@ namespace QT.UI
             _canvasGroup.interactable = false;
             _retryButtonTrigger.InteractableOff();
             _titleButtonTrigger.InteractableOff();
-            SystemManager.Instance.PlayerManager.globalGold = 0;
+            SystemManager.Instance.PlayerManager.Reset();
 
             var playerManager = SystemManager.Instance.PlayerManager;
                 
