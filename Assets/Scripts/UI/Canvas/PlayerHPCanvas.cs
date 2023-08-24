@@ -178,7 +178,7 @@ namespace QT.UI
 
         private void SetGoldText(int goldText)
         {
-            var str = goldText.ToString();
+            var str = _playerManager.Player.GetGoldCost().ToString();
 
             if (str != _goldCostText.text)
             {

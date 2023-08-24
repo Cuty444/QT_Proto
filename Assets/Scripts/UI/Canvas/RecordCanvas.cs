@@ -31,7 +31,11 @@ namespace QT
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             _playerManager.globalGold = 0;
+            
+            _playerManager.Player.Inventory.ClearItems();
             _playerManager.PlayerIndexInventory.Clear();
+            _playerManager.PlayerActiveItemIndex = -1;
+            
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             
             _popAnimation.ReStart();
