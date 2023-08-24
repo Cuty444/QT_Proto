@@ -35,7 +35,14 @@ namespace QT.UI
             _retryButtonTrigger.InteractableOff();
             _titleButtonTrigger.InteractableOff();
             SystemManager.Instance.PlayerManager.globalGold = 0;
-            SystemManager.Instance.PlayerManager.PlayerIndexInventory.Clear();
+            
+            var playerManager = SystemManager.Instance.PlayerManager
+                
+            playerManager.Player.Inventory.ClearItems();
+            playerManager.PlayerIndexInventory.Clear();
+            playerManager.PlayerActiveItemIndex = -1;
+            
+            
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             var buttonTrigger = _canvasGroup.GetComponentsInChildren<ButtonTrigger>()[1];
