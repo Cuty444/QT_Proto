@@ -105,7 +105,6 @@ namespace QT.Core.Map
             _pathDirections.Add(Vector2Int.left,MapDirection.Right);
             _maxRoomValue--; // TODO : 보스방 생성에 의해 1개 줄임
             SystemManager.Instance.PlayerManager.StairNextRoomEvent.AddListener(NextFloor);
-            DungenMapGenerate();
             
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
             {
@@ -126,15 +125,17 @@ namespace QT.Core.Map
         
         public void DungenMapGenerate()
         {
-            if (_floorValue != 0)
+            var data = SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>().GetData(800 + _floorValue);
+
+            if (data != null)
             {
-                var data = SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>().GetData(800 + _floorValue);
                 _maxRoomValue = data.MaxRoomValue - 1;
             }
             else
             {
                 _maxRoomValue = 9;
             }
+            
             Vector2Int startPos = new Vector2Int(_mapWidth / 2, _mapHeight / 2);
             _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
             if(_mapList != null)
