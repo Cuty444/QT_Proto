@@ -73,7 +73,7 @@ namespace QT.InGame
             }
             
             Move(targetDistance);
-            CheckBodyContact();
+            //CheckBodyContact();
             
             if (CheckAttackStart(targetDistance))
             {
