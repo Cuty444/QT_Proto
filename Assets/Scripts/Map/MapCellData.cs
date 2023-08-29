@@ -176,23 +176,27 @@ namespace QT.Map
             DoorExitDirection(_doorEnterDirection);
         }
         
-        public void DoorExitDirection(Vector2Int enterDirection)
+        public void DoorExitDirection(Vector2Int enterDirection) // TODO : 여기 추후에 유니티 이벤트 부분 던전 매니저로 변경 필요
         {
             if (Vector2Int.up == enterDirection)
             {
                 _playerManager.Player.transform.position = _doorExitTransforms[1].position;
+                _playerManager.Player.LastSafePosition = _doorExitTransforms[1].position;
             }
             else if (Vector2Int.down == enterDirection)
             {
                 _playerManager.Player.transform.position = _doorExitTransforms[0].position;
+                _playerManager.Player.LastSafePosition = _doorExitTransforms[0].position;
             }
             else if (Vector2Int.left == enterDirection)
             {
                 _playerManager.Player.transform.position = _doorExitTransforms[2].position;
+                _playerManager.Player.LastSafePosition = _doorExitTransforms[2].position;
             }
             else if (Vector2Int.right == enterDirection)
             {
                 _playerManager.Player.transform.position = _doorExitTransforms[3].position;
+                _playerManager.Player.LastSafePosition = _doorExitTransforms[3].position;
             }
         }
         
