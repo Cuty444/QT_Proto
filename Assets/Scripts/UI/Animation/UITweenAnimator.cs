@@ -50,6 +50,11 @@ namespace QT
             }
         }
 
+        private void OnDestroy()
+        {
+            _sequence?.Kill();
+        }
+
         public void ReStart()
         {
             if (_sequence == null)

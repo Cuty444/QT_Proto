@@ -124,11 +124,6 @@ namespace QT.InGame
 
             foreach (var hitAble in _hitAbles)
             {
-                var hitDir = (hitAble.Position - (Vector2) _ownerEntity.transform.position).normalized;
-                
-                hitAble.Hit(hitDir, rigidDmg, _isCharged ? AttackType.PowerSwing : AttackType.Swing);
-                hitCount++;
-
                 if (hitAble.IsClearTarget)
                 {
                     SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitAble.Position);
@@ -140,10 +135,15 @@ namespace QT.InGame
                         enemy.ResetProjectileDamage(powerEnemyProjectileDamage);
                         enemy.ProjectileHit(GetNewProjectileDir(enemy), powerShootSpd, mask, ProjectileOwner.Player,
                             _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
-
+                    
                         stunEnemyCount++;
                     }
                 }
+                
+                var hitDir = (hitAble.Position - (Vector2) _ownerEntity.transform.position).normalized;
+                
+                hitAble.Hit(hitDir, rigidDmg, _isCharged ? AttackType.PowerSwing : AttackType.Swing);
+                hitCount++;
             }
 
             if (_isCharged)

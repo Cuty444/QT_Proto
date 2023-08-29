@@ -34,6 +34,8 @@ namespace QT.InGame
 
         public void InitializeState(Vector2 dir)
         {
+            _ownerEntity.Rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.AddForce(dir * _globalData.KnockBackSpd, ForceMode2D.Impulse);
             
@@ -68,7 +70,7 @@ namespace QT.InGame
 
             if (_isKnockBack && _timer > _knockBackTime)
             {
-                _ownerEntity.Rigidbody.velocity *= _globalData.KnockBackDecay;
+                _ownerEntity.Rigidbody.bodyType = RigidbodyType2D.Kinematic;
                 _isKnockBack = false;
             }
             

@@ -21,15 +21,8 @@ namespace QT.Core.Data
         [field: SerializeField]
         [Tooltip("배트로 때려서 경직(rigid)상태에 진입했을 때 적 속도")]
         public float KnockBackTime { get; private set; } = 0.2f;
-        
-        /// <summary>
-        /// 넉백이 종료되었을 때 속도 감쇄
-        /// </summary>
-        [field: SerializeField]
-        [Tooltip("넉백이 종료되었을 때 속도 감쇄")]
-        public float KnockBackDecay { get; private set; } = 0.2f;
 
-        
+
         /// <summary>
         /// 배트로 때려서 경직(rigid)상태가 풀릴때까지 걸리는 시간
         /// </summary>
