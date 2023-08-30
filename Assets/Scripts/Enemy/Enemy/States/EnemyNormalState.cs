@@ -73,6 +73,7 @@ namespace QT.InGame
             }
             
             Move(targetDistance);
+            
             CheckBodyContact();
             
             if (CheckAttackStart(targetDistance))
@@ -181,6 +182,11 @@ namespace QT.InGame
 
         private void CheckBodyContact()
         {
+            if (_data.BodyContactDmg <= 0)
+            {
+                return;
+            }
+            
             var hit = Physics2D.OverlapCircle(_ownerEntity.transform.position, _ownerEntity.ColliderRad,
                 _ownerEntity.Shooter.BounceMask);
 
