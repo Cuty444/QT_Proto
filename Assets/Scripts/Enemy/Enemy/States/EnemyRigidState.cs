@@ -70,6 +70,7 @@ namespace QT.InGame
 
             if (_isKnockBack && _timer > _knockBackTime)
             {
+                _ownerEntity.Rigidbody.velocity = Vector2.zero;
                 _ownerEntity.Rigidbody.bodyType = RigidbodyType2D.Kinematic;
                 _isKnockBack = false;
             }
