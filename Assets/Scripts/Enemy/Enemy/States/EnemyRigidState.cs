@@ -34,7 +34,7 @@ namespace QT.InGame
 
         public void InitializeState(Vector2 dir)
         {
-            _ownerEntity.Rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
             
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.AddForce(dir * _globalData.KnockBackSpd, ForceMode2D.Impulse);
@@ -62,6 +62,7 @@ namespace QT.InGame
         public override void ClearState()
         {
             _ownerEntity.MaterialChanger.ClearMaterial();
+            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
         public override void UpdateState()
@@ -71,7 +72,7 @@ namespace QT.InGame
             if (_isKnockBack && _timer > _knockBackTime)
             {
                 _ownerEntity.Rigidbody.velocity = Vector2.zero;
-                _ownerEntity.Rigidbody.bodyType = RigidbodyType2D.Kinematic;
+                _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
                 _isKnockBack = false;
             }
             
