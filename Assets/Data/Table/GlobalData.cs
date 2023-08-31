@@ -8,6 +8,15 @@ namespace QT.Core.Data
     public class GlobalData : ScriptableObject
     {
         /// <summary>
+        /// 차징 이동속도 및 이펙트 적용까지 유예 시간
+        /// </summary>
+        [field: Header("차징 대기")]
+        [field: SerializeField]
+        [Tooltip("차징 이동속도 및 이펙트 적용까지 유예 시간")]
+        public float ChargeAtkDelay { get; private set; } = 0.1f;
+        
+        
+        /// <summary>
         /// 배트로 때려서 경직(rigid)상태에 진입했을 때 적 속도
         /// </summary>
         [field: Header("적 경직")]

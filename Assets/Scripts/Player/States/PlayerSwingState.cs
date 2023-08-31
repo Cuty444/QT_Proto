@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
+using QT.Core.Data;
 using QT.Sound;
 
 namespace QT.InGame
@@ -23,12 +24,14 @@ namespace QT.InGame
 
         private LayerMask _projectileLayerMask;
 
+        private bool _isCharging = false;
         private bool _isCharged = false;
         private float _chargingTime;
         private float _currentSwingRad, _currentSwingCentralAngle;
 
         private SoundManager _soundManager;
-
+        private GlobalData _globalData;
+        
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
@@ -40,27 +43,25 @@ namespace QT.InGame
             _projectileLayerMask = int.MaxValue;//LayerMask.GetMask("Player");
             
             SystemManager.Instance.ResourceManager.CacheAsset(HitLinePath);
-            
-            _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeMovementSpd);
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
         }
 
 
         public override void InitializeState()
         {
             base.InitializeState();
-            CheckSwingAreaMesh();
             SetLineObjects();
 
-            _ownerEntity.SwingAreaMeshRenderer.enabled = true;
-
+            _isCharged = false;
+            _isCharging = false;
+            
             if (_ownerEntity.PreviousStateIndex != (int) Player.States.Dodge)
             {
-                _isCharged = false;
                 _chargingTime = 0;
+                _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.MovementSpd);
+
                 _soundManager.PlaySFX(_soundManager.SoundData.ChargeSFX);
             }
-            if(!_isCharged)
-                _ownerEntity.ChargingEffectPlay();
         }
 
         public override void ClearState()
@@ -223,6 +224,17 @@ namespace QT.InGame
             {
                 return;
             }
+
+            if (!_isCharging && _globalData.ChargeAtkDelay < _chargingTime)
+            {
+                _isCharging = true;
+                _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeMovementSpd);
+                _ownerEntity.ChargingEffectPlay();
+                
+                CheckSwingAreaMesh();
+                _ownerEntity.SwingAreaMeshRenderer.enabled = true;
+            }
+            
             
             if (_ownerEntity.StatComponent.GetStat(PlayerStats.ChargeTime).Value < _chargingTime)
             {
