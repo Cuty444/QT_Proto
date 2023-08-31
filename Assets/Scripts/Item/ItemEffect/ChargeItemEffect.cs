@@ -212,7 +212,7 @@ namespace QT.InGame
                 SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
                 _player.AttackImpulseSource.GenerateImpulse(normal * 3);
 
-                _soundManager.PlayOneShot(_soundManager.SoundData.ActiveDashExplosionSFX, position);
+                _soundManager.PlayOneShot(_soundManager.SoundData.ActiveDashExplosionSFX);
                 
                 return true;
             }
