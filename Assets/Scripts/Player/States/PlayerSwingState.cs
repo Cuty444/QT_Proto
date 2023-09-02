@@ -220,11 +220,6 @@ namespace QT.InGame
 
         private void GetChargeLevel()
         {
-            if (_isCharged)
-            {
-                return;
-            }
-
             if (!_isCharging && _globalData.ChargeAtkDelay < _chargingTime)
             {
                 _isCharging = true;
@@ -235,8 +230,7 @@ namespace QT.InGame
                 _ownerEntity.SwingAreaMeshRenderer.enabled = true;
             }
             
-            
-            if (_ownerEntity.StatComponent.GetStat(PlayerStats.ChargeTime).Value < _chargingTime)
+            if (!_isCharged && _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeTime).Value < _chargingTime)
             {
                 _isCharged = true;
                 _soundManager.StopSFX(_soundManager.SoundData.ChargeSFX);
