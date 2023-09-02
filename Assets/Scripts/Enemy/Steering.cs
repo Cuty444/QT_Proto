@@ -79,6 +79,8 @@ namespace QT.InGame
 
         public readonly float[] Weights = new float[DirCount];
 
+        public int AddedWeightCount { get; private set; } = 0;
+
         public void AddWeight(Vector2 dir, float weight)
         {
             dir.Normalize();
@@ -92,6 +94,8 @@ namespace QT.InGame
                     Weights[i] = result;
                 }
             }
+
+            AddedWeightCount++;
         }
 
         public void ShowDebugRays(Vector2 start, Color color)
