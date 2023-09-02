@@ -59,8 +59,6 @@ namespace QT.InGame
             {
                 _chargingTime = 0;
                 _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.MovementSpd);
-
-                _soundManager.PlaySFX(_soundManager.SoundData.ChargeSFX);
             }
         }
 
@@ -224,7 +222,9 @@ namespace QT.InGame
             {
                 _isCharging = true;
                 _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeMovementSpd);
+                
                 _ownerEntity.ChargingEffectPlay();
+                _soundManager.PlaySFX(_soundManager.SoundData.ChargeSFX);
                 
                 CheckSwingAreaMesh();
                 _ownerEntity.SwingAreaMeshRenderer.enabled = true;
