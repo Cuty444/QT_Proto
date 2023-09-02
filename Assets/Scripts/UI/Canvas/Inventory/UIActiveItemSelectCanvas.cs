@@ -32,6 +32,11 @@ namespace QT.UI
 
         public async void Show(ItemGameData itemGameData1, ItemGameData itemGameData2, UnityAction<ItemGameData> onSelect)
         {
+            if (itemGameData1 == itemGameData2)
+            {
+                return;
+            }
+            
             StopAllCoroutines();
 
             var resourceManager = SystemManager.Instance.ResourceManager;
