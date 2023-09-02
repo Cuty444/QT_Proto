@@ -38,6 +38,7 @@ namespace QT.InGame
             _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
             _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
             
+            _ownerEntity.Animator.ResetTrigger(AnimationDodgeEndHash);
             _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
             _soundManager.PlayOneShot(_soundManager.SoundData.PlayerDashSFX);
             
@@ -75,6 +76,7 @@ namespace QT.InGame
         
         public override void ClearState()
         {
+            _ownerEntity.Animator.ResetTrigger(AnimationDodgeHash);
             _ownerEntity.Animator.SetTrigger(AnimationDodgeEndHash);
             
             _ownerEntity.gameObject.layer = _playerLayer;
