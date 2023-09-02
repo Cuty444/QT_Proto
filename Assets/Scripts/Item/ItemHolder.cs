@@ -30,6 +30,8 @@ namespace QT
         private PlayerManager _playerManager;
         private UnityAction _onGainItem;
 
+        private bool _used;
+
 
         public void Init(ItemGameData itemGameData, UnityAction onGainItem = null)
         {
@@ -52,6 +54,8 @@ namespace QT
             SetColliders(true);
             
             _itemDesc.SetData(itemGameData);
+            
+            _used = false;
         }
 
         private void Awake()
@@ -87,6 +91,12 @@ namespace QT
 
         private void GainItem()
         {
+            if (_used)
+            {
+                ClearItem();
+                return;
+            }
+            
             if (DropType == DropGameType.Shop)
             {
                 if (_playerManager.Gold < ItemGameData.CostGold)
@@ -100,8 +110,14 @@ namespace QT
 
             if (ItemGameData.GradeType == ItemGameData.GradeTypes.Active && _playerManager.Player.Inventory.ActiveItem != null)
             {
-                SystemManager.Instance.UIManager.GetUIPanel<UIActiveItemSelectCanvas>().Show(
-                    _playerManager.Player.Inventory.ActiveItem.ItemGameData, ItemGameData, GainItem);
+                var playerActive = _playerManager.Player.Inventory.ActiveItem.ItemGameData;
+                if (playerActive == ItemGameData)
+                {
+                    _itemDesc.PlayFailButtonAnimation();
+                    return;
+                }
+                
+                SystemManager.Instance.UIManager.GetUIPanel<UIActiveItemSelectCanvas>().Show(playerActive, ItemGameData, GainItem);
             }
             else
             {
@@ -111,6 +127,7 @@ namespace QT
         
         private void GainItem(ItemGameData itemGameData)
         {
+            if (_used) return;
             if(itemGameData != ItemGameData) return;
             
             if (DropType == DropGameType.Shop)
@@ -131,6 +148,8 @@ namespace QT
             
             _iconImage.gameObject.SetActive(false);
             SetColliders(false);
+            
+            _used = true;
         }
         
         private void ClearItem()

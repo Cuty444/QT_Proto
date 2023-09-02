@@ -105,6 +105,11 @@ namespace QT.Util
             float angleInRadians = transform.eulerAngles.z * Mathf.Deg2Rad;
             return new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
         }
+        
+        public static Vector2 Rotate90Degree(Vector2 dir, bool isClockwise = true)
+        {
+            return  isClockwise ? new Vector2(-dir.y, dir.x) : new Vector2(dir.y, -dir.x);
+        }
     }
 
     public static class RandomSeed

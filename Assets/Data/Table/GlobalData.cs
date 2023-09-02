@@ -94,19 +94,6 @@ namespace QT.Core.Data
         [Tooltip("적 낙사 스케일링 그래프")]
         public AnimationCurve EnemyFallScaleCurve { get; private set; } = new ();
         
-        /// <summary>
-        /// 범위 안 텔레포트 컬러
-        /// </summary>
-        [field: SerializeField]
-        [Tooltip("범위 안 텔레포트 컬러")]
-        public Color CloseColor { get; private set; } = new ();
-        
-        /// <summary>
-        /// 범위 안 텔레포트 컬러
-        /// </summary>
-        [field: SerializeField]
-        [Tooltip("범위 밖 텔레포트 컬러")]
-        public Color FarColor { get; private set; } = new ();
         
         /// <summary>
         /// 플레이어 공속 게이지 커브

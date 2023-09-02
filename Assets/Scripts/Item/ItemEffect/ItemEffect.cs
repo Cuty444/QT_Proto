@@ -100,6 +100,11 @@ namespace QT.InGame
         
         public float GetCoolTimeProgress()
         {
+            if (Data.CoolTime == 0)
+            {
+                return 0;
+            }
+            
             return 1 - Mathf.Min(1, (Time.timeSinceLevelLoad - _lastTime) / Data.CoolTime);
         }
 

@@ -1,5 +1,6 @@
 using System.Timers;
 using QT.Core;
+using QT.Util;
 using UnityEngine;
 
 namespace QT.InGame
@@ -7,8 +8,10 @@ namespace QT.InGame
     [FSMState((int) Enemy.States.Normal)]
     public class EnemyNormalState : FSMState<Enemy>
     {
-        private const float AvoidDirDampTime = 30;
+        private const float DirDampTime = 15;
+        private const float AvoidDirDampTime = 15;
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
+        
         private static readonly int DirXAnimHash = Animator.StringToHash("DirX");
         private static readonly int DirYAnimHash = Animator.StringToHash("DirY");
         private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
@@ -23,7 +26,7 @@ namespace QT.InGame
         private bool _rotateSide;
         private bool _isAgro;
         
-        private InputVector2Damper _dirDamper = new ();
+        private InputVector2Damper _dirDamper = new (DirDampTime);
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
         public EnemyNormalState(IFSMEntity owner) : base(owner)
@@ -145,6 +148,7 @@ namespace QT.InGame
             
             _ownerEntity.Steering.DetectObstacle(ref danger);
 
+            // 타겟과의 거리 유지
             if (targetDistance > _data.SpacingRad)
             {
                 interest.AddWeight(dir, 1);
@@ -154,27 +158,40 @@ namespace QT.InGame
                 interest.AddWeight(-dir, 1);
             }
 
+            // 타겟 주위 회전
+            if (isRotate)
+            {
+                interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
+            }
+
+            // 1차 결과 계산
+            var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
+
+            
+            // 1차 결과 계산 후 장애물 때문에 속도가 너무 느리면 반대로 회전 및 해당 방향 피하기 (회전하지 않는 경우 interest가 없으면 회피 계산 무시)
+            if (danger.AddedWeightCount > 0 && (isRotate || interest.AddedWeightCount > 0))
+            {
+                if (result.sqrMagnitude < TurnoverLimitSpeed)
+                {
+                    _rotateSide = !_rotateSide;
+
+                    if (isRotate)
+                    {
+                        _avoidDirDamper.ResetCurrentValue(-result);
+                    }
+                    else
+                    {
+                        _avoidDirDamper.ResetCurrentValue((-result + Math.Rotate90Degree(dir, _rotateSide)).normalized);
+                    }
+                }
+            }
+
+            // 회피 방향 적용해 2차 결과 계산
             var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
             if (avoidDir != Vector2.zero)
             {
                 interest.AddWeight(_avoidDirDamper.GetDampedValue(avoidDir, Time.deltaTime), 1);
-            }
-
-            if (isRotate)
-            {
-                interest.AddWeight(_rotateSide ? new Vector2(dir.y, -dir.x) : new Vector2(-dir.y, dir.x), 1);
-            }
-
-            var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
-
-            if (result.sqrMagnitude < TurnoverLimitSpeed)
-            {
-                if (isRotate)
-                {
-                    _rotateSide = !_rotateSide;
-                }
-
-                _avoidDirDamper.ResetCurrentValue(-result);
+                result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             }
 
             return result.normalized;
