@@ -8,8 +8,8 @@ namespace QT.InGame
     [FSMState((int) Enemy.States.Normal)]
     public class EnemyNormalState : FSMState<Enemy>
     {
-        private const float DirDampTime = 30;
-        private const float AvoidDirDampTime = 20;
+        private const float DirDampTime = 15;
+        private const float AvoidDirDampTime = 15;
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
         
         private static readonly int DirXAnimHash = Animator.StringToHash("DirX");
