@@ -18,7 +18,6 @@ namespace QT.InGame
             Global,
             Move,
             Swing,
-            Throw,
             Gain,
             Dodge,
             Fall,
@@ -166,7 +165,6 @@ namespace QT.InGame
             _playerManager.PlayerActiveItemIndex = -1;
             
             SystemManager.Instance.PlayerManager.Reset();;
-            SystemManager.Instance.PlayerManager.PlayerThrowProjectileReleased.RemoveAllListeners();
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             ChangeState(Player.States.Dead);
         }

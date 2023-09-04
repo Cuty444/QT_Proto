@@ -20,7 +20,6 @@ namespace QT.Core
 
         public UnityEvent PlayerItemInteraction { get; } = new();
         public UnityEvent<Vector2, float> OnDamageEvent { get; } = new();
-        public UnityEvent PlayerThrowProjectileReleased { get; } = new();
         public UnityEvent<int> OnGoldValueChanged { get; } = new();
 
         public UnityEvent<VolumeProfile, float> OnMapCellChanged { get; } = new();

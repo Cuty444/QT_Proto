@@ -103,11 +103,6 @@ namespace QT.InGame
                     _trailRenderer[i].Clear();
                 }
             }
-            // Todo : 더 확실한 플레이어 투사체 구분필요
-            if (_isReleased && _releaseDelay > 0)
-            {
-                SystemManager.Instance?.PlayerManager.PlayerThrowProjectileReleased.Invoke();
-            }
         }
 
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, ProjectileOwner owner, bool isPierce = false, float releaseDelay = 0, string path = "")

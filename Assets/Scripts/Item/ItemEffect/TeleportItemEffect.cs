@@ -43,8 +43,8 @@ namespace QT.InGame
                 return;
             }
 
-            var damage = (int)_player.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg2);
-            var shootSpeed = _player.StatComponent.GetStat(PlayerStats.ChargeShootSpd2).Value;
+            var damage = (int)_player.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg);
+            var shootSpeed = _player.StatComponent.GetStat(PlayerStats.ChargeShootSpd).Value;
 
             _player.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
             
