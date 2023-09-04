@@ -107,11 +107,7 @@ namespace QT.InGame
             _playerManager = SystemManager.Instance.PlayerManager;
             
             Inventory = new Inventory(this);
-            Inventory.CopyItemList(_playerManager.PlayerIndexInventory);
-            if (_playerManager.PlayerActiveItemIndex > 0)
-            {
-                Inventory.AddItem(_playerManager.PlayerActiveItemIndex);
-            }
+            Inventory.CopyItemList(_playerManager.PlayerIndexInventory, _playerManager.PlayerActiveItemIndex);
 
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
@@ -142,7 +138,12 @@ namespace QT.InGame
             UpdateInputs();
             UpdateCoolTime();
         }
-        
+
+        private void OnDestroy()
+        {
+            Inventory.ClearInventory();
+        }
+
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
             if (IsInvincible())
@@ -161,7 +162,6 @@ namespace QT.InGame
         
         public void PlayerDead()
         {
-            Inventory.ClearItems();
             _playerManager.PlayerIndexInventory.Clear();
             _playerManager.PlayerActiveItemIndex = -1;
             

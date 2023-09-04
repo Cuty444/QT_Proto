@@ -22,11 +22,6 @@ namespace QT.Core
         public UnityEvent<Vector2, float> OnDamageEvent { get; } = new();
         public UnityEvent PlayerThrowProjectileReleased { get; } = new();
         public UnityEvent<int> OnGoldValueChanged { get; } = new();
-        public UnityEvent OnSwing { get; } = new();
-        public UnityEvent OnSwingHit { get; } = new();
-        public UnityEvent OnAttackStunEnemy { get; } = new();
-        public UnityEvent OnParry { get; } = new();
-        public UnityEvent OnDodge { get; } = new();
 
         public UnityEvent<VolumeProfile, float> OnMapCellChanged { get; } = new();
 

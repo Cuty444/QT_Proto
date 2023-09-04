@@ -12,10 +12,12 @@ namespace QT.Core
         OnPlayerEnterDoor,
         OnPlayerEnterRoom,
         
+        OnHeal,
         OnDamage,
         
         OnGoldChanged,
         
+        OnCharged,
         OnSwing,
         OnSwingHit,
         OnAttackStunEnemy,

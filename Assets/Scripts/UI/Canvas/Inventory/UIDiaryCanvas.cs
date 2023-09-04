@@ -191,7 +191,6 @@ namespace QT.UI
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             _playerManager.Reset();
             
-            _playerManager.Player.Inventory.ClearItems();
             _playerManager.PlayerIndexInventory.Clear();
             _playerManager.PlayerActiveItemIndex = -1;
             

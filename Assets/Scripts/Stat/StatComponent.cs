@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace QT.InGame
 {
@@ -74,6 +75,11 @@ namespace QT.InGame
         public Status GetStatus(PlayerStats stat)
         {
             return _stats[stat] as Status;
+        }
+        
+        protected void AddStat(PlayerStats stat, Stat value)
+        {
+            _stats[stat] = value;
         }
     }
 }

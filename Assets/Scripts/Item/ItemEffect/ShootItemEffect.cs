@@ -30,9 +30,7 @@ namespace QT.InGame
 
         protected override void OnTriggerAction()
         {
-            // TODO : 뭔가 간헐적으로 플레이어가 사라지는 현상이 있음
-            SystemManager.Instance.PlayerManager.Player.ProjectileShooter.Shoot(_shootDataId, _aimType, ProjectileOwner.Player);
-            // _shooter.Shoot(_shootDataId, _aimType, ProjectileOwner.Player);
+            _shooter.Shoot(_shootDataId, _aimType, ProjectileOwner.Player);
         }
 
         public override void OnRemoved()

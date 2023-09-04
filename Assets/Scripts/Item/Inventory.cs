@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 using UnityEngine.Events;
+using EventType = QT.Core.EventType;
 using TriggerTypes = QT.ItemEffectGameData.TriggerTypes;
 
 namespace QT.InGame
@@ -12,7 +14,7 @@ namespace QT.InGame
         public Item ActiveItem { get; private set; }
         
         private Player _targetPlayer;
-        private List<Item> _items = new List<Item>();
+        private List<Item> _items = new ();
         private PlayerManager _playerManager;
 
 
@@ -24,7 +26,7 @@ namespace QT.InGame
 
         ~Inventory()
         {
-            ClearItems();
+            ClearInventory();
         }
 
         private void SetTriggerPointEvents()
@@ -35,21 +37,45 @@ namespace QT.InGame
             
             _targetPlayer.StatComponent.GetStatus(PlayerStats.HP).OnStatusChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnHpChanged));
-
+            
             _targetPlayer.StatComponent.GetStat(PlayerStats.MovementSpd).OnValueChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnMovementSpdChanged));
             
             _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount).OnValueChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnChargeBounceCountChanged));
             
-            
-            _playerManager.OnGoldValueChanged.AddListener((value) => InvokeTrigger(TriggerTypes.OnGoldChanged));
-            
-            _playerManager.OnSwing.AddListener(() => InvokeTrigger(TriggerTypes.OnSwing));
-            _playerManager.OnSwingHit.AddListener(() => InvokeTrigger(TriggerTypes.OnSwingHit));
-            _playerManager.OnAttackStunEnemy.AddListener(() => InvokeTrigger(TriggerTypes.OnAttackStunEnemy));
-            _playerManager.OnParry.AddListener(() => InvokeTrigger(TriggerTypes.OnParry));
-            _playerManager.OnDodge.AddListener(() => InvokeTrigger(TriggerTypes.OnDodge));
+            SystemManager.Instance.EventManager.AddEvent(this, InvokeEvent);
+        }
+
+        private void InvokeEvent(EventType unityEvent, object data)
+        {
+            switch (unityEvent)
+            {
+                case EventType.OnDamage:
+                    InvokeTrigger(TriggerTypes.OnHpChanged);
+                    break;
+                case EventType.OnGoldChanged:
+                    InvokeTrigger(TriggerTypes.OnGoldChanged);
+                    break;
+                case EventType.OnCharged:
+                    InvokeTrigger(TriggerTypes.OnCharged);
+                    break;
+                case EventType.OnSwing:
+                    InvokeTrigger(TriggerTypes.OnSwing);
+                    break;
+                case EventType.OnSwingHit:
+                    InvokeTrigger(TriggerTypes.OnSwingHit);
+                    break;
+                case EventType.OnAttackStunEnemy:
+                    InvokeTrigger(TriggerTypes.OnAttackStunEnemy);
+                    break;
+                case EventType.OnParry:
+                    InvokeTrigger(TriggerTypes.OnParry);
+                    break;
+                case EventType.OnDodge:
+                    InvokeTrigger(TriggerTypes.OnDodge);
+                    break;
+            }
         }
 
         private void InvokeTrigger(TriggerTypes triggerTypes)
@@ -117,7 +143,7 @@ namespace QT.InGame
             return result;
         }
 
-        public void ClearItems()
+        public void ClearInventory()
         {
             if (ActiveItem != null)
             {
@@ -130,9 +156,11 @@ namespace QT.InGame
                 item.OnRemoved();
             }
             _items.Clear();
+            
+            SystemManager.Instance.EventManager.RemoveEvent(this);
         }
 
-        public void CopyItemList(List<int> items)
+        public void CopyItemList(List<int> items, int activeItemId)
         {
             foreach (var id in items)
             {
@@ -140,6 +168,21 @@ namespace QT.InGame
             
                 _items.Add(item);
                 item.OnEquip();
+            }
+
+            if (activeItemId <= 0)
+            {
+                return;
+            }
+            
+            var active = new Item(activeItemId, _targetPlayer);
+            
+            if (active.ItemGameData.GradeType == ItemGameData.GradeTypes.Active)
+            {
+                ActiveItem?.OnRemoved();
+                
+                ActiveItem = active;
+                ActiveItem.OnEquip();
             }
         }
         

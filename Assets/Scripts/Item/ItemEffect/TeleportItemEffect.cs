@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using QT.Core;
 using UnityEngine;
+using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -66,7 +67,7 @@ namespace QT.InGame
 
             PlayEffect();
             
-            SystemManager.Instance.PlayerManager.OnAttackStunEnemy?.Invoke();
+            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnAttackStunEnemy, null);
         }
         
         private async UniTaskVoid PlayEffect()
