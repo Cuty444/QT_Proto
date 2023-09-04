@@ -18,7 +18,6 @@ namespace QT.Core
         public EventManager EventManager { get; } = new ();
         
         public PlayerManager PlayerManager { get; } = new();
-        public ItemDataManager ItemDataManager { get; } = new();
 
         public LoadingManager LoadingManager { get; } = new();
 
@@ -46,7 +45,6 @@ namespace QT.Core
             
             LoadingManager.DataLoadCheck();
             SoundManager.Initialize(_soundPathData);
-            ItemDataManager.Initialize();
             RankingManager.Initialize();
             RankingManager.DataLoad();
             ResourceManager.Initialize();
