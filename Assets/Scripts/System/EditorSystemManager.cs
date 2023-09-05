@@ -23,7 +23,7 @@ namespace QT.Core
         }
         
         
-        public GameDataManager DataManager { get; } = new ();
+        public GameDataManager DataManager { get; private set; } = new ();
 
         public string[] EnemyIds;
         public string[] EnemyNames;
@@ -37,6 +37,7 @@ namespace QT.Core
         [MenuItem("GameData/EditorGameDataReset", false, 9999)]
         public static void ResetEditorGameData()
         {
+            Instance.DataManager = new GameDataManager();
             Instance.DataManager.Initialize();
         }
     }

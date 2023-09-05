@@ -53,6 +53,8 @@ namespace QT.InGame
                 
                 _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
                 _ownerEntity.Animator.SetBool(StunAnimHash, true);
+                
+                _ownerEntity.HpCanvas.gameObject.SetActive(false);
             }
             else
             {
