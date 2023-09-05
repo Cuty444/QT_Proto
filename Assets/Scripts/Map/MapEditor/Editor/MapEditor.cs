@@ -231,6 +231,8 @@ namespace QT.Map
                     {
                         SceneVisibilityManager.instance.DisablePicking(tileMap.gameObject, true);
                     }
+                    
+                    SceneVisibilityManager.instance.DisablePicking(_sceneManager.gameObject, true);
                 }
             }
             

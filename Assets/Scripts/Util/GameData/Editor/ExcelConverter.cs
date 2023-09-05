@@ -89,6 +89,8 @@ namespace QT.Core
             }
 
             AssetDatabase.Refresh();
+            
+            EditorSystemManager.ResetEditorGameData();
         }
 
         

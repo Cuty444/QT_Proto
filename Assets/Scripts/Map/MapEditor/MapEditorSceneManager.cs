@@ -24,6 +24,8 @@ namespace QT.Map
     {
         public MapCellData Target { get; private set; }
 
+        [field:SerializeField] public GameObject GamePlayGameObjects { get; private set; }
+
         [HideInInspector] [SerializeField] private string _command;
         [HideInInspector] [SerializeField] private TestStartDoor _startDoor;
         private Player _player;
@@ -33,14 +35,18 @@ namespace QT.Map
             _command = command;
             _startDoor = startDoor;
             
+            //Target.gameObject.SetActive(false);
+            
             EditorApplication.EnterPlaymode();
         }
         
         private void Awake()
         {
-            transform.GetChild(0).gameObject.SetActive(true);
             CheckTarget();
-
+            
+            Target.gameObject.SetActive(false);
+            GamePlayGameObjects.SetActive(true);
+            
             SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener(OnPlayerCreated);
             
             StartCoroutine(Loading());
@@ -61,19 +67,21 @@ namespace QT.Map
             switch (_startDoor)
             {
                 case TestStartDoor.Left:
-                    exit = Vector2Int.left;
-                    break;
-                case TestStartDoor.Right:
                     exit = Vector2Int.right;
                     break;
+                case TestStartDoor.Right:
+                    exit = Vector2Int.left;
+                    break;
                 case TestStartDoor.Down:
-                    exit = Vector2Int.down;
+                    exit = Vector2Int.up;
                     break;
                 case TestStartDoor.Up:
-                    exit = Vector2Int.up;
+                    exit = Vector2Int.down;
                     break;
 
             }
+            
+            Target.gameObject.SetActive(true);
             
             Target.DoorExitDirection(exit);
             Target.CellDataSet(MapDirection.All, Vector2Int.zero, RoomType.Normal);

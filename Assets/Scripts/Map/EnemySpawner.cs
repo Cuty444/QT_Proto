@@ -39,9 +39,29 @@ namespace QT
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
+            string display = "";
+            float agroRange = 0;
+
+
+            if (EditorSystemManager.Instance.DataManager.IsInitialized)
+            {
+                var data = EditorSystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(EnemyId);
+
+                if (data != null)
+                {
+                    display = data.Name;
+                    agroRange = data.AgroRange;
+                }
+            }
+
             Gizmos.color = Color.red;
-            UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, EnemyId.ToString());
+            UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, $"{EnemyId} {display}");
             Gizmos.DrawSphere(transform.position, 0.3f);
+            
+            
+            // Gizmos.color = new Color(0.1f, 0.1f, 0.1f, 0.1f);
+            // if(agroRange > 0)
+            //     Gizmos.DrawWireSphere(transform.position, agroRange);
         }
 #endif
     }
