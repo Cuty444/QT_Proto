@@ -24,10 +24,10 @@ namespace QT.InGame
             SetTriggerPointEvents();
         }
 
-        ~Inventory()
-        {
-            ClearInventory();
-        }
+        // ~Inventory()
+        // {
+        //     ClearInventory();
+        // }
 
         private void SetTriggerPointEvents()
         {
@@ -157,7 +157,7 @@ namespace QT.InGame
             }
             _items.Clear();
             
-            SystemManager.Instance?.EventManager.RemoveEvent(this);
+            SystemManager.Instance.EventManager.RemoveEvent(this);
         }
 
         public void CopyItemList(List<int> items, int activeItemId)
