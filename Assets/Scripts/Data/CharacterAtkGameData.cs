@@ -8,12 +8,7 @@ namespace QT
     public class CharacterAtkGameData : IGameData
     {
         public int Index { get; set; }
-        
-        public float ThrowCooldown { get; set; }
-        public float ThrowAfterDelay { get; set; }
-        public float ThrowSpd { get; set; }
-        public float ThrowBounceCount { get; set; }
-        
+
         public float SwingCooldown { get; set; }
         public float SwingRad { get; set; }
         public int SwingCentralAngle { get; set; }
@@ -22,20 +17,16 @@ namespace QT
         
         public int ChargeAtkPierce { get; set; }
         
-        public int ChargeShootSpd1 { get; set; }
-        public int ChargeShootSpd2 { get; set; }
+        public int ChargeShootSpd { get; set; }
         
         public int ChargeBounceCount { get; set; }
         
         public int ChargeRigidDmg1 { get; set; }
         public int ChargeRigidDmg2 { get; set; }
         
-        public int ChargeProjectileDmg1 { get; set; }
-        public int ChargeProjectileDmg2 { get; set; }   
+        public int ChargeProjectileDmg { get; set; }   
         
-        public int EnemyProjectileDmg1 { get; set; }
-        
-        public int EnemyProjectileDmg2 { get; set; }
+        public int EnemyProjectileDmg { get; set; }
         
         public float ReflectCorrection { get; set; }
         public float AtkDmgPer { get; set; }

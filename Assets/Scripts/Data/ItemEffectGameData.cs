@@ -16,9 +16,13 @@ namespace QT
             
             OnActiveKey = 1 << 2,
             
-            OnCharging = 1 << 3,
+            OnCharged = 1 << 3,
             OnGoldChanged = 1 << 4,
+            
             OnHpChanged = 1 << 5,
+            //OnDamage
+            //OnHeal
+            
             OnSwing = 1 << 6,
             OnSwingHit = 1 << 7,
             OnAttackStunEnemy = 1 << 8,

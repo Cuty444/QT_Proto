@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
 using QT.Sound;
+using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -71,7 +72,7 @@ namespace QT.InGame
                 
             },duration));
             
-            SystemManager.Instance.PlayerManager.OnDodge?.Invoke();
+            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnDodge, null);
         }
         
         public override void ClearState()

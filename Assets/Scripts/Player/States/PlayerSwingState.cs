@@ -3,6 +3,7 @@ using UnityEngine;
 using QT.Core;
 using QT.Core.Data;
 using QT.Sound;
+using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -102,17 +103,13 @@ namespace QT.InGame
 
             var mask = _ownerEntity.ProjectileShooter.BounceMask;
             var rigidDmg = _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeRigidDmg2 : PlayerStats.ChargeRigidDmg1);
-            var shootSpd = _ownerEntity.StatComponent.GetStat(_isCharged ? PlayerStats.ChargeShootSpd2 : PlayerStats.ChargeShootSpd1).Value;
             
+            var shootSpd = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeShootSpd).Value;
             var bounce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeBounceCount).Value;
             
-            var projectileDamage = (int)_ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.ChargeProjectileDmg2 : PlayerStats.ChargeProjectileDmg1);
-            var enemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(_isCharged ? PlayerStats.EnemyProjectileDmg2 : PlayerStats.EnemyProjectileDmg1);
-            
-            var powerBounce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeBounceCount).Value;
-            var powerEnemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg2);
-            var powerShootSpd = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeShootSpd2).Value;
-            
+            var projectileDamage = (int)_ownerEntity.StatComponent.GetDmg(PlayerStats.ChargeProjectileDmg);
+            var enemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg);
+
             var pierce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeAtkPierce).Value;
             bool isPierce = _isCharged && pierce >= 1;
             
@@ -130,9 +127,9 @@ namespace QT.InGame
 
                     if (!_isCharged && hitAble.IsDead && hitAble is Enemy enemy)
                     {
-                        enemy.ResetBounceCount(powerBounce);
-                        enemy.ResetProjectileDamage(powerEnemyProjectileDamage);
-                        enemy.ProjectileHit(GetNewProjectileDir(enemy), powerShootSpd, mask, ProjectileOwner.Player,
+                        enemy.ResetBounceCount(bounce);
+                        enemy.ResetProjectileDamage(enemyProjectileDamage);
+                        enemy.ProjectileHit(GetNewProjectileDir(enemy), shootSpd, mask, ProjectileOwner.Player,
                             _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
                     
                         stunEnemyCount++;
@@ -181,7 +178,7 @@ namespace QT.InGame
                 var aimDir = ((Vector2) _ownerEntity.transform.position - _ownerEntity.AimPosition).normalized;
                 _ownerEntity.AttackImpulseSource.GenerateImpulse(aimDir * _ownerEntity.AttackImpulseForce);
                 
-                SystemManager.Instance.PlayerManager.OnSwingHit?.Invoke();
+                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnSwingHit, null);
                 _soundManager.PlayOneShot(_soundManager.SoundData.PlayerSwingHitSFX);
             }
 
@@ -189,7 +186,7 @@ namespace QT.InGame
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.BallAttackSFX);
                 
-                SystemManager.Instance.PlayerManager.OnParry?.Invoke();
+                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnParry, null);
             }
 
             if(ballHitCount == 0 && enemyHitCount == 0)
@@ -199,10 +196,10 @@ namespace QT.InGame
 
             if (stunEnemyCount > 0)
             {
-                SystemManager.Instance.PlayerManager.OnAttackStunEnemy?.Invoke();
+                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnAttackStunEnemy, null);
             }
             
-            SystemManager.Instance.PlayerManager.OnSwing?.Invoke();
+            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnSwing, null);
         }
 
         private async void SetLineObjects()
@@ -237,6 +234,8 @@ namespace QT.InGame
                 _ownerEntity.FullChargingEffectPlay();
                 _ownerEntity.ChargingEffectStop();
                 _soundManager.PlayOneShot(_soundManager.SoundData.ChargeEndSFX);
+                
+                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnCharged, null);
             }
         }
 

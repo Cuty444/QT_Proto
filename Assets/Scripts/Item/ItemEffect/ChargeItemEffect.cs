@@ -151,7 +151,7 @@ namespace QT.InGame
         private void CheckHit()
         {
             var damage = _player.StatComponent.GetDmg(PlayerStats.ChargeRigidDmg2);
-            var shootSpeed = _player.StatComponent.GetDmg(PlayerStats.ChargeShootSpd2);
+            var shootSpeed = _player.StatComponent.GetDmg(PlayerStats.ChargeShootSpd);
             
             Vector2 position = _player.EyeTransform.position;
     

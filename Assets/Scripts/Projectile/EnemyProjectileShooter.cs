@@ -50,12 +50,12 @@ namespace QT.InGame
             {
                 yield return new WaitForSeconds(data.BeforeDelay);
 
-                _animator.SetTrigger(AttackAnimHash);
+                _animator?.SetTrigger(AttackAnimHash);
                 Shoot(data.ShootDataId, data.AimType,owner);
                 
                 yield return new WaitForSeconds(data.AfterDelay);
                 
-                _animator.SetTrigger(AttackAnimHash);
+                _animator?.SetTrigger(AttackAnimHash);
             }
             
             _animator?.ResetTrigger(AttackAnimHash);

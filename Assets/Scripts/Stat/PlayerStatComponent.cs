@@ -12,54 +12,44 @@ namespace QT.InGame
 
             // Status
 
-            _stats.Add(PlayerStats.HP, new Status(data.MaxHP));
-            _stats.Add(PlayerStats.BallStack, new Status(data.BallStackMax));
+            AddStat(PlayerStats.HP, new Status(data.MaxHP));
 
-            _stats.Add(PlayerStats.DodgeCooldown, new Status(data.DodgeCooldown));
-            _stats.Add(PlayerStats.ThrowCooldown, new Status(atkData.ThrowCooldown));
-            _stats.Add(PlayerStats.SwingCooldown, new Status(atkData.SwingCooldown));
+            AddStat(PlayerStats.DodgeCooldown, new Status(data.DodgeCooldown));
+            AddStat(PlayerStats.SwingCooldown, new Status(atkData.SwingCooldown));
 
-            _stats.Add(PlayerStats.MercyInvincibleTime, new Status(data.MercyInvincibleTime));
-            _stats.Add(PlayerStats.DodgeInvincibleTime, new Status(data.DodgeInvincibleTime));
+            AddStat(PlayerStats.MercyInvincibleTime, new Status(data.MercyInvincibleTime));
+            AddStat(PlayerStats.DodgeInvincibleTime, new Status(data.DodgeInvincibleTime));
 
             // Stat
 
-            _stats.Add(PlayerStats.PCHitboxRad, new(data.PCHitboxRad));
-            _stats.Add(PlayerStats.MovementSpd, new(data.MovementSpd));
-            _stats.Add(PlayerStats.ChargeMovementSpd, new(data.ChargeMovementSpd));
-            _stats.Add(PlayerStats.DodgeDurationTime, new(data.DodgeDurationTime));
-            _stats.Add(PlayerStats.DodgeAddForce, new(data.DodgeAddForce));
-            _stats.Add(PlayerStats.ItemSlotMax, new(data.ItemSlotMax));
-            _stats.Add(PlayerStats.GoldGain, new(data.GoldGain));
+            AddStat(PlayerStats.PCHitboxRad, new(data.PCHitboxRad));
+            AddStat(PlayerStats.MovementSpd, new(data.MovementSpd));
+            AddStat(PlayerStats.ChargeMovementSpd, new(data.ChargeMovementSpd));
+            AddStat(PlayerStats.DodgeDurationTime, new(data.DodgeDurationTime));
+            AddStat(PlayerStats.DodgeAddForce, new(data.DodgeAddForce));
+            AddStat(PlayerStats.GoldGain, new(data.GoldGain));
 
-            _stats.Add(PlayerStats.ThrowAfterDelay, new(atkData.ThrowAfterDelay));
-            _stats.Add(PlayerStats.ThrowSpd, new(atkData.ThrowSpd));
-            _stats.Add(PlayerStats.ThrowBounceCount, new(atkData.ThrowBounceCount));
-
-            _stats.Add(PlayerStats.SwingRad, new(atkData.SwingRad));
-            _stats.Add(PlayerStats.SwingCentralAngle, new(atkData.SwingCentralAngle));
+            AddStat(PlayerStats.SwingRad, new(atkData.SwingRad));
+            AddStat(PlayerStats.SwingCentralAngle, new(atkData.SwingCentralAngle));
 
 
-            _stats.Add(PlayerStats.ChargeTime, new(atkData.ChargeTime));
+            AddStat(PlayerStats.ChargeTime, new(atkData.ChargeTime));
 
-            _stats.Add(PlayerStats.ChargeAtkPierce, new(atkData.ChargeAtkPierce));
+            AddStat(PlayerStats.ChargeAtkPierce, new(atkData.ChargeAtkPierce));
 
-            _stats.Add(PlayerStats.ChargeShootSpd1, new(atkData.ChargeShootSpd1));
-            _stats.Add(PlayerStats.ChargeShootSpd2, new(atkData.ChargeShootSpd2));
+            AddStat(PlayerStats.ChargeShootSpd, new(atkData.ChargeShootSpd));
 
-            _stats.Add(PlayerStats.ChargeBounceCount, new(atkData.ChargeBounceCount));
+            AddStat(PlayerStats.ChargeBounceCount, new(atkData.ChargeBounceCount));
 
-            _stats.Add(PlayerStats.ChargeRigidDmg1, new(atkData.ChargeRigidDmg1));
-            _stats.Add(PlayerStats.ChargeRigidDmg2, new(atkData.ChargeRigidDmg2));
+            AddStat(PlayerStats.ChargeRigidDmg1, new(atkData.ChargeRigidDmg1));
+            AddStat(PlayerStats.ChargeRigidDmg2, new(atkData.ChargeRigidDmg2));
 
-            _stats.Add(PlayerStats.ChargeProjectileDmg1, new(atkData.ChargeProjectileDmg1));
-            _stats.Add(PlayerStats.ChargeProjectileDmg2, new(atkData.ChargeProjectileDmg2));
+            AddStat(PlayerStats.ChargeProjectileDmg, new(atkData.ChargeProjectileDmg));
 
-            _stats.Add(PlayerStats.EnemyProjectileDmg1, new(atkData.EnemyProjectileDmg1));
-            _stats.Add(PlayerStats.EnemyProjectileDmg2, new(atkData.EnemyProjectileDmg2));
+            AddStat(PlayerStats.EnemyProjectileDmg, new(atkData.EnemyProjectileDmg));
 
-            _stats.Add(PlayerStats.ReflectCorrection, new(atkData.ReflectCorrection));
-            _stats.Add(PlayerStats.AtkDmgPer, new(atkData.AtkDmgPer));
+            AddStat(PlayerStats.ReflectCorrection, new(atkData.ReflectCorrection));
+            AddStat(PlayerStats.AtkDmgPer, new(atkData.AtkDmgPer));
         }
     }
 }

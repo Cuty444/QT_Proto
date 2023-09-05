@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace QT.InGame
 {
@@ -9,10 +10,8 @@ namespace QT.InGame
         // Status
         
         HP,
-        BallStack,
         
         DodgeCooldown,
-        ThrowCooldown,
         SwingCooldown,
         
         DodgeInvincibleTime,
@@ -25,34 +24,26 @@ namespace QT.InGame
         ChargeMovementSpd,
         DodgeDurationTime,
         DodgeAddForce,
-        ItemSlotMax,
         GoldGain,
             
-        ThrowAfterDelay,
-        ThrowSpd,
-        ThrowBounceCount,
         SwingRad,
         SwingCentralAngle,
             
         ChargeTime,
             
         ChargeAtkPierce,
-            
-        ChargeShootSpd1,
-        ChargeShootSpd2,
-            
+        
+        ChargeShootSpd,
+        
         ChargeBounceCount,
             
         ReflectCorrection,
-            
+        
         ChargeRigidDmg1,
         ChargeRigidDmg2,
-            
-        ChargeProjectileDmg1,
-        ChargeProjectileDmg2,
         
-        EnemyProjectileDmg1,
-        EnemyProjectileDmg2,
+        ChargeProjectileDmg,
+        EnemyProjectileDmg,
         
         AtkDmgPer,
     }
@@ -74,6 +65,11 @@ namespace QT.InGame
         public Status GetStatus(PlayerStats stat)
         {
             return _stats[stat] as Status;
+        }
+        
+        protected void AddStat(PlayerStats stat, Stat value)
+        {
+            _stats[stat] = value;
         }
     }
 }

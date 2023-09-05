@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using QT.Core;
 using UnityEngine;
+using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -42,8 +43,8 @@ namespace QT.InGame
                 return;
             }
 
-            var damage = (int)_player.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg2);
-            var shootSpeed = _player.StatComponent.GetStat(PlayerStats.ChargeShootSpd2).Value;
+            var damage = (int)_player.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg);
+            var shootSpeed = _player.StatComponent.GetStat(PlayerStats.ChargeShootSpd).Value;
 
             _player.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
             
@@ -66,7 +67,7 @@ namespace QT.InGame
 
             PlayEffect();
             
-            SystemManager.Instance.PlayerManager.OnAttackStunEnemy?.Invoke();
+            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnAttackStunEnemy, null);
         }
         
         private async UniTaskVoid PlayEffect()

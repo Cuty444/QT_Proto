@@ -38,7 +38,6 @@ namespace QT.UI
 
             var playerManager = SystemManager.Instance.PlayerManager;
                 
-            playerManager.Player.Inventory.ClearItems();
             playerManager.PlayerIndexInventory.Clear();
             playerManager.PlayerActiveItemIndex = -1;
             
