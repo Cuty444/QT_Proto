@@ -9,6 +9,7 @@ namespace QT.InGame
     public class EnemyRigidState : FSMState<Enemy>
     {
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
+        private static readonly int StunAnimHash = Animator.StringToHash("IsStun");
 
         private float _timer;
         
@@ -51,6 +52,7 @@ namespace QT.InGame
                 _ownerEntity.MaterialChanger.SetRigidMaterial();
                 
                 _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
+                _ownerEntity.Animator.SetBool(StunAnimHash, true);
             }
             else
             {
@@ -61,6 +63,7 @@ namespace QT.InGame
 
         public override void ClearState()
         {
+            _ownerEntity.Animator.SetBool(StunAnimHash, false);
             _ownerEntity.MaterialChanger.ClearMaterial();
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
