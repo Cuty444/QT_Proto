@@ -5,8 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
-using QT.Core.Map;
-using UnityEngine.SceneManagement;
+using UnityEngine.AddressableAssets;
 
 namespace QT.Core
 {
@@ -36,6 +35,7 @@ namespace QT.Core
 
     public class GameDataManager
     {
+        public bool IsInitialized { get; private set; } = false;
         private const string JsonPath = "GameData/";
 
         private Dictionary<Type, IGameDataBase> _databases;
@@ -57,24 +57,25 @@ namespace QT.Core
 
         private async UniTaskVoid ParseGameData()
         {
-            var dataBaseTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(IGameDataBase) != t && typeof(IGameDataBase).IsAssignableFrom(t));
+            var dataBaseTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t =>
+                typeof(IGameDataBase) != t && typeof(IGameDataBase).IsAssignableFrom(t));
 
             List<UniTask<(Type, IGameDataBase)>> tasks = new(dataBaseTypes.Count());
-            
+
             foreach (var dataBaseType in dataBaseTypes)
             {
                 var attribute = dataBaseType.GetCustomAttribute<GameDataBaseAttribute>();
 
                 var json = await GetJson(attribute);
-                
-                if(json == null)
+
+                if (json == null)
                 {
                     continue;
                 }
-                
+
                 tasks.Add(SetDataBase(dataBaseType, attribute, json));
             }
-            
+
             var databases = await UniTask.WhenAll(tasks);
 
             foreach (var database in databases)
@@ -82,13 +83,17 @@ namespace QT.Core
                 _databases.Add(database.Item1, database.Item2);
             }
 
-            SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.Invoke();
+            IsInitialized = true;
 
+            if (Application.isPlaying)
+            {
+                SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.Invoke();
+            }
         }
 
         private async UniTask<JArray> GetJson(GameDataBaseAttribute attribute)
         {
-            var json = await SystemManager.Instance.ResourceManager.LoadAsset<TextAsset>(JsonPath + attribute.JsonFileName + ".json", false);
+            var json = await Addressables.LoadAssetAsync<TextAsset>(JsonPath + attribute.JsonFileName + ".json");
             
             if (json == null)
             {
@@ -106,7 +111,7 @@ namespace QT.Core
 
             return result;
         }
-        
+
         private async UniTask<(Type, IGameDataBase)> SetDataBase(Type dataBaseType, GameDataBaseAttribute attribute, JArray jsonResult)
         {
             var database = Activator.CreateInstance(dataBaseType) as IGameDataBase;
