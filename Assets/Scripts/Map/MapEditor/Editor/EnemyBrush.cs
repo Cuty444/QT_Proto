@@ -1,4 +1,5 @@
 using System;
+using QT.Core;
 using QT.Map;
 using UnityEngine;
 using UnityEditor;
@@ -157,7 +158,7 @@ namespace QT.Tilemaps
     {
         private EnemyBrush _enemyBrush => target as EnemyBrush;
         private bool _isFoldout = false;
-
+        
         public override void OnPaintSceneGUI(GridLayout gridLayout, GameObject brushTarget, BoundsInt position, GridBrushBase.Tool tool, bool executing)
         {
             BoundsInt gizmoRect = position;
@@ -172,7 +173,21 @@ namespace QT.Tilemaps
 
         public override void OnPaintInspectorGUI()
         {
-            _enemyBrush.EnemyId = EditorGUILayout.IntField("적 아이디", _enemyBrush.EnemyId);
+            EditorGUILayout.BeginHorizontal();
+            _enemyBrush.EnemyId = EditorGUILayout.IntField("적 아이디", _enemyBrush.EnemyId, GUILayout.Width(200), GUILayout.ExpandWidth(true));
+
+            
+            if (EditorSystemManager.Instance.DataManager.IsInitialized)
+            {
+                var dataBase = EditorSystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>();
+                
+                var ids = dataBase.Ids;
+                var names = dataBase.Names;
+
+                _enemyBrush.EnemyId = EditorGUILayout.IntPopup(_enemyBrush.EnemyId, names, ids);
+            }
+            
+            EditorGUILayout.EndHorizontal();
             
             GUILayout.Space(30);
             

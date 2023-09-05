@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using QT.Core;
 
 namespace QT
@@ -20,6 +21,7 @@ namespace QT
         }
 
         public int Index { get; set; }
+        public string Name { get; set; }
         public int MaxHp { get; set; }
     
         public float AgroRange { get; set; }
@@ -49,6 +51,9 @@ namespace QT
     public class EnemyGameDataBase : IGameDataBase
     {
         private readonly Dictionary<int, EnemyGameData> _datas = new();
+        
+        public int[] Ids => _datas.Keys.ToArray();
+        public string[] Names => _datas.Values.Select(k => k.Name).ToArray();
 
         public void RegisterData(IGameData data)
         {

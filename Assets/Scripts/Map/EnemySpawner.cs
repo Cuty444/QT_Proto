@@ -39,8 +39,16 @@ namespace QT
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
+            string display = "";
+
+
+            if (EditorSystemManager.Instance.DataManager.IsInitialized)
+            {
+                display = EditorSystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(EnemyId)?.Name ?? "";
+            }
+
             Gizmos.color = Color.red;
-            UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, EnemyId.ToString());
+            UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, $"{EnemyId} {display}");
             Gizmos.DrawSphere(transform.position, 0.3f);
         }
 #endif
