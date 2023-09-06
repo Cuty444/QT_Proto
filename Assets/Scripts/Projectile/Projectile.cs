@@ -70,7 +70,7 @@ namespace QT.InGame
 
         private bool _isPierce;
 
-        private List<IHitAble> _hitAbles = new List<IHitAble>();
+        private IHitAble _lastHitAble;
         
         
         private void Awake()
@@ -137,8 +137,8 @@ namespace QT.InGame
             SetOwnerColor();
             TrailRendersSetEmitting(true);
         }
-        
-        public void Hit(Vector2 dir, float newSpeed,AttackType attackType)
+
+        public void Hit(Vector2 dir, float newSpeed, AttackType attackType)
         {
             ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
         }
@@ -211,127 +211,49 @@ namespace QT.InGame
         
         private void CheckHit()
         {
-            if (_isPierce)
-            {
-                PierceCheckHit();
-                return;
-            }
             var hit = Physics2D.CircleCast(transform.position, ColliderRad, _direction, _speed * Time.deltaTime, _bounceMask);
-
+            bool pierceCheck = false;
+            
             if (hit.collider != null)
             {
                 bool isTriggerCheck = false;
                 if (hit.collider.TryGetComponent(out IHitAble hitable))
                 {
-                    if (_hitAbles.Contains(hitable))
+                    if (_lastHitAble == hitable)
                         return;
-                    else
-                    {
-                        _hitAbles.Clear();
-                    }
-                    hitable.Hit(_direction, _damage);
-                    if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
-                    {
-                        isTriggerCheck = hit.collider.isTrigger;
-                    }
-                    else if(_owner == ProjectileOwner.Player)
-                    {
-                        SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
-                        _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
-                    }
-                    _hitAbles.Add(hitable);
-                }
-                else
-                {
-                    _hitAbles.Clear();
-                    _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX,hit.transform.position);
-                }
-
-                if (isTriggerCheck)
-                    return;
-                _ballTransform.up = hit.normal;
-                _currentStretch = -1;
-                _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
-                
-                _direction = Vector2.Reflect(_direction, hit.normal);
-                
-                
-                SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
-                
-                if (_reflectCorrection != 0)
-                {
-                    var targetDir = ((Vector2) _playerTransform.transform.position - hit.point).normalized;
-                    _direction = Vector3.RotateTowards(_direction, targetDir, _reflectCorrection, 0);
-                }
-                
-                if (!_isReleased && --_bounceCount <= 0)
-                {
-                    _isReleased = true;
-                    _releaseTimer = 0;
-
-                    if (_releaseDelay > 0)
-                    {
-                        _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
-                    }
-                }
-            }
-        }
-
-        private void PierceCheckHit()
-        {
-             var hit = Physics2D.CircleCast(transform.position, ColliderRad, _direction, _speed * Time.deltaTime, _bounceMask);
-
-            if (hit.collider != null)
-            {
-                bool isTriggerCheck = false;
-                bool isPass = false;
-                if (hit.collider.TryGetComponent(out IHitAble hitable))
-                {
-                    if (_hitAbles.Contains(hitable))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        _hitAbles.Clear();
-                    }
-                    if (hitable is Enemy)
-                    {
-                        isPass = true;
-                        //Debug.Log("ID : " + hit.collider.gameObject.GetInstanceID() + " Damage : " + _damage);
-                    }
-                    else if (hitable is Dullahan)
-                    {
-                        isPass = true;
-                    }
-                    hitable.Hit(_direction, _damage);
-                    if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
-                    {
-                        isTriggerCheck = hit.collider.isTrigger;
-                    }
-                    else if(_owner == ProjectileOwner.Player)
-                    {
-                        SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
-                        _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
-                    }
-                    _hitAbles.Add(hitable);
-                }
-                else
-                {
-                    _hitAbles.Clear();
-                    _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX,hit.transform.position);
-                }
-
-                if (isTriggerCheck || isPass)
-                    return;
-                _ballTransform.up = hit.normal;
-                _currentStretch = -1;
-                _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
-
-                _direction = Vector2.Reflect(_direction, hit.normal);
                     
-                SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
+                    hitable.Hit(_direction, _damage);
+                    if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
+                    {
+                        isTriggerCheck = hit.collider.isTrigger;
+                    }
+                    else if(_owner == ProjectileOwner.Player)
+                    {
+                        SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
+                        _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
+                    }
+                    
+                    _lastHitAble = hitable;
+                    pierceCheck = _isPierce;
+                }
+                else
+                {
+                    _lastHitAble = null;
+                    _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX,hit.transform.position);
+                }
 
+                if (isTriggerCheck || pierceCheck)
+                    return;
+                
+                _ballTransform.up = hit.normal;
+                _currentStretch = -1;
+                _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
+                
+                _direction = Vector2.Reflect(_direction, hit.normal);
+                
+                
+                SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
+                
                 if (_reflectCorrection != 0)
                 {
                     var targetDir = ((Vector2) _playerTransform.transform.position - hit.point).normalized;

@@ -42,9 +42,11 @@ namespace QT.InGame
 
         private SoundManager _soundManager;
 
-        private bool isStuckSound = false;
+        private float _lastStuckTime = 0f;
+
+        private bool _isPierce;
         
-        private List<IHitAble> _hitAbles = new List<IHitAble>();
+        private IHitAble _lastHitAble;
         
 
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
@@ -60,7 +62,7 @@ namespace QT.InGame
             _soundManager = SystemManager.Instance.SoundManager;
         }
 
-        public void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool playSound)
+        public void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool isPierce, bool playSound)
         {
             _direction = dir;
             _maxSpeed = _speed = power;
@@ -70,6 +72,7 @@ namespace QT.InGame
             _bounceCount = _maxBounce = 2;
             _releaseDelay = 1;
             _isReleased = false;
+            _isPierce = isPierce;
 
             _ownerEntity.SetPhysics(false);
             
@@ -110,18 +113,17 @@ namespace QT.InGame
         private void CheckHit()
         {
             var hit = Physics2D.CircleCast(_transform.position, _size, _direction, _speed * Time.deltaTime, _bounceMask);
+            bool pierceCheck = false;
 
             if (hit.collider != null)
             {
                 bool isTriggerCheck = false;
+                
                 if (hit.collider.TryGetComponent(out IHitAble hitable))
                 {
-                    if (_hitAbles.Contains(hitable))
+                    if (_lastHitAble == hitable)
                         return;
-                    else
-                    {
-                        _hitAbles.Clear();
-                    }
+                    
                     if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
                     {
                         isTriggerCheck = hit.collider.isTrigger;
@@ -131,24 +133,22 @@ namespace QT.InGame
                         hitable.Hit(_direction, _damage);
                         _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayMonsterHitSFX);
                     }
-                    _hitAbles.Add(hitable);
+                    
+                    _lastHitAble = hitable;
+                    pierceCheck = _isPierce;
                     //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
                 else
                 {
-                    if (!isStuckSound)
+                    if (Time.timeSinceLevelLoad - _lastStuckTime > 0.1f)
                     {
+                        _lastStuckTime = Time.timeSinceLevelLoad;
                         _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayWallHitSFX);
-                        isStuckSound = true;
-                        _ownerEntity.StartCoroutine(UnityUtil.WaitForFunc(() =>
-                        {
-                            isStuckSound = false;
-                        }, 0.1f));
                     }
-                    _hitAbles.Clear();
+                    _lastHitAble = null;
                 }
                 
-                if (isTriggerCheck)
+                if (isTriggerCheck || pierceCheck)
                     return;
                 
                 _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
