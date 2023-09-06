@@ -46,6 +46,7 @@ namespace QT.InGame
         [HideInInspector] public bool IsDodge;
         [HideInInspector] public bool IsFlip;
         [HideInInspector] public bool IsReverseLookDir = false;
+        [HideInInspector] public bool LockAim = false;
         
         private void InitInputs()
         {
@@ -86,7 +87,9 @@ namespace QT.InGame
             AimPosition = _camera.ScreenToWorldPoint(lookInput);
 
             OnMove?.Invoke(moveInput);
-            OnAim?.Invoke(AimPosition);
+            
+            if(!LockAim)
+                OnAim?.Invoke(AimPosition);
         }
 
         private void OnEnable()

@@ -33,6 +33,8 @@ namespace QT.InGame
         private SoundManager _soundManager;
         private GlobalData _globalData;
         
+        private Coroutine _swingAfterCoroutine;
+        
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
@@ -184,6 +186,12 @@ namespace QT.InGame
             }
             
             SystemManager.Instance.EventManager.InvokeEvent(EventType.OnSwing, null);
+
+            
+            _ownerEntity.LockAim = true; 
+            if(_swingAfterCoroutine != null)
+                _ownerEntity.StopCoroutine(_swingAfterCoroutine);
+            _swingAfterCoroutine = _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() => { _ownerEntity.LockAim = false; }, 0.7f));
         }
 
         
