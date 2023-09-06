@@ -57,7 +57,7 @@ namespace QT.InGame
                     .GetData(_ownerEntity.Data.ProjectileDataId);
             
             _size = data.ColliderRad * 0.5f;
-            _damage = data.DirectDmg; // TODO : 의미 없음
+            _damage = data.DirectDmg;
 
             _soundManager = SystemManager.Instance.SoundManager;
         }
@@ -109,32 +109,36 @@ namespace QT.InGame
             CheckHit();
             Move();
         }
-        
+
         private void CheckHit()
         {
-            var hit = Physics2D.CircleCast(_transform.position, _size, _direction, _speed * Time.deltaTime, _bounceMask);
-            bool pierceCheck = false;
+            var hit = Physics2D.CircleCast(_transform.position, _size, _direction, _speed * Time.deltaTime,
+                _bounceMask);
+            
+            if (hit.collider == null)
+                return;
 
-            if (hit.collider != null)
+            var pierceCheck = false;
+            var isTriggerCheck = false;
+
+            if (_speed > 0.1f)
             {
-                bool isTriggerCheck = false;
-                
-                if (hit.collider.TryGetComponent(out IHitAble hitable))
+                if (hit.collider.TryGetComponent(out IHitAble hitAble))
                 {
-                    if (_lastHitAble == hitable)
+                    if (_lastHitAble == hitAble)
                         return;
-                    
-                    if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
+
+                    hitAble.Hit(_direction, _damage);
+                    if (!hitAble.IsClearTarget)
                     {
                         isTriggerCheck = hit.collider.isTrigger;
                     }
                     else
                     {
-                        hitable.Hit(_direction, _damage);
                         _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayMonsterHitSFX);
                     }
-                    
-                    _lastHitAble = hitable;
+
+                    _lastHitAble = hitAble;
                     pierceCheck = _isPierce;
                     //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
@@ -145,26 +149,27 @@ namespace QT.InGame
                         _lastStuckTime = Time.timeSinceLevelLoad;
                         _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayWallHitSFX);
                     }
+
                     _lastHitAble = null;
                 }
-                
-                if (isTriggerCheck || pierceCheck)
-                    return;
-                
-                _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
-                if (--_bounceCount == 0)
+            }
+
+            if (isTriggerCheck || pierceCheck)
+                return;
+
+            _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
+            if (--_bounceCount == 0)
+            {
+                if (_ownerEntity.HP <= 0)
                 {
-                    if (_ownerEntity.HP <= 0)
-                    {
-                        _isReleased = true;
-                    }
+                    _isReleased = true;
+                }
 
-                    _releaseTimer = 0;
+                _releaseTimer = 0;
 
-                    if (_releaseDelay > 0)
-                    {
-                        _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
-                    }
+                if (_releaseDelay > 0)
+                {
+                    _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
                 }
             }
         }
