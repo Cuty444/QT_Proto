@@ -42,9 +42,11 @@ namespace QT.InGame
 
         private SoundManager _soundManager;
 
-        private bool isStuckSound = false;
+        private float _lastStuckTime = 0f;
+
+        private bool _isPierce;
         
-        private List<IHitAble> _hitAbles = new List<IHitAble>();
+        private IHitAble _lastHitAble;
         
 
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
@@ -55,12 +57,12 @@ namespace QT.InGame
                     .GetData(_ownerEntity.Data.ProjectileDataId);
             
             _size = data.ColliderRad * 0.5f;
-            _damage = data.DirectDmg; // TODO : 의미 없음
+            _damage = data.DirectDmg;
 
             _soundManager = SystemManager.Instance.SoundManager;
         }
 
-        public void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool playSound)
+        public void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool isPierce, bool playSound)
         {
             _direction = dir;
             _maxSpeed = _speed = power;
@@ -70,13 +72,12 @@ namespace QT.InGame
             _bounceCount = _maxBounce = 2;
             _releaseDelay = 1;
             _isReleased = false;
+            _isPierce = isPierce;
 
             _ownerEntity.SetPhysics(false);
             
             if (_ownerEntity.HP <= 0)
             { 
-                _ownerEntity.HpCanvas.gameObject.SetActive(false);
-                
                 if(playSound)
                     _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
@@ -106,65 +107,67 @@ namespace QT.InGame
             CheckHit();
             Move();
         }
-        
+
         private void CheckHit()
         {
-            var hit = Physics2D.CircleCast(_transform.position, _size, _direction, _speed * Time.deltaTime, _bounceMask);
+            var hit = Physics2D.CircleCast(_transform.position, _size, _direction, _speed * Time.deltaTime,
+                _bounceMask);
+            
+            if (hit.collider == null)
+                return;
 
-            if (hit.collider != null)
+            var pierceCheck = false;
+            var isTriggerCheck = false;
+
+            if (_speed > 0.1f)
             {
-                bool isTriggerCheck = false;
-                if (hit.collider.TryGetComponent(out IHitAble hitable))
+                if (hit.collider.TryGetComponent(out IHitAble hitAble))
                 {
-                    if (_hitAbles.Contains(hitable))
+                    if (_lastHitAble == hitAble)
                         return;
-                    else
-                    {
-                        _hitAbles.Clear();
-                    }
-                    if (hit.collider.TryGetComponent(out InteractionObject interactionObject))
+
+                    hitAble.Hit(_direction, _damage);
+                    if (!hitAble.IsClearTarget)
                     {
                         isTriggerCheck = hit.collider.isTrigger;
                     }
                     else
                     {
-                        hitable.Hit(_direction, _damage);
                         _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayMonsterHitSFX);
                     }
-                    _hitAbles.Add(hitable);
+
+                    _lastHitAble = hitAble;
+                    pierceCheck = _isPierce;
                     //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
                 else
                 {
-                    if (!isStuckSound)
+                    if (Time.timeSinceLevelLoad - _lastStuckTime > 0.1f)
                     {
+                        _lastStuckTime = Time.timeSinceLevelLoad;
                         _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayWallHitSFX);
-                        isStuckSound = true;
-                        _ownerEntity.StartCoroutine(UnityUtil.WaitForFunc(() =>
-                        {
-                            isStuckSound = false;
-                        }, 0.1f));
                     }
-                    _hitAbles.Clear();
+
+                    _lastHitAble = null;
                 }
-                
-                if (isTriggerCheck)
-                    return;
-                
-                _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
-                if (--_bounceCount == 0)
+            }
+
+            if (isTriggerCheck || pierceCheck)
+                return;
+
+            _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
+            if (--_bounceCount == 0)
+            {
+                if (_ownerEntity.HP <= 0)
                 {
-                    if (_ownerEntity.HP <= 0)
-                    {
-                        _isReleased = true;
-                    }
+                    _isReleased = true;
+                }
 
-                    _releaseTimer = 0;
+                _releaseTimer = 0;
 
-                    if (_releaseDelay > 0)
-                    {
-                        _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
-                    }
+                if (_releaseDelay > 0)
+                {
+                    _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
                 }
             }
         }

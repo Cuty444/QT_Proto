@@ -20,7 +20,7 @@ namespace QT.InGame
 
         private List<IProjectile> _projectiles = new();
         private List<IHitAble> _hitAbles = new();
-        private List<LineRenderer> _lines = new();
+        //private List<LineRenderer> _lines = new();
 
 
         private LayerMask _projectileLayerMask;
@@ -32,6 +32,8 @@ namespace QT.InGame
 
         private SoundManager _soundManager;
         private GlobalData _globalData;
+        
+        private Coroutine _swingAfterCoroutine;
         
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
@@ -51,7 +53,6 @@ namespace QT.InGame
         public override void InitializeState()
         {
             base.InitializeState();
-            SetLineObjects();
 
             _isCharged = false;
             _isCharging = false;
@@ -69,12 +70,7 @@ namespace QT.InGame
             _soundManager.StopSFX(_soundManager.SoundData.ChargeSFX);
             _projectiles.Clear();
             _ownerEntity.ChargingEffectStop();
-            foreach (var line in _lines)
-            {
-                SystemManager.Instance.ResourceManager.ReleaseObject(HitLinePath, line);
-            }
-
-            _lines.Clear();
+            
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
         }
 
@@ -89,8 +85,6 @@ namespace QT.InGame
             base.FixedUpdateState();
             
             GetProjectiles();
-
-            SetLines();
         }
         
 
@@ -151,16 +145,8 @@ namespace QT.InGame
                     projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player,
                         _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
 
-                    //if (_isCharged) // TODO : 차지에 따른 이펙트 변경시 코드
-                    //{
-                        SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath,
-                            projectile.Position);
-                    //}
-                    //else
-                    //{
-                    //    SystemManager.Instance.ResourceManager.EmitParticle(SwingNormalProjectileHitPath,
-                    //        projectile.Position);
-                    //}
+                    SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath,
+                        projectile.Position);
 
                     hitCount++;
                     ballHitCount++;
@@ -200,19 +186,15 @@ namespace QT.InGame
             }
             
             SystemManager.Instance.EventManager.InvokeEvent(EventType.OnSwing, null);
+
+            
+            _ownerEntity.LockAim = true; 
+            if(_swingAfterCoroutine != null)
+                _ownerEntity.StopCoroutine(_swingAfterCoroutine);
+            _swingAfterCoroutine = _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() => { _ownerEntity.LockAim = false; }, 0.7f));
         }
 
-        private async void SetLineObjects()
-        {
-            for (int i = 0; i < MaxLineCount; i++)
-            {
-                var line = await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(HitLinePath);
-                line.positionCount = 0;
-                _lines.Add(line);
-            }
-        }
-
-
+        
         private void GetChargeLevel()
         {
             if (!_isCharging && _globalData.ChargeAtkDelay < _chargingTime)
@@ -251,61 +233,6 @@ namespace QT.InGame
             
             ProjectileManager.Instance.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _projectiles, _projectileLayerMask);
             HitAbleManager.Instance.GetInRange(eye.position, swingRad, swingCentralAngle * 0.5f, eye.right, ref _hitAbles);
-        }
-
-        private void SetLines()
-        {
-            var bounceCount = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeBounceCount).Value;;
-
-            for (int i = 0; i < _lines.Count; i++)
-            {
-                if (_projectiles.Count > i && _projectiles[i] is not Enemy)
-                {  
-                    SetLine(_projectiles[i], _lines[i], bounceCount);
-                }
-                else
-                {
-                    _lines[i].positionCount = 0;
-                }
-            }
-        }
-
-        private void SetLine(IProjectile projectile, LineRenderer lineRenderer, int bounceCount)
-        {
-            var dir = GetNewProjectileDir(projectile);
-            var mask = _ownerEntity.ProjectileShooter.BounceMask;
-            float reflectCorrection = _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection);
-
-            lineRenderer.enabled = true;
-            lineRenderer.positionCount = 0;
-            lineRenderer.positionCount = bounceCount + 2;
-
-            lineRenderer.SetPosition(0, projectile.Position);
-            var hit2 = Physics2D.CircleCast(lineRenderer.GetPosition((0)), 0.5f, dir, Mathf.Infinity, mask);
-
-            if (hit2.collider)
-            {
-                lineRenderer.SetPosition(1, hit2.point + (hit2.normal * 0.5f));
-            }
-            for (int i = 1; i < bounceCount; i++)
-            {
-                var hit = Physics2D.CircleCast(lineRenderer.GetPosition((i - 1)), 0.5f, dir, Mathf.Infinity, mask);
-
-                if (hit.collider == null)
-                {
-                    lineRenderer.positionCount = i + 1;
-                    break;
-                }
-
-                lineRenderer.SetPosition(i, hit.point + (hit.normal * 0.5f));
-                dir = Vector2.Reflect(dir, hit.normal);
-
-                if (reflectCorrection != 0)
-                {
-                    var targetDir = ((Vector2) _ownerEntity.transform.position - hit.point).normalized;
-                    dir = Vector3.RotateTowards(dir, targetDir, reflectCorrection * Mathf.Deg2Rad, 0);
-                }
-            }
         }
 
 

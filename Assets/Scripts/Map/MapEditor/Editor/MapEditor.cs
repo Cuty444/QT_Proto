@@ -25,7 +25,7 @@ namespace QT.Map
         
         private Volume _volume;
 
-        private int _wallHeight = 3;
+        private int _wallHeight = 2;
         private Color _deactivatedColor = new Color(0.8f, 0.8f, 0.8f, 0.2f);
 
         private bool _isPrefab = false;
