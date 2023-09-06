@@ -22,7 +22,7 @@ namespace QT.InGame
 
             _ownerEntity.HP.AddStatus(-power);
             _ownerEntity.HpImage.fillAmount = Util.Math.Remap(_ownerEntity.HP, _ownerEntity.HP.BaseValue, 0f);
-            _ownerEntity.HpCanvas.gameObject.SetActive(true);
+            _ownerEntity.HpCanvas.gameObject.SetActive(_ownerEntity.HP > 0);
             
             if (_ownerEntity.CurrentStateIndex >= (int) Enemy.States.Projectile)
             {

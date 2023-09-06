@@ -78,8 +78,6 @@ namespace QT.InGame
             
             if (_ownerEntity.HP <= 0)
             { 
-                _ownerEntity.HpCanvas.gameObject.SetActive(false);
-                
                 if(playSound)
                     _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
