@@ -5,7 +5,8 @@ using QT.Core;
 using QT.Core.Data;
 using QT.Ranking;
 using QT.UI;
-using Unity.VisualScripting;
+using Spine;
+using Spine.Unity;
 using UnityEngine.UI;
 
 namespace QT.InGame
@@ -21,13 +22,22 @@ namespace QT.InGame
         private RankingManager _rankingManager;
 
         private InputAngleDamper _roationDamper = new (5);
-        
-        
+
+        private GlobalData _globalData;
+
+        private Bone _batBone;
+        private Stat _swingRadStat;
+
+
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
             _rankingManager = SystemManager.Instance.RankingManager;
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
+            
+            _batBone = _ownerEntity.GetComponentInChildren<SkeletonRenderer>().Skeleton.FindBone("bat_size");
+            _swingRadStat = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingRad);
         }
 
         public override void InitializeState()
@@ -37,19 +47,26 @@ namespace QT.InGame
             //SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
             SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainAnimation);
             _ownerEntity.OnAim.AddListener(OnAim);
+
+            OnSwingRadChange();
+            _swingRadStat.OnValueChanged.AddListener(OnSwingRadChange);
         }
 
         public override void UpdateState()
         {
             _playerHpCanvas.SetHpUpdate(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP));
             _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
+            
+            OnSwingRadChange();
         }
-        
+
         public override void ClearState()
         {
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveListener(OnDamage);
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainAnimation);
             _ownerEntity.OnAim.RemoveListener(OnAim);
+            
+            _swingRadStat.OnValueChanged.RemoveListener(OnSwingRadChange);
         }
 
         private void OnAim(Vector2 aimPos)
@@ -114,6 +131,14 @@ namespace QT.InGame
         private void GainAnimation()
         {
             _ownerEntity.Animator?.SetTrigger(GainAnimHash);
+        }
+
+        private void OnSwingRadChange()
+        {
+            var swingRad = _swingRadStat.Value / _swingRadStat.BaseValue * _globalData.BatSizeMultiplier;
+
+            _batBone.ScaleX = swingRad;
+            _batBone.ScaleY = swingRad;
         }
 
     }

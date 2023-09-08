@@ -97,7 +97,6 @@ namespace QT.InGame
             
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
-            //SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
             SwingAreaMeshRenderer.material.color = globalData.SwingAreaColor;
             
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
