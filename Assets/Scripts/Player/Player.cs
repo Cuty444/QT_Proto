@@ -16,9 +16,9 @@ namespace QT.InGame
         public enum States : int
         {
             Global,
+            
             Move,
             Swing,
-            Gain,
             Dodge,
             Fall,
             Dead,
@@ -41,20 +41,24 @@ namespace QT.InGame
         
         public PlayerStatComponent StatComponent { get; private set; }
         public BuffComponent BuffComponent { get; private set; }
-        
         public Inventory Inventory { get; private set; }
+        
         public Animator Animator;
         public Rigidbody2D Rigidbody { get; private set; }
+        
+        public MeshFilter SwingAreaMeshFilter { get; private set; }
+        public MeshRenderer SwingAreaMeshRenderer { get; private set; }
         
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
         
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public SkeletonGhost GhostEffect { get; private set; }
 
+        
         private PlayerManager _playerManager;
 
+        
         private bool _isEnterDoor;
-
         private PlayerHPCanvas _playerHpCanvas;
 
         [SerializeField] private Transform _attackSpeedCanvas;

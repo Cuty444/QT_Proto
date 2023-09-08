@@ -13,6 +13,7 @@ namespace QT.InGame
     [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>
     {
+        private readonly int GainAnimHash = Animator.StringToHash("Gain");
         private readonly int RotatationAnimHash = Animator.StringToHash("Rotation");
         private readonly int RigidAnimHash = Animator.StringToHash("Rigid");
 
@@ -34,7 +35,7 @@ namespace QT.InGame
             SystemManager.Instance.PlayerManager.OnDamageEvent.AddListener(OnDamage);
             //SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.AddListener(arg0 => TeleportLineClear());
             //SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
-            SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainItem);
+            SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainAnimation);
             _ownerEntity.OnAim.AddListener(OnAim);
         }
 
@@ -47,7 +48,7 @@ namespace QT.InGame
         public override void ClearState()
         {
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveListener(OnDamage);
-            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainItem);
+            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainAnimation);
             _ownerEntity.OnAim.RemoveListener(OnAim);
         }
 
@@ -110,9 +111,9 @@ namespace QT.InGame
             }
         }
 
-        private void GainItem()
+        private void GainAnimation()
         {
-            _ownerEntity.ChangeState(Player.States.Gain);
+            _ownerEntity.Animator?.SetTrigger(GainAnimHash);
         }
 
     }

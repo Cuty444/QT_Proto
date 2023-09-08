@@ -9,8 +9,6 @@ namespace QT.InGame
     public partial class Player
     {
         
-        public MeshFilter SwingAreaMeshFilter { get; private set; }
-        public MeshRenderer SwingAreaMeshRenderer { get; private set; }
         
         
     }
