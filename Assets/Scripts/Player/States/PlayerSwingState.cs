@@ -15,6 +15,10 @@ namespace QT.InGame
         //private const string SwingNormalProjectileHitPath = "Effect/Prefabs/FX_Ball_Normal_Attack.prefab";
         private const string SwingBatHitPath = "Effect/Prefabs/FX_M_Bat_Hit_Boom.prefab";
         
+        private readonly int SwingAnimHash = Animator.StringToHash("Swing");
+        private readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
+        private readonly int ChargeLevelAnimHash = Animator.StringToHash("ChargeLevel");
+        
         private const int Segments = 32;
         private const int MaxLineCount = 10;
 
@@ -72,6 +76,7 @@ namespace QT.InGame
             _ownerEntity.ChargingEffectStop();
             
             _ownerEntity.SwingAreaMeshRenderer.enabled = false;
+            _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash,0);
         }
 
         public override void UpdateState()
@@ -153,10 +158,6 @@ namespace QT.InGame
                 }
             }
 
-
-            _ownerEntity.PlayBatAnimation();
-            _ownerEntity.ChangeState(Player.States.Move);
-
             _ownerEntity.StatComponent.GetStatus(PlayerStats.SwingCooldown).SetStatus(0);
 
             if (hitCount > 0)
@@ -187,11 +188,20 @@ namespace QT.InGame
             
             SystemManager.Instance.EventManager.InvokeEvent(EventType.OnSwing, null);
 
+            SetSwingAnimation();
+
+            _ownerEntity.ChangeState(Player.States.Move);
+        }
+
+        private void SetSwingAnimation()
+        {
+            _ownerEntity.Animator.SetInteger(SwingLevelAnimHash, _isCharged ? 1 : 0);
+            _ownerEntity.Animator.SetTrigger(SwingAnimHash);
             
             _ownerEntity.LockAim = true; 
             if(_swingAfterCoroutine != null)
                 _ownerEntity.StopCoroutine(_swingAfterCoroutine);
-            _swingAfterCoroutine = _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() => { _ownerEntity.LockAim = false; }, 0.7f));
+            _swingAfterCoroutine = _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() => { _ownerEntity.LockAim = false; }, _isCharged ? 0.7f : 0.3f));
         }
 
         
@@ -207,9 +217,20 @@ namespace QT.InGame
                 
                 CheckSwingAreaMesh();
                 _ownerEntity.SwingAreaMeshRenderer.enabled = true;
+                
+                return;
             }
             
-            if (!_isCharged && _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeTime).Value < _chargingTime)
+            var chargeTime = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeTime).Value;
+            var chargeLevel = _chargingTime / chargeTime;
+            chargeLevel *= chargeLevel * chargeLevel;
+            chargeLevel = Mathf.Clamp01(chargeLevel);
+            
+            _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, chargeLevel);
+            _ownerEntity.SwingAreaMeshRenderer.material.color = Color.Lerp(Color.clear, _globalData.SwingAreaColor, chargeLevel);
+            
+            
+            if (!_isCharged && chargeTime < _chargingTime)
             {
                 _isCharged = true;
                 _soundManager.StopSFX(_soundManager.SoundData.ChargeSFX);

@@ -9,7 +9,7 @@ namespace QT.InGame
 
     public class PlayerDeadState : FSMState<Player>
     {
-        private readonly int AnimationDeadHash = Animator.StringToHash("PlayerDead");
+        private readonly int DeadAnimHash = Animator.StringToHash("IsDead");
         
         public PlayerDeadState(IFSMEntity owner) : base(owner)
         {
@@ -22,9 +22,14 @@ namespace QT.InGame
             _ownerEntity.gameObject.layer = LayerMask.NameToLayer("Default");
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             
-            _ownerEntity.Animator.SetTrigger(AnimationDeadHash);
+            _ownerEntity.Animator.SetBool(DeadAnimHash, true);
             _ownerEntity.OnAim.RemoveAllListeners();
             SystemManager.Instance.LoadingManager.GameOverOpen();
+        }
+
+        public override void ClearState()
+        {
+            _ownerEntity.Animator.SetBool(DeadAnimHash, false);
         }
     }
 }

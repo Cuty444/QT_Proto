@@ -4,9 +4,9 @@ namespace QT
     {
         public enum ModifierType
         {
-            Hard,
             Multiply,
-            Addition
+            Addition,
+            Hard
         }
         
         public readonly float Value;

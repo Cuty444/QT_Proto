@@ -22,10 +22,9 @@ namespace QT.InGame
         private const string ShockEffectPath = "Effect/Prefabs/FX_Active_Rush_crash.prefab";
         private const string SwingBatHitPath = "Effect/Prefabs/FX_Bat_Hit.prefab";
         
-        private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
+        private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
         private readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
-        private readonly int PlayerIdleAnimHash = Animator.StringToHash("PlayerIdle");
-        private readonly int PlayerSwingAnimHash = Animator.StringToHash("PlayerSwing");
+        private readonly int SwingAnimHash = Animator.StringToHash("Swing");
 
         private readonly Player _player;
         private readonly SoundManager _soundManager;
@@ -72,7 +71,6 @@ namespace QT.InGame
         {
             _cancellationTokenSource?.Cancel();
             
-            _player.Animator.SetBool(PlayerIdleAnimHash, true);
             _player.OnAim.RemoveListener(OnAim);
             
             _player.ChangeState(Player.States.Move);
@@ -96,7 +94,6 @@ namespace QT.InGame
             _player.ChangeState(Player.States.Empty);
             _player.SetGlobalState(null);
             
-            _player.Animator.SetBool(PlayerIdleAnimHash, false);
             _dir = (_aimPosition - _player.Position ).normalized;
             
             var chargeEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(ChargeEffectPath, _player.CenterTransform);
@@ -139,8 +136,7 @@ namespace QT.InGame
 
             SystemManager.Instance.ResourceManager.ReleaseObject(ChargeEffectPath, chargeEffect);
             
-            _player.Animator.SetTrigger(PlayerSwingAnimHash);
-            _player.Animator.SetBool(PlayerIdleAnimHash, true);
+            _player.Animator.SetTrigger(SwingAnimHash);
             
             _player.ChangeState(Player.States.Move);
             _player.SetGlobalState(new PlayerGlobalState(_player));
@@ -238,7 +234,7 @@ namespace QT.InGame
 
             var aimValue = (angle / 180 * 4);
             
-            _player.Animator.SetFloat(AnimationMouseRotateHash, aimValue);
+            _player.Animator.SetFloat(RotationAnimHash, aimValue);
             _player.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
         }
         

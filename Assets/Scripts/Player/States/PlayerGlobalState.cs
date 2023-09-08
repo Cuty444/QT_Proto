@@ -5,7 +5,8 @@ using QT.Core;
 using QT.Core.Data;
 using QT.Ranking;
 using QT.UI;
-using Unity.VisualScripting;
+using Spine;
+using Spine.Unity;
 using UnityEngine.UI;
 
 namespace QT.InGame
@@ -13,24 +14,30 @@ namespace QT.InGame
     [FSMState((int)Player.States.Global, false)]
     public class PlayerGlobalState : FSMState<Player>
     {
-        private readonly int AnimationMouseRotateHash = Animator.StringToHash("MouseRotate");
-        private readonly int AnimationRigidHash = Animator.StringToHash("PlayerRigid");
-        private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
+        private readonly int GainAnimHash = Animator.StringToHash("Gain");
+        private readonly int RotatationAnimHash = Animator.StringToHash("Rotation");
+        private readonly int RigidAnimHash = Animator.StringToHash("Rigid");
 
         private PlayerHPCanvas _playerHpCanvas;
         private RankingManager _rankingManager;
 
         private InputAngleDamper _roationDamper = new (5);
-        
-        
+
+        private GlobalData _globalData;
+
+        private Bone _batBone;
+        private Stat _swingRadStat;
+
+
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _playerHpCanvas.gameObject.SetActive(true);
             _rankingManager = SystemManager.Instance.RankingManager;
-            SystemManager.Instance.ResourceManager.CacheAsset(TeleportLinePath);
-
-            _ownerEntity.SetBatActive(false);
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
+            
+            _batBone = _ownerEntity.GetComponentInChildren<SkeletonRenderer>().Skeleton.FindBone("bat_size");
+            _swingRadStat = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingRad);
         }
 
         public override void InitializeState()
@@ -38,21 +45,28 @@ namespace QT.InGame
             SystemManager.Instance.PlayerManager.OnDamageEvent.AddListener(OnDamage);
             //SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.AddListener(arg0 => TeleportLineClear());
             //SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
-            SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainItem);
+            SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainAnimation);
             _ownerEntity.OnAim.AddListener(OnAim);
+
+            OnSwingRadChange();
+            _swingRadStat.OnValueChanged.AddListener(OnSwingRadChange);
         }
 
         public override void UpdateState()
         {
             _playerHpCanvas.SetHpUpdate(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP));
             _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
+            
+            OnSwingRadChange();
         }
-        
+
         public override void ClearState()
         {
             SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveListener(OnDamage);
-            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainItem);
+            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainAnimation);
             _ownerEntity.OnAim.RemoveListener(OnAim);
+            
+            _swingRadStat.OnValueChanged.RemoveListener(OnSwingRadChange);
         }
 
         private void OnAim(Vector2 aimPos)
@@ -87,15 +101,15 @@ namespace QT.InGame
                 flip = 0;
             }
 
-            var aimValue = (angle / 180 * 4) + (_ownerEntity.CurrentStateIndex == (int)Player.States.Swing ? 5 : 0);
+            var aimValue = angle / 180 * 5;
             
-            _ownerEntity.Animator.SetFloat(AnimationMouseRotateHash, aimValue);
+            _ownerEntity.Animator.SetFloat(RotatationAnimHash, aimValue);
             _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
         }
         
         private void OnDamage(Vector2 dir, float damage)
         {
-            _ownerEntity.Animator.SetTrigger(AnimationRigidHash);
+            _ownerEntity.Animator.SetTrigger(RigidAnimHash);
             //_ownerEntity.PlayerHitEffectPlay();
             
             var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
@@ -114,9 +128,17 @@ namespace QT.InGame
             }
         }
 
-        private void GainItem()
+        private void GainAnimation()
         {
-            _ownerEntity.ChangeState(Player.States.Gain);
+            _ownerEntity.Animator?.SetTrigger(GainAnimHash);
+        }
+
+        private void OnSwingRadChange()
+        {
+            var swingRad = _swingRadStat.Value / _swingRadStat.BaseValue * _globalData.BatSizeMultiplier;
+
+            _batBone.ScaleX = swingRad;
+            _batBone.ScaleY = swingRad;
         }
 
     }

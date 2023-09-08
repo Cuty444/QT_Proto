@@ -220,7 +220,7 @@ namespace QT.InGame
             var pierceCheck = false;
             var isTriggerCheck = false;
 
-            if (_speed > 0.1f)
+            if (_speed > 0.5f)
             {
                 if (hit.collider.TryGetComponent(out IHitAble hitAble))
                 {

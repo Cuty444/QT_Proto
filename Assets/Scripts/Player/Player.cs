@@ -16,9 +16,9 @@ namespace QT.InGame
         public enum States : int
         {
             Global,
+            
             Move,
             Swing,
-            Gain,
             Dodge,
             Fall,
             Dead,
@@ -38,26 +38,27 @@ namespace QT.InGame
         
         [field:SerializeField] public Transform EyeTransform { get; private set; }
         [field:SerializeField] public Transform CenterTransform { get; private set; }
-        [SerializeField] private Transform _batTransform;
-        [SerializeField] private SpriteRenderer _batSpriteRenderer;
-        [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
         
         public PlayerStatComponent StatComponent { get; private set; }
         public BuffComponent BuffComponent { get; private set; }
-        
         public Inventory Inventory { get; private set; }
+        
         public Animator Animator;
         public Rigidbody2D Rigidbody { get; private set; }
+        
+        public MeshFilter SwingAreaMeshFilter { get; private set; }
+        public MeshRenderer SwingAreaMeshRenderer { get; private set; }
         
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
         
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public SkeletonGhost GhostEffect { get; private set; }
 
+        
         private PlayerManager _playerManager;
 
+        
         private bool _isEnterDoor;
-
         private PlayerHPCanvas _playerHpCanvas;
 
         [SerializeField] private Transform _attackSpeedCanvas;
@@ -91,14 +92,17 @@ namespace QT.InGame
             OnAim.RemoveAllListeners();
             Rigidbody = GetComponent<Rigidbody2D>();
             
+            
+            var globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
+            
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
-            SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
+            SwingAreaMeshRenderer.material.color = globalData.SwingAreaColor;
             
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             GhostEffect = GetComponentInChildren<SkeletonGhost>();
             
-            _attackSpeedColorGradient = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.AttackSpeedColorCurve;
+            _attackSpeedColorGradient = globalData.AttackSpeedColorCurve;
             InitInputs();
             
             EffectSetup();

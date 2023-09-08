@@ -115,7 +115,7 @@ namespace QT.InGame
             List<IProjectile> projectiles = new List<IProjectile>();
             ProjectileManager.Instance.GetInRange(_player.transform.position, _absorbRange, ref projectiles, TargetBounceLayer);
 
-            int damage = (int)_player.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg);
+            int damage = (int)_player.StatComponent.GetDmg(PlayerStats.ChargeProjectileDmg);
             
             foreach (var projectile in projectiles)
             {
