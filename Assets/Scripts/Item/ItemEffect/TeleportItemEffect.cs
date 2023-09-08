@@ -11,7 +11,7 @@ namespace QT.InGame
     // Param1 : 텔레포트 허용 범위
     public class TeleportItemEffect : ItemEffect
     {
-        private readonly int AnimationSwingHash = Animator.StringToHash("PlayerSwing");
+        private readonly int SwingAnimHash = Animator.StringToHash("Swing");
         private const string SwingProjectileHitPath = "Effect/Prefabs/FX_Ball_Attack.prefab";
         private LayerMask BounceMask => LayerMask.GetMask("Wall", "Enemy");
 
@@ -62,8 +62,7 @@ namespace QT.InGame
             Debug.DrawLine(target.Item1.Position, target.Item2.Position, Color.green,3);
             
             SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, target.Item1.Position);
-            _player.Animator.SetTrigger(AnimationSwingHash);
-            _player.PlayBatAnimation();
+            _player.Animator.SetTrigger(SwingAnimHash);
 
             PlayEffect();
             

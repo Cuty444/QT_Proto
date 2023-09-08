@@ -96,6 +96,13 @@ namespace QT.Core.Data
         
         
         /// <summary>
+        /// 플레이어 공격 범위 색깔
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("플레이어 공격 범위 색깔")]
+        public Color SwingAreaColor { get; private set; }
+        
+        /// <summary>
         /// 플레이어 공속 게이지 커브
         /// </summary>
         [field: SerializeField]

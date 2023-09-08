@@ -38,9 +38,6 @@ namespace QT.InGame
         
         [field:SerializeField] public Transform EyeTransform { get; private set; }
         [field:SerializeField] public Transform CenterTransform { get; private set; }
-        [SerializeField] private Transform _batTransform;
-        [SerializeField] private SpriteRenderer _batSpriteRenderer;
-        [field:SerializeField] public Transform TeleportLineTransform { get; private set; }
         
         public PlayerStatComponent StatComponent { get; private set; }
         public BuffComponent BuffComponent { get; private set; }
@@ -91,14 +88,18 @@ namespace QT.InGame
             OnAim.RemoveAllListeners();
             Rigidbody = GetComponent<Rigidbody2D>();
             
+            
+            var globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
+            
             SwingAreaMeshFilter = GetComponentInChildren<MeshFilter>();
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
-            SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
+            //SwingAreaMeshRenderer.material.color = new Color(0.345098f, 1f, 0.8823529f, 0.6f);
+            SwingAreaMeshRenderer.material.color = globalData.SwingAreaColor;
             
             MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
             GhostEffect = GetComponentInChildren<SkeletonGhost>();
             
-            _attackSpeedColorGradient = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.AttackSpeedColorCurve;
+            _attackSpeedColorGradient = globalData.AttackSpeedColorCurve;
             InitInputs();
             
             EffectSetup();

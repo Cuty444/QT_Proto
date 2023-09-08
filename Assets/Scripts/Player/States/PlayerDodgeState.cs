@@ -10,10 +10,9 @@ namespace QT.InGame
     [FSMState((int)Player.States.Dodge)]
     public class PlayerDodgeState : FSMState<Player>
     {
-        private readonly int AnimationDodgeHash = Animator.StringToHash("PlayerDodge");
-        private readonly int AnimationDodgeEndHash = Animator.StringToHash("PlayerDodgeEnd");
-        private readonly int AnimationDirectionXHash = Animator.StringToHash("DirectionX");
-        private readonly int AnimationDirectionYHash = Animator.StringToHash("DirectionY");
+        private readonly int IsDodgeAnimHash = Animator.StringToHash("IsDodge");
+        private readonly int DirectionXAnimHash = Animator.StringToHash("DirectionX");
+        private readonly int DirectionYAnimHash = Animator.StringToHash("DirectionY");
 
         private LayerMask _dodgeLayer;
         private SoundManager _soundManager;
@@ -39,15 +38,14 @@ namespace QT.InGame
             _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
             _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
             
-            _ownerEntity.Animator.ResetTrigger(AnimationDodgeEndHash);
-            _ownerEntity.Animator.SetTrigger(AnimationDodgeHash);
+            _ownerEntity.Animator.SetBool(IsDodgeAnimHash, true);
             _soundManager.PlayOneShot(_soundManager.SoundData.PlayerDashSFX);
             
             
             dir.Normalize();
             
-            _ownerEntity.Animator.SetFloat(AnimationDirectionXHash, dir.x);
-            _ownerEntity.Animator.SetFloat(AnimationDirectionYHash, dir.y);
+            _ownerEntity.Animator.SetFloat(DirectionXAnimHash, dir.x);
+            _ownerEntity.Animator.SetFloat(DirectionYAnimHash, dir.y);
 
             _ownerEntity.IsDodge = true;
             _ownerEntity.IsFlip = dir.x > 0;
@@ -77,8 +75,7 @@ namespace QT.InGame
         
         public override void ClearState()
         {
-            _ownerEntity.Animator.ResetTrigger(AnimationDodgeHash);
-            _ownerEntity.Animator.SetTrigger(AnimationDodgeEndHash);
+            _ownerEntity.Animator.SetBool(IsDodgeAnimHash, false);
             
             _ownerEntity.gameObject.layer = _playerLayer;
             _ownerEntity.Rigidbody.velocity = Vector2.zero;

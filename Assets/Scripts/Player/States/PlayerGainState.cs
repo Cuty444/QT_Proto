@@ -9,7 +9,7 @@ namespace QT
     [FSMState((int)Player.States.Gain)]
     public class PlayerGainState : FSMState<Player>
     {
-        private readonly int AnimationGainHash = Animator.StringToHash("PlayerGain");
+        private readonly int GainAnimHash = Animator.StringToHash("Gain");
         public PlayerGainState(IFSMEntity owner) : base(owner)
         {
 
@@ -17,7 +17,7 @@ namespace QT
 
         public override void InitializeState()
         {
-            _ownerEntity.Animator.SetTrigger(AnimationGainHash);
+            _ownerEntity.Animator?.SetTrigger(GainAnimHash);
             _ownerEntity.RevertToPreviousState();
         }
 

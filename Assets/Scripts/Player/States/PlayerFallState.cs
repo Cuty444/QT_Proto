@@ -15,8 +15,7 @@ namespace QT
         private readonly int DodgeLayer = LayerMask.NameToLayer("PlayerDodge");
         private readonly int PlayerLayer = LayerMask.NameToLayer("Player");
         
-        private readonly int AnimationFallHash = Animator.StringToHash("PlayerFall");
-        private readonly int AnimationFallEndHash = Animator.StringToHash("PlayerFallEnd");
+        private readonly int IsFallAnimHash = Animator.StringToHash("IsFall");
         
         private PlayerHPCanvas _playerHpCanvas;
         private AnimationCurve _scaleCurve;
@@ -31,7 +30,7 @@ namespace QT
 
         public override void InitializeState()
         {
-            _ownerEntity.Animator.SetTrigger(AnimationFallHash);
+            _ownerEntity.Animator.SetBool(IsFallAnimHash, true);
             _ownerEntity.StartCoroutine(ScaleReduce());
             
             _ownerEntity.gameObject.layer = DodgeLayer;
@@ -49,7 +48,8 @@ namespace QT
             }
 
             yield return new WaitForSeconds(0.5f);
-            _ownerEntity.Animator.SetTrigger(AnimationFallEndHash);
+            
+            _ownerEntity.Animator.SetBool(IsFallAnimHash, false);
             
             var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-25);
@@ -68,12 +68,7 @@ namespace QT
         public override void ClearState()
         {
             _ownerEntity.gameObject.layer = _playerLayer;
-            _ownerEntity.Animator.ResetTrigger(AnimationFallHash);
-            _ownerEntity.StartCoroutine( Util.UnityUtil.WaitForFunc(() =>
-            {
-                _ownerEntity.Animator.ResetTrigger(AnimationFallEndHash);
-
-            },0.2f));
+            _ownerEntity.Animator.SetBool(IsFallAnimHash, false);
 
             _ownerEntity.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
 

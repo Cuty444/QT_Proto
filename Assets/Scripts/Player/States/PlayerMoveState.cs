@@ -6,8 +6,7 @@ namespace QT.InGame
     [FSMState((int)Player.States.Move)]
     public class PlayerMoveState : FSMState<Player>
     {
-        private static readonly int AnimationIdleHash = Animator.StringToHash("PlayerIdle");
-        private static readonly int AnimationMoveSpeedHash = Animator.StringToHash("MoveSpeed");
+        private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
         
         private Vector2 _moveDirection;
         
@@ -24,7 +23,6 @@ namespace QT.InGame
         {
             _ownerEntity.OnMove = OnMove;
             _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing);
-            //_ownerEntity.SetAction(Player.ButtonActions.Throw, OnThrow);
             _ownerEntity.SetAction(Player.ButtonActions.Dodge, OnDodge);
             _ownerEntity.SetAction(Player.ButtonActions.Interaction,OnInteraction);
 
@@ -35,11 +33,8 @@ namespace QT.InGame
         {
             _ownerEntity.OnMove = null;
             _ownerEntity.ClearAction(Player.ButtonActions.Swing);
-            //_ownerEntity.ClearAction(Player.ButtonActions.Throw);
             _ownerEntity.ClearAction(Player.ButtonActions.Dodge);
             _ownerEntity.ClearAction(Player.ButtonActions.Interaction);
-
-            _ownerEntity.Rigidbody.velocity = Vector2.zero;
         }
 
         public override void FixedUpdateState()
@@ -56,9 +51,13 @@ namespace QT.InGame
             
             var speed = _moveSpeed.Value;
             var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
+
+            if (currentNormalizedSpeed == 0)
+            {
+                Debug.Log(this.GetType());
+            }
             
-            _ownerEntity.Animator.SetFloat(AnimationMoveSpeedHash, currentNormalizedSpeed);
-            _ownerEntity.Animator.SetBool(AnimationIdleHash, currentNormalizedSpeed <= 0.1f);
+            _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, currentNormalizedSpeed);
             
             _ownerEntity.Rigidbody.velocity = _moveDirection * speed;
         }
