@@ -162,6 +162,19 @@ namespace QT
             ReleaseObject(path, particle);
         }
         
+        public async UniTaskVoid EmitParticle(string path, Vector2 position,Quaternion rotations, Transform parent = null)
+        {
+            var particle = await GetFromPool<ParticleSystem>(path, parent);
+            
+            particle.transform.localPosition = position;
+
+            particle.transform.localRotation = rotations;
+            
+            await UniTask.Delay(TimeSpan.FromSeconds(particle.main.duration));
+
+            ReleaseObject(path, particle);
+        }
+        
         public async UniTask<IList<IResourceLocation>> GetLocations(string assetLabel)
         {
             var handle = await Addressables.LoadResourceLocationsAsync(assetLabel);

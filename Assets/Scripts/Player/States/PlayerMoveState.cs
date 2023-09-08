@@ -66,6 +66,7 @@ namespace QT.InGame
         protected virtual void OnMove(Vector2 direction)
         {
             _moveDirection = direction;
+            _ownerEntity.IsMoveFlip = direction.x > 0f;
         }
 
         protected virtual void OnSwing(bool isOn)
