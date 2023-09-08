@@ -52,11 +52,6 @@ namespace QT.InGame
             var speed = _moveSpeed.Value;
             var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
 
-            if (currentNormalizedSpeed == 0)
-            {
-                Debug.Log(this.GetType());
-            }
-            
             _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, currentNormalizedSpeed);
             
             _ownerEntity.Rigidbody.velocity = _moveDirection * speed;
