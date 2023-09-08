@@ -47,7 +47,9 @@ namespace QT.InGame
         [HideInInspector] public bool IsFlip;
         [HideInInspector] public bool IsReverseLookDir = false;
         [HideInInspector] public bool LockAim = false;
-        
+
+
+        [HideInInspector] public bool IsMoveFlip;
         private void InitInputs()
         {
             buttonActions = new Dictionary<ButtonActions, InputAction>();

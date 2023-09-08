@@ -35,7 +35,8 @@ namespace QT
             }
             else
             {
-                _resourceManager.EmitParticle(MoveDustEffectPath, playerTransform.position);
+                _resourceManager.EmitParticle(MoveDustEffectPath, playerTransform.position,
+                    Quaternion.Euler(0f,0f,_playerManager.Player.IsMoveFlip ? 70f: 0f));
             }
             MoveSoundOn();
         }
@@ -48,7 +49,8 @@ namespace QT
             }
             else
             {
-                _resourceManager.EmitParticle(MoveDustEffectPath, playerTransform.position);
+                _resourceManager.EmitParticle(MoveDustEffectPath, playerTransform.position,
+                    Quaternion.Euler(0f,0f,_playerManager.Player.IsMoveFlip ? 70f: 0f));
             }
             MoveSoundOn();
         }
