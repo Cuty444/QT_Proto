@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Core.Data;
 using QT.Sound;
 using QT.Util;
 using UnityEngine;
@@ -58,6 +59,8 @@ namespace QT.InGame
             
             _size = data.ColliderRad * 0.5f;
             _damage = data.DirectDmg;
+            
+            _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
 
             _soundManager = SystemManager.Instance.SoundManager;
         }
@@ -68,9 +71,11 @@ namespace QT.InGame
             _maxSpeed = _speed = power;
             _bounceMask = bounceMask;
             _ownerEntity.BounceMask = bounceMask;
-            
+
+            _currentSpeedDecay = _speedDecay;
             _bounceCount = _maxBounce = 2;
             _releaseDelay = 1;
+            _releaseTimer = 0;
             _isReleased = false;
             _isPierce = isPierce;
 
