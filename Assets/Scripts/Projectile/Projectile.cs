@@ -113,7 +113,8 @@ namespace QT.InGame
             
             _damage = data.DirectDmg;
             ColliderRad = data.ColliderRad * 0.5f;
-
+            
+            _releaseTimer = 0;
             if (data.IsBounce)
             {
                 _bounceCount = _maxBounce = maxBounce;
