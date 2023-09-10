@@ -47,9 +47,9 @@ namespace QT.InGame
             SystemManager.Instance.EventManager.AddEvent(this, InvokeEvent);
         }
 
-        private void InvokeEvent(EventType unityEvent, object data)
+        private void InvokeEvent(EventType eventType, object data)
         {
-            switch (unityEvent)
+            switch (eventType)
             {
                 case EventType.OnDamage:
                     InvokeTrigger(TriggerTypes.OnHpChanged);
@@ -157,7 +157,7 @@ namespace QT.InGame
             }
             _items.Clear();
             
-            SystemManager.Instance.EventManager.RemoveEvent(this);
+            SystemManager.Instance?.EventManager.RemoveEvent(this);
         }
 
         public void CopyItemList(List<int> items, int activeItemId)

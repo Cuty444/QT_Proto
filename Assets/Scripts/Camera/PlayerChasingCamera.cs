@@ -8,6 +8,7 @@ using QT.InGame;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using EventType = QT.Core.EventType;
 
 [Serializable]
 public class VolumData
@@ -22,8 +23,7 @@ public class PlayerChasingCamera : MonoBehaviour
     #region Inspector_Definition
 
     [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
-    [SerializeField] private CinemachineConfiner _cinemachineConfiner;
-
+    
     [SerializeField] private VolumData[] _volumDatas;
     [SerializeField] private Volume _globalVolume;
     [SerializeField] private float _vignetteTimeScale;
@@ -40,15 +40,12 @@ public class PlayerChasingCamera : MonoBehaviour
 
     private void Awake()
     {
-        PlayerManager playerManager = SystemManager.Instance.PlayerManager;
-        // playerManager.PlayerDoorEnterCameraShapeChange.AddListener((colliderTemp) =>
-        // {
-        //     _cinemachineConfiner.m_BoundingShape2D = colliderTemp;
-        // });
+        SystemManager.Instance.EventManager.AddEvent(this, InvokeEvent);
+        
+        var playerManager = SystemManager.Instance.PlayerManager;
         playerManager.PlayerCreateEvent.AddListener((obj) =>
         {
             _cinemachineVirtualCamera.Follow = obj.transform;
-            playerManager.OnDamageEvent.AddListener(VignetteOn);
         });
         playerManager.OnMapCellChanged.AddListener((data, cameraSize) =>
         {
@@ -58,6 +55,19 @@ public class PlayerChasingCamera : MonoBehaviour
         });
         _globalVolume.profile.TryGet(out _vignette);
         _maxIntensity = _volumDatas[1].Intensity;
+    }
+
+    private void OnDestroy()
+    {
+        SystemManager.Instance?.EventManager.RemoveEvent(this);
+    }
+
+    private void InvokeEvent(EventType eventType, object data)
+    {
+        if (eventType == EventType.OnDamage)
+        {
+            VignetteOn();
+        }
     }
     
 
@@ -69,7 +79,7 @@ public class PlayerChasingCamera : MonoBehaviour
         }
     }
 
-    private void VignetteOn(Vector2 dir, float damage)
+    private void VignetteOn()
     {
         if (_vignetteCoroutine != null)
         {
@@ -115,8 +125,4 @@ public class PlayerChasingCamera : MonoBehaviour
         _cinemachineVirtualCamera.Follow = target;
     }
     
-    public void SetConfiner(bool enable)
-    {
-        //_cinemachineConfiner.enabled = enable;
-    }
 }

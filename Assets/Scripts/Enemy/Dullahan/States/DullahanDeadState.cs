@@ -43,8 +43,7 @@ namespace QT.InGame
             
             var camera = GameObject.FindObjectOfType<PlayerChasingCamera>();
             camera.SetTarget(_ownerEntity.CenterTransform);
-            camera.SetConfiner(false);
-            
+
             HitAbleManager.Instance.UnRegister(_ownerEntity);
         }
 

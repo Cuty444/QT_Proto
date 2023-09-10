@@ -64,7 +64,6 @@ namespace QT
                 uiManager.GetUIPanel<MinimapCanvas>().OnClose();
                 uiManager.GetUIPanel<FadeCanvas>().FadeIn();
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
-                SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
                 ProjectileManager.Instance.Clear();
                 HitAbleManager.Instance.Clear();
