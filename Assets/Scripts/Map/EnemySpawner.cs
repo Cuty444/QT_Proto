@@ -1,24 +1,36 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using QT.Core;
 using QT.InGame;
+using QT.Util;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
 
-namespace QT
+namespace QT.Map
 {
     public class EnemySpawner : MonoBehaviour
     {
+        private const float ReleaseTime = 2.0f;
+        
+        public float SpawnDelay;
         public int EnemyId;
         
         public Enemy Target { get; private set; }
-
+        
+        private string _enemyPrefabPath;
+        private UnityAction _onDeadEvent;
+        
         private void Start()
         {
-            SetTarget();
+            Spawn();
         }
 
-        private async void SetTarget()
+        public void Spawn(UnityAction onDeadEvent = null)
+        {
+            StartCoroutine(Util.UnityUtil.WaitForFunc(SpawnEnemy, SpawnDelay));
+        }
+
+        private async void SpawnEnemy()
         {
             var data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(EnemyId);
 
@@ -28,15 +40,39 @@ namespace QT
                 return;
             }
 
-            Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(data.PrefabPath, transform);
+            _enemyPrefabPath = data.PrefabPath;
+            
+            Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(_enemyPrefabPath, transform);
             
             Target.initialization(EnemyId);
             
             Target.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             Target.transform.localScale = Vector3.one;
+
+            Target.OnDamageEvent.AddListener(OnDeadEvent);
         }
 
+        private void OnDeadEvent(Vector2 dir, float power, AttackType attackType)
+        {
+            if (!Target.IsDead)
+            {
+                return;
+            }
+            
+            Target.OnDamageEvent.RemoveListener(OnDeadEvent);
+            Target = null;
+            
+            _onDeadEvent?.Invoke();
+          
+            //StartCoroutine(UnityUtil.WaitForFunc(()=>SystemManager.Instance.ResourceManager.ReleaseObject(_enemyPrefabPath, Target),ReleaseTime));
+        }
+        
+
 #if UNITY_EDITOR
+
+        [NonSerialized] 
+        public Color _waveColor;
+
         private void OnDrawGizmos()
         {
             string display = "";
@@ -54,7 +90,7 @@ namespace QT
                 }
             }
 
-            Gizmos.color = Color.red;
+            Gizmos.color = _waveColor;
             UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, $"{EnemyId} {display}");
             Gizmos.DrawSphere(transform.position, 0.3f);
             

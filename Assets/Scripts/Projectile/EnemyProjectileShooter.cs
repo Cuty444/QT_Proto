@@ -21,6 +21,7 @@ namespace QT.InGame
         
         public void Initialize(Animator animator)
         {
+            StopAllCoroutines();
             _animator = animator;
         }
 

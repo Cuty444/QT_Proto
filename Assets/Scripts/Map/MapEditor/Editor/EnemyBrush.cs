@@ -207,8 +207,14 @@ namespace QT.Tilemaps
 
                 if(mapcell == null || mapcell.EnemyLayer == null)
                     return Array.Empty<GameObject>();
+
+
+                var result = new GameObject[mapcell.EnemyLayer.childCount];
                 
-                return new[] {mapcell.EnemyLayer};
+                for (int i = 0; i < result.Length; i++)
+                    result[i] = mapcell.EnemyLayer.GetChild(i).gameObject;
+
+                return result;
             }
         }
     }

@@ -11,7 +11,6 @@ namespace QT.InGame
     public class EnemyDeadState : FSMState<Enemy>
     {
         private static readonly int DeadAnimHash = Animator.StringToHash("IsDead");
-        private static readonly AnimationCurve enemyFallScaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
         
         public EnemyDeadState(IFSMEntity owner) : base(owner)
         {
@@ -37,7 +36,7 @@ namespace QT.InGame
             
             if (_ownerEntity.Steering.IsStuck())
             {
-                _ownerEntity.StartCoroutine(ScaleReduce());
+                _ownerEntity.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.InQuad);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Monster_WaterDrop);
             }
             
@@ -52,16 +51,5 @@ namespace QT.InGame
             _ownerEntity.ShadowSprite.DOFade(1, 1).SetEase(Ease.InQuad);
         }
         
-        private IEnumerator ScaleReduce()
-        {
-            float time = 0f;
-            while (time < 1f)
-            {
-                float scale = Mathf.Lerp(0, 1, enemyFallScaleCurve.Evaluate(time / 1f));
-                _ownerEntity.transform.localScale = new Vector3(scale, scale, scale);
-                yield return null;
-                time += Time.deltaTime;
-            }
-        }
     }
 }

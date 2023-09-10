@@ -17,7 +17,7 @@ namespace QT.Map
         [field:Header("타일맵 관련")]
         [field: SerializeField] public Tilemap TilemapHardCollider { get; private set; }
         [field: SerializeField] public Tilemap TilemapTop { get; private set; }
-        [field: SerializeField] public GameObject EnemyLayer { get; private set; }
+        [field: SerializeField] public Transform EnemyLayer { get; private set; }
 
         [Header("문")] 
         [SerializeField] private Transform[] _doorTransforms;
@@ -38,10 +38,11 @@ namespace QT.Map
         private Vector2Int _cellPosition;
         private Vector2Int _doorEnterDirection;
 
+        public EnemyWave EnemyWave { get; set; }
         private List<IHitAble> _targetHitAbles;
         
         private bool _isPlaying;
-
+        
         private void Awake()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
@@ -61,13 +62,6 @@ namespace QT.Map
             _playerManager.PlayerMapPosition.RemoveListener(PlayerMapEnter);
         }
 
-        private void Update()
-        {
-            if (!_isPlaying || _cellData == null || _cellData.IsClear)
-                return;
-
-            CheckMapClear();
-        }
 
         public void CellDataSet(MapDirection mapDirection,Vector2Int position,RoomType roomType)
         {
@@ -95,12 +89,16 @@ namespace QT.Map
             
             _isPlaying = true;
             _playerManager.PlayerMapPass.Invoke(false);
-
-            _targetHitAbles = GetComponentsInChildren<IHitAble>().Where((x) => x.IsClearTarget).ToList();
+            
+            EnemyWave?.Spawn();
         }
 
         public void ClearRoom()
         {
+            _playerManager.PlayerMapClearPosition.Invoke(_cellPosition);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Door_OpenSFX);
+            _playerManager.PlayerMapPass.Invoke(true);
+            
             foreach (var door in _doorAnimators)
             {
                 door.DoorOpen();
@@ -142,27 +140,6 @@ namespace QT.Map
                 }
                 
                 _doorAnimators.Add(doorObject);
-            }
-        }
-
-        private void CheckMapClear()
-        {
-            for (int i = 0; i < _targetHitAbles.Count; i++)
-            {
-                if (_targetHitAbles[i].IsDead)
-                {
-                    _targetHitAbles.RemoveAt(i);
-                    i--;
-                }
-            }
-
-            if (_targetHitAbles.Count == 0)
-            {                        
-                _playerManager.PlayerMapClearPosition.Invoke(_cellPosition);
-                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Door_OpenSFX);
-                _playerManager.PlayerMapPass.Invoke(true);
-
-                ClearRoom();
             }
         }
 
