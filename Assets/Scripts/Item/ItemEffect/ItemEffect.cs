@@ -21,6 +21,8 @@ namespace QT.InGame
         TimeScale,
         [ItemEffect(typeof(ShootItemEffect))]
         Shoot,
+        [ItemEffect(typeof(HealItemEffect))]
+        Heal,
 
         [ItemEffect(typeof(TeleportItemEffect))]
         Teleport,
