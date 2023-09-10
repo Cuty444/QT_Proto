@@ -630,11 +630,10 @@ namespace QT.Core.Map
                 uiManager.GetUIPanel<MinimapCanvas>().OnClose();
                 uiManager.GetUIPanel<FadeCanvas>().FadeIn();
                 uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
-                SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
                 SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
                 ProjectileManager.Instance.Clear();
                 HitAbleManager.Instance.Clear();
-                SystemManager.Instance.ResourceManager.AllReleasedObject();
+                //SystemManager.Instance.ResourceManager.AllReleasedObject();
 
                 StartCoroutine(UnityUtil.WaitForFunc(() =>
                 {

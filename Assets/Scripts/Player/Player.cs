@@ -8,6 +8,7 @@ using QT.Core.Data;
 using QT.UI;
 using UnityEngine.UI;
 using Spine.Unity;
+using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -142,8 +143,10 @@ namespace QT.InGame
             UpdateCoolTime();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             Inventory.ClearInventory();
         }
 
@@ -154,8 +157,9 @@ namespace QT.InGame
                 return;
             }
             StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
- 
-            _playerManager.OnDamageEvent.Invoke(dir, power);
+            
+            
+            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnDamage, (dir, power));
         }
         
         public bool GetHpComparision(int hpCost)
@@ -169,7 +173,6 @@ namespace QT.InGame
             _playerManager.PlayerActiveItemIndex = -1;
             
             SystemManager.Instance.PlayerManager.Reset();;
-            SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             ChangeState(Player.States.Dead);
         }
     }

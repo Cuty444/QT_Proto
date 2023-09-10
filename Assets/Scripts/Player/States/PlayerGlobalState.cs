@@ -8,6 +8,7 @@ using QT.UI;
 using Spine;
 using Spine.Unity;
 using UnityEngine.UI;
+using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -27,6 +28,8 @@ namespace QT.InGame
 
         private Bone _batBone;
         private Stat _swingRadStat;
+        
+        private InputFloatDamper _swingRadDamper = new ();
 
 
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
@@ -42,14 +45,11 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            SystemManager.Instance.PlayerManager.OnDamageEvent.AddListener(OnDamage);
-            //SystemManager.Instance.PlayerManager.CurrentRoomEnemyRegister.AddListener(arg0 => TeleportLineClear());
-            //SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(arg0 => TeleportLineClear());
+            SystemManager.Instance.EventManager.AddEvent(this, InvokeEvent);
             SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainAnimation);
             _ownerEntity.OnAim.AddListener(OnAim);
-
-            OnSwingRadChange();
-            _swingRadStat.OnValueChanged.AddListener(OnSwingRadChange);
+            
+            _swingRadDamper.ResetCurrentValue(_swingRadStat.Value);
         }
 
         public override void UpdateState()
@@ -62,12 +62,27 @@ namespace QT.InGame
 
         public override void ClearState()
         {
-            SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveListener(OnDamage);
+            if (SystemManager.Instance == null)
+            {
+                return;
+            }
+            
+            SystemManager.Instance.EventManager.RemoveEvent(this);
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainAnimation);
             _ownerEntity.OnAim.RemoveListener(OnAim);
             
             _swingRadStat.OnValueChanged.RemoveListener(OnSwingRadChange);
         }
+
+        private void InvokeEvent(EventType eventType, object data)
+        {
+            if(eventType == EventType.OnDamage)
+            {
+                var damageData = ((Vector2 dir, float damage)) data;
+                OnDamage(damageData.dir, damageData.damage);
+            }
+        }
+
 
         private void OnAim(Vector2 aimPos)
         {
@@ -136,7 +151,8 @@ namespace QT.InGame
         private void OnSwingRadChange()
         {
             var swingRad = _swingRadStat.Value / _swingRadStat.BaseValue * _globalData.BatSizeMultiplier;
-
+            swingRad = _swingRadDamper.GetDampedValue(swingRad, Time.deltaTime);
+            
             _batBone.ScaleX = swingRad;
             _batBone.ScaleY = swingRad;
         }
