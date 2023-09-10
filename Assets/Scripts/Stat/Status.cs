@@ -57,8 +57,7 @@ namespace QT.InGame
         {
             base.UpdateValue();
             
-            var ratio = Value != 0 ? _statusValue / Value : 1;
-            _statusValue = Value * ratio;
+            _statusValue = Mathf.Clamp(_statusValue, 0, Value);
         }
         
     }
