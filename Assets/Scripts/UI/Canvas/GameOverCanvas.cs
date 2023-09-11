@@ -45,7 +45,6 @@ namespace QT.UI
             SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>().OnClose();
             
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
-            SystemManager.Instance.PlayerManager.OnDamageEvent.RemoveAllListeners();
             var buttonTrigger = _canvasGroup.GetComponentsInChildren<ButtonTrigger>()[1];
             buttonTrigger.InteractableOff();
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
@@ -70,6 +69,7 @@ namespace QT.UI
         public void Retry()
         {
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
+            SystemManager.Instance.StageLoadManager.StageLoad((SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() + 1).ToString());
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
@@ -95,7 +95,7 @@ namespace QT.UI
                         OnClose();
                     }, 1f));
                 });
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+                //SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
                 //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
                 _retryButtonTrigger.Clear();
                 _titleButtonTrigger.Clear();

@@ -107,6 +107,11 @@ namespace QT
             });
         }
 
+        public void MapReLoad()
+        {
+            _isMapLoad = false;
+        }
+
         private bool IsAllLoad()
         {
             return _isJsonLoad && _isMapLoad;

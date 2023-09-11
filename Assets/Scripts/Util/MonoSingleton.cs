@@ -14,7 +14,7 @@ namespace QT
                     _instance = FindObjectOfType(typeof(T)) as T;
                     if (!_instance)
                     {
-                        Debug.LogError("Problem during get " + typeof(T).ToString());
+                        //Debug.LogError("Problem during get " + typeof(T).ToString());
                     }
                     else
                     {

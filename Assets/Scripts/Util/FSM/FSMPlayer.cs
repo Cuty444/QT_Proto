@@ -27,7 +27,13 @@ namespace QT.Core
             _globalState?.UpdateState();
             _currentState?.UpdateState();
         }
-
+        
+        protected virtual void OnDestroy()
+        {
+            _globalState?.ClearState();
+            _currentState?.ClearState();
+        }
+        
         protected virtual void FixedUpdate()
         {  
             _globalState?.FixedUpdateState();
