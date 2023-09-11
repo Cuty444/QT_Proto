@@ -9,19 +9,20 @@ namespace QT
 {
     public class StageLoadManager
     {
-        public void StageLoad(string stagePath)
+        public void StageLoad(string stageNumber)
         {
             Debug.Log("맵 로드 시작");
-            MapLoad(stagePath);
+            SystemManager.Instance.LoadingManager.MapReLoad();
+            MapLoad(stageNumber);
         }
 
-        private async UniTaskVoid MapLoad(string stagePath)
+        private async UniTaskVoid MapLoad(string stageNumber)
         {
-            await UniTask.WhenAll(SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().ShopLoad(),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().StartRoomLoad(),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().BossRoomLoad(),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().StairsRoomLoad());
+            await UniTask.WhenAll(SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumber),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().ShopLoad(stageNumber),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().StartRoomLoad(stageNumber),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().BossRoomLoad(stageNumber),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().StairsRoomLoad(stageNumber));
 
             SystemManager.Instance.LoadingManager.DataMapLoadCompletedEvent.Invoke();
         }
