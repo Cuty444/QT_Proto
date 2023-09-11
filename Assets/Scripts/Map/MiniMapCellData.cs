@@ -46,6 +46,8 @@ namespace QT.Map
 
         private RoomType _roomType;
 
+        private Button _clickTeleportButton;
+
         [SerializeField] private Image _iconObject;
 
         public void Setting()
@@ -182,7 +184,25 @@ namespace QT.Map
                     _roomType = RoomType.Stairs;
                 }
             }
+
+            if (_roomType != RoomType.Normal)
+            {
+                _clickTeleportButton = gameObject.AddComponent<Button>();
+                _clickTeleportButton.onClick.AddListener(CellTeleportEvent);
+                Debug.Log(_roomType.ToString(),gameObject);
+            }
             _iconObject.sprite = _mapIconSprite?[(int) _roomType];
+        }
+
+        public void CellTeleportEvent()
+        {
+            if (!_dungeonMapSystem.GetCellData(CellPos).IsVisited)
+                return; 
+            if (!_playerManager.Player.GetPlayerEnterDoor())
+                return;
+            if (_playerManager.Player._currentPlayerPosition == CellPos)
+                return;
+            SystemManager.Instance.PlayerManager.PlayerMapTeleportPosition.Invoke(CellPos);
         }
     }
 }
