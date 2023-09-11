@@ -10,6 +10,8 @@ namespace QT.InGame
 {
     public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IHitAble, IProjectile
     {
+        public string PrefabPath { get; set; }
+
         public enum States : int
         {
             Global,
@@ -51,7 +53,7 @@ namespace QT.InGame
 
         [HideInInspector] public Image HpImage;
 
-        [HideInInspector] public LineRenderer TeleportLineRenderer;
+        //[HideInInspector] public LineRenderer TeleportLineRenderer;
 
         private Collider2D[] _colliders;
 
@@ -75,8 +77,8 @@ namespace QT.InGame
             HpCanvas.gameObject.SetActive(false);
 
 
-            SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener((arg) =>
-                SetTeleportLine(Vector2.zero, false));
+            // SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener((arg) =>
+            //     SetTeleportLine(Vector2.zero, false));
             
             LoadSound();
             
@@ -106,6 +108,9 @@ namespace QT.InGame
             
             HitAbleManager.Instance.Register(this);
             ProjectileManager.Instance.Register(this);
+
+            BallObject.localPosition = Vector2.up * BallHeight;
+            ShadowSprite.color = new Color(0, 0, 0, 0.5f);
         }
 
 
@@ -125,32 +130,42 @@ namespace QT.InGame
         }
        
         
-        private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
-        public async void SetTeleportLine(Vector2 target, bool isActive)
+        // private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
+        // public async void SetTeleportLine(Vector2 target, bool isActive)
+        // {
+        //     if (isActive)
+        //     {
+        //         if (TeleportLineRenderer == null)
+        //         {
+        //             TeleportLineRenderer =
+        //                 await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(TeleportLinePath);
+        //         }
+        //         
+        //         if (CurrentStateIndex >= (int)Player.States.Fall)
+        //         {
+        //             TeleportLineRenderer.positionCount = 0;
+        //             return;
+        //         }
+        //         TeleportLineRenderer.positionCount = 2;
+        //         TeleportLineRenderer.SetPosition(0, target);
+        //         TeleportLineRenderer.SetPosition(1, transform.position);
+        //     }
+        //     else if(TeleportLineRenderer != null)
+        //     {
+        //         TeleportLineRenderer.positionCount = 0;
+        //         SystemManager.Instance.ResourceManager.ReleaseObject(TeleportLinePath, TeleportLineRenderer);
+        //         TeleportLineRenderer = null;
+        //     }
+        // }
+        
+        public void ReleaseObject()
         {
-            if (isActive)
-            {
-                if (TeleportLineRenderer == null)
-                {
-                    TeleportLineRenderer =
-                        await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(TeleportLinePath);
-                }
-                
-                if (CurrentStateIndex >= (int)Player.States.Fall)
-                {
-                    TeleportLineRenderer.positionCount = 0;
-                    return;
-                }
-                TeleportLineRenderer.positionCount = 2;
-                TeleportLineRenderer.SetPosition(0, target);
-                TeleportLineRenderer.SetPosition(1, transform.position);
-            }
-            else if(TeleportLineRenderer != null)
-            {
-                TeleportLineRenderer.positionCount = 0;
-                SystemManager.Instance.ResourceManager.ReleaseObject(TeleportLinePath, TeleportLineRenderer);
-                TeleportLineRenderer = null;
-            }
+            OnDestroy();
+            
+            HitAbleManager.Instance.UnRegister(this);
+            ProjectileManager.Instance.UnRegister(this);
+            
+            SystemManager.Instance.ResourceManager.ReleaseObject(PrefabPath, this);
         }
     }    
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using QT.Core;
 using QT.Core.Data;
+using QT.Util;
 using UnityEngine;
 
 namespace QT.InGame
@@ -10,6 +11,8 @@ namespace QT.InGame
     [FSMState((int)Enemy.States.Dead)]
     public class EnemyDeadState : FSMState<Enemy>
     {
+        private const float ReleaseTime = 2.0f;
+
         private static readonly int DeadAnimHash = Animator.StringToHash("IsDead");
         
         public EnemyDeadState(IFSMEntity owner) : base(owner)
@@ -42,13 +45,15 @@ namespace QT.InGame
             
             HitAbleManager.Instance.UnRegister(_ownerEntity);
             ProjectileManager.Instance.UnRegister(_ownerEntity);
+            
+            _ownerEntity.StartCoroutine(UnityUtil.WaitForFunc(_ownerEntity.ReleaseObject, ReleaseTime));
         }
 
         public override void ClearState()
         {
             _ownerEntity.Animator.SetBool(DeadAnimHash, false);
             _ownerEntity.SetPhysics(true);
-            _ownerEntity.ShadowSprite.DOFade(1, 1).SetEase(Ease.InQuad);
+            _ownerEntity.ShadowSprite.DOFade(0.5f, 1).SetEase(Ease.InQuad);
         }
         
     }

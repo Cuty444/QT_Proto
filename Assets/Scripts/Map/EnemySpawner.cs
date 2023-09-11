@@ -11,14 +11,11 @@ namespace QT.Map
 {
     public class EnemySpawner : MonoBehaviour
     {
-        private const float ReleaseTime = 2.0f;
-        
         public float SpawnDelay;
         public int EnemyId;
         
         [field:SerializeField] public Enemy Target { get; private set; }
         
-        private string _enemyPrefabPath;
         private UnityAction _onDeadAction;
         
         
@@ -37,15 +34,14 @@ namespace QT.Map
                 Debug.LogError($"{EnemyId} EnemyData를 찾을 수 없습니다.");
                 return;
             }
-
-            _enemyPrefabPath = data.PrefabPath;
             
-            Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(_enemyPrefabPath, transform);
+            Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(data.PrefabPath, transform);
             
             Target.initialization(EnemyId);
             
             Target.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             Target.transform.localScale = Vector3.one;
+            Target.PrefabPath = data.PrefabPath;
 
             enabled = true;
         }
