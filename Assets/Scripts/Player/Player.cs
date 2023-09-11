@@ -74,7 +74,7 @@ namespace QT.InGame
         [field: SerializeField] public float TeleportImpulseForce { get; private set; } = 0.2f;
         
         [HideInInspector] public bool IsGarden;
-        
+        [HideInInspector] public Vector2Int _currentPlayerPosition;
         public Vector2 LastSafePosition { get; set; }
         
         
@@ -174,6 +174,11 @@ namespace QT.InGame
             
             SystemManager.Instance.PlayerManager.Reset();;
             ChangeState(Player.States.Dead);
+        }
+
+        public bool GetPlayerEnterDoor()
+        {
+            return _isEnterDoor;
         }
     }
 }

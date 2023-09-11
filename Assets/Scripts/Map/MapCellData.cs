@@ -52,6 +52,7 @@ namespace QT.Map
                 _doorEnterDirection = direction;
             });
             _playerManager.PlayerMapPosition.AddListener(PlayerMapEnter);
+            _playerManager.PlayerMapTeleportPosition.AddListener(TeleportCellPosition);
 
             _changer = GetComponentInChildren<MapFloorChanger>();
         }
@@ -59,6 +60,7 @@ namespace QT.Map
         private void OnDestroy()
         {
             _playerManager.PlayerMapPosition.RemoveListener(PlayerMapEnter);
+            _playerManager.PlayerMapTeleportPosition.RemoveListener(TeleportCellPosition);
         }
 
         private void Update()
@@ -198,6 +200,14 @@ namespace QT.Map
                 _playerManager.Player.transform.position = _doorExitTransforms[3].position;
                 _playerManager.Player.LastSafePosition = _doorExitTransforms[3].position;
             }
+        }
+
+        private void TeleportCellPosition(Vector2Int position)
+        {
+            if (_cellPosition != position)
+                return;
+            _playerManager.Player.transform.position = _doorExitTransforms[1].position;
+            _playerManager.Player.LastSafePosition = _doorExitTransforms[1].position;
         }
         
     }

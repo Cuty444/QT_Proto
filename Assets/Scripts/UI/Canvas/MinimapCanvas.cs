@@ -5,6 +5,7 @@ using QT.Core;
 using QT.Map;
 using QT.Core.Map;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QT.UI
 {
@@ -46,14 +47,15 @@ namespace QT.UI
                     IsPreviousActive = false;
                     _miniMapOnOff.SetActive(false);
                 }
+                StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
             });
             _playerManager.PlayerDoorEnter.AddListener((arg) =>
             {
-                MapCreate();
+                StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
             });
             _playerManager.PlayerCreateEvent.AddListener((player) =>
             {
-                MapCreate();
+                StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
             });
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
             {
@@ -154,6 +156,12 @@ namespace QT.UI
             foreach (var cell in _cellMapDictionary)
             {
                 var obj = Instantiate(cell.Key.gameObject, pool);
+                Button teleportButton = null;
+                if (cell.Key.gameObject.TryGetComponent(out teleportButton))
+                {
+                    var copyButton = obj.GetComponent<Button>();
+                    copyButton.onClick.AddListener(cell.Key.CellTeleportEvent);
+                }
                 obj.transform.localScale = Vector3.one;
                 obj.transform.localPosition = cell.Value;
                 _cellMapList.Add(obj);

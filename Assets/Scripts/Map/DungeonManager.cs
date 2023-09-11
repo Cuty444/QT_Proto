@@ -13,17 +13,16 @@ namespace QT
         private DungeonMapSystem _dungeonMapSystem;
         private PlayerManager _playerManager;
         private MapData _mapData;
-        private Vector2Int _currentPlayerPosition;
         
         private void Start()
         {
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _mapData = _dungeonMapSystem.DungeonMapData;
             _playerManager = SystemManager.Instance.PlayerManager;
-            _currentPlayerPosition = _mapData.StartPosition;
             
             _playerManager.PlayerCreateEvent.AddListener(PlayerCreateEvent);
             _playerManager.PlayerMapPosition.AddListener(PlayerMapPosition);
+            _playerManager.PlayerMapTeleportPosition.AddListener(MapTeleport);
             
             _dungeonMapSystem.DungeonReady(transform);
         }
@@ -33,6 +32,7 @@ namespace QT
             _playerManager.PlayerDoorEnter.RemoveListener(MapEnter);
             _playerManager.PlayerCreateEvent.RemoveListener(PlayerCreateEvent);
             _playerManager.PlayerMapPosition.RemoveListener(PlayerMapPosition);
+            _playerManager.PlayerMapTeleportPosition.RemoveListener(MapTeleport);
         }
 
         
@@ -42,20 +42,24 @@ namespace QT
             _playerManager.PlayerMapPosition.Invoke(_mapData.StartPosition);
             _playerManager.PlayerMapVisitedPosition.Invoke(_mapData.StartPosition);
             _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
-            
             _playerManager.PlayerDoorEnter.AddListener(MapEnter);
         }
         
         private void PlayerMapPosition(Vector2Int position)
         {
-            _currentPlayerPosition = position;
+            _playerManager.Player._currentPlayerPosition = position;
         }
 
         private void MapEnter(Vector2Int nextDirection)
         {
-            Vector2Int nextPosition = _currentPlayerPosition - nextDirection;
+            Vector2Int nextPosition = _playerManager.Player._currentPlayerPosition - nextDirection;
             _playerManager.PlayerMapVisitedPosition.Invoke(nextPosition);
             _playerManager.PlayerMapPosition.Invoke(nextPosition);
+        }
+
+        private void MapTeleport(Vector2Int position)
+        {
+            _playerManager.PlayerMapPosition.Invoke(position);
         }
     }
 }

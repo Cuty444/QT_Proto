@@ -16,6 +16,8 @@ namespace QT.Core
         public UnityEvent<Vector2Int> PlayerMapVisitedPosition { get; } = new();
         public UnityEvent<Vector2Int> PlayerMapClearPosition { get; } = new();
         public UnityEvent<Vector2Int> PlayerDoorEnter { get; } = new();
+
+        public UnityEvent<Vector2Int> PlayerMapTeleportPosition { get; } = new();
         public UnityEvent<bool> PlayerMapPass { get; } = new();
 
         public UnityEvent PlayerItemInteraction { get; } = new();
@@ -45,6 +47,7 @@ namespace QT.Core
         
         public async void CreatePlayer()
         {
+            PlayerMapPass.RemoveAllListeners();
             Player = await SystemManager.Instance.ResourceManager.GetFromPool<Player>(Constant.PlayerPrefabPath);
             Player.transform.localPosition = new Vector3(0f, 6f, 0f);
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
