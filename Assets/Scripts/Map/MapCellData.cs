@@ -19,6 +19,10 @@ namespace QT.Map
         [field: SerializeField] public Tilemap TilemapTop { get; private set; }
         [field: SerializeField] public Transform EnemyLayer { get; private set; }
 
+        
+        [FormerlySerializedAs("EnemyWaveStart")] [field:Header("적 웨이브")]
+        public EnemyWave[] EnemyWaves;
+        
         [Header("문")] 
         [SerializeField] private Transform[] _doorTransforms;
         [SerializeField] private Transform[] _doorExitTransforms;
@@ -34,13 +38,10 @@ namespace QT.Map
         private DungeonMapSystem _dungeonMapSystem;
         private CellData _cellData;
         
-        private List<DoorAnimator> _doorAnimators;
+        private List<DoorAnimator> _doorAnimators = new();
         private Vector2Int _cellPosition;
         private Vector2Int _doorEnterDirection;
 
-        public EnemyWave EnemyWave { get; set; }
-        private List<IHitAble> _targetHitAbles;
-        
         private bool _isPlaying;
         
         private void Awake()
@@ -89,8 +90,15 @@ namespace QT.Map
             
             _isPlaying = true;
             _playerManager.PlayerMapPass.Invoke(false);
-            
-            EnemyWave?.Spawn();
+
+            if (EnemyWaves is {Length: > 0})
+            {
+                EnemyWaves[0].Spawn();
+            }
+            else
+            {
+                ClearRoom();
+            }
         }
 
         public void ClearRoom()
@@ -98,12 +106,12 @@ namespace QT.Map
             _playerManager.PlayerMapClearPosition.Invoke(_cellPosition);
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Door_OpenSFX);
             _playerManager.PlayerMapPass.Invoke(true);
-            
+
             foreach (var door in _doorAnimators)
             {
                 door.DoorOpen();
             }
-            
+
             _isPlaying = false;
         }
         

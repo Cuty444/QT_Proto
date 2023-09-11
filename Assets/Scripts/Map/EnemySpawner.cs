@@ -2,6 +2,7 @@ using System;
 using QT.Core;
 using QT.InGame;
 using QT.Util;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
@@ -15,19 +16,16 @@ namespace QT.Map
         public float SpawnDelay;
         public int EnemyId;
         
-        public Enemy Target { get; private set; }
+        [field:SerializeField] public Enemy Target { get; private set; }
         
         private string _enemyPrefabPath;
-        private UnityAction _onDeadEvent;
+        private UnityAction _onDeadAction;
         
-        private void Start()
+        
+        public void Spawn(UnityAction onDeadAction = null)
         {
-            Spawn();
-        }
-
-        public void Spawn(UnityAction onDeadEvent = null)
-        {
-            StartCoroutine(Util.UnityUtil.WaitForFunc(SpawnEnemy, SpawnDelay));
+            _onDeadAction = onDeadAction;
+            StartCoroutine(UnityUtil.WaitForFunc(SpawnEnemy, SpawnDelay));
         }
 
         private async void SpawnEnemy()
@@ -49,32 +47,43 @@ namespace QT.Map
             Target.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             Target.transform.localScale = Vector3.one;
 
-            Target.OnDamageEvent.AddListener(OnDeadEvent);
+            enabled = true;
         }
 
-        private void OnDeadEvent(Vector2 dir, float power, AttackType attackType)
+        private void Update()
         {
-            if (!Target.IsDead)
+            if (Target == null)
             {
                 return;
             }
-            
-            Target.OnDamageEvent.RemoveListener(OnDeadEvent);
-            Target = null;
-            
-            _onDeadEvent?.Invoke();
-          
-            //StartCoroutine(UnityUtil.WaitForFunc(()=>SystemManager.Instance.ResourceManager.ReleaseObject(_enemyPrefabPath, Target),ReleaseTime));
+
+            if (Target.IsDead)
+            {
+                _onDeadAction?.Invoke();
+                Target = null;
+                
+                enabled = false;
+            }
         }
-        
+
 
 #if UNITY_EDITOR
 
         [NonSerialized] 
         public Color _waveColor;
 
+        private void OnValidate()
+        {
+            _waveColor = transform.parent.GetComponent<EnemyWave>().WaveColor;
+        }
+
         private void OnDrawGizmos()
         {
+            if (Target != null)
+            {
+                return;
+            }
+            
             string display = "";
             float agroRange = 0;
 

@@ -38,8 +38,10 @@ namespace QT.Map
 
         private void OnDead()
         {
-            _spawnedCount--;
-            
+            _spawnedCount -= 1;
+          
+            Debug.Log((_spawnedCount));
+
             if (_spawnedCount <= 0)
             {
                 if (NextWave == null)
@@ -54,6 +56,9 @@ namespace QT.Map
         }
         
       #if UNITY_EDITOR
+        
+        public Color WaveColor;
+        
         
         private void OnDrawGizmos()
         {
