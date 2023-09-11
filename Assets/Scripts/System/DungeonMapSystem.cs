@@ -96,7 +96,8 @@ namespace QT.Core.Map
         private Dictionary<Vector2Int, MapDirection> _pathDirections = new Dictionary<Vector2Int, MapDirection>();
 
         private MinimapCanvas _minimapCanvas;
-        
+
+        private const string _stagePath = "Stage";
         public override void OnInitialized()
         {
             _pathDirections.Add(Vector2Int.up,MapDirection.Up);
@@ -468,37 +469,37 @@ namespace QT.Core.Map
         
         #region MapDataLoad
         
-        public async UniTask MapLoad()
+        public async UniTask MapLoad(string stageNum)
         {
-            var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var stageLocationList = await SystemManager.Instance.ResourceManager.GetLocations(_stagePath+stageNum); //TODO : 추후 레이블 스테이지 리스트로 관리
             var objectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
             _mapList = QT.Util.RandomSeed.GetRandomIndexes(objectList.ToList(),_maxRoomValue);
         }
 
-        public async UniTask ShopLoad()
+        public async UniTask ShopLoad(string stageNum)
         {
-            var stageShopLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Shop"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var stageShopLocationList = await SystemManager.Instance.ResourceManager.GetLocations(_stagePath+stageNum+"Shop"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var shopObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageShopLocationList);
             _shopMapList = shopObjectList.ToList();
         }
 
-        public async UniTask StartRoomLoad()
+        public async UniTask StartRoomLoad(string stageNum)
         {
-            var stageStartLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Start"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var stageStartLocationList = await SystemManager.Instance.ResourceManager.GetLocations(_stagePath+stageNum+"Start"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var startObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageStartLocationList);
             _startList = startObjectList.ToList();
         }
 
-        public async UniTask BossRoomLoad()
+        public async UniTask BossRoomLoad(string stageNum)
         {
-            var stageBossLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Boss"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var stageBossLocationList = await SystemManager.Instance.ResourceManager.GetLocations(_stagePath+stageNum+"Boss"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var bossObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageBossLocationList);
             _bossMapList = bossObjectList.ToList();
         }
 
-        public async UniTask StairsRoomLoad()
+        public async UniTask StairsRoomLoad(string stageNum)
         {
-            var stageStairsLocationList = await SystemManager.Instance.ResourceManager.GetLocations("Stage1Stairs"); //TODO : 추후 레이블 스테이지 리스트로 관리
+            var stageStairsLocationList = await SystemManager.Instance.ResourceManager.GetLocations(_stagePath+stageNum+"Stairs"); //TODO : 추후 레이블 스테이지 리스트로 관리
             var stairsObjectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageStairsLocationList);
             _stairsMapList = stairsObjectList.ToList();
         }
@@ -641,6 +642,7 @@ namespace QT.Core.Map
                     DungenMapGenerate();
                     //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
                 },5f));
+                SystemManager.Instance.StageLoadManager.StageLoad((GetFloor() + 1).ToString());
             });
         }
 
