@@ -23,6 +23,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 2800000, guid: 4250d9f0e73aa714294b5cecc3feb871, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -56,7 +60,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 7c60a4aa062529c48b8184985f951825, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -93,6 +97,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _8Bit_Check: 1
     - _AlphaClip: 0
     - _Amount: 0.1
     - _Blend: 0
@@ -110,6 +115,9 @@ Material:
     - _GlossyReflections: 0
     - _Intensity: 0.05
     - _Metallic: 0
+    - _Noise_Amount_Random: 1
+    - _Noise_Ani_Check: 1
+    - _Noise_Fast_Random: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -120,13 +128,18 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _Two_Color_Chech: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - _B_Color: {r: 0.5235849, g: 0.8860342, b: 1, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Noise_Fast: {r: 0, g: -0.5, b: 0, a: 0}
+    - _HDR_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Noise_Fast: {r: 0.1, g: -0.2, b: 0, a: 0}
+    - _One_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _R_Color: {r: 0, g: 0.5200343, b: 1, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _Voronoi_Fast: {r: 0, g: -0.3, b: 0, a: 0}
   m_BuildTextureStacks: []
