@@ -66,11 +66,11 @@ namespace QT.Map
 #if UNITY_EDITOR
 
         [NonSerialized] 
-        public Color _waveColor;
+        public EnemyWave _wave;
 
         private void OnValidate()
         {
-            _waveColor = transform.parent.GetComponent<EnemyWave>().WaveColor;
+            _wave = transform.parent.GetComponent<EnemyWave>();
         }
 
         private void OnDrawGizmos()
@@ -95,7 +95,7 @@ namespace QT.Map
                 }
             }
 
-            Gizmos.color = _waveColor;
+            Gizmos.color = _wave.WaveColor;
             UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, $"{EnemyId} {display}");
             Gizmos.DrawSphere(transform.position, 0.3f);
             
