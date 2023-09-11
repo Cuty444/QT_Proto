@@ -109,7 +109,7 @@ namespace QT.InGame
             HitAbleManager.Instance.Register(this);
             ProjectileManager.Instance.Register(this);
 
-            BallObject.localPosition = Vector2.up * BallHeight;
+            BallObject.localPosition = Vector2.up * BallHeightMin;
             ShadowSprite.color = new Color(0, 0, 0, 0.5f);
         }
 
