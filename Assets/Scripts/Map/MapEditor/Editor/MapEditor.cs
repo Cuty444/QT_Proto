@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using QT.Tilemaps;
+using QT.Util;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEditor;
@@ -9,6 +9,8 @@ using UnityEditor.Tilemaps;
 using UnityEditor.EditorTools;
 using UnityEditor.SceneManagement;
 using UnityEngine.Rendering;
+
+using Random = UnityEngine.Random;
 
 namespace QT.Map
 {
@@ -97,6 +99,11 @@ namespace QT.Map
                 return;
             }
 
+            
+            SavePrefab();
+            
+            GUILayout.Space(5);
+            
             if (!GridPaintingState.isEditing)
             {
                 if (GUILayout.Button("타일 팔레트 열기"))
@@ -105,11 +112,25 @@ namespace QT.Map
                     SetPalette(GridPaintingState.palette);
                 }
             }
+            else
+            {
+                GUILayout.BeginHorizontal();
             
-            SavePrefab();
+                if (GUILayout.Button("기본 브러시", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+                {
+                    GridPaintingState.gridBrush = GridPaintingState.brushes.First((x)=> x is GridBrush);
+                }
             
-            GUILayout.Space(10);
+                if (GUILayout.Button("적 브러시", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
+                {
+                    GridPaintingState.gridBrush = GridPaintingState.brushes.First((x)=> x is EnemyBrush);
+                }
             
+                GUILayout.EndHorizontal();
+            }
+
+            
+            DrawLine("방 환경 설정",2);
             
             _target.CameraSize = EditorGUILayout.FloatField("카메라 사이즈", _target.CameraSize);
             _target.VolumeProfile = EditorGUILayout.ObjectField("MapCell 볼륨 프로필", _target.VolumeProfile, typeof(VolumeProfile), false) as VolumeProfile;
@@ -122,22 +143,7 @@ namespace QT.Map
                 _volume.profile = _target.VolumeProfile;
             }
 
-            // GUILayout.Space(15);
-            // GUILayout.BeginHorizontal();
-            //
-            // if (GUILayout.Button("기본 브러시", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
-            // {
-            //     GridPaintingState.gridBrush = GridPaintingState.brushes.First((x)=> x is GridBrush);
-            // }
-            //
-            // if (GUILayout.Button("적 브러시", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
-            // {
-            //     GridPaintingState.gridBrush = GridPaintingState.brushes.First((x)=> x is EnemyBrush);
-            // }
-            //
-            // GUILayout.EndHorizontal();
-            
-            GUILayout.Space(15);
+            EditorGUILayout.Space(20);
             
             _deactivatedColor = EditorGUILayout.ColorField("비 활성화된 레이어 색상", _deactivatedColor);
 
@@ -149,8 +155,13 @@ namespace QT.Map
             {
                 ResetTilemapTop();
             }
+
+            DrawLine("적 웨이브 세팅");
             
-            GUILayout.Space(20);
+            ControlEnemyWaves();
+            
+            DrawLine("테스트");
+            
 
             GUILayout.Label("디버그 커맨드");
             _command = EditorGUILayout.TextArea(_command,GUILayout.Height(60));
@@ -375,7 +386,6 @@ namespace QT.Map
             _target.TilemapTop.SetTiles(datas.ToArray(), false);
         }
         
-        
         private void OnToolChanged()
         {
             _isTileEditing = ToolManager.activeToolType.IsSubclassOf(typeof(TilemapEditorTool));
@@ -464,6 +474,176 @@ namespace QT.Map
                 Undo.RecordObject(_target.TilemapTop, "Set Top");
                 
                 _target.TilemapTop.SetTiles(datas.ToArray(), false);
+            }
+        }
+
+
+        #region EnemyWave
+
+        private static GUILayoutOption _miniButtonWidth = GUILayout.Width(20f);
+        
+        private static GUIContent
+            _moveDownButtonContent = new ("▼", "아래로 내리기"),
+            _moveUpButtonContent = new ("▲", "위로 올리기"),
+            _deleteButtonContent = new ("-", "삭제"),
+            _addButtonContent = new ("+", "웨이브 추가");
+
+
+        private void ControlEnemyWaves()
+        {
+            bool isChanged = false;
+            var targetSerializedObject = new SerializedObject(_target);
+            
+            targetSerializedObject.Update();
+            ShowElements(targetSerializedObject.FindProperty("EnemyWaves"));
+            
+            isChanged = targetSerializedObject.hasModifiedProperties;
+
+            if (isChanged)
+            {
+                targetSerializedObject.ApplyModifiedProperties();
+            }
+
+            _target.EnemyWaves.Distinct();
+
+            for (var i = 0; i < _target.EnemyWaves.Length; i++)
+            {
+                var wave = _target.EnemyWaves[i];
+                
+                if (wave == null)
+                {
+                    continue;
+                }
+
+                var lastName = wave.gameObject.name;
+                wave.gameObject.name = $"Wave{i + 1}";
+
+                isChanged |= lastName != wave.gameObject.name;
+                
+                wave.transform.SetAsLastSibling();
+                
+                wave.NextWave = i + 1 < _target.EnemyWaves.Length ? _target.EnemyWaves[i + 1] : null;
+            }
+            
+            if (isChanged && GridPaintingState.gridBrush is EnemyBrush)
+            {
+                GridPaintingState.gridBrush = GridPaintingState.brushes.First((x)=> x is GridBrush);
+                GridPaintingState.gridBrush = GridPaintingState.brushes.First((x)=> x is EnemyBrush);
+            }
+        }
+        
+        private void ShowElements (SerializedProperty list)
+        {
+            if (!list.isExpanded)
+            {
+                return;
+            }
+            
+            for (int i = 0; i < list.arraySize; i++) 
+            {
+                EditorGUILayout.BeginHorizontal();
+                
+                var property = list.GetArrayElementAtIndex(i);
+                var targetWaveObject = (EnemyWave)property.objectReferenceValue;
+                
+                if (targetWaveObject != null)
+                {
+                    GUILayout.Label($"웨이브 {i + 1}", GUILayout.Width(55));
+                    GUILayout.Label($"Count : {targetWaveObject.transform.childCount}", EditorStyles.whiteLabel, GUILayout.Width(70));
+                    
+                    targetWaveObject.WaveColor = EditorGUILayout.ColorField(targetWaveObject.WaveColor, GUILayout.Width(50f));
+                }
+                else
+                {
+                    GUILayout.Label($"웨이브 {i} ", GUILayout.Width(125));
+                }
+
+                GUI.enabled = false;
+                EditorGUILayout.PropertyField(property, GUIContent.none);
+                GUI.enabled = true;
+                
+                ShowButtons(list, targetWaveObject, i);
+                
+                EditorGUILayout.EndHorizontal();
+                
+                
+                Rect rect = EditorGUILayout.GetControlRect(false, 1 );
+                rect.height = 1;
+                EditorGUI.DrawRect(rect, new Color(0.4f, 0.4f, 0.4f, 1));
+            }
+            
+            if (GUILayout.Button(_addButtonContent, EditorStyles.miniButton)) 
+            {
+                list.arraySize += 1;
+                list.GetArrayElementAtIndex(list.arraySize - 1).objectReferenceValue = CreateWave();
+            }
+        }
+        
+        private void ShowButtons (SerializedProperty list, EnemyWave target, int index) 
+        {
+            if (GUILayout.Button(_moveUpButtonContent, EditorStyles.miniButtonLeft, _miniButtonWidth)) 
+            {
+                list.MoveArrayElement(index, index - 1);
+            }
+            
+            if (GUILayout.Button(_moveDownButtonContent, EditorStyles.miniButtonMid, _miniButtonWidth)) 
+            {
+                list.MoveArrayElement(index, index + 1);
+            }
+            
+            if (GUILayout.Button(_deleteButtonContent, EditorStyles.miniButtonRight, _miniButtonWidth)) 
+            {
+                int oldSize = list.arraySize;
+                list.DeleteArrayElementAtIndex(index);
+                
+                if (list.arraySize == oldSize) 
+                {
+                    list.DeleteArrayElementAtIndex(index);
+                }
+
+                if (target != null)
+                {
+                    DestroyImmediate(target.gameObject);
+                }
+            }
+        }
+
+        private EnemyWave CreateWave()
+        {
+            var waveObject = new GameObject();
+            waveObject.transform.SetParent(_target.EnemyLayer);
+            waveObject.transform.ResetLocalTransform();
+            
+            var wave = waveObject.AddComponent<EnemyWave>();
+
+            wave.CellData = _target;
+            wave.WaveColor = new Color(Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), 1);
+
+            return wave;
+        }
+
+
+        #endregion
+        
+        
+        private void DrawLine(string title = null, int height = 1)
+        {
+            GUILayout.Space(10);
+
+            Rect rect = EditorGUILayout.GetControlRect(false, height );
+            rect.height = height;
+            EditorGUI.DrawRect(rect, new Color ( 0.5f,0.5f,0.5f, 1 ) );
+            
+            
+            if (!string.IsNullOrEmpty(title))
+            {
+                GUILayout.Space(3);
+                GUILayout.Label(title, EditorStyles.whiteLargeLabel);
+                GUILayout.Space(7);
+            }
+            else
+            {
+                GUILayout.Space(10);
             }
         }
         

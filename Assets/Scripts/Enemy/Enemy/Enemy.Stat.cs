@@ -1,8 +1,4 @@
 
-
-using QT.Core;
-using QT.Core.Map;
-
 namespace QT.InGame
 {
     public partial class Enemy

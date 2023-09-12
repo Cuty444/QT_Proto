@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 42272542538139726}
   - component: {fileID: 24801114513247821}
   - component: {fileID: 940358116055799521}
-  - component: {fileID: 3718032335087845532}
   m_Layer: 12
   m_Name: Floor
   m_TagString: Untagged
@@ -2994,7 +2993,7 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0.00001
-  m_UseDelaunayMesh: 0
+  m_UseDelaunayMesh: 1
 --- !u!50 &24801114513247821
 Rigidbody2D:
   serializedVersion: 4
@@ -3051,7 +3050,7 @@ CompositeCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -3067,18 +3066,6 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 1
   m_CompositeGameObject: {fileID: 107619385760457329}
---- !u!210 &3718032335087845532
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 107619385760457329}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 19
-  m_SortAtRoot: 0
 --- !u!1 &820059809343641547
 GameObject:
   m_ObjectHideFlags: 0
@@ -4530,7 +4517,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <TilemapHardCollider>k__BackingField: {fileID: 3079962743046169254}
   <TilemapTop>k__BackingField: {fileID: 7636920339300031963}
-  <EnemyLayer>k__BackingField: {fileID: 7387384771358945961}
+  <EnemyLayer>k__BackingField: {fileID: 7193214262634587606}
+  EnemyWaves: []
   _doorTransforms:
   - {fileID: 8500792281692663964}
   - {fileID: 1351452168305519306}

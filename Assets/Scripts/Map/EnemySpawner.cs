@@ -1,24 +1,31 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using QT.Core;
 using QT.InGame;
+using QT.Util;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
 
-namespace QT
+namespace QT.Map
 {
     public class EnemySpawner : MonoBehaviour
     {
+        public float SpawnDelay;
         public int EnemyId;
         
-        public Enemy Target { get; private set; }
-
-        private void Start()
+        [field:SerializeField] public Enemy Target { get; private set; }
+        
+        private UnityAction _onDeadAction;
+        
+        
+        public void Spawn(UnityAction onDeadAction = null)
         {
-            SetTarget();
+            _onDeadAction = onDeadAction;
+            StartCoroutine(UnityUtil.WaitForFunc(SpawnEnemy, SpawnDelay));
         }
 
-        private async void SetTarget()
+        private async void SpawnEnemy()
         {
             var data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(EnemyId);
 
@@ -27,18 +34,52 @@ namespace QT
                 Debug.LogError($"{EnemyId} EnemyData를 찾을 수 없습니다.");
                 return;
             }
-
+            
             Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(data.PrefabPath, transform);
             
             Target.initialization(EnemyId);
             
             Target.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             Target.transform.localScale = Vector3.one;
+            Target.PrefabPath = data.PrefabPath;
+
+            enabled = true;
         }
 
+        private void Update()
+        {
+            if (Target == null)
+            {
+                return;
+            }
+
+            if (Target.IsDead)
+            {
+                _onDeadAction?.Invoke();
+                Target = null;
+                
+                enabled = false;
+            }
+        }
+
+
 #if UNITY_EDITOR
+
+        [NonSerialized] 
+        public EnemyWave _wave;
+
+        private void OnValidate()
+        {
+            _wave = transform.parent.GetComponent<EnemyWave>();
+        }
+
         private void OnDrawGizmos()
         {
+            if (Target != null)
+            {
+                return;
+            }
+            
             string display = "";
             float agroRange = 0;
 
@@ -54,7 +95,7 @@ namespace QT
                 }
             }
 
-            Gizmos.color = Color.red;
+            Gizmos.color = _wave.WaveColor;
             UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, $"{EnemyId} {display}");
             Gizmos.DrawSphere(transform.position, 0.3f);
             

@@ -4,10 +4,8 @@ using QT.Map;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine.Tilemaps;
 using UnityEditor.Tilemaps;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace QT.Tilemaps
 {
@@ -158,7 +156,7 @@ namespace QT.Tilemaps
     {
         private EnemyBrush _enemyBrush => target as EnemyBrush;
         private bool _isFoldout = false;
-        
+
         public override void OnPaintSceneGUI(GridLayout gridLayout, GameObject brushTarget, BoundsInt position, GridBrushBase.Tool tool, bool executing)
         {
             BoundsInt gizmoRect = position;
@@ -171,8 +169,25 @@ namespace QT.Tilemaps
             base.OnPaintSceneGUI(gridLayout, brushTarget, gizmoRect, tool, executing);
         }
 
+        
         public override void OnPaintInspectorGUI()
         {
+            if (GridPaintingState.scenePaintTarget != null)
+            {
+                var wave = GridPaintingState.scenePaintTarget.GetComponent<EnemyWave>();
+                if (wave != null)
+                {
+                    EditorGUILayout.Space(5);
+                    
+                    Rect rect = EditorGUILayout.GetControlRect(false, 15);
+                    rect.height = 15;
+                    EditorGUI.DrawRect(rect, wave.WaveColor);
+
+                    EditorGUILayout.Space(3);
+                }
+
+            }
+            
             EditorGUILayout.BeginHorizontal();
             _enemyBrush.EnemyId = EditorGUILayout.IntField("적 아이디", _enemyBrush.EnemyId, GUILayout.Width(200), GUILayout.ExpandWidth(true));
 
@@ -189,7 +204,7 @@ namespace QT.Tilemaps
             
             EditorGUILayout.EndHorizontal();
             
-            GUILayout.Space(30);
+            GUILayout.Space(20);
             
             _isFoldout = EditorGUILayout.Foldout(_isFoldout, "기타 설정");
             if (_isFoldout)
@@ -207,8 +222,14 @@ namespace QT.Tilemaps
 
                 if(mapcell == null || mapcell.EnemyLayer == null)
                     return Array.Empty<GameObject>();
+
+
+                var result = new GameObject[mapcell.EnemyLayer.childCount];
                 
-                return new[] {mapcell.EnemyLayer};
+                for (int i = 0; i < result.Length; i++)
+                    result[i] = mapcell.EnemyLayer.GetChild(i).gameObject;
+
+                return result;
             }
         }
     }
