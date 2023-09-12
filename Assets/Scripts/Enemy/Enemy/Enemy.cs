@@ -160,6 +160,11 @@ namespace QT.InGame
         
         public void ReleaseObject()
         {
+            if (string.IsNullOrWhiteSpace(PrefabPath))
+            {
+                return;
+            }
+            
             OnDestroy();
             
             HitAbleManager.Instance.UnRegister(this);
