@@ -49,6 +49,8 @@ namespace QT.InGame
         
         private IHitAble _lastHitAble;
         
+        private GlobalData _globalData;
+
 
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
         {
@@ -63,6 +65,8 @@ namespace QT.InGame
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
 
             _soundManager = SystemManager.Instance.SoundManager;
+
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
         }
 
         public void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool isPierce, bool playSound)
@@ -124,7 +128,7 @@ namespace QT.InGame
             var pierceCheck = false;
             var isTriggerCheck = false;
 
-            if (_speed > 0.5f)
+            if (_speed >_globalData.BallMinSpdToHit)
             {
                 if (hit.collider.TryGetComponent(out IHitAble hitAble))
                 {
@@ -159,6 +163,12 @@ namespace QT.InGame
 
             if (isTriggerCheck || pierceCheck)
                 return;
+
+            
+            if (_speed > _globalData.BallMinSpdToHit && _ownerEntity.HP > 0)
+            {
+                _ownerEntity.OnDamageEvent.Invoke(-_direction, _speed * _globalData.BallBounceDamage, AttackType.Ball);
+            }
 
             _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
             if (--_bounceCount == 0)

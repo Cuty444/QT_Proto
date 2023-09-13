@@ -72,7 +72,9 @@ namespace QT.InGame
 
         private IHitAble _lastHitAble;
         
-        
+        private GlobalData _globalData;
+
+
         private void Awake()
         {
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
@@ -86,6 +88,8 @@ namespace QT.InGame
             _trailRenderer = GetComponentsInChildren<TrailRenderer>();
             _soundManager = SystemManager.Instance.SoundManager;
             _boss.SetActive(false);
+            
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
         }
 
         private void OnEnable()
@@ -144,10 +148,6 @@ namespace QT.InGame
             ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
         }
         
-        public float GetHp()
-        {
-            return 0f;
-        }
         
         public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection = 0,bool isPierce = false)
         {
@@ -221,7 +221,7 @@ namespace QT.InGame
             var pierceCheck = false;
             var isTriggerCheck = false;
 
-            if (_speed > 0.5f)
+            if (_speed >_globalData.BallMinSpdToHit)
             {
                 if (hit.collider.TryGetComponent(out IHitAble hitAble))
                 {
