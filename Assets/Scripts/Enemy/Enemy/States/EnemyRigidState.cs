@@ -57,7 +57,6 @@ namespace QT.InGame
             else
             {
                 _clearTime = _globalData.RigidTime;
-                _ownerEntity.MaterialChanger.SetHitMaterial();
             }
         }
 

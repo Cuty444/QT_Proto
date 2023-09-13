@@ -86,6 +86,22 @@ namespace QT.Core.Data
         [field: SerializeField]
         [Tooltip("공이 날아갈때 ms당 속도가 감소되는 값")]
         public float SpdDecay { get; private set; } = 1;
+        
+        
+        /// <summary>
+        /// 공이 데미지를 줄 수 있는 최소 속도
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("공이 데미지를 줄 수 있는 최소 속도")]
+        public float BallMinSpdToHit { get; private set; } = 1;
+        
+        
+        /// <summary>
+        /// 공이 충돌할 때 받는 데미지
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("공이 충돌할 때 받는 데미지")]
+        public float BallBounceDamage { get; private set; } = 0.5f;
 
 
 
