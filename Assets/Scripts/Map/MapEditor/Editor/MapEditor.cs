@@ -39,6 +39,8 @@ namespace QT.Map
 
         private TestStartDoor _startDoor;
 
+        private Vector2 _scroll;
+
         [MenuItem("맵 에디터/맵 에디터 열기", false, 0)]
         public static void OpenMapEditor()
         {
@@ -99,7 +101,6 @@ namespace QT.Map
                 return;
             }
 
-            
             SavePrefab();
             
             GUILayout.Space(5);
@@ -129,8 +130,12 @@ namespace QT.Map
                 GUILayout.EndHorizontal();
             }
 
+            DrawLine("",2);
             
-            DrawLine("방 환경 설정",2);
+            _scroll = EditorGUILayout.BeginScrollView(_scroll);
+
+            GUILayout.Label("방 환경 설정", EditorStyles.whiteLargeLabel);
+            GUILayout.Space(7);
             
             _target.CameraSize = EditorGUILayout.FloatField("카메라 사이즈", _target.CameraSize);
             _target.VolumeProfile = EditorGUILayout.ObjectField("MapCell 볼륨 프로필", _target.VolumeProfile, typeof(VolumeProfile), false) as VolumeProfile;
@@ -155,7 +160,7 @@ namespace QT.Map
             {
                 ResetTilemapTop();
             }
-
+            
             DrawLine("적 웨이브 세팅");
             
             ControlEnemyWaves();
@@ -180,6 +185,8 @@ namespace QT.Map
             
             if(_floorTilemap)
                 GUILayout.Label($"가로 : {_floorTilemap.cellBounds.size.x} | 세로 : {_floorTilemap.cellBounds.size.y}");
+            
+            EditorGUILayout.EndScrollView();
         }
 
         private void SetEvents()
