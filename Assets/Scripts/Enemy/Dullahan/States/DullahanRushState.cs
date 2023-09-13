@@ -2,6 +2,7 @@ using System.Collections;
 using System.Timers;
 using QT.Core;
 using QT.Sound;
+using QT.Util;
 using UnityEngine;
 
 namespace QT.InGame
@@ -12,6 +13,7 @@ namespace QT.InGame
         private readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
         private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
+        private const string RushEffectPath = "Effect/Prefabs/FX_Boss_Rush_Air_Resistance.prefab";
         private const string ShockEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
         
         private bool _isReady;
@@ -28,6 +30,8 @@ namespace QT.InGame
 
         private SoundManager _soundManager;
         
+        private ParticleSystem _rushEffect;
+        
         public DullahanRushState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
@@ -36,6 +40,8 @@ namespace QT.InGame
             _speed = _ownerEntity.DullahanData.RushSpeed;
             _size = _ownerEntity.RushColliderSize;
             _damage = _ownerEntity.DullahanData.RushHitDamage;
+            
+            SystemManager.Instance.ResourceManager.CacheAsset(RushEffectPath);
         }
 
         public override void InitializeState()
@@ -55,8 +61,10 @@ namespace QT.InGame
             
             _ownerEntity.RushTrailObject.SetActive(true);
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
-        }
 
+            SetEffect();
+        }
+        
         public override void ClearState()
         {
             _ownerEntity.Animator.ResetTrigger(RushReadyAnimHash);
@@ -121,6 +129,9 @@ namespace QT.InGame
                     var normal = hit.normal;
                     var angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90;
 
+                    
+                    SystemManager.Instance.ResourceManager.ReleaseObject(RushEffectPath, _rushEffect);
+                    
                     SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
                     _ownerEntity.RushShockImpulseSource.GenerateImpulse(normal * 3);
                 }
@@ -133,6 +144,18 @@ namespace QT.InGame
             }
 
             return false;
+        }
+        
+        
+        private async void SetEffect()
+        {
+            _rushEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(RushEffectPath, _ownerEntity.CenterTransform);
+            _rushEffect.transform.ResetLocalTransform();
+            
+            var angle = Mathf.Atan2(_dir.y, _dir.x) * Mathf.Rad2Deg;
+            _rushEffect.transform.rotation = Quaternion.Euler(0, 0, angle);
+            
+            _rushEffect.Play();
         }
 
     }
