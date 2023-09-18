@@ -14,8 +14,8 @@ namespace QT.UI
         [SerializeField] private Transform _miniMapCellTransform;
         [SerializeField] private GameObject _miniMapOnOff;
         
-        [SerializeField] private UITweenAnimator _popAnimator;
-        [SerializeField] private UITweenAnimator _releaseAnimator;
+        [SerializeField] private TweenAnimator _popAnimator;
+        [SerializeField] private TweenAnimator _releaseAnimator;
         
         private const string CellPath = "Prefabs/Map/MiniMap/Cell.prefab";
         

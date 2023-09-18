@@ -9,8 +9,8 @@ using UnityEditor;
 namespace QT
 {
     [CanEditMultipleObjects]
-    [CustomEditor(typeof(UITweenAnimator), true)]
-    public class UITweenAnimatorEditor : Editor
+    [CustomEditor(typeof(TweenAnimator), true)]
+    public class TweenAnimatorEditor : Editor
     {
         public override void OnInspectorGUI()
         {
@@ -24,15 +24,15 @@ namespace QT
                 if (!isPlaying)
                 {
                     //DOTweenEditorPreview.Stop(true);
-                    (target as UITweenAnimator).BakeSeqence();
+                    (target as TweenAnimator).BakeSeqence();
                     
-                     var sequence = (Sequence)typeof(UITweenAnimator).GetField("_sequence", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default)?.GetValue(target);
+                     var sequence = (Sequence)typeof(TweenAnimator).GetField("_sequence", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default)?.GetValue(target);
                     DOTweenEditorPreview.PrepareTweenForPreview(sequence, true, false);
                     DOTweenEditorPreview.Start();
                 }
                 else
                 {
-                    (target as UITweenAnimator).ReStart();
+                    (target as TweenAnimator).ReStart();
                 }
             }
             if (GUILayout.Button(isPlaying ? "재시작" : "처음처럼"))
@@ -43,7 +43,7 @@ namespace QT
                 }
                 else
                 {
-                    (target as UITweenAnimator).ReStart();
+                    (target as TweenAnimator).ReStart();
                 }
             }
             

@@ -18,7 +18,7 @@ namespace QT
     public class TweenSequenceElement
     {
         public TweenMode Mode;
-        public RectTransform Target;
+        public Transform Target;
         public Ease Ease = Ease.Linear;
         public Vector3 TweenTarget;
         public float Duration = 1;
@@ -30,7 +30,7 @@ namespace QT
         public List<TweenSequenceElement> Elements;
     }
 
-    public class UITweenAnimator : MonoBehaviour
+    public class TweenAnimator : MonoBehaviour
     {
         public bool PlayOnAwake;
         public bool IgnoreTimeScale;
@@ -96,13 +96,23 @@ namespace QT
                     switch (elements.Mode)
                     {
                         case TweenMode.DoMove:
-                            seq.Join(elements.Target.DOAnchorPos(elements.TweenTarget, elements.Duration)
-                                .SetEase(elements.Ease));
+                            if (elements.Target is RectTransform rectTransform)
+                            {
+                                seq.Join(rectTransform.DOAnchorPos(elements.TweenTarget, elements.Duration)
+                                    .SetEase(elements.Ease));
+                            }
+                            else
+                            {
+                                seq.Join(elements.Target.DOMove(elements.TweenTarget, elements.Duration)
+                                    .SetEase(elements.Ease));
+                            }
                             break;
+                        
                         case TweenMode.DoRotate:
                             seq.Join(elements.Target.DOLocalRotate(elements.TweenTarget, elements.Duration)
                                 .SetEase(elements.Ease));
                             break;
+                        
                         case TweenMode.DoScale:
                             seq.Join(elements.Target.DOScale(elements.TweenTarget, elements.Duration)
                                 .SetEase(elements.Ease));

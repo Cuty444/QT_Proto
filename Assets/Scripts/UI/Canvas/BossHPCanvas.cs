@@ -9,9 +9,9 @@ namespace QT.UI
     {
         [SerializeField] private Image _hpImage;
         
-        [SerializeField] private UITweenAnimator _popAnimation;
-        [SerializeField] private UITweenAnimator _releaseAnimation;
-        [SerializeField] private UITweenAnimator _hitAnimation;
+        [SerializeField] private TweenAnimator _popAnimation;
+        [SerializeField] private TweenAnimator _releaseAnimation;
+        [SerializeField] private TweenAnimator _hitAnimation;
 
         public override void OnOpen()
         {

@@ -17,7 +17,7 @@ namespace QT.InGame
         
         [SerializeField] private ParticleSystem _itemPickUpParticle;
         [SerializeField] private Image _itemPickUpImage;
-        [SerializeField] private UITweenAnimator _itemPickUpAnimator;
+        [SerializeField] private TweenAnimator _itemPickUpAnimator;
 
         private void EffectSetup()
         {

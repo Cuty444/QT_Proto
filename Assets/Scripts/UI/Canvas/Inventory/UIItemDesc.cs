@@ -14,8 +14,8 @@ namespace QT
         
         [SerializeField] private TextMeshProUGUI _goldCost;
 
-        [SerializeField] private UITweenAnimator _descAnimation;
-        [SerializeField] private UITweenAnimator _failButtonAnimation;
+        [SerializeField] private TweenAnimator _descAnimation;
+        [SerializeField] private TweenAnimator _failButtonAnimation;
 
         public void SetData(ItemGameData itemData)
         {
