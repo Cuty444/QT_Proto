@@ -170,7 +170,9 @@ namespace QT.InGame
                 _ownerEntity.OnDamageEvent.Invoke(-_direction, _speed * _globalData.BallBounceDamage, AttackType.Ball);
             }
 
-            _direction += hit.normal * (-2 * Vector2.Dot(_direction, hit.normal));
+            _direction = Vector2.Reflect(_direction, hit.normal);
+            _transform.Translate(hit.normal * _size);
+            
             if (--_bounceCount == 0)
             {
                 if (_ownerEntity.HP <= 0)
