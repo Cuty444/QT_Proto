@@ -257,7 +257,7 @@ namespace QT.InGame
             _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
 
             _direction = Vector2.Reflect(_direction, hit.normal);
-
+            transform.Translate(hit.normal * ColliderRad);
 
             SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
 
