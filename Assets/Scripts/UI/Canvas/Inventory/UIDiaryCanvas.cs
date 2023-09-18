@@ -16,9 +16,9 @@ namespace QT.UI
         [SerializeField] private GameObject _settingGameobject;
         [SerializeField] private UIInventoryPage _inventoryPage;
 
-        [Space] [SerializeField] private UITweenAnimator _popAnimation;
-        [SerializeField] private UITweenAnimator _releaseAnimation;
-        [SerializeField] private UITweenAnimator _switchAnimation;
+        [Space] [SerializeField] private TweenAnimator _popAnimation;
+        [SerializeField] private TweenAnimator _releaseAnimation;
+        [SerializeField] private TweenAnimator _switchAnimation;
 
         [Space] public Transform MapTransform;
 

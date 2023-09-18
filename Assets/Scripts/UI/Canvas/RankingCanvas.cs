@@ -15,7 +15,7 @@ namespace QT.Ranking
         [SerializeField] private GameObject _rankingObject;
         private List<GameObject> _rankingObjectList = new List<GameObject>();
         
-        [Space] [SerializeField] private UITweenAnimator _popAnimation;
+        [Space] [SerializeField] private TweenAnimator _popAnimation;
         
         public override void OnOpen()
         {

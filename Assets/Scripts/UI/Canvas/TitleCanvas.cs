@@ -15,7 +15,7 @@ namespace QT.UI
         [SerializeField] private ButtonTrigger _tutorialButton;
         [SerializeField] private ButtonTrigger _rankingButton;
         
-        [SerializeField] private UITweenAnimator _popAnimation;
+        [SerializeField] private TweenAnimator _popAnimation;
         private bool isFirst = false;
         
         public override void PostSystemInitialize()

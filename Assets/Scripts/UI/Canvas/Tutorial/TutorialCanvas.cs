@@ -15,7 +15,7 @@ namespace QT.Tutorial
         
         [SerializeField] private HorizontalScrollSnap _scrollSnap;
         
-        [SerializeField] private UITweenAnimator _popAnimation;
+        [SerializeField] private TweenAnimator _popAnimation;
         
         public override void OnOpen()
         {

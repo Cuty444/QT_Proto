@@ -21,7 +21,7 @@ namespace QT
 
         private DungeonMapSystem _dungeonMapSystem;
 
-        [Space] [SerializeField] private UITweenAnimator _popAnimation;
+        [Space] [SerializeField] private TweenAnimator _popAnimation;
 
         public override void Initialize()
         {

@@ -16,9 +16,9 @@ namespace QT.UI
         [SerializeField] private Button[] _buttons = new Button[2];
 
         [Space] 
-        [SerializeField] private UITweenAnimator[] _popAnimation = new UITweenAnimator[2];
-        [SerializeField] private UITweenAnimator[] _releaseAnimation = new UITweenAnimator[2];
-        [SerializeField] private UITweenAnimator[] _selectAnimation = new UITweenAnimator[2];
+        [SerializeField] private TweenAnimator[] _popAnimation = new TweenAnimator[2];
+        [SerializeField] private TweenAnimator[] _releaseAnimation = new TweenAnimator[2];
+        [SerializeField] private TweenAnimator[] _selectAnimation = new TweenAnimator[2];
 
         private UnityAction<ItemGameData> _onSelect;
         private ItemGameData[] _items = new ItemGameData[2];
