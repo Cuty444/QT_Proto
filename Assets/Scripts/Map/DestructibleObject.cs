@@ -40,7 +40,10 @@ namespace QT
 
         public void Hit(Vector2 dir, float power, AttackType attackType)
         {
-            _object.SetActive(false);
+            if (_object != null)
+            {
+                _object.SetActive(false);
+            }
 
             if (_effect != null)
             {
@@ -53,12 +56,15 @@ namespace QT
                 _collider2D.enabled = false;
             }
             
-            HitAbleManager.Instance.UnRegister(this);
-            
-            foreach (var fragment in _fragments)
+            if (_fragments != null)
             {
-                fragment.Hit(dir, power);
+                foreach (var fragment in _fragments)
+                {
+                    fragment.Hit(dir, power);
+                }
             }
+            
+            HitAbleManager.Instance.UnRegister(this);
         }
         
     }
