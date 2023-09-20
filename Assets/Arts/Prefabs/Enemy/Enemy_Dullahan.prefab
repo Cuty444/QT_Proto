@@ -179,6 +179,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3310964528194750462}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1095832085157679526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2255934001105926064}
+  - component: {fileID: 2475955844773066996}
+  m_Layer: 0
+  m_Name: Wheel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2255934001105926064
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095832085157679526}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.017561682, y: 2.4079876, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3310964528194750462}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2475955844773066996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095832085157679526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1fd8daaed7b64148a34acb96ba14ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonRenderer: {fileID: 3720069595483841744}
+  boneName: Wheel_F_a2
+  followXYPosition: 1
+  followZPosition: 1
+  followBoneRotation: 1
+  followSkeletonFlip: 1
+  followLocalScale: 1
+  followParentWorldScale: 1
+  maintainedAxisOrientation: 1
+  initializeOnAwake: 1
 --- !u!1 &1441922973836523936
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,6 +640,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2255934001105926064}
   - {fileID: 515597336106742899}
   - {fileID: 2972661818584243404}
   m_Father: {fileID: 5641973990325650118}
@@ -618,13 +673,19 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4d76b6154470ed5439b32c4c97254a22, type: 2}
-  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
-  - {fileID: 2100000, guid: 4d76b6154470ed5439b32c4c97254a22, type: 2}
-  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
-  - {fileID: 2100000, guid: 4d76b6154470ed5439b32c4c97254a22, type: 2}
   - {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
-  - {fileID: 2100000, guid: 4d76b6154470ed5439b32c4c97254a22, type: 2}
+  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
+  - {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
+  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
+  - {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
+  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
+  - {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
+  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
+  - {fileID: 2100000, guid: 37ab77290753acd4fbcafe3c335c0d7a, type: 2}
+  - {fileID: 2100000, guid: b02beed25c70d824d91433da45f7fdc1, type: 2}
+  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
+  - {fileID: 2100000, guid: af23ad870fd31604f92c867385b53671, type: 2}
+  - {fileID: 2100000, guid: f26b87943f7747a4286b32a80837fa58, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1262,6 +1323,7 @@ MonoBehaviour:
   - {fileID: 294344288787346976}
   - {fileID: 8561462585611755664}
   <CenterTransform>k__BackingField: {fileID: 515597336106742899}
+  <WheelTransform>k__BackingField: {fileID: 2255934001105926064}
   <RushColliderSize>k__BackingField: 1.5
   <RushTrailObject>k__BackingField: {fileID: 6668560867680925416}
   <RushShockImpulseSource>k__BackingField: {fileID: 6374430474491516114}
