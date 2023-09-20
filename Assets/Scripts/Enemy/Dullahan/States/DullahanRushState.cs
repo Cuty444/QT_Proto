@@ -14,6 +14,7 @@ namespace QT.InGame
         private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
         private const string RushEffectPath = "Effect/Prefabs/FX_Boss_Rush_Air_Resistance.prefab";
+        private const string SparkEffectPath = "Effect/Prefabs/FX_Boss_Rush_Spark.prefab";
         private const string ShockEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
         
         private bool _isReady;
@@ -31,6 +32,7 @@ namespace QT.InGame
         private SoundManager _soundManager;
         
         private ParticleSystem _rushEffect;
+        private ParticleSystem _sparkEffect;
         
         public DullahanRushState(IFSMEntity owner) : base(owner)
         {
@@ -42,6 +44,7 @@ namespace QT.InGame
             _damage = _ownerEntity.DullahanData.RushHitDamage;
             
             SystemManager.Instance.ResourceManager.CacheAsset(RushEffectPath);
+            SystemManager.Instance.ResourceManager.CacheAsset(SparkEffectPath);
         }
 
         public override void InitializeState()
@@ -131,6 +134,7 @@ namespace QT.InGame
 
                     
                     SystemManager.Instance.ResourceManager.ReleaseObject(RushEffectPath, _rushEffect);
+                    SystemManager.Instance.ResourceManager.ReleaseObject(SparkEffectPath, _sparkEffect);
                     
                     SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
                     _ownerEntity.RushShockImpulseSource.GenerateImpulse(normal * 3);
@@ -151,11 +155,15 @@ namespace QT.InGame
         {
             _rushEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(RushEffectPath, _ownerEntity.CenterTransform);
             _rushEffect.transform.ResetLocalTransform();
-            
+
             var angle = Mathf.Atan2(_dir.y, _dir.x) * Mathf.Rad2Deg;
             _rushEffect.transform.rotation = Quaternion.Euler(0, 0, angle);
             
             _rushEffect.Play();
+            
+            
+            _sparkEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(SparkEffectPath, _ownerEntity.WheelTransform);
+            _sparkEffect.transform.ResetLocalTransform();
         }
 
     }
