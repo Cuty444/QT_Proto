@@ -160,7 +160,7 @@ namespace QT.UI
                 Destroy(cell.gameObject);
             }
             _cellMapList.Clear();
-            var pool = SystemManager.Instance.UIManager.GetUIPanel<UIDiaryCanvas>().MapTransform;
+            var pool = SystemManager.Instance.UIManager.GetUIPanel<UIPhoneCanvas>().MapTransform;
             foreach (var cell in _cellMapDictionary)
             {
                 var obj = Instantiate(cell.Key.gameObject, pool);
