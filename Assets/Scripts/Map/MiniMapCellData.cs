@@ -1,13 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UI.Extensions;
 using QT.Core;
 using QT.Core.Map;
-using QT.InGame;
-using UnityEngine.Events;
 
 namespace QT.Map
 {
@@ -25,13 +20,19 @@ namespace QT.Map
     
     public class MiniMapCellData : MonoBehaviour
     {
-        [SerializeField] private Sprite[] _mapSprites;
-        [SerializeField] private Color[] _mapColors;
-        [SerializeField] private GameObject _lineRenders;
-        [SerializeField] private UILineRenderer[] _uiLineRenderers;
+        [SerializeField] private Sprite _normalSprite;
+        [SerializeField] private Sprite _unknownSprite;
+        [SerializeField] private Sprite _stairsSprite;
+        [SerializeField] private Sprite _bossSprite;
+        [SerializeField] private Sprite _shopSprite;
+        [SerializeField] private Sprite _playerSprite;
+        
+        
+        [SerializeField] private GameObject _lines;
         [SerializeField] private Image[] _mapLineImages;
-        [SerializeField] private Sprite[] _mapIconSprite;
+        
         [SerializeField] private Transform _iconsTransform;
+        
         [HideInInspector]public Vector2Int CellPos;
 
         //private const string IconPath = "Prefabs/Map/MiniMap/MiniMapIcon.prefab";
@@ -52,35 +53,24 @@ namespace QT.Map
 
         public void Setting()
         {
-            _lineRenders.SetActive(false);
+            _lines.SetActive(false);
             _mapImage = GetComponent<Image>();
+            
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
+            
             _mapImage.enabled = false;
             _iconsTransform.gameObject.SetActive(false);
-            
-            if (RoomType.None == _roomType)
-            {
-                _iconObject.sprite = _mapIconSprite?[0];
-            }
         }
 
         public void ListenerClear()
         {
             _playerManager.PlayerMapPosition.RemoveListener(CellPosCheck);
             _roomType = RoomType.None;
-
-
-            for (int i = 0; i < _mapLineImages.Length; i++)
-            {
-                _mapLineImages[i].enabled = false;
-            }
-            _mapImage.enabled = false;
-            _mapImage.color = _mapColors[2];
-            _mapImage.sprite = _mapSprites[2];
-            _lineRenders.SetActive(false);
+            
             Destroy(gameObject);
+            
             if (_mapCellData != null)
             {
                 Destroy(_mapCellData.gameObject);
@@ -112,66 +102,53 @@ namespace QT.Map
                 {
                     SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
                 }
-                _lineRenders.SetActive(true);
-                _mapImage.enabled = true;
-                _iconObject.sprite = _mapIconSprite[7];
-                _iconsTransform.gameObject.SetActive(true);
-                _mapImage.color = _mapColors[0];
-                _mapImage.sprite = _mapSprites[3];
-                
-                if (_roomType == RoomType.Stairs)
-                {
-                    _mapImage.sprite = _mapSprites[4];
-                }
 
                 if (_mapCellData != null)
                 {
                     _playerManager.OnMapCellChanged.Invoke(_mapCellData.VolumeProfile, _mapCellData.CameraSize);
                 }
             }
-            else if (_dungeonMapSystem.GetCellData(CellPos).IsClear)
+            
+            
+            var cellData = _dungeonMapSystem.GetCellData(CellPos);
+            var isCellVisible = cellData.IsClear || cellData.IsVisited;
+            
+            _lines.SetActive(isCellVisible);
+            _mapImage.enabled = isCellVisible;
+
+            if (isCellVisible)
             {
-                _lineRenders.SetActive(true);
-                _mapImage.enabled = true;
-                _mapImage.color = _mapColors[0];
-                _mapImage.sprite = _mapSprites[0];
-                if (_roomType == RoomType.Stairs)
+                if (pos == CellPos)
                 {
-                    _mapImage.sprite = _mapSprites[4];
+                    _mapImage.sprite = _playerSprite;
+                    return;
                 }
-                _iconObject.sprite = _mapIconSprite?[(int) _roomType];
-                _iconsTransform.gameObject.SetActive(true);
-                //ColorSetLineRender(_mapColors[1]);
-            }
-            else if (_dungeonMapSystem.GetCellData(CellPos).IsVisited)
-            {
-                _lineRenders.SetActive(true);
-                _mapImage.enabled = true;
-                _mapImage.color = _mapColors[1];
-                _mapImage.sprite = _mapSprites[1];
-                if (_roomType == RoomType.Stairs)
+                
+                switch (_roomType)
                 {
-                    _mapImage.sprite = _mapSprites[4];
+                    case RoomType.Boss:
+                        _mapImage.sprite = _bossSprite;
+                        break;
+                    case RoomType.Stairs:
+                        _mapImage.sprite = _stairsSprite;
+                        break;
+                    case RoomType.GoldShop:
+                        _mapImage.sprite = _shopSprite;
+                        break;
+                    
+                    default:
+                        _mapImage.sprite = _normalSprite;
+                        break;
                 }
-                _iconObject.sprite = _mapIconSprite?[(int) _roomType];
-                _iconsTransform.gameObject.SetActive(true);
+                
             }
             else if (_dungeonMapSystem.MultiPathClearCheck(CellPos))
             {
                 _mapImage.enabled = true;
-                _mapImage.color = _mapColors[1];
-                _mapImage.sprite = _mapSprites[2];
-                //_iconsTransform.gameObject.SetActive(true);
+                _mapImage.sprite = _roomType == RoomType.Boss ? _bossSprite : _unknownSprite; // 보스방은 상시 표시
             }
         }
-
-        private void ColorSetLineRender(Color color) // TODO : 라인렌더가 곂침에 따른 쇼팅오류가 생김 수정 필요
-        {
-            for (int i = 0; i < _uiLineRenderers.Length; i++)
-            {
-                _uiLineRenderers[i].color = color;
-            }
-        }
+        
 
         public void SetRoomType(RoomType roomType)
         {
@@ -191,7 +168,6 @@ namespace QT.Map
                 _clickTeleportButton.onClick.AddListener(CellTeleportEvent);
                 Debug.Log(_roomType.ToString(),gameObject);
             }
-            _iconObject.sprite = _mapIconSprite?[(int) _roomType];
         }
 
         public void CellTeleportEvent()
