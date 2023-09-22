@@ -73,6 +73,9 @@ namespace QT.InGame
         [field:SerializeField] public CinemachineImpulseSource TeleportImpulseSource { get; private set; }
         [field: SerializeField] public float TeleportImpulseForce { get; private set; } = 0.2f;
         
+        [field: SerializeField] public GameObject PlayerFocusCam { get; private set; }
+        
+        
         [HideInInspector] public bool IsGarden;
         [HideInInspector] public Vector2Int _currentPlayerPosition;
         public Vector2 LastSafePosition { get; set; }
@@ -179,6 +182,23 @@ namespace QT.InGame
         public bool GetPlayerEnterDoor()
         {
             return _isEnterDoor;
+        }
+
+        public void Pause(bool isPause)
+        {
+            if(isPause)
+            {
+                inputActions.Disable();
+                Animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            }
+            else
+            {
+                inputActions.Enable();
+                Animator.updateMode = AnimatorUpdateMode.Normal;
+            }
+            
+            PlayerFocusCam.SetActive(isPause);
+            Animator.SetBool("IsPause", isPause);
         }
     }
 }

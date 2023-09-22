@@ -1,9 +1,5 @@
 using System.Collections;
 using QT.Core;
-using QT.Core.Map;
-using QT.Sound;
-using QT.Tutorial;
-using QT.Util;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +9,6 @@ namespace QT.UI
     {
         [SerializeField] private GameObject _backGround;
 
-        [SerializeField] private GameObject _settingGameobject;
         [SerializeField] private UIInventoryPage _inventoryPage;
 
         [Space] [SerializeField] private TweenAnimator _popAnimation;
@@ -22,50 +17,19 @@ namespace QT.UI
 
         [Space] public Transform MapTransform;
 
-        [SerializeField] private ButtonTrigger _tutorialButtonTrigger;
-        [SerializeField] private ButtonTrigger _titleButtonTrigger;
-
-        [SerializeField] private Slider[] _soundSliders;
         private bool _isOpen = false;
 
-        private bool _isInventory = true;
+        private float _lastTimeScale;
 
-        public bool _isTutorial { get; private set; } = false;
 
-        private DungeonMapSystem _dungeonMapSystem;
-        private SoundManager _soundManager;
         public override void PostSystemInitialize()
         {
-            _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             gameObject.SetActive(true);
             _inventoryPage.Initialize();
 
             _backGround.SetActive(false);
-            _soundManager = SystemManager.Instance.SoundManager;
-            float volume = 0;
-            _soundManager.GetMasterVolume(out volume);
-            _soundSliders[0].value = volume;
-            _soundManager.GetBGMVolume(out volume);
-            _soundSliders[1].value = volume;
-            _soundManager.GetSFXVolume(out volume);
-            _soundSliders[2].value = volume;
             
-            
-        }
-
-        public void SetMasterVolume(float volume)
-        {
-            _soundManager.SetMasterVolume(volume);
-        }
-        
-        public void SetBGMVolume(float volume)
-        {
-            _soundManager.SetBGMVolume(volume);
-        }
-        
-        public void SetSFXVolume(float volume)
-        {
-            _soundManager.SetSFXVolume(volume);
+            _lastTimeScale = Time.timeScale;
         }
         
         private void Update()
@@ -79,31 +43,10 @@ namespace QT.UI
             {
                 return;
             }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (_isOpen && _isInventory)
-                {
-                    SwitchPage(false);
-                }
-                else
-                {
-                    _isInventory = false;
-                    CheckOpen();
-                }
-            }
-
+            
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                if (_isOpen && !_isInventory)
-                {
-                    SwitchPage(true);
-                }
-                else
-                {
-                    _isInventory = true;
-                    CheckOpen();
-                }
+                CheckOpen();
             }
             
             SystemManager.Instance.SoundManager.VolumeSave();
@@ -111,59 +54,34 @@ namespace QT.UI
 
         private void CheckOpen()
         {
-            if (_isTutorial)
-                return;
             StopAllCoroutines();
 
             _isOpen = !_isOpen;
-            SystemManager.Instance.UIManager.InventoryInputCheck.Invoke(_isOpen);
+            
+            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().OnOff(_isOpen);
+            
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UITabSFX);
+            
+            SystemManager.Instance.PlayerManager.Player.Pause(_isOpen);
             if (_isOpen)
             {
-                SetPage();
-                _tutorialButtonTrigger.InteractableOn();
-                _titleButtonTrigger.InteractableOn();
+                _inventoryPage.SetInventoryUI();
+                
                 _backGround.SetActive(true);
                 _popAnimation.ReStart();
+                
+                _lastTimeScale = Time.timeScale;
+                //Time.timeScale = 0;
             }
             else
             {
-                StartCoroutine(CloseCorutine());
+                StartCoroutine(CloseCoroutine());
+                //Time.timeScale = _lastTimeScale;
             }
         }
 
-        private void SetPage()
-        {
-            _settingGameobject.SetActive(!_isInventory);
-            _inventoryPage.gameObject.SetActive(_isInventory);
 
-            if (_isInventory)
-            {
-                _inventoryPage.SetInventoryUI();
-            }
-            else
-            {
-                // 세팅 페이지 세팅
-            }
-        }
-
-        public void SwitchPage(bool isInventory)
-        {
-            _isInventory = isInventory;
-            StartCoroutine(SwitchCorutine());
-        }
-
-        private IEnumerator SwitchCorutine()
-        {
-            _switchAnimation.ReStart();
-
-            yield return new WaitForSeconds(0.2f);
-
-            SetPage();
-        }
-
-
-        private IEnumerator CloseCorutine()
+        private IEnumerator CloseCoroutine()
         {
             _releaseAnimation.ReStart();
 
@@ -171,60 +89,6 @@ namespace QT.UI
 
             _backGround.SetActive(false);
         }
-
-        public void TutorialButton()
-        {
-            SystemManager.Instance.UIManager.GetUIPanel<TutorialCanvas>().OnOpen();
-            CheckOpen();
-            _isTutorial = true;
-        }
-
-        public void TutorialClose()
-        {
-            _isTutorial = false;
-            _tutorialButtonTrigger.InteractableOn();
-            CheckOpen();
-        }
-
-        public void TitleButton()
-        {
-            var _playerManager = SystemManager.Instance.PlayerManager;
-            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
-            _playerManager.Reset();
-            
-            _playerManager.PlayerIndexInventory.Clear();
-            _playerManager.PlayerActiveItemIndex = -1;
-            
-            _dungeonMapSystem.SetFloor(0);
-            SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
-            SystemManager.Instance.RankingManager.ResetRankingTime();
-            
-            var uiManager = SystemManager.Instance.UIManager;
-            uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
-            {
-                uiManager.GetUIPanel<MinimapCanvas>().OnClose();
-                _isOpen = false;
-                StartCoroutine(CloseCorutine());
-                uiManager.GetUIPanel<FadeCanvas>().FadeIn();
-                uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
-                SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                ProjectileManager.Instance.Clear();
-                HitAbleManager.Instance.Clear();
-                SystemManager.Instance.ResourceManager.AllReleasedObject();
-
-                _dungeonMapSystem.StartCoroutine(UnityUtil.WaitForFunc(() =>
-                {
-                    SystemManager.Instance.LoadingManager.FloorLoadScene(2);
-                    _dungeonMapSystem.StartCoroutine(UnityUtil.WaitForFunc(() =>
-                    {
-                        SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
-                        //_dungeonMapSystem.DungenMapGenerate();
-                        //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
-                    }, 2f));
-                }, 5f));
-                //SystemManager.Instance.StageLoadManager.StageLoad((_dungeonMapSystem.GetFloor() + 1).ToString());
-            });
-        }
+        
     }
 }
