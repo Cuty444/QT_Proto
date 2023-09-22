@@ -5,6 +5,19 @@ using UnityEngine;
 namespace QT.UI
 {
 
+    public enum UIPanelState
+    {
+        None,
+        Title,
+        InGame,
+        Inventory,
+        Shop,
+        Setting,
+        Pause,
+        GameOver,
+        GameClear,
+    }
+    
     public class UIPanel : MonoBehaviour
     {
         public virtual void Initialize()
@@ -17,6 +30,11 @@ namespace QT.UI
 
         }
 
+        public virtual void OnStateChange(UIPanelState state)
+        {
+                
+        }
+        
         public virtual void OnOpen()
         {
             gameObject.SetActive(true);

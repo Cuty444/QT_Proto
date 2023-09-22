@@ -28,10 +28,8 @@ namespace QT.Tutorial
         public override void OnClose()
         {
             base.OnClose();
-            if (SystemManager.Instance.UIManager.GetUIPanel<UIDiaryCanvas>()._isTutorial)
-                SystemManager.Instance.UIManager.GetUIPanel<UIDiaryCanvas>().TutorialClose();
-            else
-                SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().TutorialClose();
+            
+            SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().TutorialClose();
         }
 
         private void Update()

@@ -35,10 +35,13 @@ namespace QT.UI
             _pathDirections.Add(Vector2Int.down,MapDirection.Down);
             _pathDirections.Add(Vector2Int.right,MapDirection.Left);
             _pathDirections.Add(Vector2Int.left,MapDirection.Right);
+            
             SystemManager.Instance.ResourceManager.CacheAsset(CellPath);
+            
             IsPreviousActive = true;
             _miniMapOnOff.SetActive(false);
             _playerManager = SystemManager.Instance.PlayerManager;
+            
             _playerManager.PlayerMapPosition.AddListener((position) =>
             {
                 MiniMapCellCenterPositionChange(position);
@@ -49,14 +52,17 @@ namespace QT.UI
                 }
                 StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
             });
+            
             _playerManager.PlayerDoorEnter.AddListener((arg) =>
             {
                 StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
             });
+            
             _playerManager.PlayerCreateEvent.AddListener((player) =>
             {
                 StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
             });
+            
             _playerManager.PlayerMapClearPosition.AddListener((arg) =>
             {
                 IsPreviousActive = true;
@@ -64,25 +70,27 @@ namespace QT.UI
                 _popAnimator.ReStart();
             });
             
-            SystemManager.Instance.UIManager.InventoryInputCheck.AddListener((isActive) =>
-            {
-                if (isActive)
-                {
-                    MapCreate();
-                    if (IsPreviousActive)
-                    {
-                        _miniMapOnOff.SetActive(false);
-                        _popAnimator.PlayBackwards();
-                    }
-                }
-                else if(!isActive && IsPreviousActive)
-                {
-                    _miniMapOnOff.SetActive(true);
-                    _popAnimator.ReStart();
-                }
-            });
         }
-        
+
+        public void OnOff(bool active)
+        {
+            if (active)
+            {
+                MapCreate();
+
+                if (IsPreviousActive)
+                {
+                    _miniMapOnOff.SetActive(false);
+                    _popAnimator.PlayBackwards();
+                }
+            }
+            else if (IsPreviousActive)
+            {
+                _miniMapOnOff.SetActive(true);
+                _popAnimator.ReStart();
+            }
+        }
+
 
 
         public void CellClear()

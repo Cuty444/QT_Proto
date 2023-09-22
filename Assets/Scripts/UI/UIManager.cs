@@ -12,7 +12,6 @@ namespace QT.UI
         private UIPanel _currentPanel;
 
 
-        public UnityEvent<bool> InventoryInputCheck { get; } = new();
         public void Initialize()
         {
             for(int i = 0; i < transform.childCount; i++)
