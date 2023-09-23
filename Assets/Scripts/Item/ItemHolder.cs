@@ -19,7 +19,7 @@ namespace QT
         
         public ItemGameData ItemGameData { get; private set; }
         
-        [SerializeField] private Image _iconImage;
+        [SerializeField] private SpriteRenderer _iconImage;
 
         [SerializeField] private Animator _alterAnimator;
         [SerializeField] private GameObject _soldObject;
@@ -38,7 +38,7 @@ namespace QT
             ItemGameData = itemGameData;
             _onGainItem = onGainItem;
             
-            SystemManager.Instance.ResourceManager.LoadUIImage(ItemGameData.ItemIconPath, _iconImage);
+            SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _iconImage);
 
             switch (DropType)
             {
