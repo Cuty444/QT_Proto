@@ -36,7 +36,6 @@ namespace QT.Map
 
         private PlayerManager _playerManager;
         private DungeonMapSystem _dungeonMapSystem;
-        private CellData _cellData;
         
         private List<Door> _doorAnimators = new();
         private Vector2Int _cellPosition;
@@ -48,7 +47,6 @@ namespace QT.Map
         {
             _playerManager = SystemManager.Instance.PlayerManager;
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
-            _cellData = _dungeonMapSystem?.GetCellData(_cellPosition);
             _playerManager.PlayerDoorEnter.AddListener((direction) =>
             {
                 _doorEnterDirection = direction;
@@ -89,7 +87,7 @@ namespace QT.Map
         {
             gameObject.SetActive(true);
             _changer?.Spawn();
-            
+
             _isPlaying = true;
             _playerManager.PlayerMapPass.Invoke(false);
 
@@ -155,7 +153,7 @@ namespace QT.Map
         {
             if (_cellPosition != enterPosition)
                 return;
-            if(!_cellData.IsClear)
+            if(!_dungeonMapSystem.GetCellData(_cellPosition).IsClear)
                 PlayRoom(enterPosition);
             
             DoorExitDirection(_doorEnterDirection);
