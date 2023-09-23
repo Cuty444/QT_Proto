@@ -38,7 +38,7 @@ namespace QT.Map
         private DungeonMapSystem _dungeonMapSystem;
         private CellData _cellData;
         
-        private List<DoorAnimator> _doorAnimators = new();
+        private List<Door> _doorAnimators = new();
         private Vector2Int _cellPosition;
         private Vector2Int _doorEnterDirection;
 
@@ -137,16 +137,14 @@ namespace QT.Map
                 }
                 
                 var path = Util.AddressablesDataPath.GetDoorPath(nextRoomType)[i];
-                var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<DoorAnimator>(path, _doorTransforms[i]);
+                var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<Door>(path, _doorTransforms[i]);
                 doorObject.transform.localPosition = Vector3.zero;
 
+                doorObject.Init(Util.UnityUtil.PathDirections[i]);
+                
                 if (_roomType == RoomType.Start)
                 {
                     doorObject.DoorOpen();
-                }
-                if (i <= 1)
-                {
-                    doorObject.DoorUpDown((MapDirection)(1 << i));
                 }
                 
                 _doorAnimators.Add(doorObject);

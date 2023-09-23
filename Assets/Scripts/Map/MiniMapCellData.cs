@@ -172,12 +172,12 @@ namespace QT.Map
 
         public void CellTeleportEvent()
         {
-            if (!_dungeonMapSystem.GetCellData(CellPos).IsVisited)
-                return; 
-            if (!_playerManager.Player.GetPlayerEnterDoor())
-                return;
-            if (_playerManager.Player._currentPlayerPosition == CellPos)
-                return;
+            var playerPos = _playerManager.Player._currentPlayerPosition;
+            
+            if (playerPos == CellPos) return;
+            if (!_dungeonMapSystem.GetCellData(CellPos).IsVisited) return;
+            if (!_dungeonMapSystem.GetCellData(playerPos).IsClear) return; 
+            
             SystemManager.Instance.PlayerManager.PlayerMapTeleportPosition.Invoke(CellPos);
         }
     }

@@ -54,12 +54,9 @@ namespace QT.InGame
         
         public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
         public SkeletonGhost GhostEffect { get; private set; }
-
         
         private PlayerManager _playerManager;
 
-        
-        private bool _isEnterDoor;
         private PlayerHPCanvas _playerHpCanvas;
 
         [SerializeField] private Transform _attackSpeedCanvas;
@@ -123,14 +120,6 @@ namespace QT.InGame
             StatComponent.GetStatus(PlayerStats.HP).SetStatus(StatComponent.GetStatus(PlayerStats.HP).Value);
             _playerHpCanvas.SetHp(StatComponent.GetStatus(PlayerStats.HP));
             
-            
-            _playerManager.PlayerMapPass.AddListener((isBool) =>
-            {
-                _isEnterDoor = isBool;
-            });
-            
-            _isEnterDoor = true;
-
             _playerManager.GainItemSprite.AddListener(GainItem);
             
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>()?.OnOpen();
@@ -175,11 +164,6 @@ namespace QT.InGame
             
             SystemManager.Instance.PlayerManager.Reset();;
             ChangeState(Player.States.Dead);
-        }
-
-        public bool GetPlayerEnterDoor()
-        {
-            return _isEnterDoor;
         }
 
         public void Pause(bool isPause)
