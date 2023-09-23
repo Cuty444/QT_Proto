@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 2462247738632610196}
   - component: {fileID: 1631525993793289163}
-  m_Layer: 0
+  - component: {fileID: 881340762172384927}
+  m_Layer: 17
   m_Name: NormalDown
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -24,6 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953614783413985485}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -33,7 +35,6 @@ Transform:
   - {fileID: 305466424239255668}
   - {fileID: 3246009531087734633}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1631525993793289163
 MonoBehaviour:
@@ -47,6 +48,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b302920ddf49ff48b6adce76dd80ed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!61 &881340762172384927
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953614783413985485}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 4, y: 2}
+  m_EdgeRadius: 0
 --- !u!1 &5865292932408443070
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,7 +107,7 @@ GameObject:
   - component: {fileID: 5959202338774278865}
   - component: {fileID: 6559410006635167767}
   - component: {fileID: 6185566873063770451}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Spine Mecanim GameObject (Door_TU)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,13 +121,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5865292932408443070}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.13, z: 0}
+  m_LocalPosition: {x: 0, y: -1.7399998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2462247738632610196}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5637981839448606236
 MeshFilter:
@@ -215,9 +261,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2462247738632610196}
     m_Modifications:
+    - target: {fileID: 1663994413342301862, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 3910259071948791268, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875254863531882014, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 6585945607311457193, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
       propertyPath: m_Name
       value: NormalRoom_Corridor_D (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6585945607311457193, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 7767508508421389560, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
       propertyPath: m_RootOrder
@@ -229,7 +291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7767508508421389560, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.1300001
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 7767508508421389560, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
       propertyPath: m_LocalPosition.z
@@ -285,9 +347,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2462247738632610196}
     m_Modifications:
+    - target: {fileID: 1663994413342301862, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 3910259071948791268, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875254863531882014, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 6585945607311457193, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
       propertyPath: m_Name
       value: NormalRoom_Corridor_D
+      objectReference: {fileID: 0}
+    - target: {fileID: 6585945607311457193, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 7767508508421389560, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
       propertyPath: m_RootOrder
@@ -299,7 +377,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7767508508421389560, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.87
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 7767508508421389560, guid: 45ab6ace5a3b98f4c9b62658766faf60, type: 3}
       propertyPath: m_LocalPosition.z

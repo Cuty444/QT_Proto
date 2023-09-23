@@ -9,18 +9,23 @@ namespace QT.Util
 {
     public static class AddressablesDataPath
     {
-        public static readonly string[] DoorPaths = {"Map/Sculpture/Stage1/Door/Normal/NormalUp.prefab",
-            "Map/Sculpture/Stage1/Door/Normal/NormalDown.prefab",
-            "Map/Sculpture/Stage1/Door/Normal/NormalLeft.prefab",
-            "Map/Sculpture/Stage1/Door/Normal/NormalRight.prefab"};
-        public static readonly string[] StoreDoorPaths = {"Map/Sculpture/Stage1/Door/Store/StoreUp.prefab",
-            "Map/Sculpture/Stage1/Door/Store/StoreDown.prefab",
-            "Map/Sculpture/Stage1/Door/Store/StoreLeft.prefab",
-            "Map/Sculpture/Stage1/Door/Store/StoreRight.prefab"};        
-        public static readonly string[] BossDoorPaths = {"Map/Sculpture/Stage1/Door/Boss/BossUp.prefab",
-            "Map/Sculpture/Stage1/Door/Boss/BossDown.prefab",
-            "Map/Sculpture/Stage1/Door/Boss/BossUp.prefab",
-            "Map/Sculpture/Stage1/Door/Boss/BossUp.prefab"};
+        public static readonly string[] DoorPaths = {
+            "Map/Stage1/Doors/Normal/NormalUp.prefab",
+            "Map/Stage1/Doors/Normal/NormalDown.prefab",
+            "Map/Stage1/Doors/Normal/NormalLeft.prefab",
+            "Map/Stage1/Doors/Normal/NormalRight.prefab"};
+        
+        public static readonly string[] StoreDoorPaths = {
+            "Map/Stage1/Doors/Store/StoreUp.prefab",
+            "Map/Stage1/Doors/Store/StoreDown.prefab",
+            "Map/Stage1/Doors/Store/StoreLeft.prefab",
+            "Map/Stage1/Doors/Store/StoreRight.prefab"};        
+        
+        public static readonly string[] BossDoorPaths = {
+            "Map/Stage1/Doors/Boss/BossUp.prefab",
+            "Map/Stage1/Doors/Boss/BossDown.prefab",
+            "Map/Stage1/Doors/Boss/BossUp.prefab",
+            "Map/Stage1/Doors/Boss/BossUp.prefab"};
         
         public static string[] GetDoorPath(RoomType doorType)
         {
