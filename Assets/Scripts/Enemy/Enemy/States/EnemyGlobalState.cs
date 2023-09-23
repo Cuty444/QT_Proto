@@ -9,8 +9,18 @@ namespace QT.InGame
     {
         public EnemyGlobalState(IFSMEntity owner) : base(owner)
         {
+        }
+
+        public override void InitializeState()
+        {
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
             _ownerEntity.OnProjectileHitEvent.AddListener(OnProjectileHit);
+        }
+
+        public override void ClearState()
+        {
+            _ownerEntity.OnDamageEvent.RemoveListener(OnDamage);
+            _ownerEntity.OnProjectileHitEvent.RemoveListener(OnProjectileHit);
         }
 
         private void OnDamage(Vector2 dir, float power, AttackType attackType)

@@ -31,7 +31,7 @@ namespace QT
 
         public void Register(IHitAble hitAble)
         {
-            _hitAbles.TryAdd(hitAble.InstanceId, hitAble);
+            _hitAbles.Add(hitAble.InstanceId, hitAble);
         }
 
         public void UnRegister(IHitAble hitAble)
