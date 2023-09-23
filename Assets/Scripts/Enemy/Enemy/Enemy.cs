@@ -53,8 +53,6 @@ namespace QT.InGame
 
         [HideInInspector] public Image HpImage;
 
-        //[HideInInspector] public LineRenderer TeleportLineRenderer;
-
         private Collider2D[] _colliders;
 
         public int _damage { get; private set; }
@@ -76,20 +74,10 @@ namespace QT.InGame
             HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
             HpCanvas.gameObject.SetActive(false);
 
-
-            // SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener((arg) =>
-            //     SetTeleportLine(Vector2.zero, false));
-            
             LoadSound();
             
         }
-
-        // 구 버전 맵 데이터를 쓰지 않을 때 제거
-        private void Start()
-        {
-            initialization(_enemyId);
-        }
-
+        
         public void initialization(int enemyId)
         {
             _enemyId = enemyId;
@@ -128,35 +116,7 @@ namespace QT.InGame
         {
             return UnityEngine.Random.Range(Data.GoldDropMin, Data.GoldDropMax + 1);
         }
-       
         
-        // private const string TeleportLinePath = "Prefabs/TeleportLine.prefab";
-        // public async void SetTeleportLine(Vector2 target, bool isActive)
-        // {
-        //     if (isActive)
-        //     {
-        //         if (TeleportLineRenderer == null)
-        //         {
-        //             TeleportLineRenderer =
-        //                 await SystemManager.Instance.ResourceManager.GetFromPool<LineRenderer>(TeleportLinePath);
-        //         }
-        //         
-        //         if (CurrentStateIndex >= (int)Player.States.Fall)
-        //         {
-        //             TeleportLineRenderer.positionCount = 0;
-        //             return;
-        //         }
-        //         TeleportLineRenderer.positionCount = 2;
-        //         TeleportLineRenderer.SetPosition(0, target);
-        //         TeleportLineRenderer.SetPosition(1, transform.position);
-        //     }
-        //     else if(TeleportLineRenderer != null)
-        //     {
-        //         TeleportLineRenderer.positionCount = 0;
-        //         SystemManager.Instance.ResourceManager.ReleaseObject(TeleportLinePath, TeleportLineRenderer);
-        //         TeleportLineRenderer = null;
-        //     }
-        // }
         
         public void ReleaseObject()
         {

@@ -24,6 +24,18 @@ namespace QT.Core.Map
         Stairs,
     }
 
+    [Flags]
+    public enum MapDirection
+    {
+        None = 0,
+        Up = 1,
+        Down = 2,
+        Left = 4,
+        Right = 8,
+        
+        All = Up | Down | Left | Right
+    }
+    
     public class BFSCellData
     {
         public Vector2Int Position;

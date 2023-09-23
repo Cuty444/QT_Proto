@@ -36,9 +36,8 @@ namespace QT.Map
 
         private PlayerManager _playerManager;
         private DungeonMapSystem _dungeonMapSystem;
-        private CellData _cellData;
         
-        private List<DoorAnimator> _doorAnimators = new();
+        private List<Door> _doorAnimators = new();
         private Vector2Int _cellPosition;
         private Vector2Int _doorEnterDirection;
 
@@ -48,7 +47,6 @@ namespace QT.Map
         {
             _playerManager = SystemManager.Instance.PlayerManager;
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
-            _cellData = _dungeonMapSystem?.GetCellData(_cellPosition);
             _playerManager.PlayerDoorEnter.AddListener((direction) =>
             {
                 _doorEnterDirection = direction;
@@ -87,9 +85,8 @@ namespace QT.Map
 
         public void PlayRoom(Vector2Int position)
         {
-            gameObject.SetActive(true);
             _changer?.Spawn();
-            
+
             _isPlaying = true;
             _playerManager.PlayerMapPass.Invoke(false);
 
@@ -137,16 +134,14 @@ namespace QT.Map
                 }
                 
                 var path = Util.AddressablesDataPath.GetDoorPath(nextRoomType)[i];
-                var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<DoorAnimator>(path, _doorTransforms[i]);
+                var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<Door>(path, _doorTransforms[i]);
                 doorObject.transform.localPosition = Vector3.zero;
 
+                doorObject.Init(Util.UnityUtil.PathDirections[i], ExitDoor);
+                
                 if (_roomType == RoomType.Start)
                 {
                     doorObject.DoorOpen();
-                }
-                if (i <= 1)
-                {
-                    doorObject.DoorUpDown((MapDirection)(1 << i));
                 }
                 
                 _doorAnimators.Add(doorObject);
@@ -157,10 +152,15 @@ namespace QT.Map
         {
             if (_cellPosition != enterPosition)
                 return;
-            if(!_cellData.IsClear)
+            
+            gameObject.SetActive(true);
+            
+            if(!_dungeonMapSystem.GetCellData(_cellPosition).IsClear)
                 PlayRoom(enterPosition);
             
             DoorExitDirection(_doorEnterDirection);
+            
+            _playerManager.OnMapCellChanged.Invoke(VolumeProfile, CameraSize);
         }
         
         public void DoorExitDirection(Vector2Int enterDirection) // TODO : 여기 추후에 유니티 이벤트 부분 던전 매니저로 변경 필요
@@ -185,6 +185,12 @@ namespace QT.Map
                 _playerManager.Player.transform.position = _doorExitTransforms[3].position;
                 _playerManager.Player.LastSafePosition = _doorExitTransforms[3].position;
             }
+        }
+
+        private void ExitDoor(Vector2Int direction)
+        {
+            gameObject.SetActive(false);
+            SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(direction);
         }
 
         private void TeleportCellPosition(Vector2Int position)

@@ -85,6 +85,8 @@ namespace QT.Map
             
             Target.DoorExitDirection(exit);
             Target.CellDataSet(MapDirection.All, Vector2Int.zero, RoomType.Normal);
+            
+            Target.gameObject.SetActive(true);
             Target.PlayRoom(Vector2Int.zero);
             
             SystemManager.Instance.PlayerManager.OnMapCellChanged.Invoke(Target.VolumeProfile, Target.CameraSize);

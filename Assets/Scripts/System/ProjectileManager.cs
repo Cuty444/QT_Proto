@@ -35,7 +35,7 @@ namespace QT
 
         public void Register(IProjectile projectile)
         {
-            _projectiles.TryAdd(projectile.InstanceId, projectile);
+            _projectiles.Add(projectile.InstanceId, projectile);
         }
         
         public void UnRegister(IProjectile projectile)
