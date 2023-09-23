@@ -125,7 +125,7 @@ namespace QT.InGame
         
         public override bool CheckCondition(StatComponent statComponent)
         {
-            return UnityEngine.Random.Range(0, 100) < _value;
+            return UnityEngine.Random.Range(0.0f, 100.0f) < _value;
         }
     }
     
