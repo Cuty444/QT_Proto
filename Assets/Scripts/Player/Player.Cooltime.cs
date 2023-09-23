@@ -30,12 +30,6 @@ namespace QT.InGame
             SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().SetDodgeCoolTime(dodgeCooldown);
             AttackCanvas();
         }
-        
-        public bool IsInvincible()
-        {
-            return !StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).IsFull()
-                   || !StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).IsFull();
-        }
 
         private void AttackCanvas()
         {

@@ -75,6 +75,11 @@ namespace QT.Map
 
         private void OnDrawGizmos()
         {
+            if (Application.isPlaying)
+            {
+                return;
+            }
+            
             if (Target != null)
             {
                 return;

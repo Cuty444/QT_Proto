@@ -155,14 +155,12 @@ namespace QT.InGame
 
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
-            if (IsInvincible())
-            {
-                return;
-            }
-            StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
-            
-            
             SystemManager.Instance.EventManager.InvokeEvent(EventType.OnDamage, (dir, power));
+        }
+        
+        public void Heal(float amount)
+        {
+            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnHeal, amount);
         }
         
         public bool GetHpComparision(int hpCost)

@@ -70,16 +70,18 @@ namespace QT.InGame
             SystemManager.Instance.EventManager.RemoveEvent(this);
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainAnimation);
             _ownerEntity.OnAim.RemoveListener(OnAim);
-            
-            _swingRadStat.OnValueChanged.RemoveListener(OnSwingRadChange);
         }
 
         private void InvokeEvent(EventType eventType, object data)
         {
-            if(eventType == EventType.OnDamage)
+            if (eventType == EventType.OnDamage)
             {
                 var damageData = ((Vector2 dir, float damage)) data;
                 OnDamage(damageData.dir, damageData.damage);
+            }
+            else if(eventType == EventType.OnHeal)
+            {
+                OnHeal((float) data);
             }
         }
 
@@ -124,10 +126,19 @@ namespace QT.InGame
         
         private void OnDamage(Vector2 dir, float damage)
         {
+            var statComponent = _ownerEntity.StatComponent;
+            
+            if(!statComponent.GetStatus(PlayerStats.MercyInvincibleTime).IsFull() || !statComponent.GetStatus(PlayerStats.DodgeInvincibleTime).IsFull())
+            {
+                return;
+            }
+            
+            statComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
+            
             _ownerEntity.Animator.SetTrigger(RigidAnimHash);
             //_ownerEntity.PlayerHitEffectPlay();
             
-            var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
+            var hp = statComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-damage);
             _playerHpCanvas.CurrentHpImageChange(hp);
 
@@ -141,6 +152,12 @@ namespace QT.InGame
             {
                 _ownerEntity.MaterialChanger.SetHitMaterial();
             }
+        }
+
+        private void OnHeal(float amount)
+        {
+            var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
+            hp.AddStatus(amount);
         }
 
         private void GainAnimation()
