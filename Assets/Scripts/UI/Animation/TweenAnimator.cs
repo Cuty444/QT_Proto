@@ -97,13 +97,13 @@ namespace QT
                     {
                         case TweenMode.DoMove:
                             if (elements.Target is RectTransform rectTransform)
-                            {
+                            {  
                                 seq.Join(rectTransform.DOAnchorPos(elements.TweenTarget, elements.Duration)
                                     .SetEase(elements.Ease));
                             }
                             else
                             {
-                                seq.Join(elements.Target.DOMove(elements.TweenTarget, elements.Duration)
+                                seq.Join(elements.Target.DOLocalMove(elements.TweenTarget, elements.Duration)
                                     .SetEase(elements.Ease));
                             }
                             break;
