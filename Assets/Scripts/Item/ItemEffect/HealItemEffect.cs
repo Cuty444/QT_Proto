@@ -10,15 +10,13 @@ namespace QT.InGame
     // Param1: 회복량
     public class HealItemEffect : ItemEffect
     {
-        private Status _hpStatus;
-        private Player _player;
+        private readonly Player _player;
         
-        private float _amount;
+        private readonly float _amount;
         
         public HealItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
         {
             _player = player;
-            _hpStatus = player.StatComponent.GetStatus(PlayerStats.HP);
             _amount = specialEffectData.Param1;
         }
 
@@ -31,11 +29,11 @@ namespace QT.InGame
         {
             if (_amount < 0)
             {
-                _player.Hit(Vector2.zero, _amount, AttackType.Ball);
+                _player.Hit(Vector2.zero, -_amount, AttackType.Ball);
             }
             else
             {
-                _hpStatus.AddStatus(_amount);
+                _player.Heal(_amount);
             }
         }
 

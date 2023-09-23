@@ -35,9 +35,6 @@ namespace QT.InGame
 
             _targetPlayer.OnActive.AddListener((isOn) => { if (isOn) InvokeTrigger(TriggerTypes.OnActiveKey); });
             
-            _targetPlayer.StatComponent.GetStatus(PlayerStats.HP).OnStatusChanged
-                .AddListener(() => InvokeTrigger(TriggerTypes.OnHpChanged));
-            
             _targetPlayer.StatComponent.GetStat(PlayerStats.MovementSpd).OnValueChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnMovementSpdChanged));
             
@@ -52,7 +49,10 @@ namespace QT.InGame
             switch (eventType)
             {
                 case EventType.OnDamage:
-                    InvokeTrigger(TriggerTypes.OnHpChanged);
+                    InvokeTrigger(TriggerTypes.OnDamage);
+                    break;
+                case EventType.OnHeal:
+                    InvokeTrigger(TriggerTypes.OnHeal);
                     break;
                 case EventType.OnGoldChanged:
                     InvokeTrigger(TriggerTypes.OnGoldChanged);

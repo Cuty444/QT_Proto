@@ -19,18 +19,17 @@ namespace QT
             OnCharged = 1 << 3,
             OnGoldChanged = 1 << 4,
             
-            OnHpChanged = 1 << 5,
-            //OnDamage
-            //OnHeal
+            OnDamage = 1 << 5,
+            OnHeal = 1 << 6,
             
-            OnSwing = 1 << 6,
-            OnSwingHit = 1 << 7,
-            OnAttackStunEnemy = 1 << 8,
-            OnParry = 1 << 9,
-            OnDodge = 1 << 10,
+            OnSwing = 1 << 7,
+            OnSwingHit = 1 << 8,
+            OnAttackStunEnemy = 1 << 9,
+            OnParry = 1 << 10,
+            OnDodge = 1 << 11,
             
-            OnMovementSpdChanged = 1 << 11,
-            OnChargeBounceCountChanged = 1 << 12
+            OnMovementSpdChanged = 1 << 12,
+            OnChargeBounceCountChanged = 1 << 13
         }
 
         public int Index { get; set; }
