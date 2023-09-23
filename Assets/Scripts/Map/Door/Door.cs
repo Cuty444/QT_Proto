@@ -1,6 +1,7 @@
 using QT.Core;
 using Spine.Unity;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace QT
 {
@@ -13,17 +14,19 @@ namespace QT
         private bool _isOpen = false;
         
         private Vector2Int _direction;
-        
+        private UnityAction<Vector2Int> _onDoorEnter;
+
         private void Awake()
         {
             _animator = GetComponentInChildren<Animator>();
             _skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
         }
 
-        public void Init(Vector2Int direction)
+        public void Init(Vector2Int direction, UnityAction<Vector2Int> onDoorEnter)
         {
             _isOpen = false;
             _direction = direction;
+            _onDoorEnter = onDoorEnter;
         }
         
         public void DoorOpen()
@@ -36,7 +39,7 @@ namespace QT
         {
             if (_isOpen)
             {
-                SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(_direction);
+                _onDoorEnter?.Invoke(_direction);
             }
         }
     }

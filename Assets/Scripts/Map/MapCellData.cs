@@ -85,7 +85,6 @@ namespace QT.Map
 
         public void PlayRoom(Vector2Int position)
         {
-            gameObject.SetActive(true);
             _changer?.Spawn();
 
             _isPlaying = true;
@@ -138,7 +137,7 @@ namespace QT.Map
                 var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<Door>(path, _doorTransforms[i]);
                 doorObject.transform.localPosition = Vector3.zero;
 
-                doorObject.Init(Util.UnityUtil.PathDirections[i]);
+                doorObject.Init(Util.UnityUtil.PathDirections[i], ExitDoor);
                 
                 if (_roomType == RoomType.Start)
                 {
@@ -153,10 +152,15 @@ namespace QT.Map
         {
             if (_cellPosition != enterPosition)
                 return;
+            
+            gameObject.SetActive(true);
+            
             if(!_dungeonMapSystem.GetCellData(_cellPosition).IsClear)
                 PlayRoom(enterPosition);
             
             DoorExitDirection(_doorEnterDirection);
+            
+            _playerManager.OnMapCellChanged.Invoke(VolumeProfile, CameraSize);
         }
         
         public void DoorExitDirection(Vector2Int enterDirection) // TODO : 여기 추후에 유니티 이벤트 부분 던전 매니저로 변경 필요
@@ -181,6 +185,12 @@ namespace QT.Map
                 _playerManager.Player.transform.position = _doorExitTransforms[3].position;
                 _playerManager.Player.LastSafePosition = _doorExitTransforms[3].position;
             }
+        }
+
+        private void ExitDoor(Vector2Int direction)
+        {
+            gameObject.SetActive(false);
+            SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(direction);
         }
 
         private void TeleportCellPosition(Vector2Int position)

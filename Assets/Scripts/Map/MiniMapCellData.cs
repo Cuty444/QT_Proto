@@ -6,18 +6,6 @@ using QT.Core.Map;
 
 namespace QT.Map
 {
-    [Flags]
-    public enum MapDirection
-    {
-        None = 0,
-        Up = 1,
-        Down = 2,
-        Left = 4,
-        Right = 8,
-        
-        All = Up | Down | Left | Right
-    }
-    
     public class MiniMapCellData : MonoBehaviour
     {
         [SerializeField] private Sprite _normalSprite;
@@ -41,9 +29,6 @@ namespace QT.Map
         private DungeonMapSystem _dungeonMapSystem;
         private GameObject _cellMapObject;
         private Image _mapImage;
-        private MapDirection _pathOpenDirection;
-
-        private MapCellData _mapCellData;
 
         private RoomType _roomType;
 
@@ -70,11 +55,6 @@ namespace QT.Map
             _roomType = RoomType.None;
             
             Destroy(gameObject);
-            
-            if (_mapCellData != null)
-            {
-                Destroy(_mapCellData.gameObject);
-            }
         }
 
         public void SetRouteDirection(MapDirection mapDirection)
@@ -83,7 +63,6 @@ namespace QT.Map
             _mapLineImages[1].enabled = (mapDirection & MapDirection.Down) != 0;
             _mapLineImages[2].enabled = (mapDirection & MapDirection.Left) != 0;
             _mapLineImages[3].enabled = (mapDirection & MapDirection.Right) != 0;
-            _pathOpenDirection = mapDirection;
         }
         
         private void CellPosCheck(Vector2Int pos)
@@ -101,11 +80,6 @@ namespace QT.Map
                 else
                 {
                     SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
-                }
-
-                if (_mapCellData != null)
-                {
-                    _playerManager.OnMapCellChanged.Invoke(_mapCellData.VolumeProfile, _mapCellData.CameraSize);
                 }
             }
             
