@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 829933839825748865}
   - component: {fileID: 3429696577074310508}
   - component: {fileID: 3197450188563303620}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Spine Mecanim GameObject (StoreDoor_Side)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,13 +28,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2356780325430696045}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.309, y: -1.06, z: 0}
+  m_LocalPosition: {x: 0.561, y: -1.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3876465430433631020}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &915367982859655387
 MeshFilter:
@@ -170,10 +170,11 @@ GameObject:
   m_Component:
   - component: {fileID: 3876465430433631020}
   - component: {fileID: 2028581684708371962}
-  m_Layer: 0
+  - component: {fileID: 2379383085158560998}
+  m_Layer: 17
   m_Name: StoreRight
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -184,6 +185,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4543789210059886151}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -192,7 +194,6 @@ Transform:
   - {fileID: 2708514747934506913}
   - {fileID: 2049068597217707866}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2028581684708371962
 MonoBehaviour:
@@ -206,6 +207,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b302920ddf49ff48b6adce76dd80ed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!61 &2379383085158560998
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4543789210059886151}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2, y: 4}
+  m_EdgeRadius: 0
 --- !u!1001 &7939881665621507269
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -214,13 +260,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3876465430433631020}
     m_Modifications:
+    - target: {fileID: 264520713027394374, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207260571482541785, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4583537960983422813, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5991867833334055035, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387307074634575199, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837117026100507584, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 8241553537626045343, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8241553537626045343, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.63
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 8241553537626045343, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -261,6 +331,10 @@ PrefabInstance:
     - target: {fileID: 8284068183145866316, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
       propertyPath: m_Name
       value: StoreRoom_Corridor_LR
+      objectReference: {fileID: 0}
+    - target: {fileID: 8284068183145866316, guid: f7e390268e6140640bcfb7446a27d9cd, type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
