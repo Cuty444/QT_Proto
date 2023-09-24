@@ -133,6 +133,20 @@ namespace QT.Core.Data
         [field: SerializeField]
         [Tooltip("적 낙사 스케일링 그래프")]
         public AnimationCurve EnemyFallScaleCurve { get; private set; } = new();
+
+        [field: Header("특수 방 층별 갯수")]
+        /// <summary>
+        /// 보상 방 갯수
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("보상 방 갯수")]
+        public int[] RewardRoomMaxCount { get; private set; }
         
+        /// <summary>
+        /// 체력 회복 방 갯수
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("체력 회복 방 갯수")]
+        public int[] HpRoomMaxCount { get; private set; }
     }
 }

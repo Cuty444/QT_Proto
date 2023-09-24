@@ -138,6 +138,12 @@ namespace QT.UI
                     break;
                 case RoomType.Stairs:
                     break;
+                case RoomType.Reward:
+                    cell.name = cell.name + "_Reward";
+                    break;
+                case RoomType.HpHeal:
+                    cell.name = cell.name + "_HpHeal";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(roomType), roomType, null);
             }

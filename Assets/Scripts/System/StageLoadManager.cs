@@ -22,7 +22,9 @@ namespace QT
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().ShopLoad(stageNumber),
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().StartRoomLoad(stageNumber),
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().BossRoomLoad(stageNumber),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().StairsRoomLoad(stageNumber));
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().StairsRoomLoad(stageNumber),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().RewardRoomLoad(stageNumber),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().HpHealRoomLoad(stageNumber));
 
             SystemManager.Instance.LoadingManager.DataMapLoadCompletedEvent.Invoke();
         }
