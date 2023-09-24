@@ -7,8 +7,7 @@ namespace QT
 {
     public class Door : MonoBehaviour
     {
-        private Animator _animator;
-        private SkeletonMecanim _skeletonMecanim;
+        private TweenAnimator _animator;
         private readonly int AnimationOpenHash = Animator.StringToHash("Open");
 
         private bool _isOpen = false;
@@ -18,8 +17,7 @@ namespace QT
 
         private void Awake()
         {
-            _animator = GetComponentInChildren<Animator>();
-            _skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
+            _animator = GetComponentInChildren<TweenAnimator>();
         }
 
         public void Init(Vector2Int direction, UnityAction<Vector2Int> onDoorEnter)
@@ -32,7 +30,7 @@ namespace QT
         public void DoorOpen()
         {
             _isOpen = true;
-            _animator.SetTrigger(AnimationOpenHash);
+            _animator?.ReStart();
         }
 
         private void OnTriggerEnter2D(Collider2D col)
