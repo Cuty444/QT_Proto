@@ -1,15 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using QT.Util;
 using UnityEngine;
 
 namespace QT.Map
 {
     public class EnemyWave : MonoBehaviour
     {
+        private const float SpawnDelay = 0.2f;
+        
         public MapCellData CellData;
         public EnemyWave NextWave;
-        public float SpawnDelay;
         
         private EnemySpawner[] _spawners;
         
@@ -18,6 +20,7 @@ namespace QT.Map
         private void Awake()
         {
             _spawners = GetComponentsInChildren<EnemySpawner>();
+            _spawners.Shuffle();
         }
 
         public void Spawn()
@@ -26,7 +29,7 @@ namespace QT.Map
             for (var i = 0; i < _spawners.Length; i++)
             {
                 var spawner = _spawners[i];
-                spawner.SpawnDelay = SpawnDelay * i;
+                spawner.SpawnDelay = SpawnDelay * (i + 1);
                 spawner.Spawn(OnDead);
             }
 
