@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using QT.Core;
 using QT.InGame;
 using QT.Util;
@@ -11,6 +12,9 @@ namespace QT.Map
 {
     public class EnemySpawner : MonoBehaviour
     {
+        private const float DefaultSpawnDelay = 0.4f;
+        private const string SummonPrefabPath = "Effect/Prefabs/FX_Summons_Teleport.prefab";
+        
         public float SpawnDelay;
         public int EnemyId;
         
@@ -22,9 +26,20 @@ namespace QT.Map
         public void Spawn(UnityAction onDeadAction = null)
         {
             _onDeadAction = onDeadAction;
-            StartCoroutine(UnityUtil.WaitForFunc(SpawnEnemy, SpawnDelay));
+            StartCoroutine(SpawnProcess());
         }
 
+        private IEnumerator SpawnProcess()
+        {
+            yield return new WaitForSeconds(SpawnDelay);
+
+            SystemManager.Instance.ResourceManager.EmitParticle(SummonPrefabPath, transform.position);
+
+            yield return new WaitForSeconds(DefaultSpawnDelay);
+
+            SpawnEnemy();
+        }
+        
         private async void SpawnEnemy()
         {
             var data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(EnemyId);
