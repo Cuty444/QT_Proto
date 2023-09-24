@@ -42,7 +42,7 @@ namespace QT.Core
 
         public PlayerManager()
         {
-            OnGoldValueChanged.AddListener(SetGold);
+            OnGoldValueChanged.AddListener(AddGold);
         }
         
         public async void CreatePlayer()
@@ -55,15 +55,18 @@ namespace QT.Core
             
         }
 
-        private void SetGold(int value)
+        private void AddGold(int value)
         {
             if (value > 0)
             {
                 value = (int)(value * Player.StatComponent.GetStat(PlayerStats.GoldGain).Value);
             }
-                
-            Gold += value;
+
+            Gold = Mathf.Max(0, Gold + value);
+            
             SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().SetGoldText(Gold);
+            
+            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnGoldChanged, Gold);
         }
         
         public void Reset()

@@ -100,7 +100,7 @@
 		{
 			"Index":"8006",
 			"ApplySpecialEffectId":"8006",
-			"CoolTime":"3",
+			"CoolTime":"0",
 			"TriggerType":"OnSwing",
 			"Condition":"Random",
 			"ConditionValue":"3333",
@@ -172,15 +172,18 @@
 		},
 		{
 			"Index":"9006",
-			"ApplySpecialEffectId":"9006",
-			"TriggerType":"OnSwing",
-			"Condition":"None",
+			"ApplyBuffId":"9106",
+			"CoolTime":"0",
+			"TriggerType":"Equip, OnGoldChanged",
+			"ConditionTarget":"Gold",
+			"Condition":"GreaterThan",
+			"ConditionValue":"0",
 		},
 		{
 			"Index":"9006",
-			"ApplyBuffId":"9106",
-			"TriggerType":"Equip",
-			"Condition":"None",
+			"ApplySpecialEffectId":"9006",
+			"CoolTime":"0",
+			"TriggerType":"OnSwing",
 		},
 		{
 			"Index":"10000",

@@ -29,7 +29,7 @@ namespace QT.InGame
         private Bone _batBone;
         private Stat _swingRadStat;
         
-        private InputFloatDamper _swingRadDamper = new ();
+        private InputFloatDamper _swingRadDamper = new (100);
 
 
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
