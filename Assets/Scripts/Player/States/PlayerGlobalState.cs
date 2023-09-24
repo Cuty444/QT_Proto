@@ -49,7 +49,8 @@ namespace QT.InGame
             SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainAnimation);
             _ownerEntity.OnAim.AddListener(OnAim);
             
-            _swingRadDamper.ResetCurrentValue(_swingRadStat.Value);
+            var swingRad = _swingRadStat.Value / _swingRadStat.BaseValue * _globalData.BatSizeMultiplier;
+            _swingRadDamper.ResetCurrentValue(swingRad);
         }
 
         public override void UpdateState()
