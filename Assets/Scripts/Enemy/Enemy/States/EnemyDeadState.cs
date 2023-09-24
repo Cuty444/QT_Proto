@@ -15,6 +15,9 @@ namespace QT.InGame
 
         private static readonly int DeadAnimHash = Animator.StringToHash("IsDead");
         
+        private float _releaseTime;
+        private bool _isReleased;
+        
         public EnemyDeadState(IFSMEntity owner) : base(owner)
         {
         }
@@ -45,8 +48,18 @@ namespace QT.InGame
             
             HitAbleManager.Instance.UnRegister(_ownerEntity);
             ProjectileManager.Instance.UnRegister(_ownerEntity);
-            
-            _ownerEntity.StartCoroutine(UnityUtil.WaitForFunc(_ownerEntity.ReleaseObject, ReleaseTime));
+
+            _releaseTime = Time.timeSinceLevelLoad;
+            _isReleased = false;
+        }
+
+        public override void UpdateState()
+        {
+            if (!_isReleased && (Time.timeSinceLevelLoad - _releaseTime) >= ReleaseTime)
+            {
+                _ownerEntity.ReleaseObject();
+                _isReleased = true;
+            }
         }
 
         public override void ClearState()
