@@ -9,7 +9,9 @@ namespace QT.InGame
     {
         private readonly BuffComponent _buffComponent;
         private Buff _buff;
-        
+
+        protected override bool IsInfBuff => _buff is {Duration: < 0};
+
         public BuffItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
         {
             _buffComponent = player.BuffComponent;
@@ -35,6 +37,7 @@ namespace QT.InGame
         public override void OnRemoved()
         {
             _buffComponent.RemoveAllBuffsFromSource(this);
+            _buff = null;
         }
     }
 }

@@ -23,6 +23,8 @@ namespace QT.InGame
         Shoot,
         [ItemEffect(typeof(HealItemEffect))]
         Heal,
+        [ItemEffect(typeof(AddGoldItemEffect))]
+        AddGold,
 
         [ItemEffect(typeof(TeleportItemEffect))]
         Teleport,
@@ -72,6 +74,8 @@ namespace QT.InGame
         private readonly EffectCondition _condition;
         private readonly StatComponent _ownerStatComponent;
 
+        protected virtual bool IsInfBuff => false;
+        
         protected float _lastTime;
 
         public ItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData)
@@ -96,6 +100,10 @@ namespace QT.InGame
             {
                 OnTriggerAction();
                 _lastTime = Time.timeSinceLevelLoad;
+            }
+            else if (IsInfBuff)
+            {
+                OnRemoved();
             }
             
         }

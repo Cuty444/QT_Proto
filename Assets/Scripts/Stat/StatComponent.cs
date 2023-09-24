@@ -46,6 +46,9 @@ namespace QT.InGame
         EnemyProjectileDmg,
         
         AtkDmgPer,
+        
+        // 예외
+        Gold,
     }
     
     public abstract class StatComponent

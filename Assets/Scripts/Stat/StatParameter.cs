@@ -1,4 +1,5 @@
 using System;
+using QT.Core;
 
 namespace QT.InGame
 {
@@ -55,6 +56,9 @@ namespace QT.InGame
         
         public static float GetStatValue(StatComponent statComponent, StatParameter parameter)
         {
+            if (parameter.Stat == PlayerStats.Gold)
+                return SystemManager.Instance.PlayerManager.Gold;
+            
             return GetStatValue(statComponent.GetStat(parameter.Stat), parameter.Type);
         }
         
