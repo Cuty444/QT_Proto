@@ -7,9 +7,15 @@ namespace QT
 {
     public class UIInventoryItem : MonoBehaviour
     {
+        [SerializeField] private GameObject _iconGameObject;
         [SerializeField] private Image _icon;
+        [SerializeField] private Image _frame;
         private Button _button;
         
+        [SerializeField] private Sprite _frameNormal;
+        [SerializeField] private Sprite _frameRare;
+        [SerializeField] private Sprite _frameCursed;
+
         public ItemGameData ItemGameData { get; private set; }
         public UnityAction<UIInventoryItem> OnClick { get; set; }
         
@@ -18,7 +24,7 @@ namespace QT
             _button = GetComponent<Button>();
             _button.onClick.AddListener(OnClickIcon);
             
-            _icon.gameObject.SetActive(false);
+            _iconGameObject.SetActive(false);
         }
 
         public async void SetItem(int index, ItemGameData data)
@@ -28,12 +34,26 @@ namespace QT
             var sprite = await SystemManager.Instance.ResourceManager.LoadAsset<Sprite>(data.ItemIconPath, true);
 
             _icon.sprite = sprite;
-            _icon.gameObject.SetActive(true);
+
+            switch (data.GradeType)
+            {
+                case ItemGameData.GradeTypes.Cursed:
+                    _frame.sprite = _frameCursed;
+                    break;
+                case ItemGameData.GradeTypes.Rare:
+                    _frame.sprite = _frameRare;
+                    break;
+                default:
+                    _frame.sprite = _frameNormal;
+                    break;
+            }
+            
+            _iconGameObject.SetActive(true);
         }
         
         public void ClearItem()
         {
-            _icon.gameObject.SetActive(false);
+            _iconGameObject.SetActive(false);
         }
 
         private void OnClickIcon()
