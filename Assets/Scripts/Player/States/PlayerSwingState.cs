@@ -12,8 +12,9 @@ namespace QT.InGame
     {
         private const string HitLinePath = "Prefabs/HitLine.prefab";
         private const string SwingProjectileHitPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
-        //private const string SwingNormalProjectileHitPath = "Effect/Prefabs/FX_Ball_Normal_Attack.prefab";
-        private const string SwingBatHitPath = "Effect/Prefabs/FX_M_Bat_Hit_Boom.prefab";
+        
+        private const string SwingBatHitPath = "Effect/Prefabs/FX_M_Small_Hit.prefab";
+        private const string SwingChargedBatHitPath = "Effect/Prefabs/FX_M_Bat_Hit_Boom.prefab";
         
         private readonly int SwingAnimHash = Animator.StringToHash("Swing");
         private readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
@@ -121,7 +122,8 @@ namespace QT.InGame
             {
                 if (hitAble.IsClearTarget)
                 {
-                    SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitAble.Position);
+                    SystemManager.Instance.ResourceManager.EmitParticle(
+                        _isCharged ? SwingChargedBatHitPath : SwingBatHitPath, hitAble.Position);
                     enemyHitCount++;
 
                     if (!_isCharged && hitAble.IsDead && hitAble is Enemy enemy)
@@ -150,8 +152,10 @@ namespace QT.InGame
                     projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player,
                         _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
 
-                    SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath,
-                        projectile.Position);
+                    if (projectile is not IHitAble)
+                    {
+                        SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, projectile.Position);
+                    }
 
                     hitCount++;
                     ballHitCount++;

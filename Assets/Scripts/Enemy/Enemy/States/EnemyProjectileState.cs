@@ -14,7 +14,8 @@ namespace QT.InGame
         private static readonly int ProjectileAnimHash = Animator.StringToHash("IsProjectile");
         private static readonly int ProjectileSpeedAnimHash = Animator.StringToHash("ProjectileSpeed");
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
-        private const string HitEffectPath = "Effect/Prefabs/FX_Yagubat_Hit.prefab";
+        
+        private const string HitEffectPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
 
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
@@ -147,7 +148,7 @@ namespace QT.InGame
 
                     _lastHitAble = hitAble;
                     pierceCheck = _isPierce;
-                    //SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
+                    SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                 }
                 else
                 {
