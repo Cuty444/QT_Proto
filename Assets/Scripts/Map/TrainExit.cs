@@ -18,7 +18,7 @@ namespace QT.Map
         [SerializeField] private GameObject _collider;
         [SerializeField] private GameObject _camera;
 
-        private void Start()
+        private void OnEnable()
         {
             StopAllCoroutines();
             StartCoroutine(EnterSequence());
