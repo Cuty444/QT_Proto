@@ -30,7 +30,8 @@ namespace QT.Sound
         [field: SerializeField] public EventReference ActiveTimeStopSFX{ get; private set; }
         [field: SerializeField] public EventReference ActiveTimeStopPauseSFX{ get; private set; }
         
-        
+        [field: SerializeField] public EventReference WarpMapSFX{ get; private set; }
+
         [field: SerializeField] public EventReference BallBounceSFX{ get; private set; }
         
         [field: SerializeField] public EventReference GameOverSFX{ get; private set; }
