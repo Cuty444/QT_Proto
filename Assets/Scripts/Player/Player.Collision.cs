@@ -11,26 +11,9 @@ namespace QT.InGame
     public partial class Player
     {
         private LayerMask FallLayerMask => LayerMask.GetMask("Fall");
-        private bool isNextMap = false;
-        
+
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("StairCollider"))
-            {
-                if (isNextMap)
-                    return;
-                SystemManager.Instance.PlayerManager.StairNextRoomEvent.Invoke();
-                SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
-                isNextMap = true;
-                OnMove = null;
-                
-                ClearAction(ButtonActions.Swing);
-                ClearAction(ButtonActions.Dodge);
-                ClearAction(ButtonActions.Interaction);
-                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_Walk_StairSFX);
-                //Rigidbody.velocity = Vector2.zero;
-            }
-            
             if(other.gameObject.layer == LayerMask.NameToLayer("GardenCollider"))
             {
                 IsGarden = true;
