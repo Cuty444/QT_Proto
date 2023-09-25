@@ -160,7 +160,7 @@ namespace QT.Core.Map
             }
 
             Vector2Int startPos = new Vector2Int(_mapWidth / 2, _mapHeight / 2);
-            _mapSizePosition = new Vector2(startPos.x * 40.0f, startPos.y * -40.0f);
+            _mapSizePosition = new Vector2(startPos.x * 100.0f, startPos.y * -100.0f);
             if (_mapList != null)
                 _mapCount = Random.Range(0, _mapList.Count);
             GenerateMap(startPos);
@@ -775,8 +775,8 @@ namespace QT.Core.Map
             }
 
             var mapCellData = Instantiate(cellMapObject, DungeonManagerTransform).GetComponent<MapCellData>();
-            mapCellData.transform.position = new Vector3((createPos.x * 40.0f) - GetMiniMapSizeToMapSize().x,
-                (createPos.y * -40.0f) - GetMiniMapSizeToMapSize().y, 0f);
+            mapCellData.transform.position = new Vector3((createPos.x * 100.0f) - GetMiniMapSizeToMapSize().x,
+                (createPos.y * -100.0f) - GetMiniMapSizeToMapSize().y, 0f);
             mapCellData.CellDataSet(direction, createPos, roomType);
         }
 
