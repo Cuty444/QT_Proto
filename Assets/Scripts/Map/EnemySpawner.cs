@@ -19,7 +19,7 @@ namespace QT.Map
         public float SpawnDelay;
         public int EnemyId;
         
-        [field:SerializeField] public Enemy Target { get; private set; }
+        [field:SerializeField] public IHitAble Target { get; private set; }
         
         private UnityAction _onDeadAction;
         
@@ -53,12 +53,17 @@ namespace QT.Map
             }
             
             Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(data.PrefabPath, transform);
+
+            if (Target is Enemy enemy)
+            {
+                enemy.initialization(EnemyId);
+                enemy.PrefabPath = data.PrefabPath;
+            }
             
-            Target.initialization(EnemyId);
+            var targetTransform = (Target as MonoBehaviour).transform;
             
-            Target.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            Target.transform.localScale = Vector3.one;
-            Target.PrefabPath = data.PrefabPath;
+            targetTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            targetTransform.localScale = Vector3.one;
 
             enabled = true;
         }
