@@ -3,17 +3,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using QT.Core;
 using QT.Core.Map;
+using UnityEngine.Serialization;
 
 namespace QT.Map
 {
     public class MiniMapCellData : MonoBehaviour
     {
+        [SerializeField] private Sprite _playerSprite;
+        [SerializeField] private Sprite _startSprite;
         [SerializeField] private Sprite _normalSprite;
         [SerializeField] private Sprite _unknownSprite;
+        
+        [SerializeField] private Sprite _rewardSprite;
+        [SerializeField] private Sprite _hpHealSprite;
+        [SerializeField] private Sprite _shopSprite;
         [SerializeField] private Sprite _stairsSprite;
         [SerializeField] private Sprite _bossSprite;
-        [SerializeField] private Sprite _shopSprite;
-        [SerializeField] private Sprite _playerSprite;
         
         
         [SerializeField] private GameObject _lines;
@@ -100,11 +105,20 @@ namespace QT.Map
                 
                 switch (_roomType)
                 {
+                    case RoomType.Start:
+                        _mapImage.sprite = _startSprite;
+                        break;
                     case RoomType.Boss:
                         _mapImage.sprite = _bossSprite;
                         break;
                     case RoomType.Stairs:
                         _mapImage.sprite = _stairsSprite;
+                        break;
+                    case RoomType.Reward:
+                        _mapImage.sprite = _rewardSprite;
+                        break;
+                    case RoomType.HpHeal:
+                        _mapImage.sprite = _hpHealSprite;
                         break;
                     case RoomType.GoldShop:
                         _mapImage.sprite = _shopSprite;
