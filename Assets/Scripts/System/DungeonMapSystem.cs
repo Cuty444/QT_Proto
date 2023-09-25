@@ -399,7 +399,7 @@ namespace QT.Core.Map
                 {
                     if (_map[y, x].RoomType == RoomType.None)
                     {
-                        Vector2Int position = new Vector2Int(y, x);
+                        Vector2Int position = new Vector2Int(x, y);
                         if (SpecialRoomMultiPathCheck(position))
                         {
                             routeList.Add(position);
