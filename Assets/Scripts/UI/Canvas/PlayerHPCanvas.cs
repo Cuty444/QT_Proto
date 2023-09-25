@@ -27,6 +27,7 @@ namespace QT.UI
 
         [Space]
         [SerializeField] private GameObject _activeCoolTimeObject;
+        [SerializeField] private GameObject _activeGlowObject;
         [SerializeField] private Image _activeImage;
         [SerializeField] private Image _activeCoolDownImage;
 
@@ -75,6 +76,7 @@ namespace QT.UI
                 float coolTime = activeItem.GetCoolTimeProgress();
                 _activeCoolDownImage.fillAmount = coolTime;
                 
+                _activeGlowObject.SetActive(coolTime <= 0);
                 _lastActiveId = activeItem.ItemGameData.Index;
             }
         }
