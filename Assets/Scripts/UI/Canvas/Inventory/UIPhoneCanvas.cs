@@ -52,7 +52,7 @@ namespace QT.UI
             SystemManager.Instance.SoundManager.VolumeSave();
         }
 
-        private void CheckOpen()
+        public void CheckOpen()
         {
             StopAllCoroutines();
 

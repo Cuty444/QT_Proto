@@ -106,9 +106,9 @@ namespace QT.InGame
             _attackSpeedColorGradient = globalData.AttackSpeedColorCurve;
             InitInputs();
             
-            EffectSetup();
-
             _playerManager = SystemManager.Instance.PlayerManager;
+            
+            EffectSetup();
             
             Inventory = new Inventory(this);
             Inventory.CopyItemList(_playerManager.PlayerIndexInventory, _playerManager.PlayerActiveItemIndex);
@@ -168,6 +168,39 @@ namespace QT.InGame
 
         public void Pause(bool isPause)
         {
+            PauseGame(isPause);
+            
+            PlayerFocusCam.SetActive(isPause);
+            Animator.SetBool("IsPause", isPause);
+        }
+
+        public void Warp(Vector2Int cellPos)
+        {
+            PauseGame(true);
+            Animator.SetTrigger("IsWarp");
+            if (Animator.GetBool("IsPause"))
+            {
+                SystemManager.Instance.UIManager.GetUIPanel<UIPhoneCanvas>().CheckOpen();
+            }
+
+            StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
+            {
+                _warpEffectParticle.Play();
+                Animator.ResetTrigger("IsWarp");
+                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData
+                    .WarpMapSFX);
+                StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
+                {
+                    Animator.SetTrigger("IsWarp");
+                    SystemManager.Instance.PlayerManager.PlayerMapTeleportPosition.Invoke(cellPos);
+                    StartCoroutine(Util.UnityUtil.WaitForFunc(() => { PauseGame(false); }, 0.5f));
+                }, 0.37f));
+            }, 0.3f));
+            Animator.ResetTrigger("Swing");
+        }
+
+        private void PauseGame(bool isPause)
+        {
             if(isPause)
             {
                 inputActions.Disable();
@@ -178,9 +211,6 @@ namespace QT.InGame
                 inputActions.Enable();
                 Animator.updateMode = AnimatorUpdateMode.Normal;
             }
-            
-            PlayerFocusCam.SetActive(isPause);
-            Animator.SetBool("IsPause", isPause);
         }
     }
 }

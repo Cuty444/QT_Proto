@@ -14,7 +14,8 @@ namespace QT.InGame
         [SerializeField] private ParticleSystem _chargingLevelParticle;
         [SerializeField] private ParticleSystem[] _swingSlashParticle;
         [SerializeField] private TrailRenderer[] _teleportEffectLines;
-        
+        [SerializeField] private ParticleSystem _warpEffectParticle;
+
         [SerializeField] private ParticleSystem _itemPickUpParticle;
         [SerializeField] private Image _itemPickUpImage;
         [SerializeField] private TweenAnimator _itemPickUpAnimator;
@@ -34,8 +35,14 @@ namespace QT.InGame
                 _dashParticle[i].Stop();
             }
             _itemPickUpParticle.Stop();
+            _warpEffectParticle.Stop();
             _itemPickUpImage.enabled = false;
             TeleportEffectEmitting(false);
+            
+            _playerManager.PlayerMapTeleportPosition.AddListener((arg) =>
+            {
+                _warpEffectParticle.Play();
+            });
         }
         
         public void DodgeEffectPlay(Vector2 dir)

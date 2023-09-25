@@ -139,6 +139,9 @@ namespace QT.Map
             if (_roomType != RoomType.Normal)
             {
                 _clickTeleportButton = gameObject.AddComponent<Button>();
+                ColorBlock buttonColors = _clickTeleportButton.colors;
+                buttonColors.disabledColor = Color.white;
+                _clickTeleportButton.colors = buttonColors;
                 _clickTeleportButton.onClick.AddListener(CellTeleportEvent);
                 Debug.Log(_roomType.ToString(),gameObject);
             }
@@ -152,7 +155,7 @@ namespace QT.Map
             if (!_dungeonMapSystem.GetCellData(CellPos).IsVisited) return;
             if (!_dungeonMapSystem.GetCellData(playerPos).IsClear) return; 
             
-            SystemManager.Instance.PlayerManager.PlayerMapTeleportPosition.Invoke(CellPos);
+            _playerManager.Player.Warp(CellPos);
         }
     }
 }
