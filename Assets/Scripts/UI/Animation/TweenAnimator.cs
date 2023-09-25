@@ -76,6 +76,18 @@ namespace QT
             _sequence.PlayBackwards();
         }
 
+        public void Reset()
+        {
+            if (_sequence == null)
+            {
+                BakeSeqence();
+                _sequence.Rewind();
+            }
+            
+            _sequence.Restart();
+            _sequence.Pause();
+        }
+
         public void BakeSeqence()
         {
             _sequence = DOTween.Sequence().SetUpdate(IgnoreTimeScale).SetRecyclable(true).SetAutoKill(false).Pause();

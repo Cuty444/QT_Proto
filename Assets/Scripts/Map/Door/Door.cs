@@ -18,6 +18,7 @@ namespace QT
         private void Awake()
         {
             _animator = GetComponentInChildren<TweenAnimator>();
+            _animator.Reset();
         }
 
         public void Init(Vector2Int direction, UnityAction<Vector2Int> onDoorEnter)
