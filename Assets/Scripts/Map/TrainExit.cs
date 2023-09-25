@@ -62,6 +62,7 @@ namespace QT.Map
             yield return new WaitForSeconds(_trainDoorOpenAnimation.SequenceLength);
             
             _trainExitAnimation.ReStart();
+            SystemManager.Instance.PlayerManager.Player.transform.position = new Vector2(-99999,-99999);;
             
             yield return new WaitForSeconds(_trainExitAnimation.SequenceLength);
             
