@@ -21,6 +21,7 @@ namespace QT
         
         [SerializeField] private GameObject _iconObject;
         [SerializeField] private SpriteRenderer _iconImage;
+        [SerializeField] private SpriteRenderer _activeIconImage;
         [SerializeField] private SpriteRenderer _frameImage;
         
 [Header("프레임 스프라이트")]
@@ -45,22 +46,31 @@ namespace QT
         {
             ItemGameData = itemGameData;
             _onGainItem = onGainItem;
-            
-            SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _iconImage);
-            
-            switch (ItemGameData.GradeType)
+
+            if (ItemGameData.GradeType == ItemGameData.GradeTypes.Active)
             {
-                case ItemGameData.GradeTypes.Cursed:
-                    _frameImage.sprite = _frameCursed;
-                    break;
-                case ItemGameData.GradeTypes.Rare:
-                    _frameImage.sprite = _frameRare;
-                    break;
-                default:
-                    _frameImage.sprite = _frameNormal;
-                    break;
+                SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _activeIconImage);
+                _activeIconImage.gameObject.SetActive(true);
             }
-            
+            else
+            {
+                _activeIconImage.gameObject.SetActive(false);
+                SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _iconImage);
+                
+                switch (ItemGameData.GradeType)
+                {
+                    case ItemGameData.GradeTypes.Cursed:
+                        _frameImage.sprite = _frameCursed;
+                        break;
+                    case ItemGameData.GradeTypes.Rare:
+                        _frameImage.sprite = _frameRare;
+                        break;
+                    default:
+                        _frameImage.sprite = _frameNormal;
+                        break;
+                }
+            }
+
             switch (DropType)
             {
                 case DropGameType.Start:
