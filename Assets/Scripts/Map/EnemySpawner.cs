@@ -12,7 +12,8 @@ namespace QT.Map
 {
     public class EnemySpawner : MonoBehaviour
     {
-        private const float DefaultSpawnDelay = 0.4f;
+        private const float DefaultSpawnDelay = 0.3f;
+        private const string SummonMarkPrefabPath = "Effect/Prefabs/FX_Summons_Emblem.prefab";
         private const string SummonPrefabPath = "Effect/Prefabs/FX_Summons_Teleport.prefab";
         
         public float SpawnDelay;
@@ -31,6 +32,7 @@ namespace QT.Map
 
         private IEnumerator SpawnProcess()
         {
+            SystemManager.Instance.ResourceManager.EmitParticle(SummonMarkPrefabPath, transform.position);
             yield return new WaitForSeconds(SpawnDelay);
 
             SystemManager.Instance.ResourceManager.EmitParticle(SummonPrefabPath, transform.position);

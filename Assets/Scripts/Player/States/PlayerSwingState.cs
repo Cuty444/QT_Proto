@@ -122,8 +122,11 @@ namespace QT.InGame
             {
                 if (hitAble.IsClearTarget)
                 {
-                    SystemManager.Instance.ResourceManager.EmitParticle(
-                        _isCharged ? SwingChargedBatHitPath : SwingBatHitPath, hitAble.Position);
+                    if (!_isCharged)
+                    {
+                        SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitAble.Position);
+                    }
+
                     enemyHitCount++;
 
                     if (!_isCharged && hitAble.IsDead && hitAble is Enemy enemy)
@@ -168,9 +171,14 @@ namespace QT.InGame
             {
                 var aimDir = ((Vector2) _ownerEntity.transform.position - _ownerEntity.AimPosition).normalized;
                 _ownerEntity.AttackImpulseSource.GenerateImpulse(aimDir * _ownerEntity.AttackImpulseForce);
-                
+
                 SystemManager.Instance.EventManager.InvokeEvent(EventType.OnSwingHit, null);
                 _soundManager.PlayOneShot(_soundManager.SoundData.PlayerSwingHitSFX);
+
+                if (_isCharged)
+                {
+                    SystemManager.Instance.ResourceManager.EmitParticle(SwingChargedBatHitPath, _ownerEntity.Position);
+                }
             }
 
             if (ballHitCount > 0)
