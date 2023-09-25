@@ -19,7 +19,15 @@ namespace QT
         
         public ItemGameData ItemGameData { get; private set; }
         
+        [SerializeField] private GameObject _iconObject;
         [SerializeField] private SpriteRenderer _iconImage;
+        [SerializeField] private SpriteRenderer _frameImage;
+        
+[Header("프레임 스프라이트")]
+        [SerializeField] private Sprite _frameNormal;
+        [SerializeField] private Sprite _frameRare;
+        [SerializeField] private Sprite _frameCursed;
+        
 
         [SerializeField] private Animator _alterAnimator;
         [SerializeField] private GameObject _soldObject;
@@ -39,7 +47,20 @@ namespace QT
             _onGainItem = onGainItem;
             
             SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _iconImage);
-
+            
+            switch (ItemGameData.GradeType)
+            {
+                case ItemGameData.GradeTypes.Cursed:
+                    _frameImage.sprite = _frameCursed;
+                    break;
+                case ItemGameData.GradeTypes.Rare:
+                    _frameImage.sprite = _frameRare;
+                    break;
+                default:
+                    _frameImage.sprite = _frameNormal;
+                    break;
+            }
+            
             switch (DropType)
             {
                 case DropGameType.Start:
@@ -146,7 +167,7 @@ namespace QT
             
             _onGainItem?.Invoke();
             
-            _iconImage.gameObject.SetActive(false);
+            _iconObject.gameObject.SetActive(false);
             SetColliders(false);
             
             _used = true;
@@ -169,7 +190,7 @@ namespace QT
          {
              _alterAnimator.SetTrigger(AnimationExitHash);
              
-             _iconImage.gameObject.SetActive(false);
+             _iconObject.gameObject.SetActive(false);
              SetColliders(false);
              ClearItem();
          }
