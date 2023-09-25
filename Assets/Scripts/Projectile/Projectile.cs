@@ -10,7 +10,7 @@ namespace QT.InGame
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-        private const string HitEffectPath = "Effect/Prefabs/FX_M_Hit.prefab";
+        private const string HitEffectPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
         private const string ColliderDustEffectPath = "Effect/Prefabs/FX_Collider_Dust.prefab";
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
