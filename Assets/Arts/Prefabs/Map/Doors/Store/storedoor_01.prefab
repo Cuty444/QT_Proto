@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &148007643537748643
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1899752677446926610}
+  m_Layer: 0
+  m_Name: Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1899752677446926610
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148007643537748643}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4073790529210256949}
+  m_Father: {fileID: 5519230010959500931}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3266450951857378930
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6829846048083197870}
   - component: {fileID: 7303593690203621532}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: storedoor_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +125,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4239365002544361035}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: storedoor_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,6 +148,88 @@ Transform:
   - {fileID: 1879542214137486726}
   m_Father: {fileID: 5519230010959500931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4652917939753961389
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4073790529210256949}
+  - component: {fileID: 6182651816890972841}
+  m_Layer: 0
+  m_Name: Light 2D
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4073790529210256949
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4652917939753961389}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
+  m_LocalPosition: {x: 1, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1899752677446926610}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
+--- !u!114 &6182651816890972841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4652917939753961389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_LightType: 1
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.33
+  m_Color: {r: 1, g: 0.3529412, b: 0.92941177, a: 1}
+  m_Intensity: 1
+  m_LightVolumeIntensity: 1
+  m_LightVolumeIntensityEnabled: 0
+  m_ApplyToSortingLayers: 00000000b59e845971fcd2d0258a065f8da5ceae
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowIntensityEnabled: 0
+  m_ShadowIntensity: 0.75
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_LocalBounds:
+    m_Center: {x: 0.003199935, y: 0.75100005, z: 0}
+    m_Extent: {x: 3.0963001, y: 1.857, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 1.1
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -1, y: 0, z: 0}
+  - {x: 1, y: 0, z: 0}
+  - {x: 2, y: 1.5, z: 0}
+  - {x: -2, y: 1.5, z: 0}
 --- !u!1 &5220243608430355683
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,7 +241,7 @@ GameObject:
   - component: {fileID: 5519230010959500931}
   - component: {fileID: 3783016843509373462}
   - component: {fileID: 3231454473870281501}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: storedoor_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,6 +261,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1899752677446926610}
   - {fileID: 6829846048083197870}
   - {fileID: 7235385564893309398}
   - {fileID: 4239365002544361035}
@@ -186,11 +301,21 @@ MonoBehaviour:
       Ease: 0
       TweenTarget: {x: 0, y: 0, z: 0}
       Duration: 0
+    - Mode: 2
+      Target: {fileID: 1899752677446926610}
+      Ease: 0
+      TweenTarget: {x: 0, y: 0, z: 0}
+      Duration: 0
   - Elements:
     - Mode: 0
       Target: {fileID: 4239365002544361035}
       Ease: 30
       TweenTarget: {x: 1.86, y: 0, z: 0}
+      Duration: 1
+    - Mode: 2
+      Target: {fileID: 1899752677446926610}
+      Ease: 30
+      TweenTarget: {x: 1, y: 1, z: 1}
       Duration: 1
 --- !u!1 &7935756844735456893
 GameObject:
@@ -202,7 +327,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1879542214137486726}
   - component: {fileID: 6621374587739299166}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: storedoor_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -287,7 +412,7 @@ GameObject:
   - component: {fileID: 7235385564893309398}
   - component: {fileID: 967322944129103111}
   - component: {fileID: 2301361163822742895}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}

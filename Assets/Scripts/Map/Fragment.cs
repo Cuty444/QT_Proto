@@ -8,7 +8,7 @@ namespace QT
     public class Fragment : MonoBehaviour
     {
         private const float SpeedMultiplier = 0.2f;
-        private static LayerMask BounceMask => LayerMask.GetMask("Wall", "HardCollider", "ProjectileCollider", "Enemy", "InteractionCollider");
+        private static LayerMask BounceMask => LayerMask.GetMask("Wall", "HardCollider", "ProjectileCollider", "Enemy", "InteractionCollider", "Fall");
 
         [Space] 
         [SerializeField] private Transform _targetTransform;
