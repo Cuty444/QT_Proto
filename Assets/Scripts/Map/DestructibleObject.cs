@@ -35,6 +35,7 @@ namespace QT
         private void OnDisable()
         {
             HitAbleManager.Instance.UnRegister(this);
+            _effect.gameObject.SetActive(false);
         }
         
 
