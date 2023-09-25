@@ -12,6 +12,8 @@ namespace QT.Map
 {
     public class EnemySpawner : MonoBehaviour
     {
+        private const int DullahanId = 507;
+        
         private const float DefaultSpawnDelay = 0.3f;
         private const string SummonMarkPrefabPath = "Effect/Prefabs/FX_Summons_Emblem.prefab";
         private const string SummonPrefabPath = "Effect/Prefabs/FX_Summons_Teleport.prefab";
@@ -51,15 +53,20 @@ namespace QT.Map
                 Debug.LogError($"{EnemyId} EnemyData를 찾을 수 없습니다.");
                 return;
             }
-            
-            Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(data.PrefabPath, transform);
 
-            if (Target is Enemy enemy)
+            if (EnemyId != DullahanId)
             {
+                Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(data.PrefabPath, transform);
+                
+                var enemy = Target as Enemy;
                 enemy.initialization(EnemyId);
                 enemy.PrefabPath = data.PrefabPath;
             }
-            
+            else
+            {
+                Target = await SystemManager.Instance.ResourceManager.GetFromPool<Dullahan>(data.PrefabPath, transform);
+            }
+
             var targetTransform = (Target as MonoBehaviour).transform;
             
             targetTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
