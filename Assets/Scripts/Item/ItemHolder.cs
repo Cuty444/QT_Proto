@@ -204,6 +204,8 @@ namespace QT
         public void EndAnimation()
          {
              _alterAnimator?.PlayBackwards();
+             SystemManager.Instance.ResourceManager.EmitParticle(AltarDustEffectPath, _alterAnimator.transform.position);
+             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Altar_AppearSFX);
              
              _iconObject.gameObject.SetActive(false);
              SetColliders(false);
