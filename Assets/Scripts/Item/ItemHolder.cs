@@ -76,6 +76,10 @@ namespace QT
             {
                 case DropGameType.Start:
                     _alterAnimator.gameObject.SetActive(true);
+                    
+                    _alterAnimator.ReStart();
+                    SystemManager.Instance.ResourceManager.EmitParticle(AltarDustEffectPath, _alterAnimator.transform.position);
+                    SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Altar_AppearSFX);
                     break;
                 default:
                     _alterAnimator.gameObject.SetActive(false);
@@ -93,13 +97,6 @@ namespace QT
         private void Awake()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
-
-            if (_alterAnimator != null)
-            {
-                _alterAnimator.ReStart();
-                SystemManager.Instance.ResourceManager.EmitParticle(AltarDustEffectPath, _alterAnimator.transform.position);
-                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Altar_AppearSFX);
-            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
