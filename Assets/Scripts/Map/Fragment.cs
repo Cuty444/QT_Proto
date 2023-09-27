@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace QT
 {
@@ -43,7 +45,13 @@ namespace QT
             gameObject.SetActive(false);
         }
 
-        
+        private void OnDisable()
+        {
+            _speed = 0;
+            _targetTransform.localPosition = new Vector2(0,_minHeight);
+        }
+
+
         public void Hit(Vector2 dir, float power)
         {
             var randomDir =  new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)).normalized;
