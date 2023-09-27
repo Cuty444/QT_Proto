@@ -12,6 +12,7 @@ namespace QT
 {
     public class ItemHolder : MonoBehaviour
     {
+        private const string AltarDustEffectPath = "Effect/Prefabs/FX_Altar.prefab";
         private readonly int AnimationExitHash = Animator.StringToHash("Exit");
         
         
@@ -30,7 +31,7 @@ namespace QT
         [SerializeField] private Sprite _frameCursed;
         
 
-        [SerializeField] private Animator _alterAnimator;
+        [SerializeField] private TweenAnimator _alterAnimator;
         [SerializeField] private GameObject _soldObject;
         [SerializeField] private Collider2D[] _colliders;
 
@@ -92,6 +93,13 @@ namespace QT
         private void Awake()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
+
+            if (_alterAnimator != null)
+            {
+                _alterAnimator.ReStart();
+                SystemManager.Instance.ResourceManager.EmitParticle(AltarDustEffectPath, _alterAnimator.transform.position);
+                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Altar_AppearSFX);
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -198,7 +206,7 @@ namespace QT
         
         public void EndAnimation()
          {
-             _alterAnimator.SetTrigger(AnimationExitHash);
+             _alterAnimator?.PlayBackwards();
              
              _iconObject.gameObject.SetActive(false);
              SetColliders(false);
