@@ -92,7 +92,7 @@ namespace QT.InGame
             _currentSpeed = 0;
 
             _player.ChangeState(Player.States.Empty);
-            //_player.SetGlobalState(null);
+            _player.SetGlobalState(null);
             
             _dir = (_aimPosition - _player.Position ).normalized;
             
