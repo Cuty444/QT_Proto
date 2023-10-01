@@ -21,25 +21,13 @@ namespace QT
         {
             _name.text = itemData.Name;
             _desc.text = itemData.Desc;
-
-            if (!string.IsNullOrWhiteSpace(itemData.PlusDesc))
-            {
-                _plusDesc.text = itemData.PlusDesc;
-            }
-            else
-            {
-                _plusDesc.gameObject.SetActive(false);
-            }
-
-            if (!string.IsNullOrWhiteSpace(itemData.MinusDesc))
-            {
-                _minusDesc.text = itemData.MinusDesc;
-            }
-            else
-            {
-                _minusDesc.gameObject.SetActive(false);
-            }
             
+            _plusDesc.text = itemData.PlusDesc;
+            _plusDesc.gameObject.SetActive(string.IsNullOrWhiteSpace(itemData.PlusDesc));
+            
+            _minusDesc.text = itemData.MinusDesc;
+            _minusDesc.gameObject.SetActive(string.IsNullOrWhiteSpace(itemData.MinusDesc));
+
             if(_goldCost != null)
                 _goldCost.text = itemData.CostGold.ToString();
         }
