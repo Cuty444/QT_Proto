@@ -20,7 +20,7 @@ namespace QT.InGame
         private readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
         private readonly int ChargeLevelAnimHash = Animator.StringToHash("ChargeLevel");
         
-        private const int Segments = 32;
+        private const int Segments = 16;
         private const int MaxLineCount = 10;
 
         private List<IProjectile> _projectiles = new();
@@ -256,7 +256,7 @@ namespace QT.InGame
 
         private void GetProjectiles()
         {
-            Transform eye = _ownerEntity.EyeTransform;
+            Transform eye = _ownerEntity.SwingAreaMeshRenderer.transform;
 
             _projectiles.Clear();
             _hitAbles.Clear();
@@ -302,16 +302,22 @@ namespace QT.InGame
             Mesh mesh = new Mesh();
 
             var vertices = new Vector3[Segments + 2];
+            var uvs = new Vector2[Segments + 2];
             var indices = new int[Segments * 3];
 
             float angleRad = angle * Mathf.Deg2Rad;
             float angleStep = angleRad / Segments;
             float currentAngle = -angleRad / 2f;
 
+            uvs[0] = new Vector2(0.5f, 0.5f);
             vertices[0] = Vector3.zero;
+
             for (int i = 0; i <= Segments; i++)
             {
-                vertices[i + 1] = new Vector3(Mathf.Cos(currentAngle), Mathf.Sin(currentAngle), 0f) * radius;
+                var pos = new Vector2(Mathf.Cos(currentAngle), Mathf.Sin(currentAngle));
+                vertices[i + 1] = pos * radius;
+                uvs[i + 1] = new Vector2(0.5f + pos.x * 0.5f, 0.5f + pos.y * 0.5f);
+
                 currentAngle += angleStep;
             }
 
@@ -324,6 +330,7 @@ namespace QT.InGame
 
             mesh.vertices = vertices;
             mesh.triangles = indices;
+            mesh.uv = uvs;
             mesh.RecalculateBounds();
 
             return mesh;

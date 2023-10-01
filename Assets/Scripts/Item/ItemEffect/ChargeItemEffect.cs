@@ -74,7 +74,7 @@ namespace QT.InGame
             _player.OnAim.RemoveListener(OnAim);
             
             _player.ChangeState(Player.States.Move);
-            _player.SetGlobalState(new PlayerGlobalState(_player));
+            //_player.SetGlobalState(new PlayerGlobalState(_player));
         }
 
         private void OnAim(Vector2 aimPos)
