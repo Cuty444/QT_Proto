@@ -256,7 +256,7 @@ namespace QT.InGame
 
         private void GetProjectiles()
         {
-            Transform eye = _ownerEntity.EyeTransform;
+            Transform eye = _ownerEntity.SwingAreaMeshRenderer.transform;
 
             _projectiles.Clear();
             _hitAbles.Clear();

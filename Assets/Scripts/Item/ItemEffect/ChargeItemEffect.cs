@@ -74,7 +74,7 @@ namespace QT.InGame
             _player.OnAim.RemoveListener(OnAim);
             
             _player.ChangeState(Player.States.Move);
-            _player.SetGlobalState(new PlayerGlobalState(_player));
+            //_player.SetGlobalState(new PlayerGlobalState(_player));
         }
 
         private void OnAim(Vector2 aimPos)
@@ -92,7 +92,7 @@ namespace QT.InGame
             _currentSpeed = 0;
 
             _player.ChangeState(Player.States.Empty);
-            _player.SetGlobalState(null);
+            //_player.SetGlobalState(null);
             
             _dir = (_aimPosition - _player.Position ).normalized;
             
