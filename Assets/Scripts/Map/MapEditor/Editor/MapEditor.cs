@@ -180,6 +180,7 @@ namespace QT.Map
             
             if (GUILayout.Button("플레이 테스트"))
             {
+                _target.TilemapHardCollider.enabled = false;
                 _sceneManager.StartGame(_command, _startDoor);
             }
 
