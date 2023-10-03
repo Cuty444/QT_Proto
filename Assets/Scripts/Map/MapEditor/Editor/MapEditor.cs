@@ -20,7 +20,6 @@ namespace QT.Map
         private const string MapCellPrefabPath = "Assets/Scripts/Map/MapEditor/MapCell.prefab";
 
         private MapCellData _target;
-        private Tilemap _floorTilemap;
 
         private MapEditorSceneManager _sceneManager;
         private PrefabStage _prefabStage;
@@ -180,12 +179,9 @@ namespace QT.Map
             {
                 _sceneManager.StartGame(_command, _startDoor);
             }
-            
+
             GUILayout.Space(10);
-            
-            if(_floorTilemap)
-                GUILayout.Label($"가로 : {_floorTilemap.cellBounds.size.x} | 세로 : {_floorTilemap.cellBounds.size.y}");
-            
+
             EditorGUILayout.EndScrollView();
         }
 
@@ -241,22 +237,24 @@ namespace QT.Map
             else if (_sceneManager != null)
             {
                 _target = _sceneManager.Target;
+                
                 if (_target != null)
                 {
                     _isPrefab = PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject);
-
                     foreach (var tileMap in _target.GetComponentsInChildren<Tilemap>())
                     {
                         SceneVisibilityManager.instance.DisablePicking(tileMap.gameObject, true);
                     }
                     
                     SceneVisibilityManager.instance.DisablePicking(_sceneManager.gameObject, true);
+                
+                    if (_target.TilemapHardCollider)
+                    {
+                        _target.TilemapHardCollider.enabled = true;
+                    }
                 }
             }
             
-            if(_target)
-                _floorTilemap = _target.GetComponentsInChildren<Tilemap>().FirstOrDefault(x => x.gameObject.layer == LayerMask.NameToLayer("Fall"));
-
             return _target != null;
         }
 
@@ -291,7 +289,7 @@ namespace QT.Map
             GUILayout.BeginHorizontal();
             
             if (_isPrefab && GUILayout.Button("저장", GUILayout.Width(100), GUILayout.ExpandWidth(true)))
-            {
+            {  
                 CompressMapCell();
                 PrefabUtility.ApplyPrefabInstance(_target.gameObject, InteractionMode.UserAction);
             }
@@ -320,6 +318,13 @@ namespace QT.Map
                     _target.gameObject.name = path.Split('\\', '/', '.')[^2];
                 }
             }
+            
+            
+            if (_target.TilemapHardCollider)
+            {
+                _target.TilemapHardCollider.enabled = true;
+            }
+            
             GUILayout.EndHorizontal();
         }
 
@@ -333,8 +338,13 @@ namespace QT.Map
                 target.color = Color.white;
                 target.CompressBounds();
             }
+            
+            if (_target.TilemapHardCollider)
+            {
+                _target.TilemapHardCollider.enabled = false;
+            }
         }
-        
+
         private void ResetTilemapTop()
         {
             TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
@@ -344,7 +354,7 @@ namespace QT.Map
 
             Undo.RecordObject(_target.TilemapTop, "Reset Top");
 
-            var targetMap = _target.TilemapHardCollider;
+            var targetMap = _target.TilemapWall;
             var bound = targetMap.cellBounds;
             var datas = new List<TileChangeData>();
 
@@ -435,7 +445,7 @@ namespace QT.Map
                 return;
             }
             
-            if (target == _target.TilemapHardCollider)
+            if (target == _target.TilemapWall)
             {
                 TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
                 {
