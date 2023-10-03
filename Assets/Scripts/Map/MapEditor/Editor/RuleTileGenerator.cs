@@ -4,6 +4,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using QT;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Tilemaps;
@@ -164,11 +166,14 @@ public class RuleTileGenerator : EditorWindow
     private void SetTemplate(string path)
     {
         var sprites = AssetDatabase.LoadAllAssetsAtPath(path);
+
         templateSprites = new Sprite[sprites.Length-1];
         for (int i = 1; i < sprites.Length; i++)
         {
             templateSprites[i - 1] = sprites[i] as Sprite;
         }
+
+        templateSprites = templateSprites.OrderBy(c => c.name.Length).ThenBy(c => c.name).ToArray();
     }
     
 
