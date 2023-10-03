@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QT.Tilemaps;
@@ -39,6 +40,8 @@ namespace QT.Map
         private TestStartDoor _startDoor;
 
         private Vector2 _scroll;
+
+        private bool _isDirty = false;
 
         [MenuItem("맵 에디터/맵 에디터 열기", false, 0)]
         public static void OpenMapEditor()
@@ -183,6 +186,12 @@ namespace QT.Map
             GUILayout.Space(10);
 
             EditorGUILayout.EndScrollView();
+
+            if (_isDirty)
+            {
+                ResetWall();
+                _isDirty = false;
+            }
         }
 
         private void SetEvents()
@@ -193,8 +202,8 @@ namespace QT.Map
             GridPaintingState.scenePaintTargetChanged -= CheckCurrentTileMap;
             GridPaintingState.scenePaintTargetChanged += CheckCurrentTileMap;
 
-            Tilemap.tilemapTileChanged -= CheckHardColliderLayer;
-            Tilemap.tilemapTileChanged += CheckHardColliderLayer;
+            Tilemap.tilemapTileChanged -= CheckTileChanged;
+            Tilemap.tilemapTileChanged += CheckTileChanged;
 
             ToolManager.activeToolChanged -= OnToolChanged;
             ToolManager.activeToolChanged += OnToolChanged;
@@ -347,16 +356,11 @@ namespace QT.Map
 
         private void ResetTilemapTop()
         {
-            TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
-            {
-                return new TileChangeData(pos, tile, Color.white, Matrix4x4.identity);
-            }
-
             Undo.RecordObject(_target.TilemapTop, "Reset Top");
 
             var targetMap = _target.TilemapWall;
             var bound = targetMap.cellBounds;
-            var datas = new List<TileChangeData>();
+            var data = new List<TileChangeData>();
 
             _target.TilemapTop.ClearAllTiles();
 
@@ -373,7 +377,7 @@ namespace QT.Map
 
                     if (!targetMap.HasTile(pos + Vector3Int.up))
                     {
-                        datas.Add(CreateTileData(pos + Vector3Int.up, _palette.TopTile));
+                        data.Add(new TileChangeData(pos + Vector3Int.up, _palette.TopTile, Color.white, Matrix4x4.identity));
                     }
 
                     if (!targetMap.HasTile(pos + Vector3Int.left) ||
@@ -394,13 +398,68 @@ namespace QT.Map
 
                         if (heightCheck)
                         {
-                            datas.Add(CreateTileData(pos, _palette.TopTile));
+                            data.Add(new TileChangeData(pos, _palette.TopTile, Color.white, Matrix4x4.identity));
                         }
                     }
                 }
             }
             
-            _target.TilemapTop.SetTiles(datas.ToArray(), false);
+            _target.TilemapTop.SetTiles(data.ToArray(), false);
+        }
+
+        private void ResetWall()
+        {
+            if(_target == null || _target.TilemapWall == null)
+                return;
+            
+            var targetMap = _target.TilemapWall;
+            var targetRenderer = targetMap.GetComponent<TilemapRenderer>();
+
+            var targets = FindObjectsOfType<Tilemap>().Where(x =>
+                x.gameObject.TryGetComponent<TilemapRenderer>(out var renderer) &&
+                renderer != _target.TilemapHardCollider &&
+                renderer.sortOrder == targetRenderer.sortOrder &&
+                renderer.sortingOrder >= targetRenderer.sortingOrder).ToArray();
+            
+            var data = new List<TileChangeData>[targets.Length];
+
+            var bound = targetMap.cellBounds;
+            var level = 0;
+
+            for (int x = bound.xMin; x < bound.xMax; x++)
+            {
+                for (int y = bound.yMin; y <= bound.yMax; y++)
+                {
+                    var pos = new Vector3Int(x, y);
+
+                    var transform = (level == _wallHeight) ? 
+                        Matrix4x4.Translate(new Vector3(0, 0, _wallHeight * -1 + 0.5f)) : 
+                        Matrix4x4.TRS(new Vector3(0, 0, level * -1), Quaternion.Euler(-45, 0, 0), new Vector3(1, 1.415f, 1));
+
+                    for (var i = 0; i < targets.Length; i++)
+                    {
+                        var tile = targets[i].GetTile(pos);
+
+                        if (tile != null)
+                        {
+                            data[i] ??= new List<TileChangeData>();
+                            data[i].Add(new TileChangeData(pos, tile, Color.white, transform));
+                        }
+                    }
+                    
+                    level = targetMap.HasTile(pos) ? Mathf.Clamp(level + 1, 0, _wallHeight) : 0;
+                }
+                level = 0;
+            }
+
+            for (var i = 0; i < targets.Length; i++)
+            {
+                if (data[i] != null)
+                {
+                    targets[i].SetTiles(data[i].ToArray(), false);
+                }
+            }
+
         }
         
         private void OnToolChanged()
@@ -438,14 +497,14 @@ namespace QT.Map
         }
 
 
-        private void CheckHardColliderLayer(Tilemap target, Tilemap.SyncTile[] tiles)
+        private void CheckTileChanged(Tilemap target, Tilemap.SyncTile[] tiles)
         {
             if (!CheckMapCell())
             {
                 return;
             }
             
-            if (target == _target.TilemapWall)
+            if (target == _target.TilemapWall && _palette != null)
             {
                 TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
                 {
@@ -492,8 +551,11 @@ namespace QT.Map
                 
                 _target.TilemapTop.SetTiles(datas.ToArray(), false);
             }
+
+            _isDirty = true;
         }
 
+        
 
         #region EnemyWave
 
