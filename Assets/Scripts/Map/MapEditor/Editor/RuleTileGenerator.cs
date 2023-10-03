@@ -336,7 +336,7 @@ public class RuleTileGenerator : EditorWindow
 
     public RuleTile GenerateRuleTile()
     {
-        RuleTile tile = ScriptableObject.CreateInstance<RuleTile>();
+        var tile = CreateInstance<QTRuleTile>();
 
         //set default tile
         tile.m_DefaultSprite = defaultSprite;
