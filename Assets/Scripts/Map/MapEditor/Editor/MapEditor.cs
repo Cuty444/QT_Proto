@@ -74,6 +74,12 @@ namespace QT.Map
             if (!Application.isPlaying)
             {
                 _sceneManager?.CheckTarget();
+                
+                if (_isDirty)
+                {
+                    ResetWall();
+                    _isDirty = false;
+                }
             }
         }
 
@@ -187,12 +193,6 @@ namespace QT.Map
             GUILayout.Space(10);
 
             EditorGUILayout.EndScrollView();
-
-            if (_isDirty)
-            {
-                ResetWall();
-                _isDirty = false;
-            }
         }
 
         private void SetEvents()
@@ -234,6 +234,8 @@ namespace QT.Map
             {
                 _sceneManager = FindObjectOfType<MapEditorSceneManager>();
             }
+            
+            SetEvents();
 
             return true;
         }
@@ -555,9 +557,8 @@ namespace QT.Map
 
             _isDirty = true;
         }
-
         
-
+        
         #region EnemyWave
 
         private static GUILayoutOption _miniButtonWidth = GUILayout.Width(20f);
