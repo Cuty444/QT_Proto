@@ -34,7 +34,7 @@ namespace QT.UI
         {
             switch (state)
             {
-                case UIState.Pause:
+                case UIState.Loading:
                     Show();
                     break;
                 default:
@@ -54,6 +54,11 @@ namespace QT.UI
 
         public override void ReleaseUI()
         {
+            if (!_loadingCanvas.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+            
             _loadingCanvas.StopAllCoroutines();
             _loadingCanvas.StartCoroutine(UnityUtil.FadeCanvasGroup(_loadingCanvas.CanvasGroup, 1, 0, _loadingCanvas.FadeInOutTime,
                 () =>

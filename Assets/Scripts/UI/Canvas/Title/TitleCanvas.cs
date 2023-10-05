@@ -57,40 +57,18 @@ namespace QT.UI
             
             SystemManager.Instance.RankingManager.ResetRankingTime();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
-            //SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
 
-            WaitJsonLoad();
-            
-            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
-        }
-
-        private async void WaitJsonLoad()
-        {
-            _titleCanvas.PopAnimation.Reset();
-            
-            _titleCanvas.StartButton.interactable = false;
-            _titleCanvas.TutorialButton.interactable = false;
-            _titleCanvas.RankingButton.interactable = false;
-            
-            await UniTask.WaitUntil(() => SystemManager.Instance.LoadingManager.IsJsonLoad());
-            
             _titleCanvas.PopAnimation.ReStart();
-            
-            _titleCanvas.StartButton.interactable = true;
-            _titleCanvas.TutorialButton.interactable = true;
-            _titleCanvas.RankingButton.interactable = true;
+            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
         }
         
         private void GameStart()
         {
-            if (SystemManager.Instance.LoadingManager.IsJsonLoad())
-            {
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
                 
-                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
-                SystemManager.Instance.StageLoadManager.StageLoad("1");
-                SystemManager.Instance.LoadingManager.LoadScene(1, ReleaseUI);
-            }
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
+            SystemManager.Instance.StageLoadManager.StageLoad("1");
+            SystemManager.Instance.LoadingManager.LoadScene(1);
         }
 
         private void RankingOpen()

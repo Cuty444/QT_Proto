@@ -23,7 +23,7 @@ namespace QT
             }
             else if (_dropGameType == DropGameType.Start)
             {
-                SystemManager.Instance.PlayerManager.FadeInCanvasOut.AddListener(ItemCreate);
+                ItemCreate();
             }
         }
 
@@ -51,8 +51,6 @@ namespace QT
                 
                 _itemObjects.Add(holder);
             }
-
-            SystemManager.Instance.PlayerManager.FadeInCanvasOut.RemoveListener(ItemCreate);
         }
 
         public void OnGainItem()

@@ -65,29 +65,26 @@ namespace QT
         private void Title()
         {
             var uiManager = SystemManager.Instance.UIManager;
-            uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
-            {
-                OnClose();
-                uiManager.GetUIPanel<MinimapCanvas>().OnClose();
-                uiManager.GetUIPanel<FadeCanvas>().FadeIn();
-                uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
-                SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                ProjectileManager.Instance.Clear();
-                HitAbleManager.Instance.Clear();
-                SystemManager.Instance.ResourceManager.AllReleasedObject();
+            
+            OnClose();
+            uiManager.GetUIPanel<MinimapCanvas>().OnClose();
+            uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
+            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
+            ProjectileManager.Instance.Clear();
+            HitAbleManager.Instance.Clear();
+            SystemManager.Instance.ResourceManager.AllReleasedObject();
 
+            _dungeonMapSystem.StartCoroutine(UnityUtil.WaitForFunc(() =>
+            {
+                SystemManager.Instance.LoadingManager.LoadScene(2);
                 _dungeonMapSystem.StartCoroutine(UnityUtil.WaitForFunc(() =>
                 {
-                    SystemManager.Instance.LoadingManager.FloorLoadScene(2);
-                    _dungeonMapSystem.StartCoroutine(UnityUtil.WaitForFunc(() =>
-                    {
-                        SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
-                        //_dungeonMapSystem.DungenMapGenerate();
-                        //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
-                    }, 2f));
-                },5f));
-                //SystemManager.Instance.StageLoadManager.StageLoad((_dungeonMapSystem.GetFloor() + 1).ToString());
-            });
+                    SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
+                    //_dungeonMapSystem.DungenMapGenerate();
+                    //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
+                }, 2f));
+            },5f));
+            //SystemManager.Instance.StageLoadManager.StageLoad((_dungeonMapSystem.GetFloor() + 1).ToString());
         }
         
 

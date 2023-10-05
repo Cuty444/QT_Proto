@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using Cysharp.Threading.Tasks;
 using QT.InGame;
 using QT.Ranking;
 using QT.Sound;
 using QT.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace QT.Core
 {
     //시스템 관리 매니저입니다.
     public class SystemManager : MonoSingleton<SystemManager>
     {
+        public bool IsTestMode = false;
+
         public ResourceManager ResourceManager { get; } = new ();
         public GameDataManager DataManager { get; } = new ();
         public EventManager EventManager { get; } = new ();
@@ -32,7 +36,7 @@ namespace QT.Core
         
         private readonly Dictionary<Type, SystemBase> _systems = new ();
 
-        private void Awake()
+        private async void Awake()
         {
             base.Awake();
 #if Testing
@@ -44,16 +48,24 @@ namespace QT.Core
             
             LoadingManager.DataLoadCheck();
             SoundManager.Initialize(_soundPathData);
-            RankingManager.Initialize();
-            RankingManager.DataLoad();
             ResourceManager.Initialize();
-            DataManager.Initialize();
+            
+            await DataManager.Initialize();
 
             InitializeSystems();
-
-            LoadingManager.Initialize();
+            
+            await UIManager.Initialize();
             
             _PostInitializeSystems();
+
+            if (!IsTestMode)
+            {
+                RankingManager.Initialize();
+                RankingManager.DataLoad();
+                
+                //타이틀씬으로 이동
+                SceneManager.LoadScene(2);
+            }
         }
 
         private void InitializeSystems()

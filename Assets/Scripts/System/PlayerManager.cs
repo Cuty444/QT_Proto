@@ -34,8 +34,6 @@ namespace QT.Core
 
         public UnityEvent AddItemEvent { get; } = new();
         
-        public UnityEvent FadeInCanvasOut { get; } = new();
-
         public UnityEvent<Sprite> GainItemSprite { get; } = new(); // TODO : 상점에서 얻거나, 획득시 분리한 이유는 시작할때 이전 방에서 아이템 로드하면서 꼬일수 있음...
 
         public int Gold { get; private set; } = 0;

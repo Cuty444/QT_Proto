@@ -24,12 +24,7 @@ namespace QT.UI
         
         public virtual void Show()
         {
-            UIView.gameObject.SetActive(true);
-        }
-
-        public virtual void Hide()
-        {
-            UIView.gameObject.SetActive(false);
+            SystemManager.Instance.UIManager.Show(this);
         }
 
         public virtual void ReleaseUI()

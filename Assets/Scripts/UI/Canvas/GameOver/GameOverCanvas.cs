@@ -73,12 +73,14 @@ namespace QT.UI
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
-                SystemManager.Instance.LoadingManager.LoadScene(1, OnClose);
+                SystemManager.Instance.LoadingManager.LoadScene(1);
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
                 //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
                 _retryButtonTrigger.Clear();
                 _titleButtonTrigger.Clear();
                 _uiObject.SetActive(false);
+
+                OnClose();
             }, 1f));
         }
 
@@ -87,14 +89,8 @@ namespace QT.UI
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
-                SystemManager.Instance.LoadingManager.LoadScene(2,()=>
-                {
-                    StartCoroutine(UnityUtil.WaitForFunc(() =>
-                    {
-                        SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().OnOpen();
-                        OnClose();
-                    }, 1f));
-                });
+                SystemManager.Instance.LoadingManager.LoadScene(2);
+                
                 //SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
                 //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
                 _retryButtonTrigger.Clear();

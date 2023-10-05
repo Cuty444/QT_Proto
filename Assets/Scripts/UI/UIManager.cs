@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Cysharp.Threading.Tasks;
 using QT.Core;
-using UnityEngine.Events;
 
 namespace QT.UI
 {
@@ -42,64 +41,52 @@ namespace QT.UI
         
          #region Get
 
+         private async UniTask Cache<T>() where T : UIModelBase
+         {
+             if (_allUI.TryGetValue(typeof(T), out var model))
+             {
+                 return;
+             }
+
+             model = (T) Activator.CreateInstance(typeof(T));
+            
+             var go = await SystemManager.Instance.ResourceManager.LoadAsset<GameObject>(PrefabPath + model.PrefabPath, false);
+             var view = go.GetComponent<UIPanel>();
+            
+             view.transform.SetParent(deActiveParent, false);
+            
+             model.OnCreate(view);
+             
+             _allUI.Add(typeof(T), model);
+         }
+         
         public T Get<T>() where T : UIModelBase
         {
             if (_allUI.TryGetValue(typeof(T), out var model))
             {
-                switch (model.UIType)
-                {
-                    case UIType.Panel:
-                        model.UIView.transform.SetParent(panelParent);
-                        break;
-                    case UIType.Popup:
-
-                        if(model.UIView.transform.parent == popupParent)
-                        {
-                            ReleasePopup(model);
-                        }
-
-                        model.UIView.transform.SetParent(popupParent);
-                         model.UIView.transform.SetAsLastSibling();
-
-                        _popupStack.Push(model);
-                        break;
-                }
-
+                Show(model);
                 return (T) model;
             }
 
-            model = (T) Activator.CreateInstance(typeof(T));
-
-            SetView<T>(model);
-
-            return (T) model;
+            return null;
         }
 
-        private async void SetView<T>(UIModelBase model) where T : UIModelBase
+        public void Show(UIModelBase model)
         {
-            var view = await SystemManager.Instance.ResourceManager.LoadAsset<UIPanel>(PrefabPath + model.PrefabPath, false);
-            
             switch (model.UIType)
             {
                 case UIType.Panel:
-                    view.transform.SetParent(panelParent, false);
+                    model.UIView.transform.SetParent(panelParent, false);
                     break;
                 case UIType.Popup:
-                    view.transform.SetParent(popupParent, false);
-                    view.transform.SetAsLastSibling();
+                    model.UIView.transform.SetParent(popupParent, false);
+                    model.UIView.transform.SetAsLastSibling();
 
                     _popupStack.Push(model);
                     break;
             }
-            
-            model.OnCreate(view);
-
-            if (view.UsePooling)
-            {
-                _allUI.Add(typeof(T), model);
-            }
         }
-
+        
         #endregion
 
         #region Release
@@ -173,8 +160,12 @@ namespace QT.UI
 
             return false;
         }
-        
-        
+
+        public async UniTask Initialize()
+        {
+            await UniTask.WhenAll(Cache<TitleCanvasModel>(),
+                Cache<LoadingCanvasModel>());
+        }
         
         
         public T GetUIPanel<T>() where T : UIPanel

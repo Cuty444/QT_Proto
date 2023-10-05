@@ -810,36 +810,33 @@ namespace QT.Core.Map
         {
             if (_floorValue == 2)
                 return;
+            
             _floorValue++;
+            
             var _playerManager = SystemManager.Instance.PlayerManager;
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
 
             _playerManager.PlayerIndexInventory = _playerManager.Player.Inventory.GetItemList()
                 .Select((x) => x.ItemGameData.Index).ToList();
+            
             if (_playerManager.Player.Inventory.ActiveItem != null)
             {
                 _playerManager.PlayerActiveItemIndex = _playerManager.Player.Inventory.ActiveItem.ItemGameData.Index;
             }
-
-            var uiManager = SystemManager.Instance.UIManager;
-            uiManager.GetUIPanel<FadeCanvas>().FadeOut(() =>
+            
+            SystemManager.Instance.UIManager.SetState(UIState.Loading);
+            
+            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
+            ProjectileManager.Instance.Clear();
+            HitAbleManager.Instance.Clear();
+            
+            SystemManager.Instance.StageLoadManager.StageLoad((GetFloor() + 1).ToString());
+            
+            StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
-                uiManager.GetUIPanel<MinimapCanvas>().OnClose();
-                uiManager.GetUIPanel<FadeCanvas>().FadeIn();
-                uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
-                SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
-                ProjectileManager.Instance.Clear();
-                HitAbleManager.Instance.Clear();
-                //SystemManager.Instance.ResourceManager.AllReleasedObject();
-
-                StartCoroutine(UnityUtil.WaitForFunc(() =>
-                {
-                    SystemManager.Instance.LoadingManager.FloorLoadScene(1);
-                    DungenMapGenerate();
-                    //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
-                }, 5f));
-                SystemManager.Instance.StageLoadManager.StageLoad((GetFloor() + 1).ToString());
-            });
+                SystemManager.Instance.LoadingManager.LoadScene(1);
+                DungenMapGenerate();
+            }, 5f));
         }
 
         public void SetFloor(int value)
