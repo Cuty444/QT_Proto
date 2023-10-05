@@ -18,7 +18,9 @@ namespace QT.UI
         }
 
         public virtual void SetState(UIState state)
-        {}
+        {
+            
+        }
         
         public virtual void Show()
         {

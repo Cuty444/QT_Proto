@@ -153,7 +153,7 @@ namespace QT
                     return;
                 }
                 
-                SystemManager.Instance.UIManager.GetUIPanel<UIActiveItemSelectCanvas>().Show(playerActive, ItemGameData, GainItem);
+                SystemManager.Instance.UIManager.Get<UIActiveItemSelectCanvasModel>().Show(playerActive, ItemGameData, GainItem);
             }
             else
             {

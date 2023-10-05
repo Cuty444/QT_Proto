@@ -28,7 +28,7 @@ namespace QT.UI
     
     public class UIManager : MonoBehaviour
     {
-        private const string PrefabPath = "UI/Prefabs/";
+        private const string PrefabPath = "UI/Prefab/";
 
         [SerializeField] private Transform panelParent;
         [SerializeField] private Transform popupParent;
