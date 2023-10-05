@@ -14,15 +14,9 @@ namespace QT.UI
 {
     public class PlayerHPCanvas : UIPanel
     {
-        [SerializeField] private Image _playerHPImage;
-        [SerializeField] private Image _playerInvicibleImage;
-        [SerializeField] private GameObject _playerBallStackObject;
-        [SerializeField] private Image _playerDodgeCoolBarImage;
-        [SerializeField] private Image _playerDodgeCoolBackgroundImage;
         [SerializeField] private Transform _playerHpTransform;
         [SerializeField] private GameObject _playerHpObject;
         [SerializeField] private Sprite[] _playerHpImage;
-        [SerializeField] private SkeletonGraphic _skeletonGraphicRecharge;
         [SerializeField] private TextMeshProUGUI _goldCostText;
 
         [Space]
@@ -31,10 +25,6 @@ namespace QT.UI
         [SerializeField] private Image _activeImage;
         [SerializeField] private Image _activeCoolDownImage;
 
-        public Image PlayerHPImage => _playerHPImage;
-        public Image PlayerInvicibleImage => _playerInvicibleImage;
-        public Image PlayerDodgeCoolBarImage => _playerDodgeCoolBarImage;
-        public Image PlayerDodgeCoolBackgroundImage => _playerDodgeCoolBackgroundImage;
         
         private List<Image> _playerHpList = new List<Image>();
         private int beforeHp = 0;
@@ -47,12 +37,6 @@ namespace QT.UI
         private void Start()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
-
-            //playerManager.PlayerCreateEvent.AddListener((arg) =>
-            //{
-            //    arg.GetStat(PlayerStats.HP).OnValueChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));
-            //    arg.GetStatus(PlayerStats.HP).OnStatusChanged.AddListener(()=>SetHpUpdate(arg.GetStatus(PlayerStats.HP)));
-            //});
         }
 
         private void Update()
@@ -147,30 +131,6 @@ namespace QT.UI
         public void ImageChange(Image image,int value)
         {
             image.sprite = _playerHpImage[value];
-            //if(value == 2)
-            //    image.GetComponentInChildren<HpAnimation>()?.StartAni();
-        }
-
-        public void ThrowProjectileGauge(bool isActive)
-        {
-            if (isActive)
-            {
-                //skeletonGraphicRecharge.enabled = true;
-                //_skeletonGraphicRecharge.AnimationState.SetAnimation(1, "animation",false);
-                //StartCoroutine(UnityUtil.WaitForFunc(() =>
-                //{
-                //    _skeletonGraphicRecharge.enabled = false;
-                //},0.667f));
-            }
-            _playerBallStackObject.SetActive(isActive);
-        }
-
-        public void SetDodgeCoolTime(Status dodge)
-        {
-            var value = Util.Math.Remap(dodge.StatusValue, dodge.Value, 0f);
-            
-            _playerDodgeCoolBackgroundImage.enabled = value > 0;
-            _playerDodgeCoolBarImage.fillAmount = value;
         }
 
         public void SetGoldText(int goldText)
