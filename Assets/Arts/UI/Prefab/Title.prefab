@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5386878532650444952}
   - component: {fileID: 8251257520439080152}
   - component: {fileID: 3051710246057422327}
-  - component: {fileID: 3826300598082346512}
+  - component: {fileID: 8289227846595595541}
   m_Layer: 0
   m_Name: GameStart
   m_TagString: Untagged
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3826300598082346512
+--- !u!114 &8289227846595595541
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,31 +85,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 346653448174736013}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a8c10f65d9e72d47963d5ba965fa263, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetGraphic: {fileID: 0}
-  _highligtedSprite: {fileID: 21300000, guid: ae9f89b1d95efe44f9a4d54bfaf5f8e6, type: 3}
-  _pressedSprite: {fileID: 21300000, guid: ae9f89b1d95efe44f9a4d54bfaf5f8e6, type: 3}
-  _disabledSprite: {fileID: 21300000, guid: 77b517e2b2a2f014083664a488e16ad9, type: 3}
-  _selectedSprite: {fileID: 21300000, guid: ae9f89b1d95efe44f9a4d54bfaf5f8e6, type: 3}
-  _isInteractable: 1
-  _isSelected: 1
-  OnEvent:
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 3051710246057422327}
+  m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3105885322381576948}
-        m_TargetAssemblyTypeName: QT.UI.TitleCanvas, Assembly-CSharp
-        m_MethodName: GameStart
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &724235657061819530
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,10 +233,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePooling: 0
-  _startButton: {fileID: 3826300598082346512}
-  _tutorialButton: {fileID: 8314843795087726626}
-  _rankingButton: {fileID: 312925582404265464}
-  _popAnimation: {fileID: 1335075794891435324}
+  <StartButton>k__BackingField: {fileID: 8289227846595595541}
+  <TutorialButton>k__BackingField: {fileID: 947647075288081293}
+  <RankingButton>k__BackingField: {fileID: 3957617742331159384}
+  <ExitGameButton>k__BackingField: {fileID: 2480230102226209905}
+  <PopAnimation>k__BackingField: {fileID: 1335075794891435324}
 --- !u!1 &1132848219988286325
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,7 +435,7 @@ GameObject:
   - component: {fileID: 5065693950743573265}
   - component: {fileID: 271222942101867891}
   - component: {fileID: 1092237174122999779}
-  - component: {fileID: 312925582404265464}
+  - component: {fileID: 3957617742331159384}
   m_Layer: 0
   m_Name: Ranking
   m_TagString: Untagged
@@ -489,7 +500,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &312925582404265464
+--- !u!114 &3957617742331159384
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -498,31 +509,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 5578424246194912068}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a8c10f65d9e72d47963d5ba965fa263, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetGraphic: {fileID: 21300000, guid: b1aa5d8b1ef9c6f43a538b3613e494ea, type: 3}
-  _highligtedSprite: {fileID: 21300000, guid: b1aa5d8b1ef9c6f43a538b3613e494ea, type: 3}
-  _pressedSprite: {fileID: 21300000, guid: b1aa5d8b1ef9c6f43a538b3613e494ea, type: 3}
-  _disabledSprite: {fileID: 21300000, guid: c02562b8228e3b74485509a75bf2e33c, type: 3}
-  _selectedSprite: {fileID: 21300000, guid: b1aa5d8b1ef9c6f43a538b3613e494ea, type: 3}
-  _isInteractable: 1
-  _isSelected: 0
-  OnEvent:
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1092237174122999779}
+  m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3105885322381576948}
-        m_TargetAssemblyTypeName: QT.UI.TitleCanvas, Assembly-CSharp
-        m_MethodName: RankingOpen
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &6042749303279214339
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,7 +630,7 @@ GameObject:
   - component: {fileID: 9040875091196454690}
   - component: {fileID: 4015325528732063006}
   - component: {fileID: 1515993471279008179}
-  - component: {fileID: 5533615255161760867}
+  - component: {fileID: 2480230102226209905}
   m_Layer: 0
   m_Name: GameEnd
   m_TagString: Untagged
@@ -674,7 +695,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5533615255161760867
+--- !u!114 &2480230102226209905
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -683,31 +704,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 6141218198686319830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a8c10f65d9e72d47963d5ba965fa263, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetGraphic: {fileID: 0}
-  _highligtedSprite: {fileID: 21300000, guid: f66e14dbd7ee90e43835c51072e1f8ff, type: 3}
-  _pressedSprite: {fileID: 21300000, guid: f66e14dbd7ee90e43835c51072e1f8ff, type: 3}
-  _disabledSprite: {fileID: 21300000, guid: 1f6a4fcb54215144380e0b3b89fa44c8, type: 3}
-  _selectedSprite: {fileID: 21300000, guid: f66e14dbd7ee90e43835c51072e1f8ff, type: 3}
-  _isInteractable: 1
-  _isSelected: 1
-  OnEvent:
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1515993471279008179}
+  m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3105885322381576948}
-        m_TargetAssemblyTypeName: QT.UI.TitleCanvas, Assembly-CSharp
-        m_MethodName: GameEnd
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &6363744038174550793
 GameObject:
   m_ObjectHideFlags: 0
@@ -1310,7 +1341,7 @@ GameObject:
   - component: {fileID: 4317347029125346764}
   - component: {fileID: 2776255687408493730}
   - component: {fileID: 5496097565232101132}
-  - component: {fileID: 8314843795087726626}
+  - component: {fileID: 947647075288081293}
   m_Layer: 0
   m_Name: Title_Tutorial
   m_TagString: Untagged
@@ -1375,7 +1406,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8314843795087726626
+--- !u!114 &947647075288081293
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1384,28 +1415,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 8394478759658943769}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a8c10f65d9e72d47963d5ba965fa263, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetGraphic: {fileID: 21300000, guid: 70ce2e06eaa6f6d4ab990e309a1b37bd, type: 3}
-  _highligtedSprite: {fileID: 21300000, guid: 70ce2e06eaa6f6d4ab990e309a1b37bd, type: 3}
-  _pressedSprite: {fileID: 21300000, guid: 70ce2e06eaa6f6d4ab990e309a1b37bd, type: 3}
-  _disabledSprite: {fileID: 21300000, guid: b885bbce1a7869b4c8a5a26bcbe5fda1, type: 3}
-  _selectedSprite: {fileID: 21300000, guid: 70ce2e06eaa6f6d4ab990e309a1b37bd, type: 3}
-  _isInteractable: 1
-  _isSelected: 0
-  OnEvent:
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 5496097565232101132}
+  m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3105885322381576948}
-        m_TargetAssemblyTypeName: QT.UI.TitleCanvas, Assembly-CSharp
-        m_MethodName: TutorialOpen
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []

@@ -1,66 +1,87 @@
-using System.Collections;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using QT.Core;
 using QT.Core.Map;
 using QT.Ranking;
 using QT.Tutorial;
 using QT.Util;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QT.UI
 {
     public class TitleCanvas : UIPanel
     {
-        [SerializeField] private ButtonTrigger _startButton;
-        [SerializeField] private ButtonTrigger _tutorialButton;
-        [SerializeField] private ButtonTrigger _rankingButton;
+        [field:SerializeField] public Button StartButton { get; private set; }
+        [field:SerializeField] public Button TutorialButton { get; private set; }
+        [field:SerializeField] public Button RankingButton { get; private set; }
+        [field:SerializeField] public Button ExitGameButton { get; private set; }
         
-        [SerializeField] private TweenAnimator _popAnimation;
-        private bool isFirst = false;
-        
-        public override void PostSystemInitialize()
-        {
-            OnOpen();
-        }
+        [field:SerializeField] public TweenAnimator PopAnimation  { get; private set; }
+    }
 
-        public override void OnOpen()
+    public class TitleCanvasModel : UIModelBase
+    {
+        public override UIType UIType => UIType.Panel;
+        public override string PrefabPath => "Title.prefab";
+
+        private TitleCanvas _titleCanvas;
+        
+        
+        public override void OnCreate(UIPanel view)
         {
-            base.OnOpen();
+            base.OnCreate(view);
+            _titleCanvas = UIView as TitleCanvas;
+            
+            _titleCanvas.StartButton.onClick.AddListener(GameStart);
+            _titleCanvas.TutorialButton.onClick.AddListener(TutorialOpen);
+            _titleCanvas.RankingButton.onClick.AddListener(RankingOpen);
+            _titleCanvas.ExitGameButton.onClick.AddListener(GameEnd);
+        }
+        
+        public override void SetState(UIState state)
+        {
+            switch (state)
+            {
+                case UIState.Title:
+                    Show();
+                    break;
+                default:
+                    ReleaseUI();
+                    break;
+            }
+        }
+        
+        public override void Show()
+        {
+            base.Show();
+            
             SystemManager.Instance.RankingManager.ResetRankingTime();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
             //SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
-            _startButton.InteractableOn();
-            _tutorialButton.InteractableOn();
-            _rankingButton.InteractableOn();
-            if (!SystemManager.Instance.LoadingManager.IsJsonLoad())
-            {
-                SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.AddListener(() =>
-                {
-                    _popAnimation.ReStart();
-                });
-            }
-            else
-            {
-                _popAnimation.ReStart();
-            }
-            //if (!isFirst)
-            //    isFirst = true; // TODO : 스플래쉬 씬에서 브금 2번 곂치는 형상을 위한 코드
-            //else
-            //{
-                SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
-            //}
+
+            WaitJsonLoad();
             
-            
-            // 무지성 보스 HP 버그 수정
-            SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>().OnClose();
+            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
         }
 
-        public void RestartAnimation()
+        private async void WaitJsonLoad()
         {
-            _popAnimation.ReStart();
+            _titleCanvas.PopAnimation.Reset();
+            
+            _titleCanvas.StartButton.interactable = false;
+            _titleCanvas.TutorialButton.interactable = false;
+            _titleCanvas.RankingButton.interactable = false;
+            
+            await UniTask.WaitUntil(() => SystemManager.Instance.LoadingManager.IsJsonLoad());
+            
+            _titleCanvas.PopAnimation.ReStart();
+            
+            _titleCanvas.StartButton.interactable = true;
+            _titleCanvas.TutorialButton.interactable = true;
+            _titleCanvas.RankingButton.interactable = true;
         }
         
-        public void GameStart()
+        private void GameStart()
         {
             if (SystemManager.Instance.LoadingManager.IsJsonLoad())
             {
@@ -68,33 +89,23 @@ namespace QT.UI
                 
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
                 SystemManager.Instance.StageLoadManager.StageLoad("1");
-                SystemManager.Instance.LoadingManager.LoadScene(1, OnClose);
+                SystemManager.Instance.LoadingManager.LoadScene(1, ReleaseUI);
             }
         }
 
-        public void GameEnd()
-        {
-            QT.Util.UnityUtil.ProgramExit();
-        }
-
-        public void RankingOpen()
+        private void RankingOpen()
         {
             SystemManager.Instance.UIManager.GetUIPanel<RankingCanvas>().OnOpen();
         }
 
-        public void RankignClose()
-        {
-            _rankingButton.InteractableOn();
-        }
-
-        public void TutorialOpen()
+        private void TutorialOpen()
         {
             SystemManager.Instance.UIManager.GetUIPanel<TutorialCanvas>().OnOpen();
         }
-
-        public void TutorialClose()
+        
+        private void GameEnd()
         {
-            _tutorialButton.InteractableOn();
+            UnityUtil.ProgramExit();
         }
     }
 }

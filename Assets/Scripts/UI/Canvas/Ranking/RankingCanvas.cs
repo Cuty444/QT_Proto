@@ -67,7 +67,7 @@ namespace QT.Ranking
         public override void OnClose()
         {
             base.OnClose();
-            SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>().RankignClose();
+            SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>();
         }
     }
 }
