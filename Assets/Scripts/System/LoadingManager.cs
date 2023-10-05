@@ -30,23 +30,24 @@ namespace QT
         private IEnumerator LoadAsynchronously(int sceneIndex)
         {
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
-            float StartLoadingTime = Time.time;
+            //float StartLoadingTime = Time.time;
             
-            operation.allowSceneActivation = false;
+            operation.allowSceneActivation = true;
+            
             while (!operation.isDone)
             {
-                if (operation.progress < 0.9f)
-                {
-                    
-                }
-                else
-                {
-                    if (Time.time - StartLoadingTime > 2.5f && _isMapLoad)
-                    {
-                        operation.allowSceneActivation = true;
-                        yield break;
-                    }
-                }
+                // if (operation.progress < 0.9f)
+                // {
+                //     
+                // }
+                // else
+                // {
+                //     if (Time.time - StartLoadingTime > 2.5f && _isMapLoad)
+                //     {
+                //         operation.allowSceneActivation = true;
+                //         yield break;
+                //     }
+                // }
                 yield return null;
             }
         }

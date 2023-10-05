@@ -64,7 +64,7 @@ namespace QT.Core
                 RankingManager.DataLoad();
                 
                 //타이틀씬으로 이동
-                SceneManager.LoadScene(2);
+                LoadingManager.LoadScene(2);
             }
         }
 
