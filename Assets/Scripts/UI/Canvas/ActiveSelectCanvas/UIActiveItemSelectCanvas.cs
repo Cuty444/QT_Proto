@@ -52,7 +52,7 @@ namespace QT.UI
         }
         
         
-        public async void Show(ItemGameData itemGameData1, ItemGameData itemGameData2, UnityAction<ItemGameData> onSelect)
+        public async void Initialize(ItemGameData itemGameData1, ItemGameData itemGameData2, UnityAction<ItemGameData> onSelect)
         {
             if (itemGameData1 == itemGameData2)
             {

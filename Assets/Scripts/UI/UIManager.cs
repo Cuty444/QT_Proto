@@ -16,6 +16,7 @@ namespace QT.UI
     public enum UIState
     {
         None,
+        Loading,
         Title,
         InGame,
         Inventory,
@@ -58,9 +59,7 @@ namespace QT.UI
                         }
 
                         model.UIView.transform.SetParent(popupParent);
-
-                //skeletonGraphicRecharge.enabled = true;
-                //_skeletonGraphicRecharge.AnimationState.SetAnimation(1, "animation",false);                        model.UIView.transform.SetAsLastSibling();
+                         model.UIView.transform.SetAsLastSibling();
 
                         _popupStack.Push(model);
                         break;
@@ -178,49 +177,8 @@ namespace QT.UI
         
         
         
-        
-        
-        
-        
-        private readonly Dictionary<Type, UIPanel> _Panels = new Dictionary<Type, UIPanel>();
-        private UIPanel _currentPanel;
-        
-        
-        public void Initialize()
-        {
-            for(int i = 0; i < transform.childCount; i++)
-            {
-                UIPanel panel = transform.GetChild(i).GetComponent<UIPanel>();
-        
-                if (panel == null)
-                    continue;
-        
-                panel.Initialize();
-                if(!_Panels.ContainsKey(panel.GetType()))
-                    _Panels.Add(panel.GetType(), panel);
-            }
-            
-            foreach(KeyValuePair<Type,UIPanel> panel in _Panels)
-            {
-                panel.Value.OnClose();
-            }
-        }
-        
-        public void PostSystemInitialize()
-        {
-            foreach (var panel in _Panels)
-            {
-                panel.Value.PostSystemInitialize();
-            }
-        }
-        
         public T GetUIPanel<T>() where T : UIPanel
         {
-            if (_Panels.TryGetValue(typeof(T), out var system))
-            {
-                return (T)system;
-            }
-        
             return null;
         }
     }
