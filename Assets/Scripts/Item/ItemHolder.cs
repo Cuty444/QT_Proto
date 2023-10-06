@@ -125,7 +125,7 @@ namespace QT
             ClearItem();
         }
 
-        private void GainItem()
+        private async void GainItem()
         {
             if (_used)
             {
@@ -153,7 +153,7 @@ namespace QT
                     return;
                 }
                 
-                SystemManager.Instance.UIManager.Get<UIActiveItemSelectCanvasModel>().Initialize(playerActive, ItemGameData, GainItem);
+                (await SystemManager.Instance.UIManager.Get<UIActiveItemSelectCanvasModel>()).Initialize(playerActive, ItemGameData, GainItem);
             }
             else
             {

@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
 using QT.Core;
+using QT.Util;
 
 namespace QT.UI
 {
@@ -41,26 +42,7 @@ namespace QT.UI
         
          #region Get
 
-         private async UniTask Cache<T>() where T : UIModelBase
-         {
-             if (_allUI.TryGetValue(typeof(T), out var model))
-             {
-                 return;
-             }
-
-             model = (T) Activator.CreateInstance(typeof(T));
-            
-             var go = await SystemManager.Instance.ResourceManager.LoadAsset<GameObject>(PrefabPath + model.PrefabPath, false);
-             var view = go.GetComponent<UIPanel>();
-            
-             view.transform.SetParent(deActiveParent, false);
-            
-             model.OnCreate(view);
-             
-             _allUI.Add(typeof(T), model);
-         }
-         
-        public T Get<T>() where T : UIModelBase
+        public async UniTask<T> Get<T>() where T : UIModelBase
         {
             if (_allUI.TryGetValue(typeof(T), out var model))
             {
@@ -68,10 +50,28 @@ namespace QT.UI
                 return (T) model;
             }
 
-            return null;
+            model = (T) Activator.CreateInstance(typeof(T));
+            
+            var go = await SystemManager.Instance.ResourceManager.LoadAsset<GameObject>(PrefabPath + model.PrefabPath, false, deActiveParent);
+            var view = go.GetComponent<UIPanel>();
+
+            var viewTransform = view.transform as RectTransform;
+            
+            //viewTransform.SetParent(deActiveParent, false);
+            
+            viewTransform.anchoredPosition = Vector2.zero;
+            // viewTransform.anchorMin = Vector2.zero;
+            // viewTransform.anchorMax = Vector2.one;
+            // viewTransform.sizeDelta = (deActiveParent as RectTransform).sizeDelta;
+            
+            model.OnCreate(view);
+            
+            _allUI.Add(typeof(T), model);
+            
+            return (T) model;
         }
 
-        public void Show(UIModelBase model)
+        public UIModelBase Show(UIModelBase model)
         {
             switch (model.UIType)
             {
@@ -85,6 +85,8 @@ namespace QT.UI
                     _popupStack.Push(model);
                     break;
             }
+            
+            return model;
         }
         
         #endregion
@@ -163,8 +165,8 @@ namespace QT.UI
 
         public async UniTask Initialize()
         {
-            await UniTask.WhenAll(Cache<TitleCanvasModel>(),
-                Cache<LoadingCanvasModel>());
+            await UniTask.WhenAll(Get<TitleCanvasModel>(),
+                Get<LoadingCanvasModel>());
         }
         
         
