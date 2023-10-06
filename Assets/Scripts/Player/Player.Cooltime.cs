@@ -27,7 +27,6 @@ namespace QT.InGame
             var dodgeCooldown = StatComponent.GetStatus(PlayerStats.DodgeCooldown);
             dodgeCooldown.AddStatus(Time.deltaTime);
             
-            SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().SetDodgeCoolTime(dodgeCooldown);
             AttackCanvas();
         }
 
