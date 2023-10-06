@@ -4,7 +4,6 @@ using System;
 using QT.InGame;
 using QT.Ranking;
 using QT.Sound;
-using QT.Splash;
 using QT.UI;
 using UnityEngine;
 

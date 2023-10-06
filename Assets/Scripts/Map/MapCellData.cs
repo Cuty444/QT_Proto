@@ -15,7 +15,8 @@ namespace QT.Map
     public class MapCellData : MonoBehaviour
     {
         [field:Header("타일맵 관련")]
-        [field: SerializeField] public Tilemap TilemapHardCollider { get; private set; }
+        [field: SerializeField] public Tilemap TilemapWall { get; private set; }
+        [field: SerializeField] public TilemapRenderer TilemapHardCollider { get; private set; }
         [field: SerializeField] public Tilemap TilemapTop { get; private set; }
         [field: SerializeField] public Transform EnemyLayer { get; private set; }
 
