@@ -138,9 +138,9 @@ namespace QT.Core.Map
             });
         }
 
-        public override void OnPostInitialized()
+        public override async void OnPostInitialized()
         {
-            _minimapCanvas = SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>();
+            _minimapCanvas = (await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>()).UIView as MinimapCanvas;
         }
 
         #region MapGenerate

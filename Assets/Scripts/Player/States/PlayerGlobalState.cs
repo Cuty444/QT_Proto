@@ -19,7 +19,7 @@ namespace QT.InGame
         private readonly int RotatationAnimHash = Animator.StringToHash("Rotation");
         private readonly int RigidAnimHash = Animator.StringToHash("Rigid");
 
-        private PlayerHPCanvas _playerHpCanvas;
+        private PlayerHPCanvasModel _playerHpCanvas;
         private RankingManager _rankingManager;
 
         private InputAngleDamper _roationDamper = new (5);
@@ -34,8 +34,6 @@ namespace QT.InGame
 
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
-            _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
-            _playerHpCanvas.gameObject.SetActive(true);
             _rankingManager = SystemManager.Instance.RankingManager;
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
             
@@ -43,8 +41,10 @@ namespace QT.InGame
             _swingRadStat = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingRad);
         }
 
-        public override void InitializeState()
+        public override async void InitializeState()
         {
+            _playerHpCanvas = await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>();
+            
             SystemManager.Instance.EventManager.AddEvent(this, InvokeEvent);
             SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainAnimation);
             _ownerEntity.OnAim.AddListener(OnAim);
@@ -55,7 +55,7 @@ namespace QT.InGame
 
         public override void UpdateState()
         {
-            _playerHpCanvas.SetHpUpdate(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP));
+            _playerHpCanvas.UpdateInfo(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP), _ownerEntity.Inventory.ActiveItem);
             _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
             
             OnSwingRadChange();
@@ -141,7 +141,6 @@ namespace QT.InGame
             
             var hp = statComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-damage);
-            _playerHpCanvas.CurrentHpImageChange(hp);
 
             _ownerEntity.DamageImpulseSource.GenerateImpulse(dir * _ownerEntity.DamageImpulseForce);
             

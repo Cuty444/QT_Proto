@@ -118,7 +118,6 @@ namespace QT.InGame
 
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             StatComponent.GetStatus(PlayerStats.HP).SetStatus(StatComponent.GetStatus(PlayerStats.HP).Value);
-            _playerHpCanvas.SetHp(StatComponent.GetStatus(PlayerStats.HP));
             
             _playerManager.GainItemSprite.AddListener(GainItem);
             

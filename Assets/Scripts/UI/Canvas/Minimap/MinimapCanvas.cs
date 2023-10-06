@@ -182,4 +182,35 @@ namespace QT.UI
             }
         }
     }
+
+
+    public class MinimapCanvasModel : UIModelBase
+    {
+        public override UIType UIType => UIType.Panel;
+        public override string PrefabPath => "Minimap.prefab";
+
+        private MinimapCanvas _minimapCanvas;
+
+        public override void SetState(UIState state)
+        {
+            switch (state)
+            {
+                case UIState.InGame:
+                    Show();
+                    break;
+                default:
+                    ReleaseUI();
+                    break;
+            }
+        }
+
+        public override void OnCreate(UIPanel view)
+        {
+            base.OnCreate(view);
+
+            _minimapCanvas = UIView as MinimapCanvas;
+        }
+
+    }
+    
 }

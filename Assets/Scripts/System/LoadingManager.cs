@@ -12,10 +12,8 @@ namespace QT
 {
     public class LoadingManager
     {
-        public UnityEvent DataMapLoadCompletedEvent { get; } = new();
+        public bool IsMapLoad { get; private set; }
 
-        private bool _isMapLoad = false;
-        
         public void GameOverOpen()
         {
         }
@@ -52,18 +50,16 @@ namespace QT
             }
         }
 
-        public void DataLoadCheck()
-        {
-            DataMapLoadCompletedEvent.AddListener(() =>
-            {
-                _isMapLoad = true;
-                Debug.Log("Map Data Load Completed");
-            });
-        }
-
         public void MapReLoad()
         {
-            _isMapLoad = false;
+            Debug.Log("맵 로드 시작");
+            IsMapLoad = false;
+        }
+
+        public void IsMapLoaded()
+        {
+            IsMapLoad = true;
+            Debug.Log("맵 로드 완료");
         }
     }
 }

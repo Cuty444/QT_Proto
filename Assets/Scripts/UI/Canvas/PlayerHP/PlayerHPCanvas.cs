@@ -4,146 +4,138 @@ using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 using UnityEngine.UI;
-using QT.UI;
-using QT.Util;
-using Spine.Unity;
 using TMPro;
 using System.Linq;
 using QT.InGame;
+
 namespace QT.UI
 {
     public class PlayerHPCanvas : UIPanel
     {
-        [SerializeField] private Transform _playerHpTransform;
-        [SerializeField] private GameObject _playerHpObject;
-        [SerializeField] private Sprite[] _playerHpImage;
-        [SerializeField] private TextMeshProUGUI _goldCostText;
+        [field:SerializeField] public Transform PlayerHpTransform { get; private set; }
+        [field:SerializeField] public GameObject PlayerHpObject { get; private set; }
+        [field:SerializeField] public Sprite[] PlayerHpImage { get; private set; }
 
-        [Space]
-        [SerializeField] private GameObject _activeCoolTimeObject;
-        [SerializeField] private GameObject _activeGlowObject;
-        [SerializeField] private Image _activeImage;
-        [SerializeField] private Image _activeCoolDownImage;
-
+        [field:Space]
+        [field:SerializeField] public GameObject ActiveCoolTimeObject { get; private set; }
+        [field:SerializeField] public GameObject ActiveGlowObject { get; private set; }
+        [field:SerializeField] public Image ActiveImage { get; private set; }
+        [field:SerializeField] public Image ActiveCoolDownImage { get; private set; }
         
-        private List<Image> _playerHpList = new List<Image>();
-        private int beforeHp = 0;
-        [SerializeField] private TweenAnimator _goldAnimation;
+        [field:Space]
+        [field:SerializeField] public TextMeshProUGUI GoldCostText { get; private set; }
+        [field:SerializeField] public TweenAnimator GoldAnimation { get; private set; }
+    }
 
-        private PlayerManager _playerManager;
+    public class PlayerHPCanvasModel : UIModelBase
+    {
+        public override UIType UIType => UIType.Panel;
+        public override string PrefabPath => "PlayerHP.prefab";
 
+        private PlayerHPCanvas _playerHPCanvas;
+
+        public override void SetState(UIState state)
+        {
+            switch (state)
+            {
+                case UIState.InGame:
+                    Show();
+                    break;
+                default:
+                    ReleaseUI();
+                    break;
+            }
+        }
+
+        public override void OnCreate(UIPanel view)
+        {
+            base.OnCreate(view);
+            
+            _playerHPCanvas = UIView as PlayerHPCanvas;
+        }
+        
+        
+        private List<Image> _hpIcons = new ();
         private int _lastActiveId;
 
-        private void Start()
+        public void UpdateInfo(Status hp, Item activeItem)
         {
-            _playerManager = SystemManager.Instance.PlayerManager;
+            SetHp(hp);
+
+            CheckCoolDown(activeItem);
         }
 
-        private void Update()
+        private void SetHp(Status hp)
         {
-            CheckCoolDown();
-        }
-
-        private async void CheckCoolDown()
-        {
-            var activeItem = _playerManager?.Player.Inventory.ActiveItem;
+            var maxIconCount = Mathf.Max(hp.BaseValue / 50, _hpIcons.Count);
             
-            _activeCoolTimeObject.SetActive(activeItem != null);
+            int checkHp = 0;
+            for (int i = 0; i < maxIconCount; i++)
+            {
+                if (i >= _hpIcons.Count)
+                {
+                    _hpIcons.Add(GameObject.Instantiate(_playerHPCanvas.PlayerHpObject, _playerHPCanvas.PlayerHpTransform).GetComponent<Image>());
+                }
+
+                if (checkHp > hp.Value)
+                {
+                    _hpIcons[i].gameObject.SetActive(false);
+                    continue;
+                }
+
+                _hpIcons[i].gameObject.SetActive(true);
+
+
+                int value = 2;
+
+                var compare = hp.StatusValue - checkHp;
+                if (compare >= 50)
+                {
+                    value = 0;
+                }
+                else if (compare >= 25)
+                {
+                    value = 1;
+                }
+
+                _hpIcons[i].sprite = _playerHPCanvas.PlayerHpImage[value];
+                
+                checkHp += 50;
+            }
+        }
+        
+        
+        private async void CheckCoolDown(Item activeItem)
+        {
+            _playerHPCanvas.ActiveCoolTimeObject.SetActive(activeItem != null);
             if (activeItem != null)
             {
                 var data = activeItem.ItemGameData;
                 if (_lastActiveId != data.Index)
                 {
-                    _activeImage.sprite = await SystemManager.Instance.ResourceManager.LoadAsset<Sprite>(data.ItemIconPath, true);
+                    _playerHPCanvas.ActiveImage.sprite = await SystemManager.Instance.ResourceManager.LoadAsset<Sprite>(data.ItemIconPath, true);
                 }
                 
                 float coolTime = activeItem.GetCoolTimeProgress();
-                _activeCoolDownImage.fillAmount = coolTime;
+                _playerHPCanvas.ActiveCoolDownImage.fillAmount = coolTime;
                 
-                _activeGlowObject.SetActive(coolTime <= 0);
+                _playerHPCanvas.ActiveGlowObject.SetActive(coolTime <= 0);
                 _lastActiveId = activeItem.ItemGameData.Index;
             }
         }
-
-        public void SetHp(Status hp)
-        {
-            for (int i = 0; i < _playerHpList.Count; i++)
-            {
-                ImageChange(_playerHpList[i],0);
-            }
-            for (int i = _playerHpList.Count * 25; i < hp.Value; i += 25)
-            {
-                _playerHpList.Add(Instantiate(_playerHpObject,_playerHpTransform).GetComponent<Image>());
-            }
-
-            if (_playerHpList.Count * 25 > hp.Value)
-            {
-                int index = (int) ((_playerHpList.Count * 25 - hp.Value) / 25);
-                for (int i = 0; i < index; i++)
-                {
-                    Destroy(_playerHpList.Last().gameObject);
-                    _playerHpList.Remove(_playerHpList.Last());
-                }
-            }
-
-            beforeHp = (int)hp.Value;
-        }
-
-        public void SetHpUpdate(Status hp)
-        {
-            for (int i = _playerHpList.Count * 25; i < hp.Value; i += 25)
-            {
-                _playerHpList.Add(Instantiate(_playerHpObject, _playerHpTransform).GetComponent<Image>());
-            }
-
-            int beforeValue = beforeHp / 25;
-            int afterValue = (int) (hp.Value / 25);
-            
-            if (beforeValue > afterValue)
-            {
-                int index = beforeValue-afterValue;
-                for (int i = 0; i < index; i++)
-                {
-                    Destroy(_playerHpList.Last().gameObject);
-                    _playerHpList.Remove(_playerHpList.Last());
-                }
-            }
-            beforeHp = afterValue * 25;
-
-            CurrentHpImageChange(hp);
-        }
         
-        public void CurrentHpImageChange(Status hp)
-        { 
-            int checkHp = 25;
-            for (int i = 0; i < _playerHpList.Count; i++)
+
+
+        public void SetGoldText(int gold)
+        {
+            var str = gold.ToString();
+
+            if (str != _playerHPCanvas.GoldCostText.text)
             {
-                int value = 0;
-                if (checkHp > hp.StatusValue)
-                {
-                    value = 2;
-                }
-                ImageChange(_playerHpList[i], value);
-                checkHp += 25;
+                _playerHPCanvas.GoldCostText.text = str;
+                _playerHPCanvas.GoldAnimation.ReStart();
             }
         }
-
-        public void ImageChange(Image image,int value)
-        {
-            image.sprite = _playerHpImage[value];
-        }
-
-        public void SetGoldText(int goldText)
-        {
-            var str = _playerManager.Gold.ToString();
-
-            if (str != _goldCostText.text)
-            {
-                _goldCostText.text = str;
-                _goldAnimation.ReStart();
-            }
-        }
-        
     }
-
+    
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
+using QT.UI;
 using UnityEngine;
 
 namespace QT
@@ -43,6 +44,8 @@ namespace QT
             _playerManager.PlayerDoorEnter.AddListener(MapEnter);
             
             _playerManager.Player._currentPlayerPosition = _mapData.StartPosition;
+            
+            SystemManager.Instance.UIManager.SetState(UIState.InGame);
         }
         
         private void MapEnter(Vector2Int nextDirection)

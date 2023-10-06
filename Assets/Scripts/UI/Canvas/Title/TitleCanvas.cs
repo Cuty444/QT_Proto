@@ -64,10 +64,9 @@ namespace QT.UI
         
         private void GameStart()
         {
-            SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
-                
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
-            SystemManager.Instance.StageLoadManager.StageLoad("1");
+            
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
             SystemManager.Instance.LoadingManager.LoadScene(1);
         }
 

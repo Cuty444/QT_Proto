@@ -46,7 +46,6 @@ namespace QT.Core
             _debugConsole.SetActive(false);   
 #endif
             
-            LoadingManager.DataLoadCheck();
             SoundManager.Initialize(_soundPathData);
             ResourceManager.Initialize();
             
@@ -58,12 +57,12 @@ namespace QT.Core
             
             _PostInitializeSystems();
 
+            //타이틀씬으로 이동
             if (!IsTestMode)
             {
                 RankingManager.Initialize();
                 RankingManager.DataLoad();
                 
-                //타이틀씬으로 이동
                 LoadingManager.LoadScene(2);
             }
         }

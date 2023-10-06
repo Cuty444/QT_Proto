@@ -53,7 +53,7 @@ namespace QT.Core
             
         }
 
-        private void AddGold(int value)
+        private async void AddGold(int value)
         {
             if (value > 0)
             {
@@ -62,15 +62,15 @@ namespace QT.Core
 
             Gold = Mathf.Max(0, Gold + value);
             
-            SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().SetGoldText(Gold);
+            (await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>()).SetGoldText(Gold);
             
             SystemManager.Instance.EventManager.InvokeEvent(EventType.OnGoldChanged, Gold);
         }
         
-        public void Reset()
+        public async void Reset()
         {
             Gold = 0;
-            SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().SetGoldText(Gold);
+            (await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>()).SetGoldText(Gold);
         }
     }
 }

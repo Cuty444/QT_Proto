@@ -55,14 +55,7 @@ namespace QT.UI
             var go = await SystemManager.Instance.ResourceManager.LoadAsset<GameObject>(PrefabPath + model.PrefabPath, false, deActiveParent);
             var view = go.GetComponent<UIPanel>();
 
-            var viewTransform = view.transform as RectTransform;
-            
-            //viewTransform.SetParent(deActiveParent, false);
-            
-            viewTransform.anchoredPosition = Vector2.zero;
-            // viewTransform.anchorMin = Vector2.zero;
-            // viewTransform.anchorMax = Vector2.one;
-            // viewTransform.sizeDelta = (deActiveParent as RectTransform).sizeDelta;
+            (view.transform as RectTransform).anchoredPosition = Vector2.zero;
             
             model.OnCreate(view);
             
@@ -166,7 +159,9 @@ namespace QT.UI
         public async UniTask Initialize()
         {
             await UniTask.WhenAll(Get<TitleCanvasModel>(),
-                Get<LoadingCanvasModel>());
+                Get<LoadingCanvasModel>(),
+                Get<PlayerHPCanvasModel>(),
+                Get<MinimapCanvasModel>());
         }
         
         
