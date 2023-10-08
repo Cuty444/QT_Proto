@@ -807,7 +807,6 @@ namespace QT.Core.Map
             _floorValue++;
             
             var _playerManager = SystemManager.Instance.PlayerManager;
-            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
 
             _playerManager.PlayerIndexInventory = _playerManager.Player.Inventory.GetItemList()
                 .Select((x) => x.ItemGameData.Index).ToList();

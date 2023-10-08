@@ -37,6 +37,11 @@ namespace QT
             HitAbleManager.Instance.UnRegister(this);
         }
 
+        private void OnDestroy()
+        {
+            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(Sold);
+        }
+
         private void Hit()
         {
             _animator.SetTrigger(AnimationHitHash);

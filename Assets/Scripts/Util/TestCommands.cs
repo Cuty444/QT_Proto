@@ -14,7 +14,7 @@ namespace QT
         [ConsoleMethod("AddItem", "아이템 추가")]
         public static void AddItem(int id)
         {
-            SystemManager.Instance.PlayerManager.Player.Inventory.AddItem(id);
+            SystemManager.Instance.PlayerManager.Player.AddItem(SystemManager.Instance.DataManager.GetDataBase<ItemGameDataBase>().GetData(id));
         }
         
         

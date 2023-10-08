@@ -119,8 +119,6 @@ namespace QT.InGame
             _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             StatComponent.GetStatus(PlayerStats.HP).SetStatus(StatComponent.GetStatus(PlayerStats.HP).Value);
             
-            _playerManager.GainItemSprite.AddListener(GainItem);
-            
             SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>()?.OnOpen();
             
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(true);

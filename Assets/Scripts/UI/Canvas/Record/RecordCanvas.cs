@@ -35,7 +35,6 @@ namespace QT
             _clearTimeText.text = "#클리어_시간_" + time.ToString(@"hh\:mm\:ss");
             
             var _playerManager = SystemManager.Instance.PlayerManager;
-            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             _playerManager.Reset();
             
             _playerManager.PlayerIndexInventory.Clear();

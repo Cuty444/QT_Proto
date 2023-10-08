@@ -177,8 +177,7 @@ namespace QT
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Item_GetSFX);
             
-            _playerManager.GainItemSprite.Invoke(_iconImage.sprite);
-            _playerManager.Player.Inventory.AddItem(ItemGameData.Index);
+            _playerManager.Player.AddItem(ItemGameData);
             
             _onGainItem?.Invoke();
             

@@ -67,7 +67,6 @@ namespace QT.UI
 
         public void Retry()
         {
-            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             SystemManager.Instance.StageLoadManager.StageLoad((SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() + 1).ToString());
             _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
@@ -85,7 +84,6 @@ namespace QT.UI
 
         public void Exit()
         {
-            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
                 SystemManager.Instance.LoadingManager.LoadScene(2);
