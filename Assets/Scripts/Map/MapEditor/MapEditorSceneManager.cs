@@ -49,15 +49,15 @@ namespace QT.Map
             
             SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener(OnPlayerCreated);
             
-            StartCoroutine(Loading());
-        }
-
-        IEnumerator Loading()
-        {
-            yield return new WaitUntil(() => SystemManager.Instance.LoadingManager.IsJsonLoad());
-            
+            //StartCoroutine(Loading());
             SystemManager.Instance.PlayerManager.CreatePlayer();
         }
+
+        // IEnumerator Loading()
+        // {
+        //     yield return new WaitUntil(() => SystemManager.Instance.LoadingManager.IsJsonLoad());
+        //     
+        // }
 
         private void OnPlayerCreated(Player player)
         {

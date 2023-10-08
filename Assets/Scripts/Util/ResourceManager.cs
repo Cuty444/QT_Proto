@@ -41,7 +41,7 @@ namespace QT
             _cache.TryAdd(path, asset);
         }
         
-        public async UniTask<T> LoadAsset<T>(string path, bool isCaching) where T : Object
+        public async UniTask<T> LoadAsset<T>(string path, bool isCaching, Transform parent = null) where T : Object
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -55,7 +55,7 @@ namespace QT
             
             try
             {
-                return Object.Instantiate(await Addressables.LoadAssetAsync<T>(path));
+                return Object.Instantiate(await Addressables.LoadAssetAsync<T>(path), parent);
             }
             catch (Exception e)
             {

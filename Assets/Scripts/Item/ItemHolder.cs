@@ -125,7 +125,7 @@ namespace QT
             ClearItem();
         }
 
-        private void GainItem()
+        private async void GainItem()
         {
             if (_used)
             {
@@ -153,7 +153,7 @@ namespace QT
                     return;
                 }
                 
-                SystemManager.Instance.UIManager.GetUIPanel<UIActiveItemSelectCanvas>().Show(playerActive, ItemGameData, GainItem);
+                (await SystemManager.Instance.UIManager.Get<UIActiveItemSelectCanvasModel>()).Initialize(playerActive, ItemGameData, GainItem);
             }
             else
             {
@@ -177,8 +177,7 @@ namespace QT
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Item_GetSFX);
             
-            _playerManager.GainItemSprite.Invoke(_iconImage.sprite);
-            _playerManager.Player.Inventory.AddItem(ItemGameData.Index);
+            _playerManager.Player.AddItem(ItemGameData);
             
             _onGainItem?.Invoke();
             

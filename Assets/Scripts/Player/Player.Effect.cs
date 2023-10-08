@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,11 +79,13 @@ namespace QT.InGame
             TeleportEffectEmitting(isActive);
         }
 
-        public void GainItem(Sprite sprite)
+        public void AddItem(ItemGameData data)
         {
+            Inventory.AddItem(data.Index);
+            
             _itemPickUpParticle.Play();
             _itemPickUpImage.enabled = true;
-            _itemPickUpImage.sprite = sprite;
+            SystemManager.Instance.ResourceManager.LoadUIImage(data.ItemIconPath, _itemPickUpImage);
             _itemPickUpAnimator.ReStart();
         }
 

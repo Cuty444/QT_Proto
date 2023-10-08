@@ -1,59 +1,231 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.Events;
+using Cysharp.Threading.Tasks;
+using QT.Core;
+using UnityEngine.InputSystem;
 
 namespace QT.UI
 {
+    public enum UIType
+    {
+        Panel,
+        Popup,
+    }
+
+    public enum UIState
+    {
+        None,
+        Loading,
+        Title,
+        
+        InGame,
+        Battle,
+        
+        Phone,
+        Setting,
+        
+        GameOver,
+        GameClear,
+    }
+    
     public class UIManager : MonoBehaviour
     {
-        private readonly Dictionary<Type, UIPanel> _Panels = new Dictionary<Type, UIPanel>();
-        private UIPanel _currentPanel;
+        private const string PrefabPath = "UI/Prefab/";
 
+        [SerializeField] private Transform panelParent;
+        [SerializeField] private Transform popupParent;
+        [SerializeField] private Transform deActiveParent;
+        
+        private Dictionary<Type, UIModelBase> _allUI = new ();
+        private Stack<UIModelBase> _popupStack = new ();
 
-        public void Initialize()
+        public UIState State { get; private set; } = UIState.None;
+        public UIState LastState { get; private set; } = UIState.None;
+        
+         #region Get
+
+        public async UniTask<T> Get<T>() where T : UIModelBase
         {
-            for(int i = 0; i < transform.childCount; i++)
+            if (_allUI.TryGetValue(typeof(T), out var model))
             {
-                UIPanel panel = transform.GetChild(i).GetComponent<UIPanel>();
+                Show(model);
+                return (T) model;
+            }
 
-                if (panel == null)
-                    continue;
+            model = (T) Activator.CreateInstance(typeof(T));
+            
+            var go = await SystemManager.Instance.ResourceManager.LoadAsset<GameObject>(PrefabPath + model.PrefabPath, false, deActiveParent);
+            var view = go.GetComponent<UIPanel>();
 
-                panel.Initialize();
-                if(!_Panels.ContainsKey(panel.GetType()))
-                    _Panels.Add(panel.GetType(), panel);
+            (view.transform as RectTransform).anchoredPosition = Vector2.zero;
+            
+            model.OnCreate(view);
+            
+            _allUI.Add(typeof(T), model);
+            
+            return (T) model;
+        }
+
+        public UIModelBase Show(UIModelBase model)
+        {
+            switch (model.UIType)
+            {
+                case UIType.Panel:
+                    model.UIView.transform.SetParent(panelParent, false);
+                    break;
+                case UIType.Popup:
+                    model.UIView.transform.SetParent(popupParent, false);
+                    model.UIView.transform.SetAsLastSibling();
+
+                    _popupStack.Push(model);
+                    break;
             }
             
-            foreach(KeyValuePair<Type,UIPanel> panel in _Panels)
+            return model;
+        }
+        
+        #endregion
+
+        #region Release
+
+        public void Release(UIModelBase model)
+        {
+            switch (model.UIType)
             {
-                panel.Value.OnClose();
+                case UIType.Panel:
+                    model.UIView.transform.SetParent(deActiveParent);
+                    break;
+                case UIType.Popup:
+                    ReleasePopup(model);
+                    if (model.UIView && !model.UIView.UsePooling)
+                    {
+                        Destroy(model.UIView);
+                    }
+                    break;
             }
         }
 
-        public void PostSystemInitialize()
+        private void ReleasePopup(UIModelBase model)
         {
-            foreach (var panel in _Panels)
+            if (_popupStack.Count != 0 && _popupStack.Peek().Equals(model))
             {
-                panel.Value.PostSystemInitialize();
+                _popupStack.Pop();
+                model.UIView.transform.SetParent(deActiveParent);
+            }
+            else if (_popupStack.Contains(model))
+            {
+                while (_popupStack.Count > 0)
+                {
+                    var last = _popupStack.Pop();
+                    last.UIView.transform.SetParent(deActiveParent);
+
+                    if (last.Equals(model))
+                    {
+                        return;
+                    }
+                }
             }
         }
 
-        public void Open(string panelName) // TODO : 이 함수는 리팩토링 필요
+        public void ReleaseAllPopups()
         {
-            //_currentPanel.OnClose();
-            //_currentPanel = _Panels[panelName];
-            //_currentPanel.OnOpen();
+            while (_popupStack.Count > 0)
+            {
+                var last = _popupStack.Pop();
+                last.UIView.transform.SetParent(deActiveParent);
+            }
         }
 
+        #endregion
+        
+        public void SetState(UIState state)
+        {
+            if(State == state)
+            {
+                return;
+            }
+            
+            LastState = State;
+            State = state;
+
+            foreach (var ui in _allUI)
+            {
+                ui.Value.SetState(state);
+            }
+        }
+
+        public bool IsUIActive<T>() where T : UIModelBase
+        {
+            if (_allUI.TryGetValue(typeof(T), out var model))
+            {
+                return model.UIView.gameObject.activeInHierarchy;
+            }
+
+            return false;
+        }
+
+        public async UniTask Initialize()
+        {
+            await UniTask.WhenAll(Get<TitleCanvasModel>(),
+                Get<LoadingCanvasModel>(),
+                Get<PlayerHPCanvasModel>(),
+                Get<MinimapCanvasModel>(),
+                Get<PhoneCanvasModel>());
+            
+            InitInputs();
+        }
+        
+        
+        
+        private UIInputActions _inputActions;
+        
+        private void InitInputs()
+        {
+            _inputActions = new UIInputActions();
+
+            _inputActions.UI.Phone.started += OnClickPhoneKey;
+            _inputActions.UI.Escape.started += OnClickEscapeKey;
+            
+            _inputActions.Enable();
+        }
+
+
+        private void OnClickPhoneKey(InputAction.CallbackContext context)
+        {
+            switch (State)
+            {
+                case UIState.InGame:
+                case UIState.Battle:
+                    SetState(UIState.Phone);
+                    break;
+                case UIState.Phone:
+                    SetState(LastState);
+                    break;
+            }
+        }
+        
+        private void OnClickEscapeKey(InputAction.CallbackContext context)
+        {
+            switch (State)
+            {
+                case UIState.Title:
+                case UIState.InGame:
+                case UIState.Battle:
+                case UIState.Phone:
+                    SetState(UIState.Setting);
+                    break;
+                case UIState.Setting:
+                    SetState(LastState);
+                    break;
+            }
+        }
+        
+        
+        
+        
         public T GetUIPanel<T>() where T : UIPanel
         {
-            if (_Panels.TryGetValue(typeof(T), out var system))
-            {
-                return (T)system;
-            }
-
             return null;
         }
     }

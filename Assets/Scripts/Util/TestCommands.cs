@@ -14,7 +14,7 @@ namespace QT
         [ConsoleMethod("AddItem", "아이템 추가")]
         public static void AddItem(int id)
         {
-            SystemManager.Instance.PlayerManager.Player.Inventory.AddItem(id);
+            SystemManager.Instance.PlayerManager.Player.AddItem(SystemManager.Instance.DataManager.GetDataBase<ItemGameDataBase>().GetData(id));
         }
         
         
@@ -80,7 +80,7 @@ namespace QT
                 return;
             }
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(index - 2);
-            SystemManager.Instance.PlayerManager.StairNextRoomEvent.Invoke();
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().NextFloor();
         }
         
         [ConsoleMethod("Gold", "골드 획득")]

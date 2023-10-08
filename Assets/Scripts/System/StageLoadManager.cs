@@ -9,15 +9,10 @@ namespace QT
 {
     public class StageLoadManager
     {
-        public void StageLoad(string stageNumber)
+        public async UniTask StageLoad(string stageNumber)
         {
-            Debug.Log("맵 로드 시작");
             SystemManager.Instance.LoadingManager.MapReLoad();
-            MapLoad(stageNumber);
-        }
-
-        private async UniTaskVoid MapLoad(string stageNumber)
-        {
+            
             await UniTask.WhenAll(SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumber),
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().ShopLoad(stageNumber),
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().StartRoomLoad(stageNumber),
@@ -26,7 +21,7 @@ namespace QT
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().RewardRoomLoad(stageNumber),
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().HpHealRoomLoad(stageNumber));
 
-            SystemManager.Instance.LoadingManager.DataMapLoadCompletedEvent.Invoke();
+            SystemManager.Instance.LoadingManager.IsMapLoaded();
         }
     }
 }

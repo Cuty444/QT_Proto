@@ -54,7 +54,6 @@ namespace QT
             var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-25);
             
-            _playerHpCanvas.CurrentHpImageChange(hp);
             if (hp <= 0)
             {
                 _ownerEntity.PlayerDead();

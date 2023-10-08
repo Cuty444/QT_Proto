@@ -21,12 +21,10 @@ namespace QT.Core
         public UnityEvent<bool> PlayerMapPass { get; } = new();
 
         public UnityEvent PlayerItemInteraction { get; } = new();
-        //public UnityEvent<Vector2, float> OnDamageEvent { get; } = new();
+        
         public UnityEvent<int> OnGoldValueChanged { get; } = new();
 
         public UnityEvent<VolumeProfile, float> OnMapCellChanged { get; } = new();
-
-        public UnityEvent StairNextRoomEvent { get; } = new();
         
         public Player Player { get; private set; }
         public int PlayerActiveItemIndex = -1;
@@ -34,10 +32,6 @@ namespace QT.Core
 
         public UnityEvent AddItemEvent { get; } = new();
         
-        public UnityEvent FadeInCanvasOut { get; } = new();
-
-        public UnityEvent<Sprite> GainItemSprite { get; } = new(); // TODO : 상점에서 얻거나, 획득시 분리한 이유는 시작할때 이전 방에서 아이템 로드하면서 꼬일수 있음...
-
         public int Gold { get; private set; } = 0;
 
         public PlayerManager()
@@ -51,11 +45,11 @@ namespace QT.Core
             Player = await SystemManager.Instance.ResourceManager.GetFromPool<Player>(Constant.PlayerPrefabPath);
             Player.transform.localPosition = new Vector3(0f, 0f, 0f);
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
-            PlayerCreateEvent.Invoke(Player);
             
+            PlayerCreateEvent.Invoke(Player);
         }
 
-        private void AddGold(int value)
+        private async void AddGold(int value)
         {
             if (value > 0)
             {
@@ -64,15 +58,15 @@ namespace QT.Core
 
             Gold = Mathf.Max(0, Gold + value);
             
-            SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().SetGoldText(Gold);
+            (await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>()).SetGoldText(Gold);
             
             SystemManager.Instance.EventManager.InvokeEvent(EventType.OnGoldChanged, Gold);
         }
         
-        public void Reset()
+        public async void Reset()
         {
             Gold = 0;
-            SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>().SetGoldText(Gold);
+            (await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>()).SetGoldText(Gold);
         }
     }
 }

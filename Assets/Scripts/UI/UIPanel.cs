@@ -5,21 +5,11 @@ using UnityEngine;
 namespace QT.UI
 {
 
-    public enum UIPanelState
-    {
-        None,
-        Title,
-        InGame,
-        Inventory,
-        Shop,
-        Setting,
-        Pause,
-        GameOver,
-        GameClear,
-    }
-    
     public class UIPanel : MonoBehaviour
     {
+        [SerializeField] private bool usePooling = false;
+        public bool UsePooling => usePooling;
+        
         public virtual void Initialize()
         {
 
@@ -28,11 +18,6 @@ namespace QT.UI
         public virtual void PostSystemInitialize()
         {
 
-        }
-
-        public virtual void OnStateChange(UIPanelState state)
-        {
-                
         }
         
         public virtual void OnOpen()

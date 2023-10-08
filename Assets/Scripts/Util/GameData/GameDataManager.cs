@@ -40,13 +40,13 @@ namespace QT.Core
 
         private Dictionary<Type, IGameDataBase> _databases;
 
-        public void Initialize()
+        public async UniTask Initialize()
         {
             _databases = new Dictionary<Type, IGameDataBase>();
 
             try
             {
-                ParseGameData();
+               await ParseGameData();
             }
             catch (Exception e)
             {
@@ -55,7 +55,7 @@ namespace QT.Core
         }
 
 
-        private async UniTaskVoid ParseGameData()
+        private async UniTask ParseGameData()
         {
             var dataBaseTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t =>
                 typeof(IGameDataBase) != t && typeof(IGameDataBase).IsAssignableFrom(t));
@@ -84,11 +84,6 @@ namespace QT.Core
             }
 
             IsInitialized = true;
-
-            if (Application.isPlaying)
-            {
-                SystemManager.Instance.LoadingManager.DataJsonLoadCompletedEvent.Invoke();
-            }
         }
 
         private async UniTask<JArray> GetJson(GameDataBaseAttribute attribute)

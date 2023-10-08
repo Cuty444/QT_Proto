@@ -43,8 +43,6 @@ namespace QT.Map
         {
             _spawnedCount -= 1;
           
-            Debug.Log((_spawnedCount));
-
             if (_spawnedCount <= 0)
             {
                 if (NextWave == null)

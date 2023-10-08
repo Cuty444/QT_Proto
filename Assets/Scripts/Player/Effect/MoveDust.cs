@@ -29,46 +29,25 @@ namespace QT
 
         public void LeftDust()
         {
-            if (_playerManager.Player.IsGarden)
-            {
-                _resourceManager.EmitParticle(MoveGardenEffectPath, playerTransform.position);
-            }
-            else
-            {
-                _resourceManager.EmitParticle(MoveDustEffectPath, playerTransform.position,
-                    Quaternion.Euler(0f,0f,_playerManager.Player.IsMoveFlip ? 70f: 0f));
-            }
+            _resourceManager.EmitParticle(MoveDustEffectPath, playerTransform.position,
+                Quaternion.Euler(0f,0f,_playerManager.Player.IsMoveFlip ? 70f: 0f));
             MoveSoundOn();
         }
 
         public void RightDust()
         {
-            if (_playerManager.Player.IsGarden)
-            {
-                _resourceManager.EmitParticle(MoveGardenEffectPath, playerTransform.position);
-            }
-            else
-            {
-                _resourceManager.EmitParticle(MoveDustEffectPath, playerTransform.position,
-                    Quaternion.Euler(0f,0f,_playerManager.Player.IsMoveFlip ? 70f: 0f));
-            }
+            _resourceManager.EmitParticle(MoveDustEffectPath, playerTransform.position,
+                Quaternion.Euler(0f,0f,_playerManager.Player.IsMoveFlip ? 70f: 0f));
             MoveSoundOn();
         }
 
         private void MoveSoundOn()
         {
             _studioEventEmitter.Play();
-            if (_playerManager.Player.IsGarden)
-            {
-                _flower.TriggerParameters();
-                _soundManager.PlayOneShot(_flower.Emitters[0].Target.EventReference);
-            }
-            else
-            {
-                _stone.TriggerParameters();
-                //Lookup(_soundManager.SoundData.WalkSFX,"Stone");
-                _soundManager.PlayOneShot(_stone.Emitters[0].Target.EventReference);
-            }
+            
+            _stone.TriggerParameters();
+            //Lookup(_soundManager.SoundData.WalkSFX,"Stone");
+            _soundManager.PlayOneShot(_stone.Emitters[0].Target.EventReference);
         }
     }
 }
