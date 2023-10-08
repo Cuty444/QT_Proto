@@ -185,6 +185,7 @@ namespace QT.UI
             _inputActions = new UIInputActions();
 
             _inputActions.UI.Phone.started += OnClickPhoneKey;
+            _inputActions.UI.Escape.started += OnClickEscapeKey;
             
             _inputActions.Enable();
         }
@@ -204,6 +205,21 @@ namespace QT.UI
             }
         }
         
+        private void OnClickEscapeKey(InputAction.CallbackContext context)
+        {
+            switch (State)
+            {
+                case UIState.Title:
+                case UIState.InGame:
+                case UIState.Battle:
+                case UIState.Phone:
+                    SetState(UIState.Setting);
+                    break;
+                case UIState.Setting:
+                    SetState(LastState);
+                    break;
+            }
+        }
         
         
         
