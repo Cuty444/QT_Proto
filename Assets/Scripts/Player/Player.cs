@@ -161,13 +161,11 @@ namespace QT.InGame
 
         public void Warp(Vector2Int cellPos)
         {
+            SystemManager.Instance.UIManager.SetState(UIState.InGame);
+            
             PauseGame(true);
             Animator.SetTrigger("IsWarp");
-            if (Animator.GetBool("IsPause"))
-            {
-                SystemManager.Instance.UIManager.GetUIPanel<UIPhoneCanvas>().CheckOpen();
-            }
-
+            
             StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
             {
                 _warpEffectParticle.Play();

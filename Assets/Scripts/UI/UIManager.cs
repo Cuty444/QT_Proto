@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
 using QT.Core;
-using QT.Util;
+using UnityEngine.InputSystem;
 
 namespace QT.UI
 {
@@ -22,7 +22,7 @@ namespace QT.UI
         InGame,
         Battle,
         
-        Inventory,
+        Phone,
         Setting,
         
         GameOver,
@@ -41,6 +41,7 @@ namespace QT.UI
         private Stack<UIModelBase> _popupStack = new ();
 
         public UIState State { get; private set; } = UIState.None;
+        public UIState LastState { get; private set; } = UIState.None;
         
          #region Get
 
@@ -140,6 +141,12 @@ namespace QT.UI
         
         public void SetState(UIState state)
         {
+            if(State == state)
+            {
+                return;
+            }
+            
+            LastState = State;
             State = state;
 
             foreach (var ui in _allUI)
@@ -163,8 +170,42 @@ namespace QT.UI
             await UniTask.WhenAll(Get<TitleCanvasModel>(),
                 Get<LoadingCanvasModel>(),
                 Get<PlayerHPCanvasModel>(),
-                Get<MinimapCanvasModel>());
+                Get<MinimapCanvasModel>(),
+                Get<PhoneCanvasModel>());
+            
+            InitInputs();
         }
+        
+        
+        
+        private UIInputActions _inputActions;
+        
+        private void InitInputs()
+        {
+            _inputActions = new UIInputActions();
+
+            _inputActions.UI.Phone.started += OnClickPhoneKey;
+            
+            _inputActions.Enable();
+        }
+
+
+        private void OnClickPhoneKey(InputAction.CallbackContext context)
+        {
+            switch (State)
+            {
+                case UIState.InGame:
+                case UIState.Battle:
+                    SetState(UIState.Phone);
+                    break;
+                case UIState.Phone:
+                    SetState(LastState);
+                    break;
+            }
+        }
+        
+        
+        
         
         
         public T GetUIPanel<T>() where T : UIPanel

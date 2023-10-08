@@ -40,6 +40,7 @@ namespace QT.UI
             {
                 case UIState.InGame:
                 case UIState.Battle:
+                case UIState.Phone:
                     Show();
                     break;
                 default:

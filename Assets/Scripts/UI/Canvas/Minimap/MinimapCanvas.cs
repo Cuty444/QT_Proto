@@ -7,8 +7,6 @@ using QT.Map;
 using QT.Core.Map;
 using QT.Util;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 namespace QT.UI
 {
@@ -42,6 +40,7 @@ namespace QT.UI
         private Vector2Int _startPos;
         
         
+        
         public override void SetState(UIState state)
         {
             switch (state)
@@ -65,11 +64,6 @@ namespace QT.UI
 
         public override void Show()
         {
-            if (_minimapCanvas.gameObject.activeInHierarchy)
-            {
-                return;
-            }
-            
             base.Show();
             _minimapCanvas.StopAllCoroutines();
             _minimapCanvas.PopAnimator.ReStart();
