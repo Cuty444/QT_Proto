@@ -16,7 +16,6 @@ namespace QT.UI
         public override void OnOpen()
         {
             base.OnOpen();
-            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.BossStageBGM);
             _popAnimation.ReStart();
         }
         

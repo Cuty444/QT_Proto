@@ -42,26 +42,28 @@ namespace QT.Map
         private Button _clickTeleportButton;
 
         [SerializeField] private Image _iconObject;
-        
-        public void Setting()
+
+        private void Awake()
         {
-            _lines.SetActive(false);
             _mapImage = GetComponent<Image>();
             
+            _clickTeleportButton = gameObject.GetComponent<Button>();
+            _clickTeleportButton.onClick.AddListener(OnClickTeleportButton);
+            
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
+            
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
+        }
+
+        public void Setting(Vector2Int startPos)
+        {
+            _lines.SetActive(false);
             
             _mapImage.enabled = false;
             _iconsTransform.gameObject.SetActive(false);
-        }
-
-        public void ClearListener()
-        {
-            _playerManager.PlayerMapPosition.RemoveListener(CellPosCheck);
-            _roomType = RoomType.None;
             
-            Destroy(gameObject);
+            CellPosCheck(startPos);
         }
 
         public void SetRouteDirection(MapDirection mapDirection)
@@ -74,23 +76,6 @@ namespace QT.Map
         
         private void CellPosCheck(Vector2Int pos)
         {
-            if (pos == CellPos)
-            {
-                if (pos == _dungeonMapSystem.DungeonMapData.ShopRoomPosition)
-                {
-                    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.ShopStageBGM);
-                }
-                else if (pos == _dungeonMapSystem.DungeonMapData.BossRoomPosition)
-                {
-                    //TODO : BossHPCanavas 에서 제어중
-                }
-                else
-                {
-                    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
-                }
-            }
-            
-            
             var cellData = _dungeonMapSystem.GetCellData(CellPos);
             var isCellVisible = cellData.IsClear || cellData.IsVisited;
             
@@ -151,20 +136,15 @@ namespace QT.Map
                     _roomType = RoomType.Stairs;
                 }
             }
-
-            if (_roomType != RoomType.Normal)
-            {
-                _clickTeleportButton = gameObject.AddComponent<Button>();
-                ColorBlock buttonColors = _clickTeleportButton.colors;
-                buttonColors.disabledColor = Color.white;
-                _clickTeleportButton.colors = buttonColors;
-                _clickTeleportButton.onClick.AddListener(CellTeleportEvent);
-                Debug.Log(_roomType.ToString(),gameObject);
-            }
         }
 
-        public void CellTeleportEvent()
+        private void OnClickTeleportButton()
         {
+            if (_roomType == RoomType.Normal)
+            {
+                return;
+            }
+            
             var playerPos = DungeonManager.Instance.PlayerPosition;
             
             if (playerPos == CellPos) return;

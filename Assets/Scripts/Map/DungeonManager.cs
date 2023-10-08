@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks.Triggers;
 using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
@@ -17,6 +18,9 @@ namespace QT
 
         public Vector2Int PlayerPosition { get; private set; }
 
+        private void Awake()
+        {
+        }
         
         private async void Start()
         {
@@ -28,7 +32,6 @@ namespace QT
             _playerManager.PlayerMapTeleportPosition.AddListener(MapTeleport);
             
             _dungeonMapSystem.DungeonReady(transform);
-            
             
             var minimapCanvas = await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>();
             minimapCanvas.SetMiniMap(_mapData);
@@ -55,8 +58,6 @@ namespace QT
             _playerManager.PlayerMapClearPosition.Invoke(_mapData.StartPosition);
             
             PlayerPosition = _mapData.StartPosition;
-            
-            SystemManager.Instance.UIManager.SetState(UIState.InGame);
         }
         
         private async void MapEnter(Vector2Int nextDirection)
@@ -66,11 +67,24 @@ namespace QT
             _playerManager.PlayerMapPosition.Invoke(nextPosition);
             
             PlayerPosition = nextPosition;
-
-            bool isClear = SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(nextPosition).IsClear;
+            
+            var data = SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(nextPosition);
             
             (await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>()).ChangeCenter(nextPosition);
-            SystemManager.Instance.UIManager.SetState(isClear ? UIState.InGame : UIState.Battle);
+            SystemManager.Instance.UIManager.SetState(data.IsClear ? UIState.InGame : UIState.Battle);
+
+            switch (data.RoomType)
+            {
+                case RoomType.GoldShop:
+                    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.ShopStageBGM);
+                    break;
+                case RoomType.Boss:
+                    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.BossStageBGM);
+                    break;
+                default:
+                    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
+                    break;
+            }
         }
 
         private void MapClear(Vector2Int position)

@@ -40,8 +40,8 @@ namespace QT.Core.Map
 
     public class BFSCellData
     {
+        public readonly int RoomCount;
         public Vector2Int Position;
-        public int RoomCount;
 
         public BFSCellData(Vector2Int position, int roomCount)
         {
@@ -52,6 +52,7 @@ namespace QT.Core.Map
 
     public class CellData
     {
+        public MapDirection DoorDirection;
         public RoomType RoomType;
         public bool IsVisited;
         public bool IsClear;
@@ -161,6 +162,12 @@ namespace QT.Core.Map
             var roomPositionValues = GetFarthestRoomFromStart();
             SpecialRoomGenerate();
             _mapData = new MapData(_map, startPos, roomPositionValues.Item1, roomPositionValues.Item2, _mapNodeList);
+            
+            foreach (var pos in _mapData.MapNodeList)
+            {
+                _mapData.Map[pos.y,pos.x].DoorDirection = DirectionCheck(pos);
+            }
+            
         }
 
 
@@ -191,7 +198,7 @@ namespace QT.Core.Map
                 }
             }
 
-            QT.Util.RandomSeed.SeedSetting();
+            RandomSeed.SeedSetting();
             _map[startPos.y, startPos.x].RoomType = RoomType.Start;
             _map[startPos.y, startPos.x].IsVisited = true;
             _mapNodeList.Clear();
@@ -228,7 +235,10 @@ namespace QT.Core.Map
                 }
             }
 
-            RoomCreate(routeList[UnityEngine.Random.Range(0, routeList.Count)]);
+            var result = routeList[Random.Range(0, routeList.Count)];
+            
+            _mapNodeList.Add(result);
+            _map[result.y, result.x].RoomType = RoomType.Normal;
         }
 
         private bool MultiPathCheck(Vector2Int pos)
@@ -596,12 +606,6 @@ namespace QT.Core.Map
             return _map[roomPosition.y, roomPosition.x].RoomType;
         }
 
-        private void RoomCreate(Vector2Int pos)
-        {
-            _mapNodeList.Add(pos);
-            _map[pos.y, pos.x].RoomType = RoomType.Normal;
-        }
-
         #endregion
 
         #region MapDataLoad
@@ -725,13 +729,9 @@ namespace QT.Core.Map
 
         private void MapCellDraw()
         {
-            for (int i = 0; i < _mapData.MapNodeList.Count; i++)
+            foreach (var pos in _mapData.MapNodeList)
             {
-                var pos = _mapData.MapNodeList[i];
-                var direction = DirectionCheck(pos);
-                
-                CellCreate(pos, direction);
-                //_minimapCanvas.AddCell(_mapData.MapNodeList[i], direction, i, _mapData.Map[pos.y, pos.x].RoomType);
+                CellCreate(pos, _mapData.Map[pos.y, pos.x].DoorDirection);
             }
         }
 

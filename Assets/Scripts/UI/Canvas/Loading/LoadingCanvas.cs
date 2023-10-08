@@ -50,7 +50,7 @@ namespace QT.UI
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.LoadingBGM);
             
             _loadingCanvas.StopAllCoroutines();
-            _loadingCanvas.CanvasGroup.DOFade(1, _loadingCanvas.FadeInOutTime).SetEase(Ease.OutQuad);
+            _loadingCanvas.CanvasGroup.DOFade(1, _loadingCanvas.FadeInOutTime).SetEase(Ease.InQuad);
         }
 
         public override void ReleaseUI()
