@@ -39,7 +39,7 @@ namespace QT
 
         private void OnDestroy()
         {
-            SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(Sold);
+            SystemManager.Instance?.PlayerManager.AddItemEvent.RemoveListener(Sold);
         }
 
         private void Hit()

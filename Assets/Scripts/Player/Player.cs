@@ -57,8 +57,6 @@ namespace QT.InGame
         
         private PlayerManager _playerManager;
 
-        private PlayerHPCanvas _playerHpCanvas;
-
         [SerializeField] private Transform _attackSpeedCanvas;
         [SerializeField] private Transform[] _attackSpeedBackground;
         [SerializeField] private Image[] _attackGaugeImages;
@@ -71,9 +69,6 @@ namespace QT.InGame
         [field: SerializeField] public float TeleportImpulseForce { get; private set; } = 0.2f;
         
         [field: SerializeField] public GameObject PlayerFocusCam { get; private set; }
-        
-        
-        [HideInInspector] public bool IsGarden;
         
         public Vector2 LastSafePosition { get; set; }
         
@@ -116,11 +111,6 @@ namespace QT.InGame
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
 
-            _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
-            StatComponent.GetStatus(PlayerStats.HP).SetStatus(StatComponent.GetStatus(PlayerStats.HP).Value);
-            
-            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>()?.OnOpen();
-            
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(true);
         }
 
@@ -141,17 +131,15 @@ namespace QT.InGame
 
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
-            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnDamage, (dir, power));
+            if(StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).IsFull() && StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).IsFull())
+            {
+                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnDamage, (dir, power));
+            }
         }
         
         public void Heal(float amount)
         {
             SystemManager.Instance.EventManager.InvokeEvent(EventType.OnHeal, amount);
-        }
-        
-        public bool GetHpComparision(int hpCost)
-        {
-            return StatComponent.GetStatus(PlayerStats.HP) > hpCost;
         }
         
         public void PlayerDead()

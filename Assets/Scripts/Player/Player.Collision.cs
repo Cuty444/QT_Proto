@@ -12,22 +12,6 @@ namespace QT.InGame
     {
         private LayerMask FallLayerMask => LayerMask.GetMask("Fall");
 
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if(other.gameObject.layer == LayerMask.NameToLayer("GardenCollider"))
-            {
-                IsGarden = true;
-            }
-        }
-
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if(other.gameObject.layer == LayerMask.NameToLayer("GardenCollider"))
-            {
-                IsGarden = false;
-            }
-        }
-
         public bool CheckFall()
         {
             var collider = Physics2D.OverlapPoint(transform.position, FallLayerMask);

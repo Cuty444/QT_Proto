@@ -128,12 +128,6 @@ namespace QT.InGame
         private void OnDamage(Vector2 dir, float damage)
         {
             var statComponent = _ownerEntity.StatComponent;
-            
-            if(!statComponent.GetStatus(PlayerStats.MercyInvincibleTime).IsFull() || !statComponent.GetStatus(PlayerStats.DodgeInvincibleTime).IsFull())
-            {
-                return;
-            }
-            
             statComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
             
             _ownerEntity.Animator.SetTrigger(RigidAnimHash);
