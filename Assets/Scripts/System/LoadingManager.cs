@@ -12,7 +12,7 @@ namespace QT
 {
     public class LoadingManager
     {
-        private const float WaitTime = 0.5f;
+        private const float WaitTime = 1.5f;
         
         public bool IsMapLoad { get; private set; }
 
