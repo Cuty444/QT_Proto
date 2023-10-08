@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using QT.Core;
+using QT.Core.Map;
 using UnityEngine;
 
 namespace QT.Map
@@ -65,8 +66,8 @@ namespace QT.Map
             SystemManager.Instance.PlayerManager.Player.transform.position = new Vector2(-99999,-99999);;
             
             yield return new WaitForSeconds(_trainExitAnimation.SequenceLength);
-            
-            SystemManager.Instance.PlayerManager.StairNextRoomEvent.Invoke();
+
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().NextFloor();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
         }
     }

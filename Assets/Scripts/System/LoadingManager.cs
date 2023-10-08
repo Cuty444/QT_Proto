@@ -12,6 +12,8 @@ namespace QT
 {
     public class LoadingManager
     {
+        private const float WaitTime = 0.5f;
+        
         public bool IsMapLoad { get; private set; }
 
         public void GameOverOpen()
@@ -28,26 +30,11 @@ namespace QT
         private IEnumerator LoadAsynchronously(int sceneIndex)
         {
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
-            //float StartLoadingTime = Time.time;
+            operation.allowSceneActivation = false;
+            
+            yield return new WaitForSeconds(WaitTime);
             
             operation.allowSceneActivation = true;
-            
-            while (!operation.isDone)
-            {
-                // if (operation.progress < 0.9f)
-                // {
-                //     
-                // }
-                // else
-                // {
-                //     if (Time.time - StartLoadingTime > 2.5f && _isMapLoad)
-                //     {
-                //         operation.allowSceneActivation = true;
-                //         yield break;
-                //     }
-                // }
-                yield return null;
-            }
         }
 
         public void MapReLoad()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using QT.Core;
 using QT.UI;
 using QT.Util;
@@ -49,7 +50,7 @@ namespace QT.UI
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.LoadingBGM);
             
             _loadingCanvas.StopAllCoroutines();
-            _loadingCanvas.StartCoroutine(UnityUtil.FadeCanvasGroup(_loadingCanvas.CanvasGroup, 0, 1, _loadingCanvas.FadeInOutTime));
+            _loadingCanvas.CanvasGroup.DOFade(1, _loadingCanvas.FadeInOutTime).SetEase(Ease.OutQuad);
         }
 
         public override void ReleaseUI()
@@ -59,12 +60,10 @@ namespace QT.UI
                 return;
             }
             
+            _loadingCanvas.CanvasGroup.DOFade(0, _loadingCanvas.FadeInOutTime).SetEase(Ease.InQuad);;
+            
             _loadingCanvas.StopAllCoroutines();
-            _loadingCanvas.StartCoroutine(UnityUtil.FadeCanvasGroup(_loadingCanvas.CanvasGroup, 1, 0, _loadingCanvas.FadeInOutTime,
-                () =>
-                {
-                    base.ReleaseUI();
-                }));
+            _loadingCanvas.StartCoroutine(UnityUtil.WaitForFunc(() => base.ReleaseUI(), _loadingCanvas.FadeInOutTime));
         }
         
     }

@@ -19,17 +19,12 @@ namespace QT.UI
 
         private bool _isOpen = false;
 
-        private float _lastTimeScale;
-
-
         public override void PostSystemInitialize()
         {
             gameObject.SetActive(true);
             _inventoryPage.Initialize();
 
             _backGround.SetActive(false);
-            
-            _lastTimeScale = Time.timeScale;
         }
         
         private void Update()
@@ -58,8 +53,6 @@ namespace QT.UI
 
             _isOpen = !_isOpen;
             
-            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().OnOff(_isOpen);
-            
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UITabSFX);
             
             SystemManager.Instance.PlayerManager.Player.Pause(_isOpen);
@@ -69,8 +62,6 @@ namespace QT.UI
                 
                 _backGround.SetActive(true);
                 _popAnimation.ReStart();
-                
-                _lastTimeScale = Time.timeScale;
                 //Time.timeScale = 0;
             }
             else

@@ -18,11 +18,13 @@ namespace QT.UI
         None,
         Loading,
         Title,
+        
         InGame,
+        Battle,
+        
         Inventory,
-        Shop,
         Setting,
-        Pause,
+        
         GameOver,
         GameClear,
     }

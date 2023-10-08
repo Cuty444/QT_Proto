@@ -9,6 +9,8 @@ namespace QT.Map
 {
     public class MiniMapCellData : MonoBehaviour
     {
+        public RectTransform RectTransform => transform as RectTransform;
+        
         [SerializeField] private Sprite _playerSprite;
         [SerializeField] private Sprite _startSprite;
         [SerializeField] private Sprite _normalSprite;
@@ -40,7 +42,7 @@ namespace QT.Map
         private Button _clickTeleportButton;
 
         [SerializeField] private Image _iconObject;
-
+        
         public void Setting()
         {
             _lines.SetActive(false);
@@ -54,7 +56,7 @@ namespace QT.Map
             _iconsTransform.gameObject.SetActive(false);
         }
 
-        public void ListenerClear()
+        public void ClearListener()
         {
             _playerManager.PlayerMapPosition.RemoveListener(CellPosCheck);
             _roomType = RoomType.None;
@@ -163,7 +165,7 @@ namespace QT.Map
 
         public void CellTeleportEvent()
         {
-            var playerPos = _playerManager.Player._currentPlayerPosition;
+            var playerPos = DungeonManager.Instance.PlayerPosition;
             
             if (playerPos == CellPos) return;
             if (!_dungeonMapSystem.GetCellData(CellPos).IsVisited) return;

@@ -47,7 +47,6 @@ namespace QT.UI
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
             var buttonTrigger = _canvasGroup.GetComponentsInChildren<ButtonTrigger>()[1];
             buttonTrigger.InteractableOff();
-            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
             SystemManager.Instance.RankingManager.ResetRankingTime();
             

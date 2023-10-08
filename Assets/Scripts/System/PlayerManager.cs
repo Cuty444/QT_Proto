@@ -21,12 +21,10 @@ namespace QT.Core
         public UnityEvent<bool> PlayerMapPass { get; } = new();
 
         public UnityEvent PlayerItemInteraction { get; } = new();
-        //public UnityEvent<Vector2, float> OnDamageEvent { get; } = new();
+        
         public UnityEvent<int> OnGoldValueChanged { get; } = new();
 
         public UnityEvent<VolumeProfile, float> OnMapCellChanged { get; } = new();
-
-        public UnityEvent StairNextRoomEvent { get; } = new();
         
         public Player Player { get; private set; }
         public int PlayerActiveItemIndex = -1;
@@ -49,8 +47,8 @@ namespace QT.Core
             Player = await SystemManager.Instance.ResourceManager.GetFromPool<Player>(Constant.PlayerPrefabPath);
             Player.transform.localPosition = new Vector3(0f, 0f, 0f);
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
-            PlayerCreateEvent.Invoke(Player);
             
+            PlayerCreateEvent.Invoke(Player);
         }
 
         private async void AddGold(int value)

@@ -74,7 +74,7 @@ namespace QT.InGame
         
         
         [HideInInspector] public bool IsGarden;
-        [HideInInspector] public Vector2Int _currentPlayerPosition;
+        
         public Vector2 LastSafePosition { get; set; }
         
         

@@ -35,7 +35,6 @@ namespace QT
             _clearTimeText.text = "#클리어_시간_" + time.ToString(@"hh\:mm\:ss");
             
             var _playerManager = SystemManager.Instance.PlayerManager;
-            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveAllListeners();
             _playerManager.Reset();
             
@@ -69,7 +68,6 @@ namespace QT
             OnClose();
             uiManager.GetUIPanel<MinimapCanvas>().OnClose();
             uiManager.GetUIPanel<LoadingCanvas>().OnOpen();
-            SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().CellClear();
             ProjectileManager.Instance.Clear();
             HitAbleManager.Instance.Clear();
             SystemManager.Instance.ResourceManager.AllReleasedObject();

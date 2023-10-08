@@ -80,7 +80,7 @@ namespace QT
                 return;
             }
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(index - 2);
-            SystemManager.Instance.PlayerManager.StairNextRoomEvent.Invoke();
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().NextFloor();
         }
         
         [ConsoleMethod("Gold", "골드 획득")]

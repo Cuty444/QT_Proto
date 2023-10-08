@@ -4,193 +4,40 @@ using System.Collections.Generic;
 using QT.Core;
 using QT.Map;
 using QT.Core.Map;
+using QT.Util;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace QT.UI
 {
     public class MinimapCanvas : UIPanel
     {
-        [SerializeField] private Transform _miniMapCellTransform;
-        [SerializeField] private GameObject _miniMapOnOff;
+        [field:SerializeField] public RectTransform CellTransform { get; private set; }
+        [field:SerializeField] public Vector2 CellSize { get; private set; }
+        [field:SerializeField] public Vector2 CellSpace { get; private set; }
         
-        [SerializeField] private TweenAnimator _popAnimator;
-        [SerializeField] private TweenAnimator _releaseAnimator;
-        
-        private const string CellPath = "Prefabs/Map/MiniMap/Cell.prefab";
-        
-        private PlayerManager _playerManager;
-        
-        private Dictionary<Vector2Int, MapDirection> _pathDirections = new Dictionary<Vector2Int, MapDirection>();
-
-        private List<MiniMapCellData> _cellList = new List<MiniMapCellData>();
-        private Dictionary<MiniMapCellData, Vector2> _cellMapDictionary = new Dictionary<MiniMapCellData, Vector2>();
-        private List<GameObject> _cellMapList = new List<GameObject>();
-        private bool IsPreviousActive;
-        
-
-        public override void Initialize()
-        {
-            _pathDirections.Add(Vector2Int.up,MapDirection.Up);
-            _pathDirections.Add(Vector2Int.down,MapDirection.Down);
-            _pathDirections.Add(Vector2Int.right,MapDirection.Left);
-            _pathDirections.Add(Vector2Int.left,MapDirection.Right);
-            
-            SystemManager.Instance.ResourceManager.CacheAsset(CellPath);
-            
-            IsPreviousActive = true;
-            _miniMapOnOff.SetActive(false);
-            _playerManager = SystemManager.Instance.PlayerManager;
-            
-            _playerManager.PlayerMapPosition.AddListener((position) =>
-            {
-                MiniMapCellCenterPositionChange(position);
-                if (!SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(position).IsClear)
-                {
-                    IsPreviousActive = false;
-                    _miniMapOnOff.SetActive(false);
-                }
-                StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
-            });
-            
-            _playerManager.PlayerDoorEnter.AddListener((arg) =>
-            {
-                StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
-            });
-            
-            _playerManager.PlayerCreateEvent.AddListener((player) =>
-            {
-                StartCoroutine(Util.UnityUtil.WaitForFunc(MapCreate,0.05f));
-            });
-            
-            _playerManager.PlayerMapClearPosition.AddListener((arg) =>
-            {
-                IsPreviousActive = true;
-                _miniMapOnOff.SetActive(true);
-                _popAnimator.ReStart();
-            });
-            
-        }
-
-        public void OnOff(bool active)
-        {
-            if (active)
-            {
-                MapCreate();
-
-                if (IsPreviousActive)
-                {
-                    _miniMapOnOff.SetActive(false);
-                    _popAnimator.PlayBackwards();
-                }
-            }
-            else if (IsPreviousActive)
-            {
-                _miniMapOnOff.SetActive(true);
-                _popAnimator.ReStart();
-            }
-        }
-
-
-
-        public void CellClear()
-        {
-            foreach (var cell in _cellList)
-            {
-                cell.ListenerClear();
-                //SystemManager.Instance.ResourceManager.ReleaseObject(CellPath, cell);
-                Destroy(cell.gameObject);
-            }
-            _cellList.Clear();
-            _cellMapDictionary.Clear();
-        }
-        
-        public override void PostSystemInitialize()
-        {
-            gameObject.SetActive(true);
-        }
-        
-        
-        public async void CellCreate(Vector2Int createPos,MapDirection direction,int index,RoomType roomType)
-        {
-            Vector3 pos = new Vector3(createPos.x * 200f, createPos.y * -200f, 0f);
-            var cell = await SystemManager.Instance.ResourceManager.GetFromPool<MiniMapCellData>(CellPath,_miniMapCellTransform);
-            cell.name = cell.name +"_"+ index.ToString();
-            cell.transform.localScale = Vector3.one;
-            cell.transform.localPosition = pos;
-            cell.SetRouteDirection(direction);
-            cell.CellPos = createPos;
-            switch (roomType)
-            {
-                case RoomType.None:
-                    break;
-                case RoomType.Normal:
-                    break;
-                case RoomType.Boss:
-                    cell.name = cell.name + "_Boss";
-                    break;
-                case RoomType.GoldShop:
-                case RoomType.HpShop:
-                    cell.name = cell.name + "_Shop";
-                    break;
-                case RoomType.Start:
-                    cell.name = cell.name + "_Start";
-                    break;
-                case RoomType.Stairs:
-                    break;
-                case RoomType.Reward:
-                    cell.name = cell.name + "_Reward";
-                    break;
-                case RoomType.HpHeal:
-                    cell.name = cell.name + "_HpHeal";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(roomType), roomType, null);
-            }
-            cell.SetRoomType(roomType);
-            cell.Setting();
-            _cellList.Add(cell);
-            _cellMapDictionary.Add(cell,pos);
-        }
-
-        public void MiniMapCellCenterPositionChange(Vector2Int position)
-        {
-            Vector3 pos = new Vector3(position.x * 200f, position.y * -200f, 0f);
-            _miniMapCellTransform.transform.localPosition = -pos;
-        }
-
-        private void MapCreate()
-        {
-            foreach (var cell in _cellMapList)
-            {
-                Destroy(cell.gameObject);
-            }
-            _cellMapList.Clear();
-            var pool = SystemManager.Instance.UIManager.GetUIPanel<UIPhoneCanvas>().MapTransform;
-            foreach (var cell in _cellMapDictionary)
-            {
-                var obj = Instantiate(cell.Key.gameObject, pool);
-                Button teleportButton = null;
-                if (cell.Key.gameObject.TryGetComponent(out teleportButton))
-                {
-                    var copyButton = obj.GetComponent<Button>();
-                    copyButton.onClick.AddListener(cell.Key.CellTeleportEvent);
-                }
-                obj.transform.localScale = Vector3.one;
-                obj.transform.localPosition = cell.Value;
-                _cellMapList.Add(obj);
-            }
-        }
+        [field:Space]
+        [field:SerializeField] public TweenAnimator PopAnimator { get; private set; }
+        [field:SerializeField] public TweenAnimator ReleaseAnimator { get; private set; }
     }
 
 
     public class MinimapCanvasModel : UIModelBase
     {
+        private const string CellPath = "Prefabs/Map/MiniMap/Cell.prefab";
+        
         public override UIType UIType => UIType.Panel;
         public override string PrefabPath => "Minimap.prefab";
-
+        
+        
         private MinimapCanvas _minimapCanvas;
+        
+        private Dictionary<MiniMapCellData, Vector2> _cellMapDictionary = new ();
 
+        private Vector2Int _startPos;
+        
+        
         public override void SetState(UIState state)
         {
             switch (state)
@@ -209,8 +56,76 @@ namespace QT.UI
             base.OnCreate(view);
 
             _minimapCanvas = UIView as MinimapCanvas;
+            SystemManager.Instance.ResourceManager.CacheAsset(CellPath);
         }
 
+        public override void Show()
+        {
+            if (_minimapCanvas.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+            
+            base.Show();
+            _minimapCanvas.StopAllCoroutines();
+            _minimapCanvas.PopAnimator.ReStart();
+        }
+        
+        public override void ReleaseUI()
+        {
+            if (!_minimapCanvas.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+            
+            _minimapCanvas.ReleaseAnimator.ReStart();
+            _minimapCanvas.StopAllCoroutines();
+            _minimapCanvas.StartCoroutine(UnityUtil.WaitForFunc(() => base.ReleaseUI(), _minimapCanvas.ReleaseAnimator.SequenceLength));
+        }
+        
+
+        private void ClearCells()
+        {
+            foreach (var cell in _cellMapDictionary.Keys)
+            {
+                cell.ClearListener();
+                SystemManager.Instance.ResourceManager.ReleaseObject(CellPath, cell);
+                //Destroy(cell.gameObject);
+            }
+            _cellMapDictionary.Clear();
+        }
+
+        public async void SetMiniMap(MapData mapData)
+        {
+            ClearCells();
+            
+            _startPos = mapData.StartPosition;
+            
+            foreach (var mapPos in mapData.MapNodeList)
+            {
+                var miniMapCell = await SystemManager.Instance.ResourceManager.GetFromPool<MiniMapCellData>(CellPath, _minimapCanvas.CellTransform);
+                
+                var pos = mapPos - _startPos;
+                miniMapCell.RectTransform.anchoredPosition = new Vector2(pos.x, -pos.y) * _minimapCanvas.CellSpace;
+                miniMapCell.RectTransform.sizeDelta = _minimapCanvas.CellSize;
+                miniMapCell.RectTransform.localScale = Vector3.one;
+                
+                miniMapCell.CellPos = mapPos;
+                //miniMapCell.SetRouteDirection(cellData.DoorDirection);
+
+                miniMapCell.SetRoomType(mapData.Map[mapPos.y, mapPos.x].RoomType);
+                miniMapCell.Setting();
+
+                _cellMapDictionary.Add(miniMapCell, mapPos);
+            }
+        }
+        
+        public void ChangeCenter(Vector2Int position)
+        {
+            var pos = position - _startPos;
+            _minimapCanvas.CellTransform.anchoredPosition = -(new Vector2(pos.x, -pos.y) * _minimapCanvas.CellSpace);
+        }
+        
     }
     
 }

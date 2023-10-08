@@ -39,6 +39,7 @@ namespace QT.UI
             switch (state)
             {
                 case UIState.InGame:
+                case UIState.Battle:
                     Show();
                     break;
                 default:
