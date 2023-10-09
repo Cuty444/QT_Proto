@@ -88,6 +88,16 @@ namespace QT
             _sequence.Pause();
         }
 
+        public void Pause()
+        {
+            if (_sequence == null)
+            {
+                BakeSeqence();
+            }
+            
+            _sequence.Pause();
+        }
+        
         public void BakeSeqence()
         {
             _sequence = DOTween.Sequence().SetUpdate(IgnoreTimeScale).SetRecyclable(true).SetAutoKill(false).Pause();

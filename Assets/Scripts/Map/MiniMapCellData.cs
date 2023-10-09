@@ -9,6 +9,7 @@ namespace QT.Map
 {
     public class MiniMapCellData : MonoBehaviour
     {
+        public bool IsIconVisible => _mapImage.enabled;
         public RectTransform RectTransform => transform as RectTransform;
         
         [SerializeField] private Sprite _playerSprite;
@@ -77,12 +78,12 @@ namespace QT.Map
         private void CellPosCheck(Vector2Int pos)
         {
             var cellData = _dungeonMapSystem.GetCellData(CellPos);
-            var isCellVisible = cellData.IsClear || cellData.IsVisited;
+            var isVisible = cellData.IsClear || cellData.IsVisited;
             
-            _lines.SetActive(isCellVisible);
-            _mapImage.enabled = isCellVisible;
+            _lines.SetActive(isVisible);
+            _mapImage.enabled = isVisible;
 
-            if (isCellVisible)
+            if (isVisible)
             {
                 if (pos == CellPos)
                 {

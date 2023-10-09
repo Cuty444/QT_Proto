@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks.Triggers;
 using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
@@ -36,6 +32,9 @@ namespace QT
             var minimapCanvas = await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>();
             minimapCanvas.SetMiniMap(_mapData);
             minimapCanvas.ChangeCenter(_mapData.StartPosition);
+            
+            var phoneCanvas = await SystemManager.Instance.UIManager.Get<PhoneCanvasModel>();
+            phoneCanvas.SetMiniMap(_mapData);
         }
 
         private void OnDestroy()
@@ -92,9 +91,10 @@ namespace QT
             SystemManager.Instance.UIManager.SetState(UIState.InGame);
         }
 
-        private void MapTeleport(Vector2Int position)
+        private async void MapTeleport(Vector2Int position)
         {
             _playerManager.PlayerMapPosition.Invoke(position);
+            (await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>()).ChangeCenter(position);
             
             PlayerPosition = position;
         }

@@ -44,6 +44,33 @@ public partial class @UIInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""cf1327f7-c196-45f1-a771-f8dba73127fa"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""cd862e85-9410-4ca0-bf09-a3079e0fcfc8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""d51b1237-d70c-436d-b1eb-b14ee928c5e4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -68,6 +95,39 @@ public partial class @UIInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ba5bd6a8-d4a9-478c-8222-6f1c1ef9097d"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""29e4abc6-1054-4e03-be0f-44218458bac5"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b997c5bc-e8de-4622-8e94-f562bf93bd86"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -78,6 +138,9 @@ public partial class @UIInputActions: IInputActionCollection2, IDisposable
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Phone = m_UI.FindAction("Phone", throwIfNotFound: true);
         m_UI_Escape = m_UI.FindAction("Escape", throwIfNotFound: true);
+        m_UI_LeftMenu = m_UI.FindAction("LeftMenu", throwIfNotFound: true);
+        m_UI_RightMenu = m_UI.FindAction("RightMenu", throwIfNotFound: true);
+        m_UI_Select = m_UI.FindAction("Select", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -141,12 +204,18 @@ public partial class @UIInputActions: IInputActionCollection2, IDisposable
     private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
     private readonly InputAction m_UI_Phone;
     private readonly InputAction m_UI_Escape;
+    private readonly InputAction m_UI_LeftMenu;
+    private readonly InputAction m_UI_RightMenu;
+    private readonly InputAction m_UI_Select;
     public struct UIActions
     {
         private @UIInputActions m_Wrapper;
         public UIActions(@UIInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Phone => m_Wrapper.m_UI_Phone;
         public InputAction @Escape => m_Wrapper.m_UI_Escape;
+        public InputAction @LeftMenu => m_Wrapper.m_UI_LeftMenu;
+        public InputAction @RightMenu => m_Wrapper.m_UI_RightMenu;
+        public InputAction @Select => m_Wrapper.m_UI_Select;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -162,6 +231,15 @@ public partial class @UIInputActions: IInputActionCollection2, IDisposable
             @Escape.started += instance.OnEscape;
             @Escape.performed += instance.OnEscape;
             @Escape.canceled += instance.OnEscape;
+            @LeftMenu.started += instance.OnLeftMenu;
+            @LeftMenu.performed += instance.OnLeftMenu;
+            @LeftMenu.canceled += instance.OnLeftMenu;
+            @RightMenu.started += instance.OnRightMenu;
+            @RightMenu.performed += instance.OnRightMenu;
+            @RightMenu.canceled += instance.OnRightMenu;
+            @Select.started += instance.OnSelect;
+            @Select.performed += instance.OnSelect;
+            @Select.canceled += instance.OnSelect;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -172,6 +250,15 @@ public partial class @UIInputActions: IInputActionCollection2, IDisposable
             @Escape.started -= instance.OnEscape;
             @Escape.performed -= instance.OnEscape;
             @Escape.canceled -= instance.OnEscape;
+            @LeftMenu.started -= instance.OnLeftMenu;
+            @LeftMenu.performed -= instance.OnLeftMenu;
+            @LeftMenu.canceled -= instance.OnLeftMenu;
+            @RightMenu.started -= instance.OnRightMenu;
+            @RightMenu.performed -= instance.OnRightMenu;
+            @RightMenu.canceled -= instance.OnRightMenu;
+            @Select.started -= instance.OnSelect;
+            @Select.performed -= instance.OnSelect;
+            @Select.canceled -= instance.OnSelect;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -193,5 +280,8 @@ public partial class @UIInputActions: IInputActionCollection2, IDisposable
     {
         void OnPhone(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
+        void OnLeftMenu(InputAction.CallbackContext context);
+        void OnRightMenu(InputAction.CallbackContext context);
+        void OnSelect(InputAction.CallbackContext context);
     }
 }
