@@ -22,6 +22,7 @@ namespace QT.InGame
         private Transform _playerTransform;
         
         private float _speed;
+        private float _minSpeed;
         private float _hitRange;
         private float _damage;
         
@@ -35,6 +36,7 @@ namespace QT.InGame
             _transform = _ownerEntity.transform;
             
             _speed = _ownerEntity.DullahanData.JumpMoveSpeed;
+            _minSpeed = _ownerEntity.DullahanData.JumpMinMoveSpeed;
             _hitRange = _ownerEntity.DullahanData.JumpMoveSpeed;
             _damage = _ownerEntity.DullahanData.LandingHitRange;
         }
@@ -120,11 +122,12 @@ namespace QT.InGame
             
             // easeOutQuad
             var height = 1 - (1 - time) * (1 - time);
+            var speed = (1 - time + _minSpeed) * _speed;
             
             SetHeight(height);
             
             var dir = (_playerTransform.position - _transform.position).normalized;
-            _transform.Translate(_speed * (1 - time) * Time.deltaTime * dir);
+            _transform.Translate(speed * Time.deltaTime * dir);
             
             if (_time > _ownerEntity.DullahanData.JumpLengthTime)
             {

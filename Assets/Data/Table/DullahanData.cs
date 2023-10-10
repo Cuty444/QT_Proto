@@ -17,6 +17,7 @@ namespace QT.InGame
         
         [field: Space]
         [field: Space]
+        [field: Space]
         [field: SerializeField] public float RushRangeMin { get; private set; }
         [field: SerializeField] public float RushRangeMax { get; private set; }
         
@@ -30,6 +31,7 @@ namespace QT.InGame
         
         [field: Space]
         [field: Space]
+        [field: Space]
         [field: SerializeField] public float ThrowRangeMin { get; private set; }
         [field: SerializeField] public float ThrowRangeMax { get; private set; }
         
@@ -37,6 +39,7 @@ namespace QT.InGame
         [field: SerializeField] public int ThrowAtkId { get; private set; }
         
         
+        [field: Space]
         [field: Space]
         [field: Space]
         [field: SerializeField] public float JumpRangeMin { get; private set; }
@@ -50,7 +53,9 @@ namespace QT.InGame
         
         [field: Space]
         [field: SerializeField] public float JumpMoveSpeed { get; private set; }
+        [field: SerializeField] public float JumpMinMoveSpeed { get; private set; }
         
+        [field: Space]
         [field: SerializeField] public int LandingAtkId { get; private set; }
         [field: SerializeField] public float LandingHitDamage { get; private set; }
         [field: SerializeField] public float LandingHitRange { get; private set; }
