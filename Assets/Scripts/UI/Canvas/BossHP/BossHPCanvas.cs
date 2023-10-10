@@ -7,31 +7,54 @@ namespace QT.UI
 {
     public class BossHPCanvas : UIPanel
     {
-        [SerializeField] private Image _hpImage;
+        [field:SerializeField] public Image HpImage { get; private set; }
         
-        [SerializeField] private TweenAnimator _popAnimation;
-        [SerializeField] private TweenAnimator _releaseAnimation;
-        [SerializeField] private TweenAnimator _hitAnimation;
+        [field:Space]
+        [field:SerializeField] public TweenAnimator PopAnimator { get; private set; }
+        [field:SerializeField] public TweenAnimator ReleaseAnimator { get; private set; }
+        [field:SerializeField] public TweenAnimator HitAnimation { get; private set; }
+    }
+    
+    
+    public class BossHPCanvasModel : UIModelBase
+    {
+        public override UIType UIType => UIType.Popup;
+        public override string PrefabPath => "BossHP.prefab";
+        
+        private BossHPCanvas _bossHpCanvas;
 
-        public override void OnOpen()
+        
+        public override void SetState(UIState state)
         {
-            base.OnOpen();
-            _popAnimation.ReStart();
         }
-        
-        
+
+        public override void OnCreate(UIPanel view)
+        {
+            base.OnCreate(view);
+
+            _bossHpCanvas = UIView as BossHPCanvas;
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            
+            _bossHpCanvas.PopAnimator.ReStart();
+        }
+
         public void SetHPGuage(Status hp)
         {
-            _hpImage.fillAmount = hp.StatusValue / hp.Value;
+            _bossHpCanvas.HpImage.fillAmount = hp.StatusValue / hp.Value;
             
-            if (_hpImage.fillAmount <= 0)
+            if (_bossHpCanvas.HpImage.fillAmount <= 0)
             {
-                _releaseAnimation.ReStart();
+                _bossHpCanvas.ReleaseAnimator.ReStart();
             }
             else
             {
-                _hitAnimation.ReStart();
+                _bossHpCanvas.HitAnimation.ReStart();
             }
         }
+        
     }
 }

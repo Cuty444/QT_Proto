@@ -12,7 +12,7 @@ namespace QT.InGame
     {
         private static readonly int HitAnimHash = Animator.StringToHash("Hit");
         
-        private BossHPCanvas _hpCanvas;
+        private BossHPCanvasModel _hpCanvas;
         
         private float _rigidTime;
         private float _rigidTimer;
@@ -23,17 +23,23 @@ namespace QT.InGame
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
             
             _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
-            _hpCanvas = SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>();
-            _hpCanvas.SetHPGuage(_ownerEntity.HP);
         }
         
-        public override void InitializeState()
+        public override async void InitializeState()
         {
-            _hpCanvas.OnOpen();
+            _hpCanvas = await SystemManager.Instance.UIManager.Get<BossHPCanvasModel>();
+            _hpCanvas.SetHPGuage(_ownerEntity.HP);
+            _hpCanvas.Show();
 
             GameObject.FindObjectOfType<CinemachineVirtualCamera>().m_Lens.OrthographicSize = 10;
         }
-        
+
+        public override void ClearState()
+        {
+            base.ClearState();
+            _hpCanvas?.ReleaseUI();
+        }
+
         private void OnDamage(Vector2 dir, float power,AttackType attackType)
         {
             if (_ownerEntity.CurrentStateIndex == (int)Dullahan.States.Dead)
