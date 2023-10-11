@@ -73,7 +73,7 @@ namespace QT.Map
             
             _cellPosition = position;
             
-            if (TryGetComponent(out ShopMapData data))
+            if (TryGetComponent(out SpecialMapData data))
             {
                 data.MapPosition = position;
             }
