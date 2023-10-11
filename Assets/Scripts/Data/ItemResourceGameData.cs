@@ -34,6 +34,11 @@ namespace QT
             list.Add((ItemResourceGameData)data);
         }
 
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public List<ItemResourceGameData> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))

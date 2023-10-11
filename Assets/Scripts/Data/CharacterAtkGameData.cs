@@ -41,7 +41,12 @@ namespace QT
         {
             _datas.Add(data.Index, (CharacterAtkGameData)data);
         }
-
+        
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public CharacterAtkGameData GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))

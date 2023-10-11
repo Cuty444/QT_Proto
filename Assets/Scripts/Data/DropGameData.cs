@@ -71,6 +71,11 @@ namespace QT
             _datas.Add(data.Index, new DropPercentage((DropGameData)data));
         }
         
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public DropPercentage GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))

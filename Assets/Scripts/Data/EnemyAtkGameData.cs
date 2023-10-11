@@ -31,6 +31,11 @@ namespace QT
             
             list.Add((EnemyAtkGameData)data);
         }
+        
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
 
         public List<EnemyAtkGameData> GetData(int id)
         {

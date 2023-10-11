@@ -59,6 +59,11 @@ namespace QT
         {
             _datas.Add(data.Index, (EnemyGameData)data);
         }
+        
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
 
         public EnemyGameData GetData(int id)
         {

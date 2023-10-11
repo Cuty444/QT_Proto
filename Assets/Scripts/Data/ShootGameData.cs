@@ -29,6 +29,11 @@ namespace QT
             list.Add((ShootGameData)data);
         }
 
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public List<ShootGameData> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))

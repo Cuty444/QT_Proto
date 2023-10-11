@@ -62,6 +62,11 @@ namespace QT
             list.Add(data as ItemEffectGameData);
         }
 
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public List<ItemEffectGameData> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))

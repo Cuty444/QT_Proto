@@ -30,7 +30,12 @@ namespace QT
         {
             _datas.Add(data.Index, (ProductialMapGameData)data);
         }
-
+        
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public ProductialMapGameData GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
