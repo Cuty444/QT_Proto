@@ -53,10 +53,9 @@ namespace QT.UI
                 _cells[i].RectTransform.anchoredPosition = new Vector2(rPos.x, -rPos.y) * CellSpace;
                 _cells[i].RectTransform.localScale = Vector3.one;
 
-                _cells[i].CellPos = mapPos;
                 _cells[i].SetRouteDirection(cellData.DoorDirection);
                 _cells[i].SetRoomType(cellData.RoomType);
-                _cells[i].Setting(_startPos);
+                _cells[i].Setting(mapPos, _startPos);
                 
                 _activeCells.Add(_cells[i]);
             }

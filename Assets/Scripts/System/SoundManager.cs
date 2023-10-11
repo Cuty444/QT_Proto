@@ -36,7 +36,7 @@ namespace QT.Sound
             var bgm = GameObject.Instantiate(new GameObject(), _poolRootTransform);
             _bgmEmitter = bgm.AddComponent<StudioEventEmitter>();
             bgm.name = "BGMEmitter";
-            //_masterBus = RuntimeManager.GetBus(SoundData.Bank[0]);
+            _masterBus = RuntimeManager.GetBus(SoundData.Bank[0]);
             _bgmBus = RuntimeManager.GetBus(SoundData.Bank[1]);
             _sfxBus = RuntimeManager.GetBus(SoundData.Bank[2]);
             GameObject.DontDestroyOnLoad(_poolRootTransform);
