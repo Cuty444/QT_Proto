@@ -30,6 +30,7 @@ namespace QT.Core
     public interface IGameDataBase
     {
         public void RegisterData(IGameData data);
+        public void OnInitialize(GameDataManager manager);
     }
 
 
@@ -81,6 +82,11 @@ namespace QT.Core
             foreach (var database in databases)
             {
                 _databases.Add(database.Item1, database.Item2);
+            }
+            
+            foreach (var database in _databases)
+            {
+                database.Value.OnInitialize(this);
             }
 
             IsInitialized = true;

@@ -27,6 +27,11 @@ namespace QT
             _datas.Add(data.Index, (ProjectileGameData)data);
         }
 
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public ProjectileGameData GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))

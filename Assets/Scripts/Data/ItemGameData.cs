@@ -23,10 +23,10 @@ namespace QT
         
         public int Index { get; private set;}
         
-        public string Name { get; private set;}
-        public string Desc { get; private set;}
-        public string PlusDesc { get; private set;}
-        public string MinusDesc { get; private set;}
+        public string Name { get; set;}
+        public string Desc { get; set;}
+        public string PlusDesc { get; set;}
+        public string MinusDesc { get; set;}
         
         public GradeTypes GradeType { get; private set;}
         public int Value { get; private set;}
@@ -40,6 +40,11 @@ namespace QT
     [GameDataBase(typeof(ItemGameData), "ItemGameData")]
     public class ItemGameDataBase : IGameDataBase
     {
+        private const string NameFormat = "Item_Name_{0}";
+        private const string DescFormat = "Item_Desc_{0}";
+        private const string PlusDescFormat = "Item_PlusDesc_{0}";
+        private const string MinusDescFormat = "Item_MinusDesc_{0}";
+        
         private const int MaxIteration = 1000;
         
         private readonly Dictionary<ItemGameData.GradeTypes, List<ItemGameData>> _itemGradeDictionary = new();
@@ -58,6 +63,14 @@ namespace QT
             }
 
             list.Add(itemData);
+        }
+
+        public void OnInitialize(GameDataManager manager)
+        {
+            var localeDataBase = manager.GetDataBase<LocaleGameDataBase>(); 
+            
+            localeDataBase.OnLocaleChanged.AddListener(OnLocaleChanged); 
+            OnLocaleChanged(localeDataBase);
         }
 
         public ItemGameData GetData(int id)
@@ -108,6 +121,18 @@ namespace QT
             }
 
             return result;
+        }
+        
+        
+        private void OnLocaleChanged(LocaleGameDataBase localeData)
+        {
+            foreach (var data in _datas.Values)
+            {
+                data.Name = string.IsNullOrWhiteSpace(data.Name) ? data.Name : localeData.GetString(string.Format(NameFormat, data.Index));
+                data.Desc = string.IsNullOrWhiteSpace(data.Desc) ? data.Desc : localeData.GetString(string.Format(DescFormat, data.Index));
+                data.PlusDesc = string.IsNullOrWhiteSpace(data.PlusDesc) ? data.PlusDesc : localeData.GetString(string.Format(PlusDescFormat, data.Index));
+                data.MinusDesc = string.IsNullOrWhiteSpace(data.MinusDesc) ? data.MinusDesc : localeData.GetString(string.Format(MinusDescFormat, data.Index));
+            }
         }
         
     }  

@@ -36,6 +36,11 @@ namespace QT
             }
         }
 
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public List<BuffCalculator> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))

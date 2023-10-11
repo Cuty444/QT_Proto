@@ -29,6 +29,11 @@ namespace QT
             _datas.Add(data.Index, (SpecialEffectGameData)data);
         }
 
+        public void OnInitialize(GameDataManager manager)
+        {
+            
+        }
+        
         public SpecialEffectGameData GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
