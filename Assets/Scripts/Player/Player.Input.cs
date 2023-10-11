@@ -107,6 +107,11 @@ namespace QT.InGame
 
         private UnityAction<bool> GetAction(ButtonActions type)
         {
+            if (Time.timeScale == 0)
+            {
+                return null;
+            }
+
             if (buttonEvents.TryGetValue(type, out var action))
             {
                 return action;
@@ -116,6 +121,11 @@ namespace QT.InGame
 
         private UnityAction<bool> GetAction(ValueActions type)
         {
+            if (Time.timeScale == 0)
+            {
+                return null;
+            }
+            
             if (valueEvents.TryGetValue(type, out var action))
             {
                 return action;

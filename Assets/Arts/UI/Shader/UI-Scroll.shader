@@ -12,7 +12,7 @@ Shader "UI/Scroll"
         _StencilOp ("Stencil Operation", Float) = 0
         _StencilWriteMask ("Stencil Write Mask", Float) = 255
         _StencilReadMask ("Stencil Read Mask", Float) = 255
-
+        
         _ColorMask ("Color Mask", Float) = 15
 		_ScrollSpeedX ("ScrollSpeed X", Float) = 1
 		_ScrollSpeedY ("ScrollSpeed Y", Float) = 1
@@ -88,6 +88,8 @@ Shader "UI/Scroll"
             float _UIMaskSoftnessX;
             float _UIMaskSoftnessY;
             int _UIVertexColorAlwaysGammaSpace;
+
+            float _UnscaledTime;
 			float _ScrollSpeedX;
 			float _ScrollSpeedY;
 
@@ -131,7 +133,8 @@ Shader "UI/Scroll"
                 IN.color.a = round(IN.color.a * alphaPrecision)*invAlphaPrecision;
 
                 
-                float2 scroll = float2(_Time.x*_ScrollSpeedX, _Time.x*_ScrollSpeedY);
+                //float2 scroll = float2(_Time.x*_ScrollSpeedX, _Time.x*_ScrollSpeedY);
+                float2 scroll = float2(_ScrollSpeedX, _ScrollSpeedY) * _UnscaledTime;
 				half4 color = IN.color * (tex2D(_MainTex, IN.texcoord+scroll) + _TextureSampleAdd);
                 //half4 color = IN.color * (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd);
 

@@ -91,6 +91,11 @@ namespace QT.InGame
         {
             var aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
 
+            if (aimDir == Vector2.zero)
+            {
+                return;
+            }
+            
             if (_ownerEntity.IsReverseLookDir)
             {
                 aimDir *= -1;

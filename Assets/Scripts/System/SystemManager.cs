@@ -1,19 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
 using System;
-using Cysharp.Threading.Tasks;
 using QT.InGame;
 using QT.Ranking;
 using QT.Sound;
 using QT.UI;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace QT.Core
 {
     //시스템 관리 매니저입니다.
     public class SystemManager : MonoSingleton<SystemManager>
     {
+        private readonly int UnscaledTime = Shader.PropertyToID("_UnscaledTime");
+        
+        
         public bool IsTestMode = false;
 
         public ResourceManager ResourceManager { get; } = new ();
@@ -65,6 +65,12 @@ namespace QT.Core
                 
                 LoadingManager.LoadScene(2);
             }
+        }
+
+        
+        private void Update()
+        {
+            Shader.SetGlobalFloat(UnscaledTime, Time.unscaledTime);
         }
 
         private void InitializeSystems()

@@ -24,6 +24,11 @@ namespace QT.Core
         
         protected virtual void Update()
         {
+            if (Time.timeScale == 0)
+            {
+                return;
+            }
+            
             _globalState?.UpdateState();
             _currentState?.UpdateState();
         }

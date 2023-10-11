@@ -39,7 +39,6 @@ namespace QT.InGame
         public override void InitializeState()
         {
             _moveTargetUpdateTimer = 9999;
-            _atkCheckTimer = 0;
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
         }
 
