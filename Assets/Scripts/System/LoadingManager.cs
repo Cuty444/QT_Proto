@@ -1,11 +1,7 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using QT.Core;
 using QT.UI;
-using QT.Util;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace QT
@@ -16,8 +12,11 @@ namespace QT
         
         public bool IsMapLoad { get; private set; }
 
-        public void GameOverOpen()
+        public LoadingManager()
         {
+            IsMapLoad = false;
+            
+            SceneManager.sceneLoaded += OnSceneUnloaded;
         }
         
         public void LoadScene(int sceneIndex)
@@ -35,6 +34,7 @@ namespace QT
             yield return new WaitForSeconds(WaitTime);
             
             operation.allowSceneActivation = true;
+            
         }
 
         public void MapReLoad()
@@ -47,6 +47,11 @@ namespace QT
         {
             IsMapLoad = true;
             Debug.Log("맵 로드 완료");
+        }
+        
+        private void OnSceneUnloaded(Scene scene, LoadSceneMode mode)
+        {
+            SystemManager.Instance.ResourceManager.AllReleasedObject();
         }
     }
 }

@@ -71,8 +71,7 @@ namespace QT.InGame
                 case 1:
                     if (_time > 5)
                     {
-                        SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>().OnClose();
-                        SystemManager.Instance.UIManager.GetUIPanel<RecordCanvas>().OnOpen();
+                        // TODO : 게임오버
                         _state++;
                     }
                     break;

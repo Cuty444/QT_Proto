@@ -13,7 +13,6 @@ namespace QT.UI
     {
         [field:SerializeField] public Button StartButton { get; private set; }
         [field:SerializeField] public Button TutorialButton { get; private set; }
-        [field:SerializeField] public Button RankingButton { get; private set; }
         [field:SerializeField] public Button ExitGameButton { get; private set; }
         
         [field:SerializeField] public TweenAnimator PopAnimation  { get; private set; }
@@ -34,7 +33,6 @@ namespace QT.UI
             
             _titleCanvas.StartButton.onClick.AddListener(GameStart);
             _titleCanvas.TutorialButton.onClick.AddListener(TutorialOpen);
-            _titleCanvas.RankingButton.onClick.AddListener(RankingOpen);
             _titleCanvas.ExitGameButton.onClick.AddListener(GameEnd);
         }
         
@@ -70,14 +68,9 @@ namespace QT.UI
             SystemManager.Instance.LoadingManager.LoadScene(1);
         }
 
-        private void RankingOpen()
-        {
-            SystemManager.Instance.UIManager.GetUIPanel<RankingCanvas>().OnOpen();
-        }
-
         private void TutorialOpen()
         {
-            SystemManager.Instance.UIManager.GetUIPanel<TutorialCanvas>().OnOpen();
+            //SystemManager.Instance.UIManager.GetUIPanel<TutorialCanvas>().OnOpen();
         }
         
         private void GameEnd()

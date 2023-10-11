@@ -29,7 +29,7 @@ namespace QT.Tutorial
         {
             base.OnClose();
             
-            SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>();
+            //SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>();
         }
 
         private void Update()
