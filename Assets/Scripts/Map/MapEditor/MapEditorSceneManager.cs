@@ -45,19 +45,21 @@ namespace QT.Map
             CheckTarget();
             
             Target.gameObject.SetActive(false);
+            Target.TilemapHardCollider.enabled = false;
+            
             GamePlayGameObjects.SetActive(true);
             
             SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener(OnPlayerCreated);
             
-            //StartCoroutine(Loading());
-            SystemManager.Instance.PlayerManager.CreatePlayer();
+            StartCoroutine(Loading());
         }
 
-        // IEnumerator Loading()
-        // {
-        //     yield return new WaitUntil(() => SystemManager.Instance.LoadingManager.IsJsonLoad());
-        //     
-        // }
+        IEnumerator Loading()
+        {
+            yield return new WaitUntil(() => SystemManager.Instance.IsInitialized);
+            
+            SystemManager.Instance.PlayerManager.CreatePlayer();
+        }
 
         private void OnPlayerCreated(Player player)
         {

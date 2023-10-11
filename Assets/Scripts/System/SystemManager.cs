@@ -14,6 +14,8 @@ namespace QT.Core
         private readonly int UnscaledTime = Shader.PropertyToID("_UnscaledTime");
         
         
+        public bool IsInitialized { get; private set; } = false;
+        
         public bool IsTestMode = false;
 
         public ResourceManager ResourceManager { get; } = new ();
@@ -38,6 +40,7 @@ namespace QT.Core
 
         private async void Awake()
         {
+            IsInitialized = false;
             base.Awake();
 #if Testing
 
@@ -65,6 +68,8 @@ namespace QT.Core
                 
                 LoadingManager.LoadScene(2);
             }
+            
+            IsInitialized = true;
         }
 
         
