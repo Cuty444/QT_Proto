@@ -10,16 +10,6 @@ namespace QT.UI
         [SerializeField] private bool usePooling = false;
         public bool UsePooling => usePooling;
         
-        public virtual void Initialize()
-        {
-
-        }
-
-        public virtual void PostSystemInitialize()
-        {
-
-        }
-        
         public virtual void OnOpen()
         {
             gameObject.SetActive(true);

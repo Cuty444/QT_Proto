@@ -44,7 +44,13 @@ namespace QT.UI
         
          #region Get
 
-        public async UniTask<T> Get<T>() where T : UIModelBase
+         public async void GetAndShow<T>() where T : UIModelBase
+         {
+             var model = await Get<T>();
+             Show(model);
+         }
+
+         public async UniTask<T> Get<T>() where T : UIModelBase
         {
             if (_allUI.TryGetValue(typeof(T), out var model))
             {
@@ -170,7 +176,8 @@ namespace QT.UI
                 Get<PlayerHPCanvasModel>(),
                 Get<MinimapCanvasModel>(),
                 Get<PhoneCanvasModel>(),
-                Get<SettingCanvasModel>());
+                Get<SettingCanvasModel>(),
+                Get<GameOverCanvasModel>());
             
             InitInputs();
         }
@@ -223,10 +230,5 @@ namespace QT.UI
             }
         }
         
-        
-        public T GetUIPanel<T>() where T : UIPanel
-        {
-            return null;
-        }
     }
 }

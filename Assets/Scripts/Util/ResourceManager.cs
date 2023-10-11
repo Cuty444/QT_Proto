@@ -11,13 +11,15 @@ namespace QT
 {
     public class ResourceManager
     {
-        private Transform _poolRootTransform;
-        
         private readonly Dictionary<string, Object> _cache = new ();
         private readonly Dictionary<string, Stack<Component>> _pool = new ();
         
+        private Transform _poolRootTransform;
+        
         public void Initialize()
         {
+            _pool.Clear();
+            _cache.Clear();
             _poolRootTransform = new GameObject("PoolRoot").transform;
             GameObject.DontDestroyOnLoad(_poolRootTransform);
         }
@@ -130,7 +132,8 @@ namespace QT
         {
             GameObject.Destroy(_poolRootTransform.gameObject);
             Initialize();
-            _pool.Clear();
+
+            Resources.UnloadUnusedAssets();
         }
 
         public async UniTaskVoid EmitParticle(string path, Vector2 position, float rotation = 0, Transform parent = null)

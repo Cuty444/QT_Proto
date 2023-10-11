@@ -10,7 +10,7 @@ namespace QT
     {
         private async void Start()
         {
-            await SystemManager.Instance.StageLoadManager.StageLoad("1");
+            await SystemManager.Instance.StageLoadManager.StageLoad(1);
             
             SystemManager.Instance.UIManager.SetState(UIState.Title);
         }

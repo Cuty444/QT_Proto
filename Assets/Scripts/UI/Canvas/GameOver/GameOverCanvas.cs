@@ -1,99 +1,156 @@
 using System.Collections;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Spine.Unity;
-using UnityEngine;
 using QT.Core;
 using QT.Util;
 using QT.Core.Map;
-using QT.InGame;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace QT.UI
 {
     public class GameOverCanvas : UIPanel
     {
-        [SerializeField] private GameObject _gameOverUI;
-        [SerializeField] private Transform _panelTransform;
-        [SerializeField] private SkeletonGraphic _skeletonGraphic;
-        [SerializeField] private ButtonTrigger _retryButtonTrigger;
-        [SerializeField] private ButtonTrigger _titleButtonTrigger;
-        [SerializeField] private CanvasGroup _canvasGroup;
+        [field:Space]
+        [field:SerializeField] public Button RetryButton { get; private set; }
+        [field:SerializeField] public Button TitleButton { get; private set; }
+        
+        [field:Space]
+        [field:SerializeField] public SkeletonGraphic SpineAnimation { get; private set; }
 
-        private GameObject _uiObject = null;
-        public override void OnOpen()
-        {
-            base.OnOpen();
-            if (_uiObject != null)
-            {
-                Destroy(_uiObject);
-            }
-            _uiObject = Instantiate(_gameOverUI, _panelTransform);
-            _uiObject.transform.localPosition = Vector3.zero;
-            _skeletonGraphic = _uiObject.GetComponentInChildren<SkeletonGraphic>();
-            _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver",false);
-            _canvasGroup.alpha = 0f;
-            _canvasGroup.interactable = false;
-            _retryButtonTrigger.InteractableOff();
-            _titleButtonTrigger.InteractableOff();
-            SystemManager.Instance.PlayerManager.Reset();
-
-            var playerManager = SystemManager.Instance.PlayerManager;
-                
-            playerManager.PlayerIndexInventory.Clear();
-            playerManager.PlayerActiveItemIndex = -1;
-            
-            
-            SystemManager.Instance.UIManager.GetUIPanel<BossHPCanvas>().OnClose();
-            
-            SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
-            var buttonTrigger = _canvasGroup.GetComponentsInChildren<ButtonTrigger>()[1];
-            buttonTrigger.InteractableOff();
-            SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
-            SystemManager.Instance.RankingManager.ResetRankingTime();
-            
-            StartCoroutine(UnityUtil.WaitForFunc(() =>
-            {
-                StartCoroutine(UnityUtil.FadeCanvasGroup(_canvasGroup, 0f, 1f, 1.0f,()=>
-                {
-                    _canvasGroup.interactable = true;
-                    _retryButtonTrigger.InteractableOn();
-                    _titleButtonTrigger.InteractableOn();
-                    buttonTrigger.InteractableOn();
-                }));
-                ProjectileManager.Instance.Clear();
-                HitAbleManager.Instance.Clear();
-                SystemManager.Instance.ResourceManager.AllReleasedObject();
-            }, 3.0f));
-        }
-
-        public void Retry()
-        {
-            SystemManager.Instance.StageLoadManager.StageLoad((SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() + 1).ToString());
-            _skeletonGraphic.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
-            StartCoroutine(UnityUtil.WaitForFunc(() =>
-            {
-                SystemManager.Instance.LoadingManager.LoadScene(1);
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
-                //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
-                _retryButtonTrigger.Clear();
-                _titleButtonTrigger.Clear();
-                _uiObject.SetActive(false);
-
-                OnClose();
-            }, 1f));
-        }
-
-        public void Exit()
-        {
-            StartCoroutine(UnityUtil.WaitForFunc(() =>
-            {
-                SystemManager.Instance.LoadingManager.LoadScene(2);
-                
-                //SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
-                //SystemManager.Instance.UIManager.GetUIPanel<MinimapCanvas>().MinimapSetting(); TODO : 이 부분 로딩 정리하기
-                _retryButtonTrigger.Clear();
-                _titleButtonTrigger.Clear();
-                _uiObject.SetActive(false);
-            }, 1f));
-        }
+        [field:Space]
+        [field:SerializeField] public TweenAnimator PopAnimator { get; private set; }
+        [field:SerializeField] public TweenAnimator ReleaseAnimator { get; private set; }
     }
+    
+    
+    public class GameOverCanvasModel : UIModelBase
+    {
+        public override UIType UIType => UIType.Panel;
+        public override string PrefabPath => "GameOver.prefab";
+        
+        private UIInputActions _inputActions;
+        private GameOverCanvas _gameOverCanvas;
+       
+        
+        public override void SetState(UIState state)
+        {
+            switch (state)
+            {
+                case UIState.GameOver:
+                    Show();
+                    break;
+                default:
+                    if (state != UIState.Loading)
+                    {
+                        ReleaseUI();
+                    }
+
+                    break;
+            }
+        }
+        
+        public override void OnCreate(UIPanel view)
+        {
+            base.OnCreate(view);
+            _gameOverCanvas = UIView as GameOverCanvas;
+            
+            _gameOverCanvas.TitleButton.onClick.AddListener(OnClickExit);
+            _gameOverCanvas.RetryButton.onClick.AddListener(OnClickRetry);
+            
+            _inputActions = new UIInputActions();
+        }
+
+        public override void Show()
+        {
+            if (_gameOverCanvas.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+            
+            SetInputs(true);
+            _gameOverCanvas.StopAllCoroutines();
+
+            base.Show();
+
+            Time.timeScale = 0;
+
+            _gameOverCanvas.ReleaseAnimator.Pause();
+            _gameOverCanvas.PopAnimator.ReStart();
+
+            _gameOverCanvas.SpineAnimation.AnimationState.SetAnimation(1, "S_GameOver", false);
+            ProjectileManager.Instance.Clear();
+            HitAbleManager.Instance.Clear();
+        }
+
+        public override void ReleaseUI()
+        {
+            if (!_gameOverCanvas.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
+            base.ReleaseUI();
+        }
+
+        private async void OnClickRetry()
+        {
+            SetInputs(false);
+            
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
+            
+            _gameOverCanvas.PopAnimator.Pause();
+            _gameOverCanvas.ReleaseAnimator.ReStart();
+            _gameOverCanvas.SpineAnimation.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
+            
+            await SystemManager.Instance.StageLoadManager.StageLoad(1);
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+            
+            var sequenceLength = _gameOverCanvas.ReleaseAnimator.SequenceLength;
+            
+            _gameOverCanvas.StopAllCoroutines();
+            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(sequenceLength,1));
+        }
+        
+        private void OnClickExit()
+        {
+            SetInputs(false);
+            
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
+            
+            _gameOverCanvas.PopAnimator.Pause();
+            _gameOverCanvas.ReleaseAnimator.ReStart();
+
+            var sequenceLength = 0;//_gameOverCanvas.ReleaseAnimator.SequenceLength;
+            
+            _gameOverCanvas.StopAllCoroutines();
+            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(sequenceLength,2));
+        }
+
+
+        private void SetInputs(bool enable)
+        {
+            if(enable)
+            {
+                _inputActions.Enable();
+            }
+            else
+            {
+                _inputActions.Disable();
+            }
+            
+            _gameOverCanvas.TitleButton.enabled = enable;
+            _gameOverCanvas.RetryButton.enabled = enable;
+        }
+
+        private IEnumerator WaitForReleaseAnimation(float waitTime, int SceneNumber)
+        {
+            yield return new WaitForSecondsRealtime(waitTime);
+            
+            Time.timeScale = 1;
+            SystemManager.Instance.LoadingManager.LoadScene(SceneNumber);
+        }
+
+    }
+    
 }

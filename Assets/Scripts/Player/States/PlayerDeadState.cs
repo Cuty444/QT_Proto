@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using QT.Core;
+using QT.UI;
+using QT.Util;
 
 namespace QT.InGame
 {
@@ -9,6 +11,7 @@ namespace QT.InGame
 
     public class PlayerDeadState : FSMState<Player>
     {
+        private const float DeadDelayTime = 3.5f;
         private readonly int DeadAnimHash = Animator.StringToHash("IsDead");
         
         public PlayerDeadState(IFSMEntity owner) : base(owner)
@@ -24,8 +27,10 @@ namespace QT.InGame
             
             _ownerEntity.Animator.SetBool(DeadAnimHash, true);
             _ownerEntity.OnAim.RemoveAllListeners();
-            SystemManager.Instance.LoadingManager.GameOverOpen();
+            
+            _ownerEntity.StartCoroutine(UnityUtil.WaitForFunc(() => SystemManager.Instance.UIManager.SetState(UIState.GameOver), DeadDelayTime));
         }
+        
 
         public override void ClearState()
         {

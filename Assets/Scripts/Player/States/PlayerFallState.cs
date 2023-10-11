@@ -17,15 +17,12 @@ namespace QT
         
         private readonly int IsFallAnimHash = Animator.StringToHash("IsFall");
         
-        private PlayerHPCanvas _playerHpCanvas;
         private AnimationCurve _scaleCurve;
         private LayerMask _playerLayer;
 
         public PlayerFallState(IFSMEntity owner) : base(owner)
         {
-            _playerHpCanvas = SystemManager.Instance.UIManager.GetUIPanel<PlayerHPCanvas>();
             _scaleCurve = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.EnemyFallScaleCurve;
-
         }
 
         public override void InitializeState()
