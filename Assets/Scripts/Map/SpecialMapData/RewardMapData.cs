@@ -1,16 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Core.Map;
 using UnityEngine;
 
 namespace QT
 {
-    public class ShopMapData : MonoBehaviour
+    public class RewardMapData : SpecialMapData
     {
-        [SerializeField] private Transform[] _shopItemTransforms;
+        [SerializeField] private Transform _rewardItemTransform;
         [SerializeField] private GameObject _itemObject;
-        
-        public Vector2Int MapPosition;
         
         private void Awake()
         {
@@ -23,17 +22,12 @@ namespace QT
             {
                 var percent = SystemManager.Instance.DataManager.GetDataBase<DropGameDataBase>().GetData((int)DropGameType.Shop);
                 
-                var items = SystemManager.Instance.DataManager.GetDataBase<ItemGameDataBase>()
-                    .GetItemsWithDropPercentage(percent, _shopItemTransforms.Length,
-                        SystemManager.Instance.PlayerManager.Player.Inventory);
+                var item = SystemManager.Instance.DataManager.GetDataBase<ItemGameDataBase>().PickRandom(percent.RandomGradeType());
                 
-                for (int i = 0; i < items.Count; i++)
-                {
-                    var holder = Instantiate(_itemObject, _shopItemTransforms[i]).GetComponent<ItemHolder>();
+                var holder = Instantiate(_itemObject, _rewardItemTransform).GetComponent<ItemHolder>();
                     
-                    holder.gameObject.SetActive(true);
-                    holder.Init(items[i]);
-                }
+                holder.gameObject.SetActive(true);
+                holder.Init(item);
                 SystemManager.Instance.PlayerManager.PlayerMapPosition.RemoveListener(ItemCreate);
             }
         }

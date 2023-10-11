@@ -708,9 +708,14 @@ namespace QT.Core.Map
             return _stairsMapList[Random.Range(0, _stairsMapList.Count)];
         }
 
-        public GameObject RewardMapObject()
+        public GameObject RewardMapObject(MapDirection mapDirection)
         {
-            return _rewardMapList[Random.Range(0, _rewardMapList.Count)];
+            if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
+            { 
+                return _rewardMapList[0];
+            }
+
+            return _rewardMapList[1];
         }
         
         public GameObject HpMapObject()
@@ -760,7 +765,7 @@ namespace QT.Core.Map
                     cellMapObject = StairsMapObject();
                     break;
                 case RoomType.Reward:
-                    cellMapObject = RewardMapObject();
+                    cellMapObject = RewardMapObject(_mapData.Map[createPos.y,createPos.x].DoorDirection);
                     break;
                 case RoomType.HpHeal:
                     cellMapObject = HpMapObject();
