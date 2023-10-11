@@ -122,12 +122,11 @@ namespace QT.InGame
             
             // easeOutQuad
             var height = 1 - (1 - time) * (1 - time);
-            var speed = (1 - time + _minSpeed) * _speed;
             
             SetHeight(height);
             
             var dir = (_playerTransform.position - _transform.position).normalized;
-            _transform.Translate(speed * Time.deltaTime * dir);
+            _transform.Translate((1 - time + _minSpeed) * _speed * Time.deltaTime * dir);
             
             if (_time > _ownerEntity.DullahanData.JumpLengthTime)
             {

@@ -12,6 +12,18 @@ namespace QT.Map
         public bool IsIconVisible => _mapImage.enabled;
         public RectTransform RectTransform => transform as RectTransform;
         
+        
+        [SerializeField] private Image _mapImage;
+        [SerializeField] private Button _clickTeleportButton;
+        
+        [Space]
+        [SerializeField] private GameObject _lines;
+        [SerializeField] private Image[] _mapLineImages;
+        
+        [Space]
+        [SerializeField] private Transform _iconsTransform;
+        
+        [Space]
         [SerializeField] private Sprite _playerSprite;
         [SerializeField] private Sprite _startSprite;
         [SerializeField] private Sprite _normalSprite;
@@ -24,41 +36,27 @@ namespace QT.Map
         [SerializeField] private Sprite _bossSprite;
         
         
-        [SerializeField] private GameObject _lines;
-        [SerializeField] private Image[] _mapLineImages;
-        
-        [SerializeField] private Transform _iconsTransform;
-        
-        [HideInInspector]public Vector2Int CellPos;
-
-        //private const string IconPath = "Prefabs/Map/MiniMap/MiniMapIcon.prefab";
-
         private PlayerManager _playerManager;
         private DungeonMapSystem _dungeonMapSystem;
-        private GameObject _cellMapObject;
-        private Image _mapImage;
 
+        private Vector2Int _cellPos;
         private RoomType _roomType;
 
-        private Button _clickTeleportButton;
-
-        [SerializeField] private Image _iconObject;
 
         private void Awake()
         {
-            _mapImage = GetComponent<Image>();
-            
-            _clickTeleportButton = gameObject.GetComponent<Button>();
-            _clickTeleportButton.onClick.AddListener(OnClickTeleportButton);
-            
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             
             _playerManager = SystemManager.Instance.PlayerManager;
             _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
+            
+            _clickTeleportButton.onClick.AddListener(OnClickTeleportButton);
         }
 
-        public void Setting(Vector2Int startPos)
+        public void Setting(Vector2Int pos, Vector2Int startPos)
         {
+            _cellPos = pos;
+            
             _lines.SetActive(false);
             
             _mapImage.enabled = false;
@@ -77,7 +75,8 @@ namespace QT.Map
         
         private void CellPosCheck(Vector2Int pos)
         {
-            var cellData = _dungeonMapSystem.GetCellData(CellPos);
+            _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
+            var cellData = _dungeonMapSystem.GetCellData(_cellPos);
             var isVisible = cellData.IsClear || cellData.IsVisited;
             
             _lines.SetActive(isVisible);
@@ -85,7 +84,7 @@ namespace QT.Map
 
             if (isVisible)
             {
-                if (pos == CellPos)
+                if (pos == _cellPos)
                 {
                     _mapImage.sprite = _playerSprite;
                     return;
@@ -118,7 +117,7 @@ namespace QT.Map
                 }
                 
             }
-            else if (_dungeonMapSystem.MultiPathClearCheck(CellPos))
+            else if (_dungeonMapSystem.MultiPathClearCheck(_cellPos))
             {
                 _mapImage.enabled = true;
                 _mapImage.sprite = _roomType == RoomType.Boss ? _bossSprite : _unknownSprite; // 보스방은 상시 표시
@@ -129,7 +128,6 @@ namespace QT.Map
         public void SetRoomType(RoomType roomType)
         {
             _roomType = roomType;
-            _iconObject.gameObject.SetActive(true);
             if (_roomType == RoomType.Boss)
             {
                 if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() < 2)
@@ -148,11 +146,11 @@ namespace QT.Map
             
             var playerPos = DungeonManager.Instance.PlayerPosition;
             
-            if (playerPos == CellPos) return;
-            if (!_dungeonMapSystem.GetCellData(CellPos).IsVisited) return;
+            if (playerPos == _cellPos) return;
+            if (!_dungeonMapSystem.GetCellData(_cellPos).IsVisited) return;
             if (!_dungeonMapSystem.GetCellData(playerPos).IsClear) return; 
             
-            _playerManager.Player.Warp(CellPos);
+            _playerManager.Player.Warp(_cellPos);
         }
     }
 }

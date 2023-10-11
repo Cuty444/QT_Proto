@@ -23,7 +23,6 @@ namespace QT.UI
         Battle,
         
         Phone,
-        Setting,
         
         GameOver,
         GameClear,
@@ -49,7 +48,6 @@ namespace QT.UI
         {
             if (_allUI.TryGetValue(typeof(T), out var model))
             {
-                Show(model);
                 return (T) model;
             }
 
@@ -98,10 +96,10 @@ namespace QT.UI
                     break;
                 case UIType.Popup:
                     ReleasePopup(model);
-                    if (model.UIView && !model.UIView.UsePooling)
-                    {
-                        Destroy(model.UIView);
-                    }
+                    // if (model.UIView && !model.UIView.UsePooling)
+                    // {
+                    //     Destroy(model.UIView);
+                    // }
                     break;
             }
         }
@@ -171,7 +169,8 @@ namespace QT.UI
                 Get<LoadingCanvasModel>(),
                 Get<PlayerHPCanvasModel>(),
                 Get<MinimapCanvasModel>(),
-                Get<PhoneCanvasModel>());
+                Get<PhoneCanvasModel>(),
+                Get<SettingCanvasModel>());
             
             InitInputs();
         }
@@ -205,7 +204,7 @@ namespace QT.UI
             }
         }
         
-        private void OnClickEscapeKey(InputAction.CallbackContext context)
+        private async void OnClickEscapeKey(InputAction.CallbackContext context)
         {
             switch (State)
             {
@@ -213,15 +212,16 @@ namespace QT.UI
                 case UIState.InGame:
                 case UIState.Battle:
                 case UIState.Phone:
-                    SetState(UIState.Setting);
-                    break;
-                case UIState.Setting:
-                    SetState(LastState);
+                    
+                    if(_popupStack.TryPeek(out var model) && model.GetType() == typeof(SettingCanvasModel))
+                    {
+                        return;
+                    }
+                    
+                    (await Get<SettingCanvasModel>()).Show();
                     break;
             }
         }
-        
-        
         
         
         public T GetUIPanel<T>() where T : UIPanel

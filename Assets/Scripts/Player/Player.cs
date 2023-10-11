@@ -116,6 +116,11 @@ namespace QT.InGame
 
         protected override void Update()
         {
+            if (Time.timeScale == 0)
+            {
+                return;
+            }
+            
             base.Update();
             
             UpdateInputs();
