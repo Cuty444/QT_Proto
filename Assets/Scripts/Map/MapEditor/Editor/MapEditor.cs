@@ -164,10 +164,18 @@ namespace QT.Map
             
             _wallHeight = EditorGUILayout.IntSlider("벽 높이", _wallHeight, 0, 10);
             
-            if (GUILayout.Button("Top 타일맵 리셋"))
+            if (_target.TilemapHardCollider)
             {
-                ResetTilemapTop();
+                GUILayout.Space(5);
+                var hardCollider = _target.TilemapHardCollider.enabled;
+                _target.TilemapHardCollider.enabled = GUILayout.Toggle(hardCollider, "하드 콜라이더 렌더러");
+                GUILayout.Space(5);
             }
+            
+            // if (GUILayout.Button("하드 콜라이더 리셋"))
+            // {
+            //     ResetHardCollider();
+            // }
             
             DrawLine("적 웨이브 세팅");
             
@@ -186,9 +194,9 @@ namespace QT.Map
             
             if (GUILayout.Button("플레이 테스트"))
             {
-                _target.TilemapHardCollider.enabled = false;
                 _sceneManager.StartGame(_command, _startDoor);
             }
+            
 
             GUILayout.Space(10);
 
@@ -330,13 +338,7 @@ namespace QT.Map
                     _target.gameObject.name = path.Split('\\', '/', '.')[^2];
                 }
             }
-            
-            
-            if (_target.TilemapHardCollider)
-            {
-                _target.TilemapHardCollider.enabled = true;
-            }
-            
+
             GUILayout.EndHorizontal();
         }
 
@@ -356,59 +358,59 @@ namespace QT.Map
                 _target.TilemapHardCollider.enabled = false;
             }
         }
-
-        private void ResetTilemapTop()
-        {
-            Undo.RecordObject(_target.TilemapTop, "Reset Top");
-
-            var targetMap = _target.TilemapWall;
-            var bound = targetMap.cellBounds;
-            var data = new List<TileChangeData>();
-
-            _target.TilemapTop.ClearAllTiles();
-
-            for (int x = bound.xMin; x < bound.xMax; x++)
-            {
-                for (int y = bound.yMax; y >= bound.yMin; y--)
-                {
-                    var pos = new Vector3Int(x, y);
-
-                    if (!targetMap.HasTile(pos))
-                    {
-                        continue;
-                    }
-
-                    if (!targetMap.HasTile(pos + Vector3Int.up))
-                    {
-                        data.Add(new TileChangeData(pos + Vector3Int.up, _palette.TopTile, Color.white, Matrix4x4.identity));
-                    }
-
-                    if (!targetMap.HasTile(pos + Vector3Int.left) ||
-                        !targetMap.HasTile(pos + Vector3Int.right))
-                    {
-                        bool heightCheck = true;
-
-                        var checkPos = pos;
-                        for (int i = 0; i < _wallHeight; i++)
-                        {
-                            checkPos += Vector3Int.down;
-                            if (!targetMap.HasTile(checkPos))
-                            {
-                                heightCheck = false;
-                                break;
-                            }
-                        }
-
-                        if (heightCheck)
-                        {
-                            data.Add(new TileChangeData(pos, _palette.TopTile, Color.white, Matrix4x4.identity));
-                        }
-                    }
-                }
-            }
-            
-            _target.TilemapTop.SetTiles(data.ToArray(), false);
-        }
+        
+        // private void ResetHardCollider()
+        // {
+        //     Undo.RecordObject(_target.TilemapTop, "Reset Top");
+        //     
+        //     var targetMap = _target.TilemapWall;
+        //     var bound = targetMap.cellBounds;
+        //     var data = new List<TileChangeData>();
+        //     
+        //     _target.TilemapTop.ClearAllTiles();
+        //     
+        //     for (int x = bound.xMin; x < bound.xMax; x++)
+        //     {
+        //         for (int y = bound.yMax; y >= bound.yMin; y--)
+        //         {
+        //             var pos = new Vector3Int(x, y);
+        //     
+        //             if (!targetMap.HasTile(pos))
+        //             {
+        //                 continue;
+        //             }
+        //     
+        //             if (!targetMap.HasTile(pos + Vector3Int.up))
+        //             {
+        //                 data.Add(new TileChangeData(pos + Vector3Int.up, _palette.TopTile, Color.white, Matrix4x4.identity));
+        //             }
+        //     
+        //             if (!targetMap.HasTile(pos + Vector3Int.left) ||
+        //                 !targetMap.HasTile(pos + Vector3Int.right))
+        //             {
+        //                 bool heightCheck = true;
+        //     
+        //                 var checkPos = pos;
+        //                 for (int i = 0; i < _wallHeight; i++)
+        //                 {
+        //                     checkPos += Vector3Int.down;
+        //                     if (!targetMap.HasTile(checkPos))
+        //                     {
+        //                         heightCheck = false;
+        //                         break;
+        //                     }
+        //                 }
+        //     
+        //                 if (heightCheck)
+        //                 {
+        //                     data.Add(new TileChangeData(pos, _palette.TopTile, Color.white, Matrix4x4.identity));
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     
+        //     _target.TilemapTop.SetTiles(data.ToArray(), false);
+        // }
 
         private void ResetWall()
         {
@@ -509,50 +511,50 @@ namespace QT.Map
             
             if (target == _target.TilemapWall && _palette != null)
             {
-                TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
-                {
-                    return new TileChangeData(pos, tile, Color.white, Matrix4x4.identity);
-                }
-
-                var datas = new List<TileChangeData>();
-
-                // 위가 비어있거나 아래로 부터 n칸 이후, 한 사이드가 비어있으면 Top에 타일 추가
-                foreach (var tile in tiles)
-                {
-                    bool isAdd = tile.tile != null;
-
-                    if (!target.HasTile(tile.position + Vector3Int.up))
-                    {
-                        datas.Add(CreateTileData(tile.position + Vector3Int.up, isAdd ? _palette.TopTile : null));
-                    }
-
-                    if (isAdd && (!target.HasTile(tile.position + Vector3Int.left) ||
-                                  !target.HasTile(tile.position + Vector3Int.right)))
-                    {
-                        bool heightCheck = true;
-
-                        var pos = tile.position;
-                        for (int i = 0; i < _wallHeight; i++)
-                        {
-                            pos += Vector3Int.down;
-                            if (!target.HasTile(pos))
-                            {
-                                heightCheck = false;
-                                break;
-                            }
-                        }
-
-                        datas.Add(CreateTileData(tile.position, heightCheck ? _palette.TopTile : null));
-                    }
-                    else
-                    {
-                        datas.Add(CreateTileData(tile.position, null));
-                    }
-                }
-
-                Undo.RecordObject(_target.TilemapTop, "Set Top");
-                
-                _target.TilemapTop.SetTiles(datas.ToArray(), false);
+                // TileChangeData CreateTileData(Vector3Int pos, TileBase tile)
+                // {
+                //     return new TileChangeData(pos, tile, Color.white, Matrix4x4.identity);
+                // }
+                //
+                // var datas = new List<TileChangeData>();
+                //
+                // // 위가 비어있거나 아래로 부터 n칸 이후, 한 사이드가 비어있으면 Top에 타일 추가
+                // foreach (var tile in tiles)
+                // {
+                //     bool isAdd = tile.tile != null;
+                //
+                //     if (!target.HasTile(tile.position + Vector3Int.up))
+                //     {
+                //         datas.Add(CreateTileData(tile.position + Vector3Int.up, isAdd ? _palette.TopTile : null));
+                //     }
+                //
+                //     if (isAdd && (!target.HasTile(tile.position + Vector3Int.left) ||
+                //                   !target.HasTile(tile.position + Vector3Int.right)))
+                //     {
+                //         bool heightCheck = true;
+                //
+                //         var pos = tile.position;
+                //         for (int i = 0; i < _wallHeight; i++)
+                //         {
+                //             pos += Vector3Int.down;
+                //             if (!target.HasTile(pos))
+                //             {
+                //                 heightCheck = false;
+                //                 break;
+                //             }
+                //         }
+                //
+                //         datas.Add(CreateTileData(tile.position, heightCheck ? _palette.TopTile : null));
+                //     }
+                //     else
+                //     {
+                //         datas.Add(CreateTileData(tile.position, null));
+                //     }
+                // }
+                //
+                // Undo.RecordObject(_target.TilemapTop, "Set Top");
+                //
+                // _target.TilemapTop.SetTiles(datas.ToArray(), false);
             }
 
             _isDirty = true;
