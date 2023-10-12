@@ -38,11 +38,13 @@ namespace QT
 
         public float SequenceLength { get; private set; }
 
+        public TweenAnimator ChainAnimator;
+
         [field: SerializeField] public List<TweenSequence> Sequences { get; private set; } = new();
       
         private Sequence _sequence;
         
-        private void Awake()
+        private void OnEnable()
         {
             if (PlayOnAwake)
             {
@@ -50,56 +52,83 @@ namespace QT
             }
         }
 
+        // private void OnDisable()
+        // {
+        //     _sequence?.Pause();
+        // }
+
         private void OnDestroy()
         {
-            _sequence?.Kill();
+            _sequence?.SetAutoKill(true);
         }
 
+        public void GoToPlay(float time)
+        {
+            if (_sequence == null)
+            {
+                BakeSequence();
+            }
+            
+            _sequence.Goto(time, true);
+            ChainAnimator?.GoToPlay(time);
+        }
+        
         public void ReStart()
         {
             if (_sequence == null)
             {
-                BakeSeqence();
+                BakeSequence();
             }
             
             _sequence.Restart();
+            ChainAnimator?.ReStart();
         }
 
         public void PlayBackwards()
         {
             if (_sequence == null)
             {
-                BakeSeqence();
+                BakeSequence();
                 _sequence.Rewind();
             }
             
             _sequence.PlayBackwards();
+            ChainAnimator?.PlayBackwards();
         }
 
         public void Reset()
         {
             if (_sequence == null)
             {
-                BakeSeqence();
+                BakeSequence();
                 _sequence.Rewind();
             }
             
             _sequence.Restart();
             _sequence.Pause();
+            
+            ChainAnimator?.Reset();
         }
 
         public void Pause()
         {
             if (_sequence == null)
             {
-                BakeSeqence();
+                BakeSequence();
             }
             
             _sequence.Pause();
+            
+            ChainAnimator?.Pause();
         }
-        
-        public void BakeSeqence()
+
+        public void BakeSequence(bool bakeChain = false)
         {
+            if (bakeChain)
+            {
+                ChainAnimator?.BakeSequence(bakeChain);
+            }
+            
             _sequence = DOTween.Sequence().SetUpdate(IgnoreTimeScale).SetRecyclable(true).SetAutoKill(false).Pause();
             SequenceLength = 0;
 
@@ -151,5 +180,6 @@ namespace QT
                 SequenceLength += duration;
             }
         }
+        
     }
 }
