@@ -27,7 +27,7 @@ namespace QT.UI
             _desc.Hide();
         }
 
-        private void OnDisable()
+        public void OnDisable()
         {
             _desc.Hide();
         }

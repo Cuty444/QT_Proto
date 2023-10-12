@@ -89,6 +89,8 @@ namespace QT.UI
             _phoneCanvas.StopAllCoroutines();
 
             SystemManager.Instance.PlayerManager.Player.Pause(false);
+            
+            _phoneCanvas.InventoryPage.OnDisable();
 
             _phoneCanvas.PopAnimator.Pause();
             _phoneCanvas.ReleaseAnimator.ReStart();
@@ -105,12 +107,22 @@ namespace QT.UI
         {
             _phoneCanvas.ScrollSnap.PreviousScreen();
             _phoneCanvas.SwitchLeftAnimation.ReStart();
+            
+            if (_phoneCanvas.ScrollSnap.CurrentPage == 1)
+            {
+                _phoneCanvas.InventoryPage.OnDisable();
+            }
         }
 
         private void OnClickRight(InputAction.CallbackContext context)
         {
             _phoneCanvas.ScrollSnap.NextScreen();
             _phoneCanvas.SwitchRightAnimation.ReStart();
+            
+            if (_phoneCanvas.ScrollSnap.CurrentPage == 1)
+            {
+                _phoneCanvas.InventoryPage.OnDisable();
+            }
         }
 
 
