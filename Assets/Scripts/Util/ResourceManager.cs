@@ -127,6 +127,13 @@ namespace QT
                 Object.Destroy(obj.gameObject);
             }
         }
+        
+        public async UniTaskVoid ReleaseObjectWithDelay<T>(string path, T obj, float duration) where T : Component
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(duration));
+            
+            ReleaseObject(path, obj);
+        }
 
         public void AllReleasedObject()
         {

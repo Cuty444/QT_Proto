@@ -16,7 +16,9 @@ namespace QT.InGame
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         
         private const string HitEffectPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
+        private const string FlyingEffectPath = "Effect/Prefabs/FX_M_Flying_Dust.prefab";
 
+        
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
@@ -52,7 +54,8 @@ namespace QT.InGame
         
         private GlobalData _globalData;
 
-
+        private ParticleSystem _flyingEffect;
+        
         public EnemyProjectileState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
@@ -70,7 +73,7 @@ namespace QT.InGame
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
         }
 
-        public void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool isPierce, bool playSound)
+        public async void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool isPierce, bool playSound)
         {
             _direction = dir;
             _maxSpeed = _speed = power;
@@ -98,12 +101,20 @@ namespace QT.InGame
                 _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
 
             _damage = _ownerEntity._damage;
+            
+            _flyingEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(FlyingEffectPath, _ownerEntity.transform);
+            _flyingEffect.transform.ResetLocalTransform();
+            
+            _flyingEffect.Play();
         }
         
         public override void ClearState()
         {
             _ownerEntity.BounceMask = _ownerEntity.Shooter.BounceMask;
             _ownerEntity.Animator.SetBool(ProjectileAnimHash, false);
+            
+            _flyingEffect.Stop();
+            SystemManager.Instance.ResourceManager.ReleaseObjectWithDelay(FlyingEffectPath, _flyingEffect, 1.0f);
         }
         
         public override void UpdateState()
