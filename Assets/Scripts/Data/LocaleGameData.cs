@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using QT.Core;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace QT
@@ -22,6 +23,7 @@ namespace QT
     [GameDataBase(typeof(LocaleGameData), "LocaleGameData")]
     public class LocaleGameDataBase : IGameDataBase
     {
+        public string LocalePlayerPrefsKey => "Locale";
         public UnityEvent<LocaleGameDataBase> OnLocaleChanged = new ();
         
         private Locale _currentLocale = Locale.KR;
@@ -30,11 +32,18 @@ namespace QT
             {
                 _currentLocale = value;
                 OnLocaleChanged.Invoke(this);
+                
+                PlayerPrefs.SetInt(LocalePlayerPrefsKey, (int) _currentLocale);
             }
         }
         
         private readonly Dictionary<string, string[]> _datas = new();
 
+        public LocaleGameDataBase()
+        {
+            CurrentLocale = PlayerPrefs.GetInt(LocalePlayerPrefsKey, 0) == 0 ? Locale.KR : Locale.US;
+        }
+        
         public void RegisterData(IGameData data)
         {
             var localeData = (LocaleGameData) data;
@@ -54,6 +63,16 @@ namespace QT
             }
 
             return key;
+        }
+        
+        public string[] GetStrings(string key)
+        {
+            if (_datas.TryGetValue(key, out var value))
+            {
+                return value;
+            }
+
+            return null;
         }
     }  
 }

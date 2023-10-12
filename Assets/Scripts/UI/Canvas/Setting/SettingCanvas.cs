@@ -8,6 +8,7 @@ using QT.UI;
 using QT.Util;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 namespace QT.UI
 {
@@ -24,6 +25,9 @@ namespace QT.UI
         
         [field:Space]
         [field:SerializeField] public Slider ViveStrength { get; private set; }
+        
+        [field:Space]
+        [field:SerializeField] public HorizontalScrollSnap LocaleSelector { get; private set; }
         
         [field:Space]
         [field:SerializeField] public Button TitleButton { get; private set; }
@@ -62,6 +66,7 @@ namespace QT.UI
             _settingCanvas.SFXVolume.value = volume;
             _settingCanvas.SFXVolume.onValueChanged.AddListener(_soundManager.SetSFXVolume);
             
+            _settingCanvas.LocaleSelector.OnSelectionPageChangedEvent.AddListener(OnLocaleSelected);
             
             _inputActions = new UIInputActions();
 
@@ -78,6 +83,8 @@ namespace QT.UI
 
             _soundManager.PlayOneShot(_soundManager.SoundData.UITabSFX);
 
+            _settingCanvas.LocaleSelector.ChangePage((int)SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>().CurrentLocale);
+            
             if (Time.timeScale != 0)
             {
                 _lastTimeScale = Time.timeScale;
@@ -106,6 +113,11 @@ namespace QT.UI
             _settingCanvas.ReleaseAnimator.ReStart();
             _settingCanvas.StartCoroutine(UnityUtil.WaitForFunc(() => base.ReleaseUI(),
                 _settingCanvas.ReleaseAnimator.SequenceLength));
+        }
+
+        private void OnLocaleSelected(int index)
+        {
+            SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>().CurrentLocale = (Locale) index;
         }
         
     }
