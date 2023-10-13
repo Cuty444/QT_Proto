@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using QT.Core;
 using QT.Util;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace QT.InGame
     // Param2: 지속시간
     public class TimeScaleItemEffect : ItemEffect
     {
+        private readonly int CyberEffectOpacityHash = Shader.PropertyToID("_Opacity");
         private const string CyberEffectPath = "Effect/Prefabs/FX_Active_Cyber.prefab";
         
         private static Stat CurrentTimeScale = new (1);
@@ -57,13 +59,26 @@ namespace QT.InGame
             _cancellationTokenSource = new CancellationTokenSource();
             
             
-            var cyberEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(CyberEffectPath, _ghostEffect.transform);
+            var cyberEffect = await SystemManager.Instance.ResourceManager.GetFromPool<Renderer>(CyberEffectPath, _ghostEffect.transform);
             cyberEffect.transform.ResetLocalTransform();
-            cyberEffect.Play();
             
+            var opacity = 0f;
+            DOTween.To(() => opacity, x =>
+            {
+                opacity = x;
+                cyberEffect.material.SetFloat(CyberEffectOpacityHash, opacity);
+            }, 0.5f, 0.5f).SetUpdate(true);
+
+
             await UniTask.Delay(_duration, cancellationToken: _cancellationTokenSource.Token);
             
-            SystemManager.Instance.ResourceManager.ReleaseObject(CyberEffectPath, cyberEffect);
+            DOTween.To(() => opacity, x =>
+            {
+                opacity = x;
+                cyberEffect.material.SetFloat(CyberEffectOpacityHash, opacity);
+            }, 0f, 0.2f).SetUpdate(true);;
+            
+            SystemManager.Instance.ResourceManager.ReleaseObjectWithDelay(CyberEffectPath, cyberEffect, 0.5f);
             
             OnRemoved();
         }
