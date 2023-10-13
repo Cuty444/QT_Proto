@@ -51,8 +51,10 @@ namespace QT
         }
 
         public void OnInitialize(GameDataManager manager)
-        {
-            
+        {  
+#if UNITY_EDITOR
+            SetAlLDataString();
+#endif
         }
 
         public string GetString(string key)
@@ -74,5 +76,24 @@ namespace QT
 
             return null;
         }
+
+
+#if UNITY_EDITOR
+        public string[] AllDataString { get; private set; }
+
+        public void SetAlLDataString()
+        {
+            var data = new List<string>();
+            
+            foreach (var pair in _datas)
+            {
+                data.Add($"{pair.Key}/  |  {pair.Value[0]}/{pair.Value[1]}");
+                //data.Add($"{pair.Key}");
+            }
+            
+            AllDataString = data.ToArray();
+        }
+#endif
+        
     }  
 }

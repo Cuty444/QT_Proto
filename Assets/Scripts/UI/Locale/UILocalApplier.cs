@@ -9,13 +9,14 @@ namespace QT
 {
     public class UILocalApplier : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI Text;
-        public string StringKey;
+        private TextMeshProUGUI _text;
+        public string StringKey = "";
         
         private LocaleGameDataBase _localeGameDataBase;
         
         private void Awake()
         {
+            _text = GetComponent<TextMeshProUGUI>();
             _localeGameDataBase = SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>();
         }
 
@@ -32,7 +33,7 @@ namespace QT
         
         private void OnLocaleChanged(LocaleGameDataBase localeGameDataBase)
         {
-            Text.text = localeGameDataBase.GetString(StringKey);
+            _text.text = localeGameDataBase.GetString(StringKey);
         }
     }
 }
