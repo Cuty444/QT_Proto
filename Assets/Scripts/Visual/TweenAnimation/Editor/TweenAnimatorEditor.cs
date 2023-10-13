@@ -14,27 +14,63 @@ namespace QT
     {
         public override void OnInspectorGUI()
         {
-            EditorGUILayout.BeginHorizontal();
-
-            bool isPlaying = EditorApplication.isPlaying;
+            var isPlaying = EditorApplication.isPlaying;
+            var targetAnimator = target as TweenAnimator;
             
+            
+            var check = targetAnimator.ChainAnimator;
+            while (check != null)
+            {
+                if(check == targetAnimator)
+                {
+                    EditorGUILayout.HelpBox("순환참조가 발생했습니다.", MessageType.Error);
+                    base.OnInspectorGUI();
+                    return;
+                }
+                check = check.ChainAnimator;
+            }
+            
+            
+            EditorGUILayout.BeginHorizontal();
             
             if (GUILayout.Button("재생"))
             {
                 if (!isPlaying)
                 {
                     //DOTweenEditorPreview.Stop(true);
-                    (target as TweenAnimator).BakeSeqence();
+                    targetAnimator.BakeSequence(true);
+
+                    do
+                    {
+                        var sequence = (Sequence)typeof(TweenAnimator).GetField("_sequence", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default)?.GetValue(targetAnimator);
+                        DOTweenEditorPreview.PrepareTweenForPreview(sequence, true, false);
+                        DOTweenEditorPreview.Start();
+                        
+                        targetAnimator = targetAnimator.ChainAnimator;
+                    } while (targetAnimator != null);
                     
-                     var sequence = (Sequence)typeof(TweenAnimator).GetField("_sequence", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default)?.GetValue(target);
-                    DOTweenEditorPreview.PrepareTweenForPreview(sequence, true, false);
-                    DOTweenEditorPreview.Start();
                 }
                 else
                 {
-                    (target as TweenAnimator).ReStart();
+                    targetAnimator.ReStart();
                 }
             }
+            // if (GUILayout.Button("역 재생"))
+            // {
+            //     if (!isPlaying)
+            //     {
+            //         //DOTweenEditorPreview.Stop(true);
+            //         targetAnimator.BakeSequence(true);
+            //         
+            //         var sequence = (Sequence)typeof(TweenAnimator).GetField("_sequence", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default)?.GetValue(target);
+            //         DOTweenEditorPreview.PrepareTweenForPreview(sequence, true, false);
+            //         DOTweenEditorPreview.Start();
+            //     }
+            //     else
+            //     {
+            //         targetAnimator.PlayBackwards();
+            //     }
+            // }
             if (GUILayout.Button(isPlaying ? "재시작" : "처음처럼"))
             {
                 if (!isPlaying)
@@ -43,7 +79,8 @@ namespace QT
                 }
                 else
                 {
-                    (target as TweenAnimator).ReStart();
+                    targetAnimator.BakeSequence(true);
+                    targetAnimator.ReStart();
                 }
             }
             

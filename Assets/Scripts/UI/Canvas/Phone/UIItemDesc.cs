@@ -39,7 +39,7 @@ namespace QT
 
         public void Hide()
         {
-            _descAnimation.PlayBackwards();
+            _descAnimation.Reset();
         }
 
         public void PlayFailButtonAnimation()

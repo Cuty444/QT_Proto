@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using QT.Core;
-using QT.UI;
 using QT.Util;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +10,8 @@ namespace QT.UI
     {
         [field:SerializeField] public CanvasGroup CanvasGroup { get; private set; }
         [field:SerializeField] public float FadeInOutTime { get; private set; }
+        
+        [field:SerializeField] public TweenAnimator Animation { get; private set; }
     }
 
 
@@ -51,6 +49,8 @@ namespace QT.UI
             
             _loadingCanvas.StopAllCoroutines();
             _loadingCanvas.CanvasGroup.DOFade(1, _loadingCanvas.FadeInOutTime).SetEase(Ease.InQuad);
+            
+            _loadingCanvas.Animation.GoToPlay(Random.value * _loadingCanvas.Animation.SequenceLength);
         }
 
         public override void ReleaseUI()

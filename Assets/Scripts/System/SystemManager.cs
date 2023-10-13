@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using DG.Tweening;
 using QT.InGame;
 using QT.Ranking;
 using QT.Sound;
@@ -43,12 +44,13 @@ namespace QT.Core
             IsInitialized = false;
             base.Awake();
 #if Testing
-
             _debugConsole.SetActive(true);
 #else
             _debugConsole.SetActive(false);   
 #endif
             
+            DOTween.SetTweensCapacity( 500, 500 );
+
             SoundManager.Initialize(_soundPathData);
             ResourceManager.Initialize();
             
