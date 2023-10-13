@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using QT.Core;
+using QT.Util;
 using UnityEngine;
 
 namespace QT.InGame
@@ -11,6 +10,8 @@ namespace QT.InGame
     // Param2: 지속시간
     public class TimeScaleItemEffect : ItemEffect
     {
+        private const string CyberEffectPath = "Effect/Prefabs/FX_Active_Cyber.prefab";
+        
         private static Stat CurrentTimeScale = new (1);
         
         private static readonly float DefaultFixedDeltaTime = Time.fixedDeltaTime;
@@ -55,7 +56,14 @@ namespace QT.InGame
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
             
+            
+            var cyberEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(CyberEffectPath, _ghostEffect.transform);
+            cyberEffect.transform.ResetLocalTransform();
+            cyberEffect.Play();
+            
             await UniTask.Delay(_duration, cancellationToken: _cancellationTokenSource.Token);
+            
+            SystemManager.Instance.ResourceManager.ReleaseObject(CyberEffectPath, cyberEffect);
             
             OnRemoved();
         }
