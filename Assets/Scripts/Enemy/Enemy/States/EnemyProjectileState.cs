@@ -102,7 +102,7 @@ namespace QT.InGame
 
             _damage = _ownerEntity._damage;
             
-            _flyingEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(FlyingEffectPath, _ownerEntity.transform);
+            _flyingEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(FlyingEffectPath, _ownerEntity.BallObject);
             _flyingEffect.transform.ResetLocalTransform();
             
             _flyingEffect.Play();
