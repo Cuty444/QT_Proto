@@ -16,6 +16,7 @@ namespace QT.InGame
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         
         private const string HitEffectPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
+        private const string FlyingStartEffectPath = "Effect/Prefabs/FX_M_Flying_AirResistance.prefab";
         private const string FlyingEffectPath = "Effect/Prefabs/FX_M_Flying_Dust.prefab";
 
         
@@ -106,6 +107,9 @@ namespace QT.InGame
             _flyingEffect.transform.ResetLocalTransform();
             
             _flyingEffect.Play();
+
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            SystemManager.Instance.ResourceManager.EmitParticle(FlyingStartEffectPath, Vector2.zero,  Quaternion.Euler(0, 0, angle), _ownerEntity.BallObject);
         }
         
         public override void ClearState()
