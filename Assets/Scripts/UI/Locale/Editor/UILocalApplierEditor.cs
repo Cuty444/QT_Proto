@@ -5,6 +5,7 @@ using QT.Core;
 using TMPro;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 
 namespace QT
 {
@@ -46,7 +47,25 @@ namespace QT
                     Rect searchRect = EditorGUILayout.GetControlRect(false, 1 );
                     searchRect.height = 30;
                 }
+                
+                
+                if (GUILayout.Button(targetApplier.StringKey, EditorStyles.popup))
+                {
+                    SearchWindow.Open(
+                        new SearchWindowContext(GUIUtility.GUIToScreenPoint(Event.current.mousePosition)),
+                        new StringListSearchProvider(dataBase.AllDataString, s =>
+                        {
+                            targetApplier.StringKey = s;
+                            if (targetApplier.TryGetComponent<TextMeshProUGUI>(out var a))
+                            {
+                                a.text = dataBase.GetString(s);
+                            }
+                        }));
+                }
+                
+                //dataBase.GetStrings()
             }
+                
             
             base.OnInspectorGUI();
         }
