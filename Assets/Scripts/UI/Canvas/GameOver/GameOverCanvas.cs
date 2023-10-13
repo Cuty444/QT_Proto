@@ -78,7 +78,7 @@ namespace QT.UI
             _gameOverCanvas.ReleaseAnimator.Pause();
             _gameOverCanvas.PopAnimator.ReStart();
 
-            //_gameOverCanvas.SpineAnimation.AnimationState.SetAnimation(1, "S_GameOver", false);
+            _gameOverCanvas.SpineAnimation.AnimationState.SetAnimation(1, "over_Start", false);
             ProjectileManager.Instance.Clear();
             HitAbleManager.Instance.Clear();
         }
