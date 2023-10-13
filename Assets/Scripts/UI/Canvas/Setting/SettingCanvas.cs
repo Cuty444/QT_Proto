@@ -75,6 +75,7 @@ namespace QT.UI
 
         public override void Show()
         {
+            _settingCanvas.LocaleSelector.StartingScreen = (int)SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>().CurrentLocale;
             _inputActions.Enable();
 
             _settingCanvas.StopAllCoroutines();
@@ -83,7 +84,7 @@ namespace QT.UI
 
             _soundManager.PlayOneShot(_soundManager.SoundData.UITabSFX);
 
-            _settingCanvas.LocaleSelector.ChangePage((int)SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>().CurrentLocale);
+            //_settingCanvas.LocaleSelector.ChangePage((int)SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>().CurrentLocale);
             
             if (Time.timeScale != 0)
             {

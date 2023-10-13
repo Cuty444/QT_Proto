@@ -10,7 +10,7 @@ namespace QT
     public class UILocalApplier : MonoBehaviour
     {
         private TextMeshProUGUI _text;
-        public string StringKey;
+        public string StringKey = "";
         
         private LocaleGameDataBase _localeGameDataBase;
         
