@@ -7,12 +7,15 @@ namespace QT.InGame
     public class PlayerMoveState : FSMState<Player>
     {
         private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
+        private static readonly int IsMoveSpeedAnimHash = Animator.StringToHash("IsMove");
         
         private Vector2 _moveDirection;
+        private Vector2 _aimDir;
         
         protected Stat _moveSpeed;
         
         private Vector2 _lastSafePosition;
+
         
         public PlayerMoveState(IFSMEntity owner) : base(owner)
         {
@@ -22,6 +25,7 @@ namespace QT.InGame
         public override void InitializeState()
         {
             _ownerEntity.OnMove = OnMove;
+            _ownerEntity.OnAim.AddListener(OnAim);
             _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing);
             _ownerEntity.SetAction(Player.ButtonActions.Dodge, OnDodge);
             _ownerEntity.SetAction(Player.ButtonActions.Interaction,OnInteraction);
@@ -32,6 +36,7 @@ namespace QT.InGame
         public override void ClearState()
         {
             _ownerEntity.OnMove = null;
+            _ownerEntity.OnAim.RemoveListener(OnAim);
             _ownerEntity.ClearAction(Player.ButtonActions.Swing);
             _ownerEntity.ClearAction(Player.ButtonActions.Dodge);
             _ownerEntity.ClearAction(Player.ButtonActions.Interaction);
@@ -51,7 +56,10 @@ namespace QT.InGame
             
             var speed = _moveSpeed.Value;
             var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
-
+            
+            _ownerEntity.Animator.SetBool(IsMoveSpeedAnimHash, currentNormalizedSpeed > 0.1f);
+            
+            currentNormalizedSpeed *= Vector2.Dot(_moveDirection, _aimDir) < 0f ? 1 : -1;
             _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, currentNormalizedSpeed);
             
             _ownerEntity.Rigidbody.velocity = _moveDirection * speed;
@@ -61,6 +69,11 @@ namespace QT.InGame
         {
             _moveDirection = direction;
             _ownerEntity.IsMoveFlip = direction.x > 0f;
+        }
+        
+        protected virtual void OnAim(Vector2 aimPos)
+        {
+            _aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
         }
 
         protected virtual void OnSwing(bool isOn)
