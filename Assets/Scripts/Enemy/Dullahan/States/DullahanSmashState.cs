@@ -21,7 +21,7 @@ namespace QT.InGame
         
         public DullahanSmashState(IFSMEntity owner) : base(owner)
         {
-            _atkList = SystemManager.Instance.DataManager.GetDataBase<EnemyAtkGameDataBase>().GetData(_ownerEntity.DullahanData.AttackAtkId);
+            _atkList = SystemManager.Instance.DataManager.GetDataBase<EnemyAtkGameDataBase>().GetData(_ownerEntity.DullahanData.SmashAtkId);
         }
 
         public override void InitializeState()

@@ -21,7 +21,8 @@ namespace QT.InGame
         private readonly DullahanData _dullahanData;
 
         private float _targetUpdateCoolTime;
-        private Vector2 _moveTarget;
+        public Transform _target;
+        private Vector2 _currentTargetPos;
 
         private float _atkCoolTime;
 
@@ -47,7 +48,9 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            _targetUpdateCoolTime = _enemyData.MoveTargetUpdatePeroid;
+            _target = SystemManager.Instance.PlayerManager.Player.transform;
+            _currentTargetPos = _target.position;
+            
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
         }
 
@@ -59,19 +62,21 @@ namespace QT.InGame
             if (_targetUpdateCoolTime > _enemyData.MoveTargetUpdatePeroid)
             {
                 _targetUpdateCoolTime = 0;
-                _moveTarget = SystemManager.Instance.PlayerManager.Player.transform.position;
+                _currentTargetPos = _target.position;
             }
         }
 
         public override void FixedUpdateState()
         {
-            var targetDistance = (_moveTarget - (Vector2) _ownerEntity.transform.position).magnitude;
+            var targetDistance = (_currentTargetPos - (Vector2) _ownerEntity.transform.position).magnitude;
 
             var speed = _ownerEntity.Rigidbody.velocity.sqrMagnitude /
                         (_enemyData.MovementSpd * _enemyData.MovementSpd);
             _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, speed);
             
             Move(targetDistance);
+            
+            targetDistance = ((Vector2)_target.position - (Vector2) _ownerEntity.transform.position).magnitude;
             CheckAttackStart(targetDistance);
         }
 
@@ -110,7 +115,7 @@ namespace QT.InGame
         private Vector2 SpacingMove(float targetDistance, bool isRotate = false)
         {
             var ownerPos = (Vector2) _ownerEntity.transform.position;
-            var dir = _moveTarget - ownerPos;
+            var dir = _currentTargetPos - ownerPos;
             
             var danger = new DirectionWeights();
             var interest = new DirectionWeights();
@@ -180,6 +185,13 @@ namespace QT.InGame
                 return;
             }
             
+            if (targetDistance <= _dullahanData.AttackDistance)
+            {
+                _atkCoolTime = _enemyData.AtkCheckDelay * 0.5f;
+                _ownerEntity.ChangeState(Dullahan.States.Attack);
+                return;
+            }
+            
             _atkCoolTime = 0;
 
             _ownerEntity.ChangeState(PickAttackState());
@@ -209,7 +221,7 @@ namespace QT.InGame
                 case Dullahan.States.Rush:
                     return _dullahanData.RushDistance;
                 case Dullahan.States.Smash:
-                    return _dullahanData.AttackDistance;
+                    return _dullahanData.SmashDistance;
                 case Dullahan.States.Throw:
                     return _dullahanData.ThrowDistance;
             }

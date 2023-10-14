@@ -154,7 +154,10 @@ namespace QT.InGame
                 HitAbleManager.Instance.GetInRange(pos, _hitRange, ref hitAbles);
                 foreach (var hit in hitAbles)
                 {
-                    hit.Hit(hit.Position-pos, _damage);
+                    if (hit != _ownerEntity)
+                    {
+                        hit.Hit(hit.Position - pos, _data.AttackDamage);
+                    }
                 }
             }
         }
