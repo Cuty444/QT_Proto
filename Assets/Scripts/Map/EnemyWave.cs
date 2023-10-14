@@ -8,6 +8,8 @@ namespace QT.Map
 {
     public class EnemyWave : MonoBehaviour
     {
+        public bool IsAvailable => _spawnedCount <= 0;
+        
         private const float SpawnDelay = 0.2f;
         
         public MapCellData CellData;
@@ -19,6 +21,7 @@ namespace QT.Map
 
         private void Awake()
         {
+            _spawnedCount = 0;
             _spawners = GetComponentsInChildren<EnemySpawner>();
             _spawners.Shuffle();
         }

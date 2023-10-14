@@ -22,7 +22,9 @@ namespace QT.Map
         
         [FormerlySerializedAs("EnemyWaveStart")] [field:Header("적 웨이브")]
         public EnemyWave[] EnemyWaves;
-        
+
+        public SpecialMapData SpecialMapData { get; private set; }
+
         [Header("문")] 
         [SerializeField] private Transform[] _doorTransforms;
         [SerializeField] private Transform[] _doorExitTransforms;
@@ -75,6 +77,7 @@ namespace QT.Map
             
             if (TryGetComponent(out SpecialMapData data))
             {
+                SpecialMapData = data;
                 data.MapPosition = position;
             }
             _roomType = roomType;

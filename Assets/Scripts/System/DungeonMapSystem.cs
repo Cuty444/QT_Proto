@@ -182,9 +182,12 @@ namespace QT.Core.Map
             SystemManager.Instance.PlayerManager.CreatePlayer();
         }
 
-        public void DungeonStart()
+        public void DungeonStart(ref Dictionary<Vector2Int, MapCellData> dictionary)
         {
-            MapCellDraw();
+            foreach (var pos in _mapData.MapNodeList)
+            {
+                dictionary.Add(pos,CellCreate(pos, _mapData.Map[pos.y, pos.x].DoorDirection));
+            }
         }
 
         private void GenerateMap(Vector2Int startPos)
@@ -732,22 +735,14 @@ namespace QT.Core.Map
 
         #region CellCreate
 
-        private void MapCellDraw()
-        {
-            foreach (var pos in _mapData.MapNodeList)
-            {
-                CellCreate(pos, _mapData.Map[pos.y, pos.x].DoorDirection);
-            }
-        }
-
-        private void CellCreate(Vector2Int createPos, MapDirection direction)
+        private MapCellData CellCreate(Vector2Int createPos, MapDirection direction)
         {
             RoomType roomType = _mapData.Map[createPos.y, createPos.x].RoomType;
             GameObject cellMapObject = null;
             switch (roomType)
             {
                 case RoomType.None:
-                    return;
+                    return null;
                 case RoomType.Normal:
                     cellMapObject = GetMapObject();
                     break;
@@ -776,6 +771,8 @@ namespace QT.Core.Map
             mapCellData.transform.position = new Vector3((createPos.x * 100.0f) - GetMiniMapSizeToMapSize().x,
                 (createPos.y * -100.0f) - GetMiniMapSizeToMapSize().y, 0f);
             mapCellData.CellDataSet(direction, createPos, roomType);
+
+            return mapCellData;
         }
 
         private MapDirection DirectionCheck(Vector2Int position)

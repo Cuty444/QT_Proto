@@ -31,7 +31,7 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private List<Dullahan.States> _attackStates = new (){Dullahan.States.Rush, Dullahan.States.Smash, Dullahan.States.Throw};
+        private List<Dullahan.States> _attackStates = new (){Dullahan.States.Rush, Dullahan.States.Smash, Dullahan.States.Throw, Dullahan.States.Summon};
         private int _attackStateIndex;
 
         private float _targetDistance;
@@ -208,7 +208,7 @@ namespace QT.InGame
             
             _attackStates.Shuffle();
             _attackStateIndex = 0;
-
+            
             _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
 
             return _attackStates[_attackStateIndex];
@@ -224,6 +224,8 @@ namespace QT.InGame
                     return _dullahanData.SmashDistance;
                 case Dullahan.States.Throw:
                     return _dullahanData.ThrowDistance;
+                case Dullahan.States.Summon:
+                    return _dullahanData.SummonDistance;
             }
 
             return _enemyData.SpacingRad;

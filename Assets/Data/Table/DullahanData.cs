@@ -44,6 +44,15 @@ namespace QT.InGame
         [field: SerializeField] public int ThrowAtkId { get; private set; }
         
         
+        // 소환
+        [field: Space]
+        [field: Space]
+        [field: Space]
+        [field: SerializeField] public float SummonDistance { get; private set; }
+        [field: Space]
+        [field: SerializeField] public float SummonTime { get; private set; }
+
+        
         
         // 점프
         [field: Space]

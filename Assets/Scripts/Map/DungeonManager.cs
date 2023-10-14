@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
+using QT.Map;
 using QT.UI;
 using UnityEngine;
 
@@ -12,6 +14,8 @@ namespace QT
         private PlayerManager _playerManager;
         private MapData _mapData;
 
+        private Dictionary<Vector2Int, MapCellData> _mapCellData = new();
+        
         public Vector2Int PlayerPosition { get; private set; }
 
         private void Awake()
@@ -45,10 +49,15 @@ namespace QT
             _playerManager.PlayerMapTeleportPosition.RemoveListener(MapTeleport);
         }
 
-        
+        public MapCellData GetCurrentMapCellData()
+        {
+            _mapCellData.TryGetValue(PlayerPosition, out var data);
+            return data;
+        }
+
         private void PlayerCreateEvent(Player player)
         {
-            _dungeonMapSystem.DungeonStart();
+            _dungeonMapSystem.DungeonStart(ref _mapCellData);
             _playerManager.PlayerDoorEnter.AddListener(MapEnter);
             _playerManager.PlayerMapClearPosition.AddListener(MapClear);
             
@@ -59,17 +68,34 @@ namespace QT
             PlayerPosition = _mapData.StartPosition;
         }
         
-        private async void MapEnter(Vector2Int nextDirection)
+        private void MapEnter(Vector2Int nextDirection)
         {
             Vector2Int nextPosition = PlayerPosition - nextDirection;
             _playerManager.PlayerMapVisitedPosition.Invoke(nextPosition);
             _playerManager.PlayerMapPosition.Invoke(nextPosition);
+
+            SetRoomPosition(nextPosition);
+        }
+
+        private void MapClear(Vector2Int position)
+        {
+            SystemManager.Instance.UIManager.SetState(UIState.InGame);
+        }
+
+        private void MapTeleport(Vector2Int position)
+        {
+            _playerManager.PlayerMapPosition.Invoke(position);
             
-            PlayerPosition = nextPosition;
+            SetRoomPosition(position);
+        }
+        
+        private async void SetRoomPosition(Vector2Int position)
+        {
+            PlayerPosition = position;
             
-            var data = SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(nextPosition);
+            var data = SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(position);
             
-            (await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>()).ChangeCenter(nextPosition);
+            (await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>()).ChangeCenter(position);
             SystemManager.Instance.UIManager.SetState(data.IsClear ? UIState.InGame : UIState.Battle);
 
             switch (data.RoomType)
@@ -84,19 +110,6 @@ namespace QT
                     SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
                     break;
             }
-        }
-
-        private void MapClear(Vector2Int position)
-        {
-            SystemManager.Instance.UIManager.SetState(UIState.InGame);
-        }
-
-        private async void MapTeleport(Vector2Int position)
-        {
-            _playerManager.PlayerMapPosition.Invoke(position);
-            (await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>()).ChangeCenter(position);
-            
-            PlayerPosition = position;
         }
     }
 }
