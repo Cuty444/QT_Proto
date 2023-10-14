@@ -8,11 +8,20 @@ namespace QT.InGame
 {
     public class DullahanData : ScriptableObject
     {
+        
+        [field: SerializeField] public float SmashDistance { get; private set; }
+        [field: Space]
+        [field: SerializeField] public int SmashAtkId { get; private set; }
+        
+        [field: Space]
+        [field: Space]
+        [field: Space]
         [field: SerializeField] public float AttackDistance { get; private set; }
         [field: Space]
         [field: SerializeField] public int AttackAtkId { get; private set; }
          
         
+        [field: Space]
         [field: Space]
         [field: Space]
         [field: SerializeField] public float RushDistance { get; private set; }
@@ -35,6 +44,7 @@ namespace QT.InGame
         [field: Space]
         [field: SerializeField] public float ThrowDistance { get; private set; }
         [field: Space]
+        [field: SerializeField] public float ThrowReadyTime { get; private set; }
         [field: SerializeField] public int ThrowAtkId { get; private set; }
         
         

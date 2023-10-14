@@ -8,7 +8,7 @@ using UnityEngine;
 namespace QT.InGame
 {
     [FSMState((int) Dullahan.States.Smash)]
-    public class DullahanAttackState : FSMState<Dullahan>
+    public class DullahanSmashState : FSMState<Dullahan>
     {
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
 
@@ -19,7 +19,7 @@ namespace QT.InGame
         
         private SoundManager _soundManager;
         
-        public DullahanAttackState(IFSMEntity owner) : base(owner)
+        public DullahanSmashState(IFSMEntity owner) : base(owner)
         {
             _atkList = SystemManager.Instance.DataManager.GetDataBase<EnemyAtkGameDataBase>().GetData(_ownerEntity.DullahanData.AttackAtkId);
         }

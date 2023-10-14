@@ -22,9 +22,12 @@ namespace QT.InGame
             Stun, 
             
             Rush,
-            Jump,
-            Attack,
+            Smash,
             Throw,
+            
+            Attack,
+            Jump,
+            
             Summon,
             
             Dead,

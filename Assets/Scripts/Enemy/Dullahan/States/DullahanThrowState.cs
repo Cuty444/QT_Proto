@@ -9,15 +9,18 @@ namespace QT.InGame
     [FSMState((int) Dullahan.States.Throw)]
     public class DullahanThrowState : FSMState<Dullahan>
     {
+        private readonly int ThrowReadyAnimHash = Animator.StringToHash("ThrowReady");
         private readonly int ThrowAnimHash = Animator.StringToHash("Throw");
 
         private List<EnemyAtkGameData> _atkList;
+        private DullahanData _data;
         
         private SoundManager _soundManager;
 
         public DullahanThrowState(IFSMEntity owner) : base(owner)
         {
             _atkList = SystemManager.Instance.DataManager.GetDataBase<EnemyAtkGameDataBase>().GetData(_ownerEntity.DullahanData.ThrowAtkId);
+            _data = _ownerEntity.DullahanData;
         }
 
         public override void InitializeState()
@@ -41,6 +44,9 @@ namespace QT.InGame
 
         private IEnumerator AttackSequence()
         {
+            _ownerEntity.Animator.SetTrigger(ThrowReadyAnimHash);
+            yield return new WaitForSeconds(_data.ThrowReadyTime);
+            
             foreach (var data in _atkList)
             {  
                 _ownerEntity.Animator.SetTrigger(ThrowAnimHash);

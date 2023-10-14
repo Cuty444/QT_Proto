@@ -30,7 +30,7 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private List<Dullahan.States> _attackStates = new (){Dullahan.States.Rush, Dullahan.States.Attack, Dullahan.States.Throw};
+        private List<Dullahan.States> _attackStates = new (){Dullahan.States.Rush, Dullahan.States.Smash, Dullahan.States.Throw};
         private int _attackStateIndex;
 
         private float _targetDistance;
@@ -47,7 +47,7 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            _targetUpdateCoolTime = 0;
+            _targetUpdateCoolTime = _enemyData.MoveTargetUpdatePeroid;
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
         }
 
@@ -208,7 +208,7 @@ namespace QT.InGame
             {
                 case Dullahan.States.Rush:
                     return _dullahanData.RushDistance;
-                case Dullahan.States.Attack:
+                case Dullahan.States.Smash:
                     return _dullahanData.AttackDistance;
                 case Dullahan.States.Throw:
                     return _dullahanData.ThrowDistance;
