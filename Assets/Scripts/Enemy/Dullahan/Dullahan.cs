@@ -25,6 +25,7 @@ namespace QT.InGame
             Jump,
             Attack,
             Throw,
+            Summon,
             
             Dead,
         }
