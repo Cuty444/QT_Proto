@@ -110,8 +110,6 @@ namespace QT.InGame
 
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
-
-            SystemManager.Instance.RankingManager.PlayerOn.Invoke(true);
         }
 
         protected override void Update()

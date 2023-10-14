@@ -30,8 +30,6 @@ namespace QT.Core
         public SoundManager SoundManager { get; } = new();
 
         public StageLoadManager StageLoadManager { get; } = new();
-
-        public RankingManager RankingManager { get; } = new();
         
         [field:SerializeField]public UIManager UIManager { get; private set; }
         [SerializeField] private SoundPathData _soundPathData;
@@ -65,9 +63,6 @@ namespace QT.Core
             //타이틀씬으로 이동
             if (!IsTestMode)
             {
-                RankingManager.Initialize();
-                RankingManager.DataLoad();
-                
                 LoadingManager.LoadScene(2);
             }
             

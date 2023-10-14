@@ -20,7 +20,6 @@ namespace QT.InGame
         private readonly int RigidAnimHash = Animator.StringToHash("Rigid");
 
         private PlayerHPCanvasModel _playerHpCanvas;
-        private RankingManager _rankingManager;
 
         private InputAngleDamper _roationDamper = new (5);
 
@@ -34,7 +33,6 @@ namespace QT.InGame
 
         public PlayerGlobalState(IFSMEntity owner) : base(owner)
         {
-            _rankingManager = SystemManager.Instance.RankingManager;
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
             
             _batBone = _ownerEntity.GetComponentInChildren<SkeletonRenderer>().Skeleton.FindBone("bat_size");
@@ -56,7 +54,6 @@ namespace QT.InGame
         public override void UpdateState()
         {
             _playerHpCanvas.UpdateInfo(_ownerEntity.StatComponent.GetStatus(PlayerStats.HP), _ownerEntity.Inventory.ActiveItem);
-            _rankingManager.RankingDeltaTimeUpdate.Invoke(Time.deltaTime);
             
             OnSwingRadChange();
         }

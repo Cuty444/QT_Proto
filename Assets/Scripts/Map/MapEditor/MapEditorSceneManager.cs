@@ -6,6 +6,7 @@ using IngameDebugConsole;
 using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
+using QT.UI;
 using UnityEditor;
 using UnityEngine;
 
@@ -93,6 +94,7 @@ namespace QT.Map
             
             SystemManager.Instance.PlayerManager.OnMapCellChanged.Invoke(Target.VolumeProfile, Target.CameraSize);
 
+            SystemManager.Instance.UIManager.SetState(UIState.Battle);
 
             // MapCell 로딩이 끝나는 시간을 고려해야 함...
             StartCoroutine(Util.UnityUtil.WaitForFunc(() =>

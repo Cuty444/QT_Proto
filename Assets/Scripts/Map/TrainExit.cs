@@ -68,7 +68,6 @@ namespace QT.Map
             yield return new WaitForSeconds(_trainExitAnimation.SequenceLength);
 
             SystemManager.Instance.GetSystem<DungeonMapSystem>().NextFloor();
-            SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
         }
     }
 }

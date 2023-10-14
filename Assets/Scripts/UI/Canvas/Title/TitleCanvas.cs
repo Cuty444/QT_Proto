@@ -53,9 +53,6 @@ namespace QT.UI
         {
             base.Show();
             
-            SystemManager.Instance.RankingManager.ResetRankingTime();
-            SystemManager.Instance.RankingManager.PlayerOn.Invoke(false);
-
             _titleCanvas.PopAnimation.ReStart();
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.MainBGM);
         }
