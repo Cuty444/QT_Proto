@@ -104,8 +104,8 @@ MonoBehaviour:
   - {fileID: 8796100192357280980}
   - {fileID: -3311310152979376381}
   - {fileID: 6826735130844843828}
-  - {fileID: 3178103139786943727}
---- !u!114 &3178103139786943727
+  - {fileID: 3803691858375271325}
+--- !u!114 &3803691858375271325
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,31 +114,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
-  m_Name: ShadowsMidtonesHighlights
+  m_Script: {fileID: 11500000, guid: 29fa0085f50d5e54f8144f766051a691, type: 3}
+  m_Name: FilmGrain
   m_EditorClassIdentifier: 
-  active: 1
-  shadows:
+  active: 0
+  type:
     m_OverrideState: 1
-    m_Value: {x: 0.6715566, y: 0.8143337, z: 1, w: 0}
-  midtones:
+    m_Value: 5
+  intensity:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.91373295, z: 0.95594263, w: 0}
-  highlights:
+    m_Value: 0.26
+  response:
     m_OverrideState: 1
-    m_Value: {x: 0.9217889, y: 0.92535406, z: 1, w: 0}
-  shadowsStart:
-    m_OverrideState: 0
     m_Value: 0
-  shadowsEnd:
+  texture:
     m_OverrideState: 0
-    m_Value: 0.3
-  highlightsStart:
-    m_OverrideState: 0
-    m_Value: 0.55
-  highlightsEnd:
-    m_OverrideState: 0
-    m_Value: 1
+    m_Value: {fileID: 0}
 --- !u!114 &6826735130844843828
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -154,19 +145,19 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 1
-    m_Value: 0.1
+    m_Value: 0.48
   contrast:
     m_OverrideState: 1
-    m_Value: -9.1
+    m_Value: -4
   colorFilter:
     m_OverrideState: 0
     m_Value: {r: 1, g: 1, b: 1, a: 1}
   hueShift:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   saturation:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 32
 --- !u!114 &8796100192357280980
 MonoBehaviour:
   m_ObjectHideFlags: 3
