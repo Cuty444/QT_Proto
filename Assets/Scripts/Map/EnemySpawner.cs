@@ -28,6 +28,11 @@ namespace QT.Map
         
         public void Spawn(UnityAction onDeadAction = null)
         {
+            if (Target != null)
+            {
+                return;
+            }
+            
             _onDeadAction = onDeadAction;
             StartCoroutine(SpawnProcess());
         }

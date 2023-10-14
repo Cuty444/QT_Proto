@@ -10,6 +10,13 @@ namespace QT.InGame
     [FSMState((int) Dullahan.States.Rush)]
     public class DullahanRushState : FSMState<Dullahan>
     {
+        private enum RushState
+        {
+            Ready,
+            Rushing,
+            OnAir
+        }
+        
         private readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
         private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
@@ -17,31 +24,34 @@ namespace QT.InGame
         private const string SparkEffectPath = "Effect/Prefabs/FX_Boss_Rush_Spark.prefab";
         private const string ShockEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
         
-        private bool _isReady;
+        private RushState _state=0;
+        
         private Vector2 _dir;
 
         private float _time;
         
         private Transform _transform;
         private Transform _rushCenter;
-        
+        //
         private float _speed;
         private float _size;
         private float _damage;
+
+        private int _rushSide = 0;
 
         private SoundManager _soundManager;
         
         private ParticleSystem _rushEffect;
         private ParticleSystem _sparkEffect;
+
+        private DullahanData _data;
         
         public DullahanRushState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
             _rushCenter = _ownerEntity.CenterTransform;
             
-            _speed = _ownerEntity.DullahanData.RushSpeed;
-            _size = _ownerEntity.RushColliderSize;
-            _damage = _ownerEntity.DullahanData.RushHitDamage;
+            _data = _ownerEntity.DullahanData;
             
             SystemManager.Instance.ResourceManager.CacheAsset(RushEffectPath);
             SystemManager.Instance.ResourceManager.CacheAsset(SparkEffectPath);
@@ -49,14 +59,18 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
+            _speed = _ownerEntity.DullahanData.RushSpeed;
+            _size = _ownerEntity.RushColliderSize;
+            _damage = _ownerEntity.DullahanData.RushHitDamage;
+
             _soundManager = SystemManager.Instance.SoundManager;
-            
+
             _dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
-            _ownerEntity.SetDir(_dir,2);
+            _rushSide = _ownerEntity.SetDir(_dir,2);
 
             _dir.Normalize();
 
-            _isReady = false;
+            _state = RushState.Ready;
             _time = 0;
 
             _ownerEntity.Animator.SetTrigger(RushReadyAnimHash);
@@ -64,8 +78,6 @@ namespace QT.InGame
             
             _ownerEntity.RushTrailObject.SetActive(true);
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
-
-            SetEffect();
         }
         
         public override void ClearState()
@@ -80,34 +92,37 @@ namespace QT.InGame
         {
             _time += Time.deltaTime;
             
-            if (!_isReady)
+            switch (_state)
             {
-                if (_time > _ownerEntity.DullahanData.RushReadyTime)
-                {
-                    _isReady = true;
-                    _ownerEntity.RushTrailObject.SetActive(true);
-                    _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
-                    _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush, _ownerEntity.transform.position);
-                    _ownerEntity.SetPhysics(false);
-                    _time = 0;
-                }
-            }
-            else
-            {
-                _transform.Translate(_dir * (_speed * Time.deltaTime));
+                case RushState.Ready:
+                    Ready();
+                    break;
+                case RushState.Rushing:
+                    Rushing();
+                    break;
+                case RushState.OnAir:
+                    OnAir();
+                    break;
             }
         }
 
         public override void FixedUpdateState()
         {
-            if (!_isReady)
+            if (_state != RushState.Rushing)
             {
                 return;
             }
             
-            if (CheckHit() || _time > _ownerEntity.DullahanData.RushLengthTime)
+            if (CheckHit())
             {
-                _ownerEntity.ChangeState(Dullahan.States.Normal);
+                _state = RushState.OnAir;
+                _time = 0;
+                
+                SystemManager.Instance.ResourceManager.ReleaseObject(RushEffectPath, _rushEffect);
+                SystemManager.Instance.ResourceManager.ReleaseObject(SparkEffectPath, _sparkEffect);
+                
+                _ownerEntity.Animator.SetBool(IsRushingAnimHash, false);
+                _ownerEntity.RushTrailObject.SetActive(false);
             }
         }
 
@@ -131,10 +146,6 @@ namespace QT.InGame
 
                     var normal = hit.normal;
                     var angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90;
-
-                    
-                    SystemManager.Instance.ResourceManager.ReleaseObject(RushEffectPath, _rushEffect);
-                    SystemManager.Instance.ResourceManager.ReleaseObject(SparkEffectPath, _sparkEffect);
                     
                     SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
                     _ownerEntity.RushShockImpulseSource.GenerateImpulse(normal * 3);
@@ -149,8 +160,54 @@ namespace QT.InGame
 
             return false;
         }
-        
-        
+
+        private void Ready()
+        {
+            if (_time > _ownerEntity.DullahanData.RushReadyTime)
+            {
+                var dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
+                if (_rushSide == _ownerEntity.GetSide(dir, 2))
+                {
+                    _dir = dir.normalized;
+                }
+                
+                _ownerEntity.RushTrailObject.SetActive(true);
+                _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush, _ownerEntity.transform.position);
+                _ownerEntity.SetPhysics(false);
+                _time = 0;
+                    
+                SetEffect();
+                
+                _state = RushState.Rushing;
+            }
+        }
+
+        private void Rushing()
+        {
+            _transform.Translate(_dir * (_data.RushSpeed * Time.deltaTime));
+            
+            if (_time > _ownerEntity.DullahanData.RushLengthTime)
+            {
+                SystemManager.Instance.ResourceManager.ReleaseObject(RushEffectPath, _rushEffect);
+                SystemManager.Instance.ResourceManager.ReleaseObject(SparkEffectPath, _sparkEffect);
+                
+                _ownerEntity.ChangeState(Dullahan.States.Normal);
+                _time = 0;
+            }
+        }
+
+        private void OnAir()
+        {
+            _transform.Translate(-_dir * (_data.RushAirSpeed * Time.deltaTime));
+            
+            if (_time > _ownerEntity.DullahanData.RushAirTime)
+            {
+                _ownerEntity.ChangeState(Dullahan.States.Stun);
+                _time = 0;
+            }
+        }
+
         private async void SetEffect()
         {
             _rushEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(RushEffectPath, _ownerEntity.CenterTransform);

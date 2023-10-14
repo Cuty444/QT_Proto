@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Timers;
 using QT.Core;
 using QT.Sound;
@@ -21,8 +22,6 @@ namespace QT.InGame
         private Transform _transform;
         private Transform _playerTransform;
         
-        private float _speed;
-        private float _minSpeed;
         private float _hitRange;
         private float _damage;
         
@@ -31,14 +30,16 @@ namespace QT.InGame
 
         private SoundManager _soundManager;
 
+        private DullahanData _data;
+
         public DullahanJumpState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
             
-            _speed = _ownerEntity.DullahanData.JumpMoveSpeed;
-            _minSpeed = _ownerEntity.DullahanData.JumpMinMoveSpeed;
-            _hitRange = _ownerEntity.DullahanData.JumpMoveSpeed;
-            _damage = _ownerEntity.DullahanData.LandingHitRange;
+            _damage = _ownerEntity.DullahanData.LandingHitDamage;
+            _hitRange = _ownerEntity.DullahanData.LandingHitRange;
+            
+            _data = _ownerEntity.DullahanData;
         }
 
         public override void InitializeState()
@@ -112,7 +113,7 @@ namespace QT.InGame
             {
                 _state++;
                 _time = 0;
-                _ownerEntity.DullahanObject.gameObject.SetActive(false);
+                _ownerEntity.DullahanObject.localScale = Vector3.zero;
             }
         }
 
@@ -126,14 +127,14 @@ namespace QT.InGame
             SetHeight(height);
             
             var dir = (_playerTransform.position - _transform.position).normalized;
-            _transform.Translate((1 - time + _minSpeed) * _speed * Time.deltaTime * dir);
+            _transform.Translate((1 - time + _data.JumpMinMoveSpeed) * _data.JumpMoveSpeed * Time.deltaTime * dir);
             
             if (_time > _ownerEntity.DullahanData.JumpLengthTime)
             {
                 _state++;
                 _time = 0;
                 
-                _ownerEntity.DullahanObject.gameObject.SetActive(true);
+                _ownerEntity.DullahanObject.localScale = Vector3.one;
                 _ownerEntity.Animator.SetBool(IsJumpingAnimHash, false);
                 
                 SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath, _transform.position);
@@ -144,6 +145,20 @@ namespace QT.InGame
 
                 _ownerEntity.Shooter.ShootPoint = _transform;
                 _ownerEntity.Shooter.PlayEnemyAtkSequence(_ownerEntity.DullahanData.LandingAtkId, ProjectileOwner.Boss);
+                
+                _ownerEntity.SetPhysics(true);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Landing, _ownerEntity.transform.position);
+
+                var hitAbles = new List<IHitAble>();
+                Vector2 pos = _ownerEntity.transform.position;
+                HitAbleManager.Instance.GetInRange(pos, _hitRange, ref hitAbles);
+                foreach (var hit in hitAbles)
+                {
+                    if (hit != _ownerEntity)
+                    {
+                        hit.Hit(hit.Position - pos, _data.AttackDamage);
+                    }
+                }
             }
         }
         
@@ -151,11 +166,8 @@ namespace QT.InGame
         {
             if (_time > _ownerEntity.DullahanData.JumpEndTime)
             {
-                _state++;
-                _ownerEntity.SetPhysics(true);
-
+                _time = 0;
                 _ownerEntity.ChangeState(Dullahan.States.Normal);
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Landing, _ownerEntity.transform.position);
             }
         }
 

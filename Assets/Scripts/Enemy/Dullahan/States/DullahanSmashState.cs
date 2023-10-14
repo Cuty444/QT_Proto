@@ -7,21 +7,21 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int) Dullahan.States.Attack)]
-    public class DullahanAttackState : FSMState<Dullahan>
+    [FSMState((int) Dullahan.States.Smash)]
+    public class DullahanSmashState : FSMState<Dullahan>
     {
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
 
         private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Smash.prefab";
         
+        private List<EnemyAtkGameData> _atkList;
         private Coroutine _atkSeqence;
         
         private SoundManager _soundManager;
-        private DullahanData _data;
         
-        public DullahanAttackState(IFSMEntity owner) : base(owner)
+        public DullahanSmashState(IFSMEntity owner) : base(owner)
         {
-            _data = _ownerEntity.DullahanData;
+            _atkList = SystemManager.Instance.DataManager.GetDataBase<EnemyAtkGameDataBase>().GetData(_ownerEntity.DullahanData.SmashAtkId);
         }
 
         public override void InitializeState()
@@ -47,28 +47,31 @@ namespace QT.InGame
             var side = _ownerEntity.SetDir(dir,2);
             _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPoints[Mathf.RoundToInt(side)];
             
-            _ownerEntity.Animator.SetTrigger(AttackAnimHash);
-            yield return new WaitForSeconds(_data.AttackBeforeDelay);
-            
-            
-            SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
-                _ownerEntity.Shooter.ShootPoint.position);
-            
-            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_BatAttack, _ownerEntity.transform.position);
-            _ownerEntity.AttackImpulseSource.GenerateImpulse(0.5f);
-            
-            var hitAbles = new List<IHitAble>();
-            Vector2 pos = _ownerEntity.transform.position;
-            HitAbleManager.Instance.GetInRange(pos, _data.AttackDistance, ref hitAbles);
-            foreach (var hit in hitAbles)
+            foreach (var data in _atkList)
             {
-                if (hit != _ownerEntity)
+                if (data.BeforeDelay > 0)
                 {
-                    hit.Hit(hit.Position - pos, _data.AttackDamage);
+                    _ownerEntity.Animator.SetTrigger(AttackAnimHash);
+
+                    yield return new WaitForSeconds(data.BeforeDelay);
+
+                    _soundManager.PlayOneShot(_soundManager.SoundData.Boss_BatAttack, _ownerEntity.transform.position);
+                    
+                    SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
+                        _ownerEntity.Shooter.ShootPoint.position);
+                    
+                    _ownerEntity.AttackImpulseSource.GenerateImpulse(0.7f);
+                }
+
+                _ownerEntity.Shooter.Shoot(data.ShootDataId, data.AimType, ProjectileOwner.Boss);
+
+                if (data.AfterDelay > 0)
+                {
+                    yield return new WaitForSeconds(data.AfterDelay);
                 }
             }
-            
-            yield return new WaitForSeconds(_data.AttackAfterDelay);
+
+            _ownerEntity.Animator.ResetTrigger(AttackAnimHash);
             
             _ownerEntity.ChangeState(Dullahan.States.Normal);
         }

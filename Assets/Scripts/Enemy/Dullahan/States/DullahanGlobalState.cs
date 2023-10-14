@@ -30,8 +30,6 @@ namespace QT.InGame
             _hpCanvas = await SystemManager.Instance.UIManager.Get<BossHPCanvasModel>();
             _hpCanvas.SetHPGuage(_ownerEntity.HP);
             _hpCanvas.Show();
-
-            GameObject.FindObjectOfType<CinemachineVirtualCamera>().m_Lens.OrthographicSize = 10;
         }
 
         public override void ClearState()
