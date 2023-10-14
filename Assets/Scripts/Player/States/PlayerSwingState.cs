@@ -120,6 +120,10 @@ namespace QT.InGame
 
             foreach (var hitAble in _hitAbles)
             {
+                if (hitAble == _ownerEntity)
+                {
+                    continue;
+                }
                 if (hitAble.IsClearTarget)
                 {
                     if (!_isCharged)

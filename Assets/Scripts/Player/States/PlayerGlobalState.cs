@@ -49,6 +49,8 @@ namespace QT.InGame
             
             var swingRad = _swingRadStat.Value / _swingRadStat.BaseValue * _globalData.BatSizeMultiplier;
             _swingRadDamper.ResetCurrentValue(swingRad);
+            
+            HitAbleManager.Instance.Register(_ownerEntity);
         }
 
         public override void UpdateState()
@@ -68,6 +70,8 @@ namespace QT.InGame
             SystemManager.Instance.EventManager.RemoveEvent(this);
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainAnimation);
             _ownerEntity.OnAim.RemoveListener(OnAim);
+            
+            HitAbleManager.Instance.UnRegister(_ownerEntity);
         }
 
         private void InvokeEvent(EventType eventType, object data)
