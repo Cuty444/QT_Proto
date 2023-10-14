@@ -42,13 +42,13 @@ namespace QT.InGame
         
         private IEnumerator AttackSequence()
         {
+            Vector2 dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
+
+            var side = _ownerEntity.SetDir(dir,2);
+            _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPoints[Mathf.RoundToInt(side)];
+            
             foreach (var data in _atkList)
-            {  
-                Vector2 dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
-
-                var side = _ownerEntity.SetDir(dir,2);
-                _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPoints[side];
-
+            {
                 if (data.BeforeDelay > 0)
                 {
                     _ownerEntity.Animator.SetTrigger(AttackAnimHash);

@@ -64,7 +64,7 @@ namespace QT.InGame
             _damage = _ownerEntity.DullahanData.RushHitDamage;
 
             _soundManager = SystemManager.Instance.SoundManager;
-            
+
             _dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
             _rushSide = _ownerEntity.SetDir(_dir,2);
 
@@ -166,9 +166,9 @@ namespace QT.InGame
             if (_time > _ownerEntity.DullahanData.RushReadyTime)
             {
                 var dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
-                if (_rushSide == _ownerEntity.SetDir(dir, 2))
+                if (_rushSide == _ownerEntity.GetSide(dir, 2))
                 {
-                    _dir = dir;
+                    _dir = dir.normalized;
                 }
                 
                 _ownerEntity.RushTrailObject.SetActive(true);

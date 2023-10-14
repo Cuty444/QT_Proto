@@ -101,7 +101,22 @@ namespace QT.InGame
             }
         }
 
-        public int SetDir(Vector2 dir,int sideCount)
+        public int SetDir(Vector2 dir, int sideCount)
+        {
+            var side = GetSide(dir, sideCount);
+
+            SetDir(side, dir.x > 0);
+            
+            return side;
+        }
+
+        public void SetDir(int side, bool isFlip)
+        {
+            Animator.SetFloat(RotationAnimHash, side);
+            Animator.transform.rotation = Quaternion.Euler(0f, isFlip ? 180 : 0, 0f);
+        }
+
+        public int GetSide(Vector2 dir, int sideCount)
         {
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 90;
 
@@ -115,13 +130,7 @@ namespace QT.InGame
                 angle = 360 - angle;
             }
 
-            int side = (int)Mathf.Round(angle / 180 * sideCount);
-            
-            Animator.SetFloat(RotationAnimHash, side);
-            
-            Animator.transform.rotation = Quaternion.Euler(0f, dir.x > 0 ? 180 : 0, 0f);
-
-            return side;
+            return Mathf.RoundToInt(angle / 180 * sideCount);
         }
     }
 }
