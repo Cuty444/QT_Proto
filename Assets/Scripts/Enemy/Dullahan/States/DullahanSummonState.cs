@@ -13,6 +13,8 @@ namespace QT.InGame
     {
         private readonly int SummonAnimHash = Animator.StringToHash("IsSummon");
         
+        private const string SummonEffectPath = "Effect/Prefabs/FX_Boss_Howling.prefab";
+        
         private Coroutine _summonSequence;
         
         private SoundManager _soundManager;
@@ -68,6 +70,10 @@ namespace QT.InGame
             _ownerEntity.Animator.SetBool(SummonAnimHash, true);
             
             _bossWave.Spawn();
+            
+            yield return new WaitForSeconds(_data.SummonReadyTime);
+            
+            SystemManager.Instance.ResourceManager.EmitParticle(SummonEffectPath, _ownerEntity.CenterTransform.position);
             
             yield return new WaitForSeconds(_data.SummonTime);
             

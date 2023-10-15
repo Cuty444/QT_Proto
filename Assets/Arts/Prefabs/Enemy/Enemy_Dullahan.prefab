@@ -192,7 +192,7 @@ GameObject:
   m_Layer: 0
   m_Name: Wheel
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -642,6 +642,7 @@ Transform:
   m_Children:
   - {fileID: 2255934001105926064}
   - {fileID: 515597336106742899}
+  - {fileID: 3426226567052295846}
   - {fileID: 2972661818584243404}
   m_Father: {fileID: 5641973990325650118}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1079,6 +1080,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2972661818584243404}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8014295916375997753
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3426226567052295846}
+  - component: {fileID: 4990473479034476820}
+  m_Layer: 11
+  m_Name: Hand
+  m_TagString: Untagged
+  m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3426226567052295846
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8014295916375997753}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: -0.7510337, w: 0.66026384}
+  m_LocalPosition: {x: -1.9137297, y: 2.019506, z: 0}
+  m_LocalScale: {x: 1, y: 0.99999994, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3310964528194750462}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4990473479034476820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8014295916375997753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1fd8daaed7b64148a34acb96ba14ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonRenderer: {fileID: 3720069595483841744}
+  boneName: M_Hand_L
+  followXYPosition: 1
+  followZPosition: 1
+  followBoneRotation: 1
+  followSkeletonFlip: 1
+  followLocalScale: 1
+  followParentWorldScale: 1
+  maintainedAxisOrientation: 1
+  initializeOnAwake: 1
 --- !u!1 &8026073903901508441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,7 +1230,6 @@ GameObject:
   - component: {fileID: 3026859772209166903}
   - component: {fileID: 4097343861940835628}
   - component: {fileID: 9203921043259468480}
-  - component: {fileID: 3693534664109156699}
   - component: {fileID: 3007901807299205336}
   - component: {fileID: 6343918163637424495}
   - component: {fileID: 8402985861621784570}
@@ -1265,43 +1319,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 1.49}
-  m_Size: {x: 2, y: 3.44}
-  m_Direction: 0
---- !u!70 &3693534664109156699
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8220631510388221840}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 1.98}
-  m_Size: {x: 3.32, y: 1.65}
+  m_Offset: {x: 0, y: 1}
+  m_Size: {x: 3, y: 2.5}
   m_Direction: 1
 --- !u!114 &3007901807299205336
 MonoBehaviour:
@@ -1322,6 +1341,7 @@ MonoBehaviour:
   - {fileID: 294344288787346976}
   - {fileID: 8561462585611755664}
   <CenterTransform>k__BackingField: {fileID: 515597336106742899}
+  <HandTransform>k__BackingField: {fileID: 3426226567052295846}
   <WheelTransform>k__BackingField: {fileID: 2255934001105926064}
   <RushColliderSize>k__BackingField: 1.5
   <RushTrailObject>k__BackingField: {fileID: 6668560867680925416}
