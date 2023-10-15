@@ -25,7 +25,7 @@ namespace QT
         [SerializeField] private float _moveSpeed;
         [SerializeField] private NpcTextPopup _npcTextPopup;
         
-        private Animator _animator;
+        private Animator _animator = null;
 
         private PlayerManager _playerManager;
 
@@ -49,6 +49,12 @@ namespace QT
         private void OnDisable()
         {
             HitAbleManager.Instance.UnRegister(this);
+            if (_animator == null)
+                return;
+            if (_currentWayPointIndex < _waypointsTransform.Length)
+            {
+                _isMove = true;
+            }
         }
         
         private void Hit()
