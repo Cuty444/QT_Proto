@@ -43,9 +43,10 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            if (_bossWave == null && _bossWave.IsAvailable == false)
+            if (_bossWave == null || _bossWave.IsAvailable == false)
             {
                 _ownerEntity.ChangeState(Dullahan.States.Normal);
+                return;
             }
             
             _soundManager = SystemManager.Instance.SoundManager;
