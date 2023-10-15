@@ -73,6 +73,19 @@ namespace QT.Core
         private void Update()
         {
             Shader.SetGlobalFloat(UnscaledTime, Time.unscaledTime);
+            
+            // 임시로 치트키 추가
+            if(Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift))
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    TestCommands.Shop();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    TestCommands.Boss();
+                }
+            }
         }
 
         private void InitializeSystems()
