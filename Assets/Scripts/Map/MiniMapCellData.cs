@@ -45,11 +45,6 @@ namespace QT.Map
 
         private void Awake()
         {
-            _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
-            
-            _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
-            
             _clickTeleportButton.onClick.AddListener(OnClickTeleportButton);
         }
 
@@ -61,6 +56,12 @@ namespace QT.Map
             
             _mapImage.enabled = false;
             _iconsTransform.gameObject.SetActive(false);
+            
+            _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
+            
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _playerManager.PlayerMapPosition.RemoveListener(CellPosCheck);
+            _playerManager.PlayerMapPosition.AddListener(CellPosCheck);
             
             CellPosCheck(startPos);
         }
