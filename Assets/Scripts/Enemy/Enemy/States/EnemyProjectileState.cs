@@ -15,7 +15,8 @@ namespace QT.InGame
         private static readonly int ProjectileSpeedAnimHash = Animator.StringToHash("ProjectileSpeed");
         private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         
-        private const string HitEffectPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
+        private const string HitEffectPath = "Effect/Prefabs/FX_M_Wall_Hit.prefab";
+        private const string HitEnemyEffectPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
         private const string FlyingStartEffectPath = "Effect/Prefabs/FX_M_Flying_AirResistance.prefab";
         private const string FlyingEffectPath = "Effect/Prefabs/FX_M_Flying_Dust.prefab";
 
@@ -163,7 +164,7 @@ namespace QT.InGame
 
                     _lastHitAble = hitAble;
                     pierceCheck = _isPierce;
-                    SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
+                    SystemManager.Instance.ResourceManager.EmitParticle(HitEnemyEffectPath, hit.point); 
                 }
                 else
                 {
@@ -171,6 +172,7 @@ namespace QT.InGame
                     {
                         _lastStuckTime = Time.timeSinceLevelLoad;
                         _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwayWallHitSFX);
+                        SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point); 
                     }
 
                     _lastHitAble = null;
