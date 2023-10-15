@@ -30,11 +30,15 @@ namespace QT.InGame
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
             
-            Vector2 dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
-            var side = _ownerEntity.SetDir(dir,2);
-            _ownerEntity.Shooter.ShootPoint = _ownerEntity.CenterTransform;
+            _ownerEntity.Shooter.ShootPoint = _ownerEntity.HandTransform;
             
             _ownerEntity.StartCoroutine(AttackSequence());
+        }
+
+        public override void UpdateState()
+        {
+            Vector2 dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
+            _ownerEntity.SetDir(dir,2);
         }
 
         public override void ClearState()

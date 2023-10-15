@@ -50,6 +50,7 @@ namespace QT.InGame
         [field: Space]
         [field: SerializeField] public float SummonDistance { get; private set; }
         [field: Space]
+        [field: SerializeField] public float SummonReadyTime { get; private set; }
         [field: SerializeField] public float SummonTime { get; private set; }
 
         

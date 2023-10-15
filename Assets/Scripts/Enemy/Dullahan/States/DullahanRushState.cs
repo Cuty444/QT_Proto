@@ -166,7 +166,7 @@ namespace QT.InGame
             if (_time > _ownerEntity.DullahanData.RushReadyTime)
             {
                 var dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
-                if (_rushSide == _ownerEntity.GetSide(dir, 2))
+                if (dir.x > 0 == _dir.x > 0 && _rushSide == _ownerEntity.GetSide(dir, 2))
                 {
                     _dir = dir.normalized;
                 }
