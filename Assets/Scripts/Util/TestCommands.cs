@@ -49,15 +49,13 @@ namespace QT
         [ConsoleMethod("Boss", "보스방 강제 이동")]
         public static void Boss()
         {
-            SystemManager.Instance.PlayerManager.PlayerMapPosition.Invoke(SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.BossRoomPosition - Vector2Int.down);
-            SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(Vector2Int.up);
+            SystemManager.Instance.PlayerManager.Player.Warp(SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.BossRoomPosition);
         }
         
         [ConsoleMethod("Shop", "상점방 강제 이동")]
         public static void Shop()
         {
-            SystemManager.Instance.PlayerManager.PlayerMapPosition.Invoke(SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.ShopRoomPosition - Vector2Int.down);
-            SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(Vector2Int.up);
+            SystemManager.Instance.PlayerManager.Player.Warp(SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.ShopRoomPosition);
         }
         
         [ConsoleMethod("RoomMove", "방 생성순서 강제 이동")]
@@ -68,8 +66,8 @@ namespace QT
                 Debug.Log("방 최대치를 넘김 Index 숫자를 줄여주세요");
                 return;
             }
-            SystemManager.Instance.PlayerManager.PlayerMapPosition.Invoke(SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.MapNodeList[index] - Vector2Int.down);
-            SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(Vector2Int.up);
+            
+            SystemManager.Instance.PlayerManager.Player.Warp(SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapData.MapNodeList[index]);
         }
         [ConsoleMethod("FloorMove", "1~3 층으로 이동")]
         public static void FloorMove(int index)
