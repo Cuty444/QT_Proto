@@ -70,8 +70,6 @@ namespace QT.UI
             _settingCanvas.LocaleSelector.OnSelectionPageChangedEvent.AddListener(OnLocaleSelected);
             
             _inputActions = new UIInputActions();
-
-            _inputActions.UI.Escape.started += (x) => ReleaseUI();
             
             _settingCanvas.TitleButton.onClick.AddListener(OnClickTitleButton);
             _settingCanvas.TutorialButton.onClick.AddListener(OnClickTutorialButton);

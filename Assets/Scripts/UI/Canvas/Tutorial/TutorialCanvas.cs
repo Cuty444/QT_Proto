@@ -38,7 +38,6 @@ namespace QT.Tutorial
             _tutorialCanvas.ExitButton.onClick.AddListener(ReleaseUI);
             
             _inputActions = new UIInputActions();
-            _inputActions.UI.Escape.started += (x) => ReleaseUI();
         }
         
         
