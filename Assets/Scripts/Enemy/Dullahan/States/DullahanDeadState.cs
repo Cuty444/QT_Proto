@@ -45,6 +45,11 @@ namespace QT.InGame
             camera.SetTarget(_ownerEntity.CenterTransform);
 
             HitAbleManager.Instance.UnRegister(_ownerEntity);
+            
+            foreach (var changer in _ownerEntity.MaterialChanger)
+            {
+                changer.SetRigidMaterial();
+            }
         }
 
         public override void UpdateState()
@@ -65,13 +70,18 @@ namespace QT.InGame
                         
                         _state++;
                         _time = 0;
+                        
+                        foreach (var changer in _ownerEntity.MaterialChanger)
+                        {
+                            changer.ClearMaterial();
+                        }
                     }
                     break;
                 
                 case 1:
                     if (_time > 5)
                     {
-                        // TODO : 게임오버
+                        SystemManager.Instance.UIManager.GetAndShow<EndingCanvasModel>();
                         _state++;
                     }
                     break;
