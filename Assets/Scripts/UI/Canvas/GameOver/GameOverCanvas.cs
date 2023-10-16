@@ -26,6 +26,8 @@ namespace QT.UI
     
     public class GameOverCanvasModel : UIModelBase
     {
+        private readonly int ButtonCilckAnimation = Animator.StringToHash("OnClick");
+        
         public override UIType UIType => UIType.Panel;
         public override string PrefabPath => "GameOver.prefab";
         
@@ -95,6 +97,8 @@ namespace QT.UI
 
         private async void OnClickRetry()
         {
+            _gameOverCanvas.RetryButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
+            
             SetInputs(false);
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
@@ -114,6 +118,8 @@ namespace QT.UI
         
         private void OnClickExit()
         {
+            _gameOverCanvas.TitleButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
+            
             SetInputs(false);
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
