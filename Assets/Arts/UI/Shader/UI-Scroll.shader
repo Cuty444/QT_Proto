@@ -5,6 +5,7 @@ Shader "UI/Scroll"
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+        _MaskTex ("Mask Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
 
         _StencilComp ("Stencil Comparison", Float) = 8
@@ -81,6 +82,7 @@ Shader "UI/Scroll"
             };
 
             sampler2D _MainTex;
+            sampler2D _MaskTex;
             fixed4 _Color;
             fixed4 _TextureSampleAdd;
             float4 _ClipRect;
@@ -138,6 +140,8 @@ Shader "UI/Scroll"
 				half4 color = IN.color * (tex2D(_MainTex, IN.texcoord+scroll) + _TextureSampleAdd);
                 //half4 color = IN.color * (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd);
 
+                color.a =  (tex2D(_MaskTex, IN.texcoord) + _TextureSampleAdd).a;
+                
                 #ifdef UNITY_UI_CLIP_RECT
                 half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(IN.mask.xy)) * IN.mask.zw);
                 color.a *= m.x * m.y;
