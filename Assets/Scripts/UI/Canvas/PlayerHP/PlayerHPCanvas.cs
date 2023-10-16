@@ -69,7 +69,7 @@ namespace QT.UI
 
         private void SetHp(Status hp)
         {
-            var maxIconCount = Mathf.Max(hp.BaseValue / 50, _hpIcons.Count);
+            var maxIconCount = Mathf.Max(hp.Value / 50, _hpIcons.Count);
             
             int checkHp = 0;
             for (int i = 0; i < maxIconCount; i++)
