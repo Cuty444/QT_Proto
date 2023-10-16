@@ -14,6 +14,7 @@ namespace QT.InGame
         [SerializeField] private ParticleSystem _chargingLevelParticle;
         [SerializeField] private TrailRenderer[] _teleportEffectLines;
         [SerializeField] private ParticleSystem _warpEffectParticle;
+        [SerializeField] private ParticleSystem _healEffectParticle;
 
         [SerializeField] private ParticleSystem _itemPickUpParticle;
         [SerializeField] private Image _itemPickUpImage;
@@ -38,6 +39,8 @@ namespace QT.InGame
             {
                 _warpEffectParticle.Play();
             });
+            
+            _healEffectParticle.Stop();
         }
         
         public void DodgeEffectPlay(Vector2 dir)
@@ -95,6 +98,11 @@ namespace QT.InGame
             {
                 _teleportEffectLines[i].emitting = isActive;
             }
+        }
+
+        private void HealEffectPlay()
+        {
+            _healEffectParticle.Play();
         }
     }
 }

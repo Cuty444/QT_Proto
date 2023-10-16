@@ -143,6 +143,7 @@ namespace QT.InGame
         public void Heal(float amount)
         {
             SystemManager.Instance.EventManager.InvokeEvent(EventType.OnHeal, amount);
+            HealEffectPlay();
         }
         
         public void PlayerDead()
