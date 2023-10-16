@@ -35,6 +35,7 @@ namespace QT.Tutorial
             base.OnCreate(view);
             _tutorialCanvas = UIView as TutorialCanvas;
             
+            _tutorialCanvas.ScrollSnap.OnSelectionPageChangedEvent.AddListener(OnPageChanged);
             _tutorialCanvas.ExitButton.onClick.AddListener(ReleaseUI);
             
             _inputActions = new UIInputActions();
