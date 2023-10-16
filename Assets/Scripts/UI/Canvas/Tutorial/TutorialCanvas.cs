@@ -63,10 +63,19 @@ namespace QT.Tutorial
             
             _tutorialCanvas.VideoParent.SetParent(page.transform);
             _tutorialCanvas.VideoParent.anchoredPosition = Vector3.zero;
-            _tutorialCanvas.VideoParent.gameObject.SetActive(true);
-            
-            _tutorialCanvas.VideoPlayer.clip = _tutorialCanvas.VideoClips[index];
-            _tutorialCanvas.VideoPlayer.Play();
+
+            if (_tutorialCanvas.VideoClips[index] != null)
+            {
+                _tutorialCanvas.VideoParent.gameObject.SetActive(true);
+
+                _tutorialCanvas.VideoPlayer.clip = _tutorialCanvas.VideoClips[index];
+                _tutorialCanvas.VideoPlayer.Play();
+            }
+            else
+            {
+                _tutorialCanvas.VideoPlayer.clip =null;
+                _tutorialCanvas.VideoParent.gameObject.SetActive(false);
+            }
         }
     }
 }
