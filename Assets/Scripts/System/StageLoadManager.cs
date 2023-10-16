@@ -23,6 +23,8 @@ namespace QT
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().RewardRoomLoad(stageNumberString),
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().HpHealRoomLoad(stageNumberString));
 
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(stageNumber - 1);
+            
             SystemManager.Instance.LoadingManager.IsMapLoaded();
         }
     }
