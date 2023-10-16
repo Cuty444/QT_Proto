@@ -22,9 +22,11 @@ namespace QT.InGame
         private const string ShockEffectPath = "Effect/Prefabs/FX_Active_Rush_crash.prefab";
         private const string SwingBatHitPath = "Effect/Prefabs/FX_Bat_Hit.prefab";
         
-        private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
-        private readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
-        private readonly int SwingAnimHash = Animator.StringToHash("Swing");
+        private static readonly int RotationAnimHash = Animator.StringToHash("Rotation");
+        private static readonly int MoveDirAnimHash = Animator.StringToHash("MoveDir");
+        private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
+        private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
+        private static readonly int SwingAnimHash = Animator.StringToHash("Swing");
 
         private readonly Player _player;
         private readonly SoundManager _soundManager;
@@ -89,7 +91,7 @@ namespace QT.InGame
             _cancellationTokenSource = new CancellationTokenSource();
             
             _isCharging = true;
-            _currentSpeed = 0;
+            _currentSpeed = _player.Rigidbody.velocity.magnitude;
 
             _player.ChangeState(Player.States.Empty);
             _player.SetGlobalState(null);
@@ -101,6 +103,9 @@ namespace QT.InGame
             
             chargeEffect.Play();
 
+            _player.Animator.SetBool(IsMoveAnimHash, true);
+            _player.Animator.SetFloat(MoveDirAnimHash, 1);
+            
             _soundManager.PlayOneShot(_soundManager.SoundData.ActiveDashStartSFX);
             _soundManager.PlaySFX(_soundManager.SoundData.ActiveDashingSFX);
             float time = 0;
