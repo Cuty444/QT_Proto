@@ -101,7 +101,7 @@ namespace QT.UI
                     model.UIView.transform.SetParent(deActiveParent);
                     break;
                 case UIType.Popup:
-                    ReleasePopup(model);
+                    model.UIView.transform.SetParent(deActiveParent);
                     // if (model.UIView && !model.UIView.UsePooling)
                     // {
                     //     Destroy(model.UIView);
@@ -114,8 +114,7 @@ namespace QT.UI
         {
             if (_popupStack.Count != 0 && _popupStack.Peek().Equals(model))
             {
-                _popupStack.Pop();
-                model.UIView.transform.SetParent(deActiveParent);
+                _popupStack.Pop().ReleaseUI();
             }
             else if (_popupStack.Contains(model))
             {

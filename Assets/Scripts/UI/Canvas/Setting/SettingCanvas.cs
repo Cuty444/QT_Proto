@@ -86,8 +86,6 @@ namespace QT.UI
 
             _soundManager.PlayOneShot(_soundManager.SoundData.UITabSFX);
 
-            //_settingCanvas.LocaleSelector.ChangePage((int)SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>().CurrentLocale);
-            
             if (Time.timeScale != 0)
             {
                 _lastTimeScale = Time.timeScale;
@@ -130,6 +128,7 @@ namespace QT.UI
 
         private void OnClickTitleButton()
         {
+            ReleaseUI();
             Time.timeScale = 1;
             SystemManager.Instance.LoadingManager.LoadScene(2);
         }
