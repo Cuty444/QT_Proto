@@ -12,8 +12,6 @@ namespace QT.InGame
     {
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
 
-        private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Smash.prefab";
-        
         private Coroutine _atkSeqence;
         
         private SoundManager _soundManager;
@@ -48,14 +46,12 @@ namespace QT.InGame
             _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPoints[Mathf.RoundToInt(side)];
             
             _ownerEntity.Animator.SetTrigger(AttackAnimHash);
-            yield return new WaitForSeconds(_data.AttackBeforeDelay);
             
-            
-            SystemManager.Instance.ResourceManager.EmitParticle(SmashEffectPath,
-                _ownerEntity.Shooter.ShootPoint.position);
             
             _soundManager.PlayOneShot(_soundManager.SoundData.Boss_BatAttack, _ownerEntity.transform.position);
             _ownerEntity.AttackImpulseSource.GenerateImpulse(0.5f);
+            
+            yield return new WaitForSeconds(_data.AttackBeforeDelay);
             
             var hitAbles = new List<IHitAble>();
             Vector2 pos = _ownerEntity.transform.position;
