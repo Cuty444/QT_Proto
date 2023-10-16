@@ -220,12 +220,22 @@ namespace QT.UI
                 case UIState.Battle:
                 case UIState.Phone:
                     
-                    if(_popupStack.TryPeek(out var model) && model.GetType() == typeof(SettingCanvasModel))
+                    if(_popupStack.TryPeek(out var model))
                     {
-                        return;
+                        ReleasePopup(model);
+                    }
+                    else
+                    {
+                        (await Get<SettingCanvasModel>()).Show();
                     }
                     
-                    (await Get<SettingCanvasModel>()).Show();
+                    // ReleasePopup();
+                    //
+                    // if(_popupStack.TryPeek(out var model) && model.GetType() == typeof(SettingCanvasModel))
+                    // {
+                    //     return;
+                    // }
+                    
                     break;
             }
         }

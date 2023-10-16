@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using QT.Core;
 using QT.Sound;
+using QT.Tutorial;
 using QT.UI;
 using QT.Util;
 using UnityEngine;
@@ -69,8 +70,9 @@ namespace QT.UI
             _settingCanvas.LocaleSelector.OnSelectionPageChangedEvent.AddListener(OnLocaleSelected);
             
             _inputActions = new UIInputActions();
-
-            _inputActions.UI.Escape.started += (x) => ReleaseUI();
+            
+            _settingCanvas.TitleButton.onClick.AddListener(OnClickTitleButton);
+            _settingCanvas.TutorialButton.onClick.AddListener(OnClickTutorialButton);
         }
 
         public override void Show()
@@ -121,5 +123,15 @@ namespace QT.UI
             SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>().CurrentLocale = (Locale) index;
         }
         
+        private void OnClickTutorialButton()
+        {
+            SystemManager.Instance.UIManager.GetAndShow<TutorialCanvasModel>();
+        }
+
+        private void OnClickTitleButton()
+        {
+            Time.timeScale = 1;
+            SystemManager.Instance.LoadingManager.LoadScene(2);
+        }
     }
 }
