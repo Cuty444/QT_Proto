@@ -81,7 +81,7 @@ namespace QT.InGame
                 case 1:
                     if (_time > 3)
                     {
-                        SystemManager.Instance.UIManager.GetAndShow<EndingCanvasModel>();
+                        SystemManager.Instance.UIManager.Show<EndingCanvasModel>();
                         _state++;
                     }
                     break;

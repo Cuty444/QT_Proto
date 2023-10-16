@@ -1,11 +1,6 @@
 using System.Collections;
-using Cysharp.Threading.Tasks;
-using Spine.Unity;
 using QT.Core;
-using QT.Util;
-using QT.Core.Map;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace QT.UI
 {
@@ -23,21 +18,16 @@ namespace QT.UI
         public override string PrefabPath => "Ending.prefab";
         
         private UIInputActions _inputActions;
-        private GameOverCanvas _gameOverCanvas;
+        private EndingCanvas _endingCanvas;
 
         public override void OnCreate(UIPanel view)
         {
             base.OnCreate(view);
-            _gameOverCanvas = UIView as GameOverCanvas;
+            _endingCanvas = UIView as EndingCanvas;
         }
 
         public override void Show()
         {
-            if (_gameOverCanvas.gameObject.activeInHierarchy)
-            {
-                return;
-            }
-            
             base.Show();
 
             Time.timeScale = 0;
@@ -45,14 +35,16 @@ namespace QT.UI
             ProjectileManager.Instance.Clear();
             HitAbleManager.Instance.Clear();
 
-            _gameOverCanvas.StopAllCoroutines();
-            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(3,2));
+            _endingCanvas.StopAllCoroutines();
+            _endingCanvas.StartCoroutine(WaitForReleaseAnimation(3,2));
         }
 
 
         private IEnumerator WaitForReleaseAnimation(float waitTime, int SceneNumber)
         {
             yield return new WaitForSecondsRealtime(waitTime);
+            
+            ReleaseUI();
             
             Time.timeScale = 1;
             SystemManager.Instance.LoadingManager.LoadScene(SceneNumber);
