@@ -10,7 +10,7 @@ namespace QT.InGame
     [FSMState((int) Dullahan.States.Smash)]
     public class DullahanSmashState : FSMState<Dullahan>
     {
-        private readonly int AttackAnimHash = Animator.StringToHash("Attack");
+        private readonly int AttackAnimHash = Animator.StringToHash("Smash");
 
         private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Smash.prefab";
         
