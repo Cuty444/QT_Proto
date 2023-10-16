@@ -83,11 +83,11 @@ namespace QT.InGame
                 _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId,_ownerEntity.Owner);
             }
             
-            if (_ownerEntity.Steering.IsStuck())
-            {
-                _ownerEntity.HP.SetStatus(0);
-                _ownerEntity.ChangeState(Enemy.States.Dead);
-            }
+            // if (_ownerEntity.Steering.IsStuck())
+            // {
+            //     _ownerEntity.HP.SetStatus(0);
+            //     _ownerEntity.ChangeState(Enemy.States.Dead);
+            // }
         }
 
         private bool CheckAgro(float targetDistance)
