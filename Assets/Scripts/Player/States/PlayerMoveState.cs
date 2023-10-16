@@ -6,8 +6,9 @@ namespace QT.InGame
     [FSMState((int)Player.States.Move)]
     public class PlayerMoveState : FSMState<Player>
     {
+        private static readonly int MoveDirAnimHash = Animator.StringToHash("MoveDir");
         private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
-        private static readonly int IsMoveSpeedAnimHash = Animator.StringToHash("IsMove");
+        private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
         
         private Vector2 _moveDirection;
         private Vector2 _aimDir;
@@ -31,6 +32,8 @@ namespace QT.InGame
             _ownerEntity.SetAction(Player.ButtonActions.Interaction,OnInteraction);
 
             _moveDirection = Vector2.zero;
+            
+            _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, 1);
         }
 
         public override void ClearState()
@@ -57,10 +60,10 @@ namespace QT.InGame
             var speed = _moveSpeed.Value;
             var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
             
-            _ownerEntity.Animator.SetBool(IsMoveSpeedAnimHash, currentNormalizedSpeed > 0.1f);
+            _ownerEntity.Animator.SetBool(IsMoveAnimHash, currentNormalizedSpeed > 0.1f);
             
             currentNormalizedSpeed *= Vector2.Dot(_moveDirection, _aimDir) < 0f ? 1 : -1;
-            _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, currentNormalizedSpeed);
+            _ownerEntity.Animator.SetFloat(MoveDirAnimHash, currentNormalizedSpeed);
             
             _ownerEntity.Rigidbody.velocity = _moveDirection * speed;
         }

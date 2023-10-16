@@ -23,7 +23,7 @@ namespace QT.UI
     public class MinimapCanvasModel : UIModelBase
     {
         public override UIType UIType => UIType.Panel;
-        public override string PrefabPath => "Minimap.prefab";
+        public override string PrefabPath => "MiniMap.prefab";
         
         private MinimapCanvas _minimapCanvas;
 
