@@ -67,7 +67,7 @@ namespace QT.UI
 
         private void TutorialOpen()
         {
-            //SystemManager.Instance.UIManager.GetUIPanel<TutorialCanvas>().OnOpen();
+            SystemManager.Instance.UIManager.GetAndShow<TutorialCanvasModel>();
         }
         
         private void GameEnd()

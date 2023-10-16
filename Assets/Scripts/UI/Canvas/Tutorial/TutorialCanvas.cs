@@ -1,6 +1,7 @@
 using QT.Core;
 using QT.UI;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
 using UnityEngine.Video;
 
@@ -8,61 +9,64 @@ namespace QT.Tutorial
 {
     public class TutorialCanvas : UIPanel
     {
-        [SerializeField] private VideoClip[] _videoClips;
+        [field:SerializeField] public VideoClip[] VideoClips;
+        [field:SerializeField] public RectTransform VideoParent;
+        [field:SerializeField] public VideoPlayer VideoPlayer;
         
-        [SerializeField] private RectTransform _videoParent;
-        [SerializeField] private VideoPlayer _videoPlayer;
+        [field:Space]
+        [field:SerializeField] public HorizontalScrollSnap ScrollSnap { get; private set; }
+        [field:SerializeField] public Button ExitButton;
         
-        [SerializeField] private HorizontalScrollSnap _scrollSnap;
+        [field:Space]
+        [field:SerializeField] public TweenAnimator PopAnimation { get; private set; }
+    }
+
+
+    public class TutorialCanvasModel : UIModelBase
+    {
+        public override UIType UIType => UIType.Popup;
+        public override string PrefabPath => "Tutorial.prefab";
         
-        [SerializeField] private TweenAnimator _popAnimation;
+        private UIInputActions _inputActions;
+        private TutorialCanvas _tutorialCanvas;
         
-        public override void OnOpen()
+        public override void OnCreate(UIPanel view)
         {
-            base.OnOpen();
+            base.OnCreate(view);
+            _tutorialCanvas = UIView as TutorialCanvas;
+            
+            _tutorialCanvas.ExitButton.onClick.AddListener(ReleaseUI);
+            
+            _inputActions = new UIInputActions();
+            _inputActions.UI.Escape.started += (x) => ReleaseUI();
+        }
+        
+        
+        public override void Show()
+        {
+            base.Show();
             OnPageChanged(0);
             
-            _popAnimation.ReStart();
+            _tutorialCanvas.PopAnimation.ReStart();
         }
-
-        public override void OnClose()
-        {
-            base.OnClose();
-            
-            //SystemManager.Instance.UIManager.GetUIPanel<TitleCanvas>();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape)) OnClose();
-            
-            if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-                _scrollSnap.PreviousScreen();
-            else if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-                _scrollSnap.NextScreen();
-        }
-
-        public void OnPageChangeStart()
-        {
-            _videoParent.gameObject.SetActive(false);
-        }
-
+        
+        
         public void OnPageChanged(int index)
         {  
-            if (index < 0 || index >= _videoClips.Length || _videoClips[index] == null)
+            if (index < 0 || index >= _tutorialCanvas.VideoClips.Length || _tutorialCanvas.VideoClips[index] == null)
             {
-                _videoParent.gameObject.SetActive(false);
+                _tutorialCanvas.VideoParent.gameObject.SetActive(false);
                 return;
             }
             
-            _scrollSnap.CurrentPageObject(out var page);
+            _tutorialCanvas.ScrollSnap.CurrentPageObject(out var page);
             
-            _videoParent.SetParent(page.transform);
-            _videoParent.anchoredPosition = Vector3.zero;
-            _videoParent.gameObject.SetActive(true);
+            _tutorialCanvas.VideoParent.SetParent(page.transform);
+            _tutorialCanvas.VideoParent.anchoredPosition = Vector3.zero;
+            _tutorialCanvas.VideoParent.gameObject.SetActive(true);
             
-            _videoPlayer.clip = _videoClips[index];
-            _videoPlayer.Play();
+            _tutorialCanvas.VideoPlayer.clip = _tutorialCanvas.VideoClips[index];
+            _tutorialCanvas.VideoPlayer.Play();
         }
     }
 }
