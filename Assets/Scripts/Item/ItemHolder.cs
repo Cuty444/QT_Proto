@@ -52,10 +52,12 @@ namespace QT
             {
                 SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _activeIconImage);
                 _activeIconImage.gameObject.SetActive(true);
+                _iconImage.gameObject.SetActive(false);
             }
             else
             {
                 _activeIconImage.gameObject.SetActive(false);
+                _iconImage.gameObject.SetActive(true);
                 SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _iconImage);
                 
                 switch (ItemGameData.GradeType)
@@ -144,18 +146,18 @@ namespace QT
                 }
             }
 
-            if (ItemGameData.GradeType == ItemGameData.GradeTypes.Active && _playerManager.Player.Inventory.ActiveItem != null)
-            {
-                var playerActive = _playerManager.Player.Inventory.ActiveItem.ItemGameData;
-                if (playerActive == ItemGameData)
-                {
-                    _itemDesc.PlayFailButtonAnimation();
-                    return;
-                }
-                
-                (await SystemManager.Instance.UIManager.Get<UIActiveItemSelectCanvasModel>()).Initialize(playerActive, ItemGameData, GainItem);
-            }
-            else
+            // if (ItemGameData.GradeType == ItemGameData.GradeTypes.Active && _playerManager.Player.Inventory.ActiveItem != null)
+            // {
+            //     var playerActive = _playerManager.Player.Inventory.ActiveItem.ItemGameData;
+            //     if (playerActive == ItemGameData)
+            //     {
+            //         _itemDesc.PlayFailButtonAnimation();
+            //         return;
+            //     }
+            //     
+            //     (await SystemManager.Instance.UIManager.Get<UIActiveItemSelectCanvasModel>()).Initialize(playerActive, ItemGameData, GainItem);
+            // }
+            //else
             {
                 GainItem(ItemGameData);
             }

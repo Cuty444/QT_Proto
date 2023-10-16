@@ -123,7 +123,7 @@ namespace QT.UI
         
         private void OnClickTutorialButton()
         {
-            SystemManager.Instance.UIManager.GetAndShow<TutorialCanvasModel>();
+            SystemManager.Instance.UIManager.Show<TutorialCanvasModel>();
         }
 
         private void OnClickTitleButton()

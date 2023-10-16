@@ -70,12 +70,12 @@ namespace QT.UI
         
         private void OnClickSettingButton()
         {
-            SystemManager.Instance.UIManager.GetAndShow<SettingCanvasModel>();
+            SystemManager.Instance.UIManager.Show<SettingCanvasModel>();
         }
         
         private void OnClickTutorialButton()
         {
-            SystemManager.Instance.UIManager.GetAndShow<TutorialCanvasModel>();
+            SystemManager.Instance.UIManager.Show<TutorialCanvasModel>();
         }
         
         private void GameEnd()

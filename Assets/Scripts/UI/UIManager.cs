@@ -44,10 +44,11 @@ namespace QT.UI
         
          #region Get
 
-         public async void GetAndShow<T>() where T : UIModelBase
+         public async void Show<T>() where T : UIModelBase
          {
              var model = await Get<T>();
              Show(model);
+             model.Show();
          }
 
          public async UniTask<T> Get<T>() where T : UIModelBase
