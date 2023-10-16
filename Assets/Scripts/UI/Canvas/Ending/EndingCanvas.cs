@@ -24,8 +24,13 @@ namespace QT.UI
         
         private UIInputActions _inputActions;
         private GameOverCanvas _gameOverCanvas;
-       
-        
+
+        public override void OnCreate(UIPanel view)
+        {
+            base.OnCreate(view);
+            _gameOverCanvas = UIView as GameOverCanvas;
+        }
+
         public override void Show()
         {
             if (_gameOverCanvas.gameObject.activeInHierarchy)
