@@ -53,11 +53,13 @@ namespace QT
                 SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _activeIconImage);
                 _activeIconImage.gameObject.SetActive(true);
                 _iconImage.gameObject.SetActive(false);
+                _frameImage.gameObject.SetActive(false);
             }
             else
             {
                 _activeIconImage.gameObject.SetActive(false);
                 _iconImage.gameObject.SetActive(true);
+                _frameImage.gameObject.SetActive(true);
                 SystemManager.Instance.ResourceManager.LoadSpriteRenderer(ItemGameData.ItemIconPath, _iconImage);
                 
                 switch (ItemGameData.GradeType)
