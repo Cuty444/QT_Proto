@@ -13,7 +13,20 @@ class Builder
     
     private static readonly string BuildSettingPath = $"{Directory.GetCurrentDirectory()}/BuildSetting.config";
 
-    [MenuItem("Build/빌드하기")]
+    
+    [MenuItem("Build/테스트 모드 활성화", false, 1000)]
+    public static void EnableTestMode()
+    {
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, ScriptingDefine);
+    }
+    
+    [MenuItem("Build/테스트 모드 비활성화", false, 1001)]
+    public static void DisableTestMode()
+    {
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, TestScriptingDefine);
+    }
+    
+    [MenuItem("Build/빌드하기", false, 10)]
     public static void Build()
     {
         var stream = new FileStream(BuildSettingPath,FileMode.Open);
@@ -28,7 +41,7 @@ class Builder
         GenericBuild(FindEnabledEditorScenes(), dir, BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows, BuildOptions.None);
     }
     
-    [MenuItem("Build/테스트 빌드하기")]
+    [MenuItem("Build/테스트 빌드하기", false, 11)]
     public static void TestBuild()
     {
         var stream = new FileStream(BuildSettingPath,FileMode.Open);
