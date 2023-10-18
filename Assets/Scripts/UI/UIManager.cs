@@ -47,7 +47,6 @@ namespace QT.UI
          public async void Show<T>() where T : UIModelBase
          {
              var model = await Get<T>();
-             Show(model);
              model.Show();
          }
 
@@ -102,11 +101,7 @@ namespace QT.UI
                     model.UIView.transform.SetParent(deActiveParent);
                     break;
                 case UIType.Popup:
-                    model.UIView.transform.SetParent(deActiveParent);
-                    // if (model.UIView && !model.UIView.UsePooling)
-                    // {
-                    //     Destroy(model.UIView);
-                    // }
+                    ReleasePopup(model);
                     break;
             }
         }
@@ -115,7 +110,7 @@ namespace QT.UI
         {
             if (_popupStack.Count != 0 && _popupStack.Peek().Equals(model))
             {
-                _popupStack.Pop().ReleaseUI();
+                _popupStack.Pop().UIView.transform.SetParent(deActiveParent);
             }
             else if (_popupStack.Contains(model))
             {
@@ -222,11 +217,11 @@ namespace QT.UI
                     
                     if(_popupStack.TryPeek(out var model))
                     {
-                        ReleasePopup(model);
+                        model.ReleaseUI();
                     }
                     else
                     {
-                        (await Get<SettingCanvasModel>()).Show();
+                        Show<SettingCanvasModel>();
                     }
                     
                     // ReleasePopup();
@@ -239,6 +234,5 @@ namespace QT.UI
                     break;
             }
         }
-        
     }
 }
