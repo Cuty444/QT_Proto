@@ -27,6 +27,13 @@ namespace QT.Util
             "Doors/Boss/BossUp.prefab",
             "Doors/Boss/BossUp.prefab"};
         
+        
+        public static readonly string[] StageMoveDoorPaths = {
+            "Doors/StageMove/StageUp.prefab",
+            "Doors/StageMove/StageUp.prefab",
+            "Doors/StageMove/StageUp.prefab",
+            "Doors/StageMove/StageUp.prefab"};
+        
         public static string[] GetDoorPath(RoomType doorType)
         {
             switch (doorType)
@@ -36,6 +43,9 @@ namespace QT.Util
                 case RoomType.HpShop:
                 case RoomType.GoldShop:
                     return StoreDoorPaths;
+                
+                case RoomType.Stairs:
+                    return StageMoveDoorPaths;
                 case RoomType.Boss:
                     return BossDoorPaths;
                 
