@@ -2,6 +2,7 @@ using System.Collections;
 using QT.Core;
 using QT.Core.Map;
 using QT.Util;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -13,14 +14,19 @@ namespace QT.UI
     {
         [field:SerializeField] public HorizontalScrollSnap ScrollSnap{ get; private set; }
         [field:SerializeField] public UIInventoryPage InventoryPage{ get; private set; }
-
+        
+        
+        [field:Space]
+        [field:SerializeField] public MinimapRenderer MinimapRenderer { get; private set; }
+        [field:SerializeField] public Button MapInfoButton { get; private set; }
+        [field:SerializeField] public TweenAnimator MapInfoAnimator { get; private set; }
+        
+        
         [field:Space]
         [field:SerializeField] public TweenAnimator PopAnimator { get; private set; }
         [field:SerializeField] public TweenAnimator ReleaseAnimator { get; private set; }
         [field:SerializeField] public TweenAnimator SwitchLeftAnimation { get; private set; }
         [field:SerializeField] public TweenAnimator SwitchRightAnimation { get; private set; }
-
-        [field:SerializeField] public MinimapRenderer MinimapRenderer { get; private set; }
     }
 
     public class PhoneCanvasModel : UIModelBase
@@ -30,6 +36,8 @@ namespace QT.UI
 
         private UIInputActions _inputActions;
         private PhoneCanvas _phoneCanvas;
+        
+        private bool _isMapInfo = false;
 
         public override void SetState(UIState state)
         {
@@ -50,7 +58,7 @@ namespace QT.UI
             _phoneCanvas = UIView as PhoneCanvas;
 
             _phoneCanvas.InventoryPage.Initialize();
-
+            _phoneCanvas.MapInfoButton.onClick.AddListener(OnClickMapInfoButton);
 
             _inputActions = new UIInputActions();
 
@@ -75,6 +83,9 @@ namespace QT.UI
             _phoneCanvas.PopAnimator.ReStart();
             _phoneCanvas.MinimapRenderer.ResizeSize();
             _phoneCanvas.MinimapRenderer.ChangeCenter(DungeonManager.Instance.PlayerPosition);
+            
+            _phoneCanvas.MapInfoAnimator.Reset();
+            _isMapInfo = false;
         }
 
         public override void ReleaseUI()
@@ -125,7 +136,19 @@ namespace QT.UI
             }
         }
 
-
+        private void OnClickMapInfoButton()
+        {
+            _isMapInfo = !_isMapInfo;
+            if (_isMapInfo)
+            {
+                _phoneCanvas.MapInfoAnimator.ReStart();
+            }
+            else
+            {
+                _phoneCanvas.MapInfoAnimator.PlayBackwards();
+            }
+        }
+        
     }
 
 }
