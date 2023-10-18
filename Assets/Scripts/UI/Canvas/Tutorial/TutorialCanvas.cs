@@ -49,7 +49,12 @@ namespace QT.Tutorial
             
             _tutorialCanvas.PopAnimation.ReStart();
         }
-        
+
+        public override void ReleaseUI()
+        {
+            _inputActions.Disable();
+            base.ReleaseUI();
+        }
         
         public void OnPageChanged(int index)
         {  

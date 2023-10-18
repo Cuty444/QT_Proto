@@ -1,5 +1,4 @@
-using QT.Core;
-using Spine.Unity;
+using QT.Util;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,17 +7,24 @@ namespace QT
     public class Door : MonoBehaviour
     {
         private TweenAnimator _animator;
-        private readonly int AnimationOpenHash = Animator.StringToHash("Open");
+        private Collider2D _collider2D;
 
         private bool _isOpen = false;
         
         private Vector2Int _direction;
         private UnityAction<Vector2Int> _onDoorEnter;
+        
 
         private void Awake()
         {
             _animator = GetComponentInChildren<TweenAnimator>();
+            _collider2D = GetComponentInChildren<Collider2D>();
             _animator?.Reset();
+            
+            if (_animator != null)
+            {
+                _collider2D.enabled = false;
+            }
         }
 
         public void Init(Vector2Int direction, UnityAction<Vector2Int> onDoorEnter)
@@ -27,11 +33,20 @@ namespace QT
             _direction = direction;
             _onDoorEnter = onDoorEnter;
         }
-        
+
         public void DoorOpen()
         {
             _isOpen = true;
-            _animator?.ReStart();
+            
+            if (_animator != null && gameObject.activeInHierarchy)
+            {
+                _animator?.ReStart();
+                StartCoroutine(UnityUtil.WaitForFunc(() => _collider2D.enabled = true, _animator.SequenceLength));
+            }
+            else
+            {
+                _collider2D.enabled = true;
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D col)

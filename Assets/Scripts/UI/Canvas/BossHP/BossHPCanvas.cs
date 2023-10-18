@@ -24,10 +24,6 @@ namespace QT.UI
         private BossHPCanvas _bossHpCanvas;
 
         
-        public override void SetState(UIState state)
-        {
-        }
-
         public override void OnCreate(UIPanel view)
         {
             base.OnCreate(view);
