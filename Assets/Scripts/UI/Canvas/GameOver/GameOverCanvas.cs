@@ -154,6 +154,7 @@ namespace QT.UI
             yield return new WaitForSecondsRealtime(waitTime);
             
             Time.timeScale = 1;
+            SystemManager.Instance.PlayerManager.Reset();;
             SystemManager.Instance.LoadingManager.LoadScene(SceneNumber);
         }
 
