@@ -6,6 +6,8 @@ namespace QT
 {
     public class Door : MonoBehaviour
     {
+        private const float DoorOpenDelay = 0.5f;
+        
         private TweenAnimator _animator;
         private Collider2D _collider2D;
 
@@ -41,7 +43,7 @@ namespace QT
             if (_animator != null && gameObject.activeInHierarchy)
             {
                 _animator?.ReStart();
-                StartCoroutine(UnityUtil.WaitForFunc(() => _collider2D.enabled = true, _animator.SequenceLength));
+                StartCoroutine(UnityUtil.WaitForFunc(() => _collider2D.enabled = true, DoorOpenDelay));
             }
             else
             {
