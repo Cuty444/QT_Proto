@@ -66,6 +66,9 @@ namespace QT.Core
         public async void Reset()
         {
             Gold = 0;
+            
+            PlayerIndexInventory.Clear();
+            PlayerActiveItemIndex = -1;
             (await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>()).SetGoldText(Gold);
         }
     }

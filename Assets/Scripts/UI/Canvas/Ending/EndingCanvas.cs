@@ -47,6 +47,8 @@ namespace QT.UI
             ReleaseUI();
             
             Time.timeScale = 1;
+            
+            SystemManager.Instance.PlayerManager.Reset();;
             SystemManager.Instance.LoadingManager.LoadScene(SceneNumber);
         }
 

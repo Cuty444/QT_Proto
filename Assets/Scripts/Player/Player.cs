@@ -148,10 +148,6 @@ namespace QT.InGame
         
         public void PlayerDead()
         {
-            _playerManager.PlayerIndexInventory.Clear();
-            _playerManager.PlayerActiveItemIndex = -1;
-            
-            SystemManager.Instance.PlayerManager.Reset();;
             ChangeState(Player.States.Dead);
         }
 

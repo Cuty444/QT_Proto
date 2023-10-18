@@ -128,15 +128,22 @@ namespace QT.Map
             
             _doorAnimators = new();
             
+            bool isSpecial = _roomType != RoomType.Normal && _roomType != RoomType.None;
+            
             for (int i = 0; i < _doorTransforms.Length; i++)
             {
-                RoomType nextRoomType = _dungeonMapSystem.RoomCheck(_cellPosition - Util.UnityUtil.PathDirections[i]);
+                RoomType nextRoomType = _roomType;
 
-                if (nextRoomType == RoomType.None)
+                if (!isSpecial)
                 {
-                    nextRoomType = _roomType;
+                    nextRoomType = _dungeonMapSystem.RoomCheck(_cellPosition - Util.UnityUtil.PathDirections[i]);
+
+                    if (nextRoomType == RoomType.None)
+                    {
+                        nextRoomType = _roomType;
+                    }
                 }
-                
+
                 var path = Util.AddressablesDataPath.GetDoorPath(nextRoomType)[i];
                 var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<Door>(path, _doorTransforms[i]);
                 doorObject.transform.localPosition = Vector3.zero;

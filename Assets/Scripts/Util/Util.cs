@@ -30,7 +30,7 @@ namespace QT.Util
         
         public static readonly string[] StageMoveDoorPaths = {
             "Doors/StageMove/StageUp.prefab",
-            "Doors/StageMove/StageUp.prefab",
+            "Doors/StageMove/StageDown.prefab",
             "Doors/StageMove/StageUp.prefab",
             "Doors/StageMove/StageUp.prefab"};
         

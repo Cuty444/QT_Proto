@@ -129,7 +129,9 @@ namespace QT.UI
         private void OnClickTitleButton()
         {
             ReleaseUI();
+            
             Time.timeScale = 1;
+            SystemManager.Instance.PlayerManager.Reset();
             SystemManager.Instance.LoadingManager.LoadScene(2);
         }
     }
