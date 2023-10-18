@@ -1,6 +1,7 @@
 using DG.Tweening;
 using QT.Core;
 using QT.Util;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,9 @@ namespace QT.UI
         [field:SerializeField] public CanvasGroup CanvasGroup { get; private set; }
         [field:SerializeField] public float FadeInOutTime { get; private set; }
         
+        [field:SerializeField] public string[] LoadingTexts { get; private set; }
+        
+        [field:SerializeField] public TextMeshProUGUI Text { get; private set; }
         [field:SerializeField] public TweenAnimator Animation { get; private set; }
     }
 
@@ -51,6 +55,16 @@ namespace QT.UI
             _loadingCanvas.CanvasGroup.DOFade(1, _loadingCanvas.FadeInOutTime).SetEase(Ease.InQuad);
             
             _loadingCanvas.Animation.GoToPlay(Random.value * _loadingCanvas.Animation.SequenceLength);
+            
+            if(SystemManager.IsAlive && SystemManager.Instance.IsInitialized)
+            {
+                var text = _loadingCanvas.LoadingTexts[Random.Range(0, _loadingCanvas.LoadingTexts.Length)];
+                _loadingCanvas.Text.text = SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>().GetString(text);
+            }
+            else
+            {
+                _loadingCanvas.Text.text = "";
+            }
         }
 
         public override void ReleaseUI()
