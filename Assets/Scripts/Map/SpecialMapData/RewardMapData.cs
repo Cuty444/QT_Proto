@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
@@ -14,6 +15,11 @@ namespace QT
         private void Awake()
         {
             SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(ItemCreate);
+        }
+
+        private void OnDestroy()
+        {
+            SystemManager.Instance.PlayerManager.PlayerMapPosition.RemoveListener(ItemCreate);
         }
 
         private void ItemCreate(Vector2Int position)
