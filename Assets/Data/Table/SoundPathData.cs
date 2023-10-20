@@ -84,7 +84,9 @@ namespace QT.Sound
         [field: SerializeField] public EventReference Coin_GetSFX { get; private set; }
         
         [field: SerializeField] public EventReference Player_TeleportAttackSFX { get; private set; }
-        [field: SerializeField] public EventReference Player_Walk_StairSFX { get; private set; }
+        [field: SerializeField] public EventReference Subway { get; private set; }
+        [field: SerializeField] public EventReference Subway_Production { get; private set; }
+        [field: SerializeField] public EventReference Subway_End { get; private set; }
         
         [field: SerializeField] public EventReference Monster_WaterDrop { get; private set; }
         
