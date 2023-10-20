@@ -57,6 +57,7 @@ namespace QT.Sound
         [field: SerializeField] public EventReference UIGameStartSFX { get; private set; }
         
         
+        [field: SerializeField] public EventReference Monster_Spawn { get; private set; }
         [field: SerializeField] public EventReference Monster_AwaySFX { get; private set; }
         [field: SerializeField] public EventReference Monster_AwayWallHitSFX { get; private set; }
         [field: SerializeField] public EventReference Monster_AwayMonsterHitSFX { get; private set; }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using QT.Core;
 using QT.InGame;
+using QT.Sound;
 using QT.Util;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -24,8 +25,14 @@ namespace QT.Map
         [field:SerializeField] public IHitAble Target { get; private set; }
         
         private UnityAction _onDeadAction;
-        
-        
+
+        private SoundManager _soundManager;
+
+        private void Awake()
+        {
+            _soundManager = SystemManager.Instance.SoundManager;
+        }
+
         public void Spawn(UnityAction onDeadAction = null)
         {
             if (Target != null)
@@ -39,10 +46,13 @@ namespace QT.Map
 
         private IEnumerator SpawnProcess()
         {
-            SystemManager.Instance.ResourceManager.EmitParticle(SummonMarkPrefabPath, transform.position);
+            var position = transform.position;
+            
+            SystemManager.Instance.ResourceManager.EmitParticle(SummonMarkPrefabPath, position);
             yield return new WaitForSeconds(SpawnDelay);
 
-            SystemManager.Instance.ResourceManager.EmitParticle(SummonPrefabPath, transform.position);
+            SystemManager.Instance.ResourceManager.EmitParticle(SummonPrefabPath, position);
+            _soundManager.PlayOneShot(_soundManager.SoundData.Monster_Spawn, position);
 
             yield return new WaitForSeconds(DefaultSpawnDelay);
 
