@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
+using QT.Core;
 using Spine.Unity;
 using UnityEngine;
 
@@ -8,6 +10,8 @@ namespace QT
 {
     public class DestructibleObject : MonoBehaviour, IHitAble
     {
+        [field: SerializeField] public EventReference BreakSound { get; private set; }
+        
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         [field: SerializeField] public float ColliderRad { get; private set; }
@@ -56,6 +60,11 @@ namespace QT
             if (_collider2D != null)
             {
                 _collider2D.enabled = false;
+            }
+
+            if (!BreakSound.IsNull)
+            {
+                SystemManager.Instance.SoundManager.PlayOneShot(BreakSound, transform.position);
             }
             
             if (_fragments != null)
