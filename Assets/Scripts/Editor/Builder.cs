@@ -17,13 +17,13 @@ class Builder
     [MenuItem("Build/테스트 모드 활성화", false, 1000)]
     public static void EnableTestMode()
     {
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, ScriptingDefine);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, TestScriptingDefine);
     }
     
     [MenuItem("Build/테스트 모드 비활성화", false, 1001)]
     public static void DisableTestMode()
     {
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, TestScriptingDefine);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, ScriptingDefine);
     }
     
     [MenuItem("Build/빌드하기", false, 10)]
