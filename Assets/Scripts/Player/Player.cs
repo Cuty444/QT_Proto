@@ -106,10 +106,11 @@ namespace QT.InGame
             EffectSetup();
             
             Inventory = new Inventory(this);
-            Inventory.CopyItemList(_playerManager.PlayerIndexInventory, _playerManager.PlayerActiveItemIndex);
-
+            
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
+            
+            Inventory.CopyItemList(_playerManager.PlayerIndexInventory, _playerManager.PlayerActiveItemIndex);
         }
 
         protected override void Update()
