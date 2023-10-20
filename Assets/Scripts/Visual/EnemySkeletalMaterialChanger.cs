@@ -45,7 +45,7 @@ namespace QT
         
         public void SetRigidMaterial()
         {
-            if (!gameObject.activeInHierarchy)
+            if (!gameObject.activeInHierarchy || _skeletonRenderer == null)
             {
                 return;
             }
@@ -58,7 +58,7 @@ namespace QT
         
         public void SetHitMaterial()
         {
-            if (!gameObject.activeInHierarchy)
+            if (!gameObject.activeInHierarchy || _skeletonRenderer == null)
             {
                 return;
             }
