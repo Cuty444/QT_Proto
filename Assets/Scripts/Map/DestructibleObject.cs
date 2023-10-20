@@ -16,7 +16,7 @@ namespace QT
         public Vector2 Position => transform.position;
         [field: SerializeField] public float ColliderRad { get; private set; }
         public bool IsClearTarget => false;
-        public bool IsDead => false;
+        public bool IsDead => _isDead;
         
         [SerializeField] private  ParticleSystem _effect;
         [SerializeField] private  GameObject _object;
@@ -25,6 +25,8 @@ namespace QT
         
         private Fragment[] _fragments;
         private Collider2D _collider2D;
+
+        private bool _isDead = false;
         
         private void Awake()
         {
@@ -34,7 +36,10 @@ namespace QT
         
         private void OnEnable()
         {
-            HitAbleManager.Instance.Register(this);
+            if (!_isDead)
+            {
+                HitAbleManager.Instance.Register(this);
+            }
         }
 
         private void OnDisable()
@@ -43,7 +48,6 @@ namespace QT
             _effect.gameObject.SetActive(false);
         }
         
-
         public void Hit(Vector2 dir, float power, AttackType attackType)
         {
             if (_object != null)
@@ -79,7 +83,8 @@ namespace QT
                     fragment.Hit(dir, power);
                 }
             }
-            
+
+            _isDead = true;
             HitAbleManager.Instance.UnRegister(this);
         }
         
