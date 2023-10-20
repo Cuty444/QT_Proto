@@ -93,11 +93,17 @@ namespace QT.Sound
         
         [field: SerializeField] public EventReference Boss_BatAttack { get; private set; }
         [field: SerializeField] public EventReference Boss_Throw { get; private set; }
+        [field: SerializeField] public EventReference Boss_Roar { get; private set; }
         
         [field: SerializeField] public EventReference Boss_RushReady { get; private set; }
         [field: SerializeField] public EventReference Boss_Rush { get; private set; }
         [field: SerializeField] public EventReference Boss_Rush_Crash { get; private set; }
         
+        
+        [field: SerializeField] public EventReference Boss_Motorcycle_Start { get; private set; }
+        [field: SerializeField] public EventReference Boss_Motorcycle_Ing { get; private set; }
+        [field: SerializeField] public EventReference Boss_Motorcycle_End { get; private set; }
+
         [field: SerializeField] public EventReference Boss_JumpReady { get; private set; }
         [field: SerializeField] public EventReference Boss_Jump { get; private set; }
         [field: SerializeField] public EventReference Boss_Landing { get; private set; }
