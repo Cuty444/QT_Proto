@@ -45,6 +45,10 @@ namespace QT.Sound
         
         [field: SerializeField] public EventReference ShopStageBGM { get; private set; }
         
+        
+        [field: SerializeField] public EventReference ClearBGM{ get; private set; }
+        [field: SerializeField] public EventReference GameOverBGM{ get; private set; }
+        
         [field: SerializeField] public EventReference MainBGM { get; private set; }
 
         [field: SerializeField] public EventReference UITabSFX { get; private set; }
