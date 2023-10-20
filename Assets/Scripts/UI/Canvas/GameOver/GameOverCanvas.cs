@@ -69,7 +69,8 @@ namespace QT.UI
             {
                 return;
             }
-            
+            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.GameOverBGM);
+
             SetInputs(true);
             _gameOverCanvas.StopAllCoroutines();
 

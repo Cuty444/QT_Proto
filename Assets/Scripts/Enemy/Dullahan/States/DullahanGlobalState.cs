@@ -30,6 +30,8 @@ namespace QT.InGame
             _hpCanvas = await SystemManager.Instance.UIManager.Get<BossHPCanvasModel>();
             _hpCanvas.SetHPGuage(_ownerEntity.HP);
             _hpCanvas.Show();
+            
+            SystemManager.Instance.UIManager.Show<VideoCanvasModel>();
         }
 
         public override void ClearState()

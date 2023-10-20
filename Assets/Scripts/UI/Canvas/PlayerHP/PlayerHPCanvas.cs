@@ -79,7 +79,7 @@ namespace QT.UI
                     _hpIcons.Add(GameObject.Instantiate(_playerHPCanvas.PlayerHpObject, _playerHPCanvas.PlayerHpTransform).GetComponent<Image>());
                 }
 
-                if (checkHp > hp.Value)
+                if (checkHp >= hp.Value)
                 {
                     _hpIcons[i].gameObject.SetActive(false);
                     continue;

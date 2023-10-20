@@ -64,6 +64,12 @@ namespace QT.Util
             yield return new WaitForSeconds(delay);
             func.Invoke();
         }
+        
+        public static IEnumerator WaitForRealTimeFunc(Action func, float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+            func.Invoke();
+        }
 
         public static void ProgramExit()
         {

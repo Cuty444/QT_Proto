@@ -10,6 +10,7 @@ namespace QT.Map
     {
         public bool IsAvailable => _spawnedCount <= 0;
         
+        private const float DefaultSpawnDelay = 0.4f;
         private const float SpawnDelay = 0.2f;
         
         public MapCellData CellData;
@@ -32,7 +33,7 @@ namespace QT.Map
             for (var i = 0; i < _spawners.Length; i++)
             {
                 var spawner = _spawners[i];
-                spawner.SpawnDelay = SpawnDelay * (i + 1);
+                spawner.SpawnDelay = DefaultSpawnDelay + SpawnDelay * (i + 1);
                 spawner.Spawn(OnDead);
             }
 

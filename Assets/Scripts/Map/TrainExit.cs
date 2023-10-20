@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using QT.Core;
 using QT.Core.Map;
+using QT.Sound;
 using UnityEngine;
 
 namespace QT.Map
@@ -19,8 +20,12 @@ namespace QT.Map
         [SerializeField] private GameObject _collider;
         [SerializeField] private GameObject _camera;
 
+        private SoundManager _soundManager;
+        
         private void OnEnable()
         {
+            _soundManager = SystemManager.Instance.SoundManager;
+            
             StopAllCoroutines();
             StartCoroutine(EnterSequence());
             
@@ -32,8 +37,6 @@ namespace QT.Map
         {
             SystemManager.Instance.PlayerManager.Player.Pause(true);
             
-            //SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_Walk_StairSFX);
-
             StopAllCoroutines();
             StartCoroutine(ExitSequence());
         }
@@ -44,7 +47,11 @@ namespace QT.Map
             _screenDoorOpenAnimation.Reset();
             _trainEnterAnimation.ReStart();
             
+            _soundManager.PlaySFX(_soundManager.SoundData.Subway, Vector3.zero, _trainEnterAnimation.transform);
             yield return new WaitForSeconds(_trainEnterAnimation.SequenceLength);
+            _soundManager.StopSFX(_soundManager.SoundData.Subway);
+
+            _soundManager.PlayOneShot(_soundManager.SoundData.Subway_Production, _trainEnterAnimation.transform.position);
             
             _trainDoorOpenAnimation.ReStart();
             _screenDoorOpenAnimation.ReStart();
@@ -59,10 +66,12 @@ namespace QT.Map
             
             _trainDoorOpenAnimation.PlayBackwards();
             _screenDoorOpenAnimation.PlayBackwards();
-
+            
+            _soundManager.PlayOneShot(_soundManager.SoundData.Subway_End, _trainEnterAnimation.transform.position);
             yield return new WaitForSeconds(_trainDoorOpenAnimation.SequenceLength);
             
             _trainExitAnimation.ReStart();
+            
             SystemManager.Instance.PlayerManager.Player.transform.position = new Vector2(-99999,-99999);;
             
             yield return new WaitForSeconds(_trainExitAnimation.SequenceLength);

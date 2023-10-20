@@ -154,7 +154,10 @@ namespace QT.InGame
 
             if (hits.Length > 0)
             {
+                _soundManager.StopSFX(_soundManager.SoundData.Boss_Motorcycle_Ing);
+                
                 _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush_Crash, _ownerEntity.transform.position);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
                 return true;
             }
 
@@ -174,6 +177,7 @@ namespace QT.InGame
                 _ownerEntity.RushTrailObject.SetActive(true);
                 _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
                 _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush, _ownerEntity.transform.position);
+                _soundManager.PlaySFX(_soundManager.SoundData.Boss_Motorcycle_Ing, Vector3.zero, _ownerEntity.transform);
                 _ownerEntity.SetPhysics(false);
                 _time = 0;
                     
@@ -191,6 +195,9 @@ namespace QT.InGame
             {
                 SystemManager.Instance.ResourceManager.ReleaseObject(RushEffectPath, _rushEffect);
                 SystemManager.Instance.ResourceManager.ReleaseObject(SparkEffectPath, _sparkEffect);
+                
+                _soundManager.StopSFX(_soundManager.SoundData.Boss_Motorcycle_Ing);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
                 
                 _ownerEntity.ChangeState(Dullahan.States.Normal);
                 _time = 0;

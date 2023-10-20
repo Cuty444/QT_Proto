@@ -45,6 +45,10 @@ namespace QT.Sound
         
         [field: SerializeField] public EventReference ShopStageBGM { get; private set; }
         
+        
+        [field: SerializeField] public EventReference ClearBGM{ get; private set; }
+        [field: SerializeField] public EventReference GameOverBGM{ get; private set; }
+        
         [field: SerializeField] public EventReference MainBGM { get; private set; }
 
         [field: SerializeField] public EventReference UITabSFX { get; private set; }
@@ -53,6 +57,7 @@ namespace QT.Sound
         [field: SerializeField] public EventReference UIGameStartSFX { get; private set; }
         
         
+        [field: SerializeField] public EventReference Monster_Spawn { get; private set; }
         [field: SerializeField] public EventReference Monster_AwaySFX { get; private set; }
         [field: SerializeField] public EventReference Monster_AwayWallHitSFX { get; private set; }
         [field: SerializeField] public EventReference Monster_AwayMonsterHitSFX { get; private set; }
@@ -80,7 +85,9 @@ namespace QT.Sound
         [field: SerializeField] public EventReference Coin_GetSFX { get; private set; }
         
         [field: SerializeField] public EventReference Player_TeleportAttackSFX { get; private set; }
-        [field: SerializeField] public EventReference Player_Walk_StairSFX { get; private set; }
+        [field: SerializeField] public EventReference Subway { get; private set; }
+        [field: SerializeField] public EventReference Subway_Production { get; private set; }
+        [field: SerializeField] public EventReference Subway_End { get; private set; }
         
         [field: SerializeField] public EventReference Monster_WaterDrop { get; private set; }
         
@@ -89,11 +96,17 @@ namespace QT.Sound
         
         [field: SerializeField] public EventReference Boss_BatAttack { get; private set; }
         [field: SerializeField] public EventReference Boss_Throw { get; private set; }
+        [field: SerializeField] public EventReference Boss_Roar { get; private set; }
         
         [field: SerializeField] public EventReference Boss_RushReady { get; private set; }
         [field: SerializeField] public EventReference Boss_Rush { get; private set; }
         [field: SerializeField] public EventReference Boss_Rush_Crash { get; private set; }
         
+        
+        [field: SerializeField] public EventReference Boss_Motorcycle_Start { get; private set; }
+        [field: SerializeField] public EventReference Boss_Motorcycle_Ing { get; private set; }
+        [field: SerializeField] public EventReference Boss_Motorcycle_End { get; private set; }
+
         [field: SerializeField] public EventReference Boss_JumpReady { get; private set; }
         [field: SerializeField] public EventReference Boss_Jump { get; private set; }
         [field: SerializeField] public EventReference Boss_Landing { get; private set; }

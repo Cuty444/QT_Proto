@@ -15,6 +15,11 @@ namespace QT
             SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(ItemCreate);
         }
 
+        private void OnDestroy()
+        {
+            SystemManager.Instance.PlayerManager.PlayerMapPosition.RemoveListener(ItemCreate);
+        }
+        
         private void ItemCreate(Vector2Int position)
         {
             if (position == MapPosition)

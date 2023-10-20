@@ -73,6 +73,7 @@ namespace QT.InGame
             
             yield return new WaitForSeconds(_data.SummonReadyTime);
             
+            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Roar, _ownerEntity.transform.position);
             SystemManager.Instance.ResourceManager.EmitParticle(SummonEffectPath, _ownerEntity.CenterTransform.position);
             
             yield return new WaitForSeconds(_data.SummonTime);
