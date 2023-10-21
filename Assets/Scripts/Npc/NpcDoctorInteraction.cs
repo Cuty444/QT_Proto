@@ -44,6 +44,10 @@ namespace QT
         private void OnEnable()
         {
             HitAbleManager.Instance.Register(this);
+            if (_currentWayPointIndex >= _waypointsTransform.Length)
+            {
+                _animator.SetBool(AnimationIdleHash,true);
+            }
         }
 
         private void OnDisable()
