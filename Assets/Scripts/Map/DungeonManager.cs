@@ -16,6 +16,8 @@ namespace QT
 
         private Dictionary<Vector2Int, MapCellData> _mapCellData = new();
         
+        public bool IsBattle { get; private set; }
+        
         public Vector2Int PlayerPosition { get; private set; }
 
         private void Awake()
@@ -80,6 +82,7 @@ namespace QT
         private void MapClear(Vector2Int position)
         {
             SystemManager.Instance.UIManager.SetState(UIState.InGame);
+            IsBattle = false;
         }
 
         private void MapTeleport(Vector2Int position)
@@ -96,7 +99,9 @@ namespace QT
             var data = SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(position);
             
             (await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>()).ChangeCenter(position);
+            
             SystemManager.Instance.UIManager.SetState(data.IsClear ? UIState.InGame : UIState.Battle);
+            IsBattle = !data.IsClear;
 
             switch (data.RoomType)
             {

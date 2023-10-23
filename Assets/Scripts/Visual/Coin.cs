@@ -1,14 +1,24 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using QT.Core;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 namespace QT
 {
-    public class Fragment : MonoBehaviour
+    public class Coin : MonoBehaviour
     {
+        public static async void Spawn(int count, Vector2 position, Vector2 dir, float power)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var coin = await SystemManager.Instance.ResourceManager.GetFromPool<Coin>(Constant.CoinPrefabPath);
+                coin.transform.position = position;
+                coin.Drop(dir, power);
+            }
+
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Coin_GetSFX);
+        }
+        
+        
+        
         private const float SpeedMultiplier = 0.2f;
         private static LayerMask BounceMask => LayerMask.GetMask("Wall", "HardCollider", "ProjectileCollider", "Enemy", "InteractionCollider", "Fall");
 
@@ -31,6 +41,9 @@ namespace QT
         [SerializeField] private float _minHeight = 0.5f;
         [SerializeField] private float _height = 0.5f;
 
+        [Space] 
+        [SerializeField] private float _gainStartSpeed = 4;
+
         private float _time;
 
         private float _maxSpeed;
@@ -40,19 +53,11 @@ namespace QT
 
         private float _currentStretch;
 
-        private void Awake()
-        {
-            gameObject.SetActive(false);
-        }
+        private int _state = 0;
 
-        private void OnDisable()
-        {
-            _speed = 0;
-            _targetTransform.localPosition = new Vector2(0,_minHeight);
-        }
+        private Transform _player;
 
-
-        public void Hit(Vector2 dir, float power)
+        public void Drop(Vector2 dir, float power)
         {
             var randomDir =  new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)).normalized;
             dir = (dir * 1.5f + randomDir).normalized;
@@ -62,18 +67,56 @@ namespace QT
             _direction = dir;
             
             gameObject.SetActive(true);
+            _state = 0;
+
+            _player = SystemManager.Instance.PlayerManager.Player.transform;
         }
         
         private void Update()
         {
-            if (_speed > 0)
+
+            switch (_state)
             {
-                Move();
-                BounceEffect();
+                case 0:
+                    DropMove();
+                    BounceEffect();
+                    
+                    if (_speed <= 0)
+                    {
+                        _state++;
+                    }
+                    else if (!DungeonManager.Instance.IsBattle)
+                    {
+                        _state = 2;
+                        _speed = _gainStartSpeed;
+                    }
+                    break;
+                
+                case 1:
+                    if ((_player.position - transform.position).sqrMagnitude < 0.5f || !DungeonManager.Instance.IsBattle)
+                    {
+                        _state++;
+                        _speed = _gainStartSpeed;
+                    }
+                    break;
+                
+                case 2:
+                    transform.position = Vector2.MoveTowards(transform.position, _player.position, _speed * Time.deltaTime);
+                    _speed += _speed * Time.deltaTime;
+                    
+                    if ((_player.position - transform.position).sqrMagnitude < 0.1f)
+                    {
+                        SystemManager.Instance.PlayerManager.OnGoldValueChanged.Invoke(1);
+                        SystemManager.Instance.ResourceManager.ReleaseObject(Constant.CoinPrefabPath, this);
+                        
+                        SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Coin_GetSFX);
+                        _state++;
+                    }
+                    break;
             }
         }
 
-        private void Move()
+        private void DropMove()
         {
             var hit = Physics2D.CircleCast(transform.position, _colliderRad, _direction, _speed * Time.deltaTime, BounceMask);
 

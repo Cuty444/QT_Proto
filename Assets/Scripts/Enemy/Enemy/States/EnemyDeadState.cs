@@ -33,10 +33,8 @@ namespace QT.InGame
             var gold = _ownerEntity.RandomGoldDrop();
             if (gold > 0)
             {
-                _playerManager.OnGoldValueChanged.Invoke(gold);
+                Coin.Spawn(gold, _ownerEntity.transform.position, Vector2.zero, 20);
             }
-
-            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Coin_GetSFX);
             _ownerEntity.ShadowSprite.DOFade(0, 1).SetEase(Ease.InQuad);
             _ownerEntity.DeadSound();
             
