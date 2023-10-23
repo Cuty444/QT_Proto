@@ -74,7 +74,7 @@ namespace QT.InGame
 
         public abstract void OnEquip();
         
-        public abstract void OnTriggerAction(bool success);
+        public abstract void OnTrigger(bool success);
         
         public abstract void OnRemoved();
     }

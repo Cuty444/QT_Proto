@@ -42,7 +42,7 @@ namespace QT.InGame
             
             foreach (var effect in _effects)
             {
-                effect.OnTriggerAction(isTrigger);
+                effect.OnTrigger(isTrigger);
             }
             
             if (isTrigger)

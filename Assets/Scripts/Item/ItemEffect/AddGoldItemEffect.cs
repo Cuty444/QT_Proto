@@ -21,7 +21,7 @@ namespace QT.InGame
         {
         }
 
-        public override void OnTriggerAction(bool success)
+        public override void OnTrigger(bool success)
         {
             if (success)
             {
