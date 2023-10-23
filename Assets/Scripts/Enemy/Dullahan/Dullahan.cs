@@ -69,7 +69,7 @@ namespace QT.InGame
         public Rigidbody2D Rigidbody { get; private set; }
         public Animator Animator { get; private set; }
         public EnemyProjectileShooter Shooter { get; private set; }
-        public EnemySkeletalMaterialChanger[] MaterialChanger { get; private set; }
+        public SkeletalMaterialChanger[] MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
 
         private Collider2D[] _colliders;
@@ -80,7 +80,7 @@ namespace QT.InGame
             Rigidbody = GetComponent<Rigidbody2D>();
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
-            MaterialChanger = GetComponentsInChildren<EnemySkeletalMaterialChanger>();
+            MaterialChanger = GetComponentsInChildren<SkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
             Shooter.Initialize(null);
             

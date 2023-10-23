@@ -41,7 +41,7 @@ namespace QT.InGame
         
         public EnemyProjectileShooter Shooter { get; private set; }
         public Animator Animator { get; private set; }
-        public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
+        public SkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
         
         [field: SerializeField] public Transform BallObject { get; private set; }
@@ -67,7 +67,7 @@ namespace QT.InGame
             
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
-            MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
+            MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
             
             HpCanvas.worldCamera = Camera.main;

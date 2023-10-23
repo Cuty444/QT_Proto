@@ -8,7 +8,7 @@ using Spine.Unity;
 
 namespace QT
 {
-    public class EnemySkeletalMaterialChanger : MonoBehaviour
+    public class SkeletalMaterialChanger : MonoBehaviour
     {
         private static readonly int MainTexture = Shader.PropertyToID("_MainTex");
         private static readonly int HitProgress = Shader.PropertyToID("_Progress");

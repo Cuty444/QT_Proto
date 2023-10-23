@@ -52,7 +52,7 @@ namespace QT.InGame
         
         public PlayerProjectileShooter ProjectileShooter { get; private set; }
         
-        public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
+        public SkeletalMaterialChanger MaterialChanger { get; private set; }
         public SkeletonGhost GhostEffect { get; private set; }
         
         private PlayerManager _playerManager;
@@ -95,7 +95,7 @@ namespace QT.InGame
             SwingAreaMeshRenderer = GetComponentInChildren<MeshRenderer>();
             SwingAreaMeshRenderer.material.color = globalData.SwingAreaColor;
             
-            MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
+            MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
             GhostEffect = GetComponentInChildren<SkeletonGhost>();
             
             _attackSpeedColorGradient = globalData.AttackSpeedColorCurve;
