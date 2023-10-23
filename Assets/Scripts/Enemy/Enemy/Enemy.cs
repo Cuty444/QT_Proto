@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace QT.InGame
 {
-    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IHitAble, IProjectile
+    public partial class Enemy : FSMPlayer<Enemy>, IFSMEntity, IEnemy, IProjectile
     {
         public string PrefabPath { get; set; }
 
@@ -28,8 +28,10 @@ namespace QT.InGame
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
+        
         public bool IsClearTarget => true;
         public bool IsDead => HP <= 0;
+        public bool IsRigid => CurrentStateIndex == (int)States.Rigid;
         public LayerMask BounceMask { get; set; }
 
 
@@ -41,7 +43,7 @@ namespace QT.InGame
         
         public EnemyProjectileShooter Shooter { get; private set; }
         public Animator Animator { get; private set; }
-        public EnemySkeletalMaterialChanger MaterialChanger { get; private set; }
+        public SkeletalMaterialChanger MaterialChanger { get; private set; }
         public Steering Steering { get; private set; }
         
         [field: SerializeField] public Transform BallObject { get; private set; }
@@ -55,7 +57,7 @@ namespace QT.InGame
 
         private Collider2D[] _colliders;
 
-        public int _damage { get; private set; }
+        public int ProjectileDamage { get; private set; }
         
         
         private void Awake()
@@ -67,7 +69,7 @@ namespace QT.InGame
             
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
-            MaterialChanger = GetComponentInChildren<EnemySkeletalMaterialChanger>();
+            MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
             
             HpCanvas.worldCamera = Camera.main;
@@ -130,7 +132,7 @@ namespace QT.InGame
             HitAbleManager.Instance.UnRegister(this);
             ProjectileManager.Instance.UnRegister(this);
             
-            SystemManager.Instance.ResourceManager.ReleaseObject(PrefabPath, this);
+            SystemManager.Instance.ResourceManager.ReleaseObject(PrefabPath, transform);
         }
     }    
 }

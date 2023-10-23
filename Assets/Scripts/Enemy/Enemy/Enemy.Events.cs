@@ -25,7 +25,7 @@ namespace QT.InGame
 
         public void ResetProjectileDamage(int damage)
         {
-            _damage = damage;
+            ProjectileDamage = damage;
 
         }
     }

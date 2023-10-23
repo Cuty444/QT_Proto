@@ -3,18 +3,13 @@ using System.Collections;
 using QT.Core;
 using QT.InGame;
 using QT.Sound;
-using QT.Util;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 
 namespace QT.Map
 {
     public class EnemySpawner : MonoBehaviour
     {
-        private const int DullahanId = 507;
-        
         private const float DefaultSpawnDelay = 0.3f;
         private const string SummonMarkPrefabPath = "Effect/Prefabs/FX_Summons_Emblem.prefab";
         private const string SummonPrefabPath = "Effect/Prefabs/FX_Summons_Teleport.prefab";
@@ -22,7 +17,7 @@ namespace QT.Map
         public float SpawnDelay;
         public int EnemyId;
         
-        [field:SerializeField] public IHitAble Target { get; private set; }
+        [field:SerializeField] public IEnemy Target { get; private set; }
         
         private UnityAction _onDeadAction;
 
@@ -69,19 +64,11 @@ namespace QT.Map
                 return;
             }
 
-            if (EnemyId != DullahanId)
-            {
-                Target = await SystemManager.Instance.ResourceManager.GetFromPool<Enemy>(data.PrefabPath, transform);
-                
-                var enemy = Target as Enemy;
-                enemy.initialization(EnemyId);
-                enemy.PrefabPath = data.PrefabPath;
-            }
-            else
-            {
-                Target = await SystemManager.Instance.ResourceManager.GetFromPool<Dullahan>(data.PrefabPath, transform);
-            }
-
+            Target = (await SystemManager.Instance.ResourceManager.GetFromPool<Transform>(data.PrefabPath, transform)).GetComponent<IEnemy>();
+            
+            Target.initialization(EnemyId);
+            Target.PrefabPath = data.PrefabPath;
+            
             var targetTransform = (Target as MonoBehaviour).transform;
             
             targetTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);

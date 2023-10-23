@@ -102,7 +102,7 @@ namespace QT.InGame
             if(playSound)
                 _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
 
-            _damage = _ownerEntity._damage;
+            _damage = _ownerEntity.ProjectileDamage;
             
             _flyingEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(FlyingEffectPath, _ownerEntity.BallObject);
             _flyingEffect.transform.ResetLocalTransform();

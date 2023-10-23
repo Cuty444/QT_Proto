@@ -27,10 +27,6 @@ namespace QT.InGame
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
             _soundManager = SystemManager.Instance.SoundManager;
             _playerManager = SystemManager.Instance.PlayerManager;
-            _playerManager.PlayerMapClearPosition.AddListener((arg) =>
-            {
-                _clearTime = _knockBackTime;
-            });
         }
 
         public void InitializeState(Vector2 dir)
@@ -71,6 +67,11 @@ namespace QT.InGame
         {
             _timer += Time.deltaTime;
 
+            if (!DungeonManager.Instance.IsBattle)
+            {
+                _clearTime = _knockBackTime;
+            }
+            
             if (_isKnockBack && _timer > _knockBackTime)
             {
                 _ownerEntity.Rigidbody.velocity = Vector2.zero;
