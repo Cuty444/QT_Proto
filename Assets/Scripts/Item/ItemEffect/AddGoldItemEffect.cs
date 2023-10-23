@@ -19,12 +19,14 @@ namespace QT.InGame
 
         public override void OnEquip()
         {
-            _lastTime = 0;
         }
 
-        protected override void OnTriggerAction()
+        public override void OnTriggerAction(bool success)
         {
-            SystemManager.Instance.PlayerManager.OnGoldValueChanged.Invoke(_amount);
+            if (success)
+            {
+                SystemManager.Instance.PlayerManager.OnGoldValueChanged.Invoke(_amount);
+            }
         }
 
         public override void OnRemoved()

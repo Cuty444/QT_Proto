@@ -22,11 +22,16 @@ namespace QT.InGame
 
         public override void OnEquip()
         {
-            _lastTime = 0;
         }
 
-        protected override void OnTriggerAction()
+        
+        public override void OnTriggerAction(bool success)
         {
+            if (!success)
+            {
+                return;
+            }
+            
             if (_amount < 0)
             {
                 _player.Hit(Vector2.zero, -_amount, AttackType.Ball);

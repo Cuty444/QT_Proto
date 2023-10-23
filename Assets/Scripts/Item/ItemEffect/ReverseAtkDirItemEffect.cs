@@ -16,12 +16,15 @@ namespace QT.InGame
 
         public override void OnEquip()
         {
-            _lastTime = 0;
-            OnTrigger();
         }
 
-        protected override void OnTriggerAction()
+        public override void OnTriggerAction(bool success)
         {
+            if (!success)
+            {
+                return;
+            }
+            
             _player.IsReverseLookDir = true;
         }
 

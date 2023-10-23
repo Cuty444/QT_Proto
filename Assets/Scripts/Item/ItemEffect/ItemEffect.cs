@@ -13,8 +13,6 @@ namespace QT.InGame
         [ItemEffect(typeof(BuffItemEffect))]
         Buff,
         
-        [ItemEffect(typeof(EnemyRigidItemEffect))]
-        EnemyRigid,
         [ItemEffect(typeof(ReverseAtkDirItemEffect))]
         ReverseAtkDir,
         [ItemEffect(typeof(TimeScaleItemEffect))]
@@ -70,57 +68,13 @@ namespace QT.InGame
     
     public abstract class ItemEffect
     {
-        public readonly ItemEffectGameData Data;
-        private readonly EffectCondition _condition;
-        private readonly StatComponent _ownerStatComponent;
-
-        protected virtual bool IsInfBuff => false;
-        
-        protected float _lastTime;
-
         public ItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData)
         {
-            Data = effectData;
-            _ownerStatComponent = player.StatComponent;
-            
-            if (effectData.Condition != EffectConditions.None)
-            {
-                _condition = EffectConditionFactory.GetCondition(effectData.Condition, effectData.ConditionTarget, effectData.ConditionValue);
-            }
-        }
-
-        public void OnTrigger()
-        {
-            if (Time.timeSinceLevelLoad - _lastTime < Data.CoolTime)
-            {
-                return;
-            }
-            
-            if (_condition == null || _condition.CheckCondition(_ownerStatComponent))
-            {
-                OnTriggerAction();
-                _lastTime = Time.timeSinceLevelLoad;
-            }
-            else if (IsInfBuff)
-            {
-                OnRemoved();
-            }
-            
-        }
-        
-        public float GetCoolTimeProgress()
-        {
-            if (Data.CoolTime == 0)
-            {
-                return 0;
-            }
-            
-            return 1 - Mathf.Min(1, (Time.timeSinceLevelLoad - _lastTime) / Data.CoolTime);
         }
 
         public abstract void OnEquip();
         
-        protected abstract void OnTriggerAction();
+        public abstract void OnTriggerAction(bool success);
         
         public abstract void OnRemoved();
     }

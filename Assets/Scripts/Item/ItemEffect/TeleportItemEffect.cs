@@ -31,11 +31,16 @@ namespace QT.InGame
 
         public override void OnEquip()
         {
-            _lastTime = 0;
         }
 
-        protected override void OnTriggerAction()
+        
+        public override void OnTriggerAction(bool success)
         {
+            if (!success)
+            {
+                return;
+            }
+            
             (IEnemy tpTarget, IEnemy target) = GetTeleportTarget();
 
             if (tpTarget == null || target == null || tpTarget == target)

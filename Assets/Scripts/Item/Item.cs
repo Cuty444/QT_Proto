@@ -11,7 +11,7 @@ namespace QT.InGame
     {
         private readonly int _itemDataId;
         public ItemGameData ItemGameData { get; }
-        private List<ItemEffect> _itemEffectList;
+        private List<ItemEffectGroup> _itemEffectList;
         
         private readonly Dictionary<TriggerTypes, UnityEvent> _applyPointEvents = new ();
 
@@ -24,7 +24,7 @@ namespace QT.InGame
             
             if (ItemGameData != null)
             {
-                _itemEffectList = new List<ItemEffect>();
+                _itemEffectList = new List<ItemEffectGroup>();
                 
                 var datas = dataManager.GetDataBase<ItemEffectGameDataBase>()
                     .GetData(ItemGameData.ItemEffectDataId);
@@ -33,11 +33,12 @@ namespace QT.InGame
                 {
                     if (data != null)
                     {
+                        var effectGroup = new ItemEffectGroup(player, data);
+                        
                         if (data.ApplyBuffId != 0)
                         {
                             var effect = ItemEffectFactory.GetEffect(ItemEffectTypes.Buff, player, data);
-                            _itemEffectList.Add(effect);
-                            SetTrigger(effect);
+                            effectGroup.Add(effect);
                         }
 
                         if (data.ApplySpecialEffectId != 0)
@@ -45,9 +46,16 @@ namespace QT.InGame
                             var specialData = dataManager.GetDataBase<SpecialEffectGameDataBase>().GetData(data.ApplySpecialEffectId);
 
                             var effect = ItemEffectFactory.GetEffect(specialData.EffectType, player, data, specialData);
-                            _itemEffectList.Add(effect);
-                            SetTrigger(effect);
+                            effectGroup.Add(effect);
                         }
+
+                        if (data.TriggerType.HasFlag(TriggerTypes.OnActiveKey))
+                        {
+                            
+                        }
+                        
+                        _itemEffectList.Add(effectGroup);
+                        SetTrigger(effectGroup);
                     }
                 }
             }
@@ -57,7 +65,7 @@ namespace QT.InGame
             }
         }
         
-        private void SetTrigger(ItemEffect effect)
+        private void SetTrigger(ItemEffectGroup effect)
         {
             foreach (TriggerTypes value in TriggerTypes.GetValues(typeof(TriggerTypes)))
             {
@@ -87,7 +95,7 @@ namespace QT.InGame
             {
                 return;
             }
-            
+
             if (_applyPointEvents.TryGetValue(triggerTypes, out var events))
             {
                 events.Invoke();

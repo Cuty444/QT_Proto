@@ -45,8 +45,13 @@ namespace QT.InGame
         {
         }
 
-        protected override void OnTriggerAction()
+        public override void OnTriggerAction(bool success)
         {
+            if (!success)
+            {
+                return;
+            }
+            
             _isCharging = true;
             _chargingTime = 0;
             _power = 1;

@@ -71,9 +71,14 @@ namespace QT
 
             _player = SystemManager.Instance.PlayerManager.Player.transform;
         }
-        
+
         private void Update()
         {
+            if (_player == null)
+            {
+                SystemManager.Instance.ResourceManager.ReleaseObject(Constant.CoinPrefabPath, this);
+                return;
+            }
 
             switch (_state)
             {

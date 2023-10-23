@@ -28,9 +28,12 @@ namespace QT.InGame
         {
         }
 
-        protected override void OnTriggerAction()
+        public override void OnTriggerAction(bool success)
         {
-            _shooter.Shoot(_shootDataId, _aimType, ProjectileOwner.Player);
+            if (success)
+            {
+                _shooter.Shoot(_shootDataId, _aimType, ProjectileOwner.Player);
+            }
         }
 
         public override void OnRemoved()
