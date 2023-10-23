@@ -36,9 +36,9 @@ namespace QT.InGame
 
         protected override void OnTriggerAction()
         {
-            var target = GetTeleportTarget();
+            (IEnemy tpTarget, IEnemy target) = GetTeleportTarget();
 
-            if (target.Item1 == null || target.Item2 == null || target.Item1 == target.Item2)
+            if (tpTarget == null || target == null || tpTarget == target)
             {
                 return;
             }
@@ -48,20 +48,20 @@ namespace QT.InGame
 
             _player.StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).SetStatus(0);
             
-            _player.transform.position = target.Item1.Position;
+            _player.transform.position = tpTarget.Position;
             
-            var aimDir = ((Vector2) _player.transform.position - target.Item2.Position).normalized;
+            var aimDir = ((Vector2) _player.transform.position - target.Position).normalized;
             _player.TeleportImpulseSource.GenerateImpulse(aimDir * _player.TeleportImpulseForce);
             
             _player.OnAim.Invoke(aimDir);
             
-            target.Item1.ResetProjectileDamage(damage);
-            target.Item1.ProjectileHit((target.Item2.Position - target.Item1.Position).normalized, shootSpeed,
+            ((IProjectile) tpTarget).ResetProjectileDamage(damage);
+            ((IProjectile) tpTarget).ProjectileHit((target.Position - tpTarget.Position).normalized, shootSpeed,
                 BounceMask, ProjectileOwner.PlayerTeleport, 0, false);
             
-            Debug.DrawLine(target.Item1.Position, target.Item2.Position, Color.green,3);
+            Debug.DrawLine(tpTarget.Position, target.Position, Color.green,3);
             
-            SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, target.Item1.Position);
+            SystemManager.Instance.ResourceManager.EmitParticle(SwingProjectileHitPath, tpTarget.Position);
             _player.Animator.SetTrigger(SwingAnimHash);
 
             PlayEffect();
@@ -90,26 +90,26 @@ namespace QT.InGame
         }
 
 
-        private (Enemy, Enemy) GetTeleportTarget()
+        private (IEnemy, IEnemy) GetTeleportTarget()
         {
             var hitAbles = HitAbleManager.Instance.GetAllHitAble();
             
-            Enemy tpTarget = null;
-            Enemy target = null;
+            IEnemy tpTarget = null;
+            IEnemy target = null;
             float tpTargetPriority = float.MaxValue;
             float targetPriority = float.MaxValue;
             
             foreach (var hitAble in hitAbles)
             {
-                if (hitAble is not Enemy)
+                if (hitAble is not IEnemy)
                 {
                     continue;
                 }
                 
-                var enemy = (Enemy) hitAble;
-                var enemyDistance = (_player.transform.position- enemy.transform.position).sqrMagnitude;
+                var enemy = (IEnemy) hitAble;
+                var enemyDistance = ((Vector2)_player.transform.position - enemy.Position).sqrMagnitude;
 
-                if(enemy.HP <= 0 && enemy.CurrentStateIndex == (int)Enemy.States.Rigid && enemyDistance < _teleportDistance * _teleportDistance)
+                if(enemy.HP <= 0 && enemy.IsRigid && enemyDistance < _teleportDistance * _teleportDistance)
                 {
                     if (enemyDistance < tpTargetPriority)
                     {

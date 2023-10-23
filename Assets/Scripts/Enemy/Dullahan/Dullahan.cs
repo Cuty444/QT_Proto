@@ -7,8 +7,10 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IHitAble
+    public partial class Dullahan : FSMPlayer<Dullahan>, IFSMEntity, IEnemy
     {
+        public string PrefabPath { get; set; }
+        
         public LayerMask HitMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "Enemy", "InteractionCollider");
 
         private readonly int RotationAnimHash = Animator.StringToHash("Rotation");
@@ -38,6 +40,7 @@ namespace QT.InGame
         public float ColliderRad => RushColliderSize;
         public bool IsClearTarget => true;
         public bool IsDead => CurrentStateIndex == (int) States.Dead;
+        public bool IsRigid => false;
         
         
         [SerializeField] private int _enemyId;
@@ -74,19 +77,25 @@ namespace QT.InGame
 
         private Collider2D[] _colliders;
         
-        private void Start()
+        private void Awake()
         {
-            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
             Rigidbody = GetComponent<Rigidbody2D>();
             Shooter = GetComponent<EnemyProjectileShooter>();
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentsInChildren<SkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
-            Shooter.Initialize(null);
             
             _colliders = new Collider2D[Rigidbody.attachedColliderCount];
             Rigidbody.GetAttachedColliders(_colliders);
-
+        }
+        
+        public void initialization(int enemyId)
+        {
+            _enemyId = enemyId;
+            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
+            
+            Shooter.Initialize(null);
+            
             SetUpStats();
             
             SetGlobalState(new DullahanGlobalState(this));
@@ -94,6 +103,8 @@ namespace QT.InGame
             
             HitAbleManager.Instance.Register(this);
         }
+        
+        
         
         public void SetPhysics(bool enable)
         {
