@@ -36,11 +36,15 @@ namespace QT.InGame
 
         public override void OnEquip()
         {
-            _lastTime = 0;
         }
 
-        protected override void OnTriggerAction()
+        public override void OnTrigger(bool success)
         {
+            if (!success)
+            {
+                return;
+            }
+            
             CurrentTimeScale.RemoveModifier(_targetTimeScale);
             CurrentTimeScale.AddModifier(_targetTimeScale);
             

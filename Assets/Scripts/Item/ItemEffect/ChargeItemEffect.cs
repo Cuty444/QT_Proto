@@ -59,9 +59,10 @@ namespace QT.InGame
             _player.OnAim.AddListener(OnAim);
         }
 
-        protected override void OnTriggerAction()
+        
+        public override void OnTrigger(bool success)
         {
-            if (_isCharging)
+            if (!success || _isCharging)
             {
                 return;
             }
