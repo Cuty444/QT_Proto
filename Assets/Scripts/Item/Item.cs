@@ -15,6 +15,8 @@ namespace QT.InGame
         
         private readonly Dictionary<TriggerTypes, UnityEvent> _applyPointEvents = new ();
 
+        private int UseCount { get; set; }
+        
         public Item(int itemDataId, Player player)
         {
             var dataManager = SystemManager.Instance.DataManager;
@@ -51,7 +53,7 @@ namespace QT.InGame
 
                         if (data.TriggerType.HasFlag(TriggerTypes.OnActiveKey))
                         {
-                            
+                            effectGroup.Add(new ActiveItemEffect(() => UseCount++));
                         }
                         
                         _itemEffectList.Add(effectGroup);
