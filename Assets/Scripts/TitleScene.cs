@@ -13,6 +13,9 @@ namespace QT
             await SystemManager.Instance.StageLoadManager.StageLoad(1);
             
             SystemManager.Instance.UIManager.SetState(UIState.Title);
+            
+            ProjectileManager.Instance.Clear();
+            HitAbleManager.Instance.Clear();
         }
     }
 }
