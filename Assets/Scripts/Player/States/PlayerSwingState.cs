@@ -16,6 +16,8 @@ namespace QT.InGame
         private const string SwingBatHitPath = "Effect/Prefabs/FX_M_Small_Hit.prefab";
         private const string SwingChargedBatHitPath = "Effect/Prefabs/FX_M_Bat_Hit_Boom.prefab";
         
+        private const string SwingChargedHitPath = "Effect/Prefabs/FullScreen/FX_FullScreen.prefab";
+        
         private readonly int SwingAnimHash = Animator.StringToHash("Swing");
         private readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
         private readonly int ChargeLevelAnimHash = Animator.StringToHash("ChargeLevel");
@@ -126,10 +128,7 @@ namespace QT.InGame
                 }
                 if (hitAble.IsClearTarget)
                 {
-                    if (!_isCharged)
-                    {
-                        SystemManager.Instance.ResourceManager.EmitParticle(SwingBatHitPath, hitAble.Position);
-                    }
+                    SystemManager.Instance.ResourceManager.EmitParticle(_isCharged ? SwingChargedBatHitPath : SwingBatHitPath, hitAble.Position);
 
                     enemyHitCount++;
 
@@ -181,7 +180,7 @@ namespace QT.InGame
 
                 if (_isCharged)
                 {
-                    SystemManager.Instance.ResourceManager.EmitParticle(SwingChargedBatHitPath, _ownerEntity.Position);
+                    SystemManager.Instance.ResourceManager.EmitParticle(SwingChargedHitPath, _ownerEntity.Position);
                 }
             }
 
