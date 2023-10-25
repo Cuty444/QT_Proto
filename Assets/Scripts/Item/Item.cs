@@ -11,8 +11,8 @@ namespace QT.InGame
     public class Item
     {
         public Action<int> OnStackChanged;
-        public int Stack;
-        
+        public int Stack { get; private set; }
+
         private readonly int _itemDataId;
         public ItemGameData ItemGameData { get; }
         private List<ItemEffectGroup> _itemEffectList;
@@ -42,7 +42,7 @@ namespace QT.InGame
                         
                         if (data.ApplyBuffId != 0)
                         {
-                            var effect = ItemEffectFactory.GetEffect(ItemEffectTypes.Buff, player, data);
+                            var effect = ItemEffectFactory.GetEffect(this, ItemEffectTypes.Buff, player, data);
                             effectGroup.Add(effect);
                         }
 
@@ -52,15 +52,9 @@ namespace QT.InGame
 
                             foreach (var specialData in specialDatas)
                             {
-                                var effect = ItemEffectFactory.GetEffect(specialData.EffectType, player, data, specialData);
+                                var effect = ItemEffectFactory.GetEffect(this, specialData.EffectType, player, data, specialData);
                                 effectGroup.Add(effect);
                             }
-                            
-                        }
-
-                        if (data.TriggerType.HasFlag(TriggerTypes.OnActiveKey))
-                        {
-                            effectGroup.Add(new ActiveItemEffect(() => OnStackChanged?.Invoke(++Stack)));
                         }
                         
                         _itemEffectList.Add(effectGroup);
@@ -130,6 +124,24 @@ namespace QT.InGame
             {
                 effect.OnRemoved();
             }
+        }
+
+        public void AddStack(int amount)
+        {
+            if (ItemGameData.MaxStack == -1)
+            {
+                return;
+            }
+            
+            Stack = Mathf.Clamp(Stack + amount, 0, ItemGameData.MaxStack);
+
+            OnStackChanged?.Invoke(Stack);
+        }
+        
+        public void ClearStack()
+        {
+            Stack = 0;
+            OnStackChanged?.Invoke(Stack);
         }
 
         public float GetCoolTimeProgress()

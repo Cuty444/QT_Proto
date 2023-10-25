@@ -14,7 +14,7 @@ namespace QT.InGame
         
         private readonly float _amount;
         
-        public HealItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public HealItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _player = player;
             _amount = specialEffectData.Param1;

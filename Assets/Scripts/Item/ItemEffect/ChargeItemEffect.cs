@@ -44,7 +44,7 @@ namespace QT.InGame
         private bool _isCharging;
         private float _currentSpeed;
 
-        public ChargeItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public ChargeItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _player = player;
             _soundManager = SystemManager.Instance.SoundManager;

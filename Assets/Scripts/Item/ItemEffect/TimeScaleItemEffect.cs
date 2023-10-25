@@ -25,7 +25,7 @@ namespace QT.InGame
         
         private SkeletonGhost _ghostEffect;
         
-        public TimeScaleItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public TimeScaleItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _targetTimeScale = new StatModifier( specialEffectData.Param1, StatModifier.ModifierType.Multiply, this);
             //_duration = (int) (specialEffectData.Param2 / _targetTimeScale * 1000);

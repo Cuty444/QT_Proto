@@ -29,7 +29,7 @@ namespace QT
         public string MinusDesc { get; set;}
         
         public GradeTypes GradeType { get; private set;}
-        public int MaxUseCount { get; private set;}
+        public int MaxStack { get; private set;}
         
         public int CostGold { get; private set;}
         public int ItemEffectDataId { get; private set;}

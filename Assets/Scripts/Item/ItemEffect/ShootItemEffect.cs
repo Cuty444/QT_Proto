@@ -16,7 +16,7 @@ namespace QT.InGame
         
         private ProjectileShooter _shooter;
         
-        public ShootItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public ShootItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _shootDataId = (int)specialEffectData.Param1;
             _aimType = (AimTypes)specialEffectData.Param2;

@@ -7,13 +7,15 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    // Param1: 추가하는 골드량
-    public class AddGoldItemEffect : ItemEffect
+    // Param1: 스택 추가량
+    public class AddStackEffect : ItemEffect
     {
+        private readonly Item _item;
         private readonly int _amount;
         
-        public AddGoldItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
+        public AddStackEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
+            _item = item;
             _amount = (int)specialEffectData.Param1;
         }
 
@@ -21,11 +23,12 @@ namespace QT.InGame
         {
         }
 
+        
         public override void OnTrigger(bool success)
         {
             if (success)
             {
-                SystemManager.Instance.PlayerManager.OnGoldValueChanged.Invoke(_amount);
+                _item.AddStack(_amount);
             }
         }
 

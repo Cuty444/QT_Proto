@@ -30,6 +30,11 @@ namespace QT.InGame
         Absorb,
         [ItemEffect(typeof(ChargeItemEffect))]
         Charge,
+        
+        [ItemEffect(typeof(AddStackEffect))]
+        AddStack,
+        [ItemEffect(typeof(ClearStackEffect))]
+        ClearStack
     }
     
     [AttributeUsage(AttributeTargets.Field)]
@@ -59,16 +64,16 @@ namespace QT.InGame
             }
         }
 
-        public static ItemEffect GetEffect(ItemEffectTypes type, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData = null)
+        public static ItemEffect GetEffect(Item item, ItemEffectTypes type, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData = null)
         {
-            return Activator.CreateInstance(_effectTypes[type], player, effectData, specialEffectData) as ItemEffect;
+            return Activator.CreateInstance(_effectTypes[type], item, player, effectData, specialEffectData) as ItemEffect;
         }
     }
     
     
     public abstract class ItemEffect
     {
-        public ItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData)
+        public ItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData)
         {
         }
 

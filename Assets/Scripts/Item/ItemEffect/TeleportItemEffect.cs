@@ -23,7 +23,7 @@ namespace QT.InGame
         
         private CancellationTokenSource _cancellationTokenSource;
 
-        public TeleportItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public TeleportItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _player = player;
             _teleportDistance = specialEffectData.Param1;

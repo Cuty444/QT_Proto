@@ -101,6 +101,11 @@ namespace QT.InGame
                 ActiveItem?.OnRemoved();
                 
                 ActiveItem = item;
+                if (ActiveItem.ItemGameData.MaxStack > 0)
+                {
+                    ActiveItem.OnStackChanged = OnActiveStackChanged;
+                }
+
                 ActiveItem.OnEquip();
             }
             else
@@ -112,6 +117,14 @@ namespace QT.InGame
             _playerManager.AddItemEvent.Invoke();
         }
 
+        private void OnActiveStackChanged(int stack)
+        {
+            if (stack >= ActiveItem.ItemGameData.MaxStack)
+            {
+                ActiveItem?.OnRemoved();
+                ActiveItem = null;
+            }
+        }
         
         public void RemoveItem(int index)
         {
