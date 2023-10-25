@@ -38,7 +38,7 @@ namespace QT.InGame
                 {
                     if (data != null)
                     {
-                        var effectGroup = new ItemEffectGroup(player, data);
+                        var effectGroup = new ItemEffectGroup(this, player, data);
                         
                         if (data.ApplyBuffId != 0)
                         {

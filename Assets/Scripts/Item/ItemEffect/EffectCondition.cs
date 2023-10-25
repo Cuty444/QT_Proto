@@ -46,7 +46,7 @@ namespace QT.InGame
             _value = value;
         }
 
-        public abstract bool CheckCondition(StatComponent statComponent);
+        public abstract bool CheckCondition(StatComponent statComponent, int stack);
     }
     
     public static class EffectConditionFactory
@@ -81,8 +81,13 @@ namespace QT.InGame
             StatParameter.ParseStatParam(target, out _statParameter);
         }
 
-        public override bool CheckCondition(StatComponent statComponent)
+        public override bool CheckCondition(StatComponent statComponent, int stack)
         {
+            if (_statParameter.Stat == PlayerStats.Stack)
+            {
+                return stack < _value;
+            }
+            
             return StatParameter.GetStatValue(statComponent, _statParameter) < _value;
         }
     }
@@ -96,8 +101,13 @@ namespace QT.InGame
             StatParameter.ParseStatParam(target, out _statParameter);
         }
 
-        public override bool CheckCondition(StatComponent statComponent)
+        public override bool CheckCondition(StatComponent statComponent, int stack)
         {
+            if (_statParameter.Stat == PlayerStats.Stack)
+            {
+                return stack > _value;
+            }
+
             return StatParameter.GetStatValue(statComponent, _statParameter) > _value;
         }
     }
@@ -111,9 +121,14 @@ namespace QT.InGame
             StatParameter.ParseStatParam(target, out _statParameter);
         }
         
-        public override bool CheckCondition(StatComponent statComponent)
+        public override bool CheckCondition(StatComponent statComponent, int stack)
         {
-            return _value.CompareTo(StatParameter.GetStatValue(statComponent, _statParameter)) == 0;
+            if (_statParameter.Stat == PlayerStats.Stack)
+            {
+                return Mathf.Abs(_value - stack) < float.Epsilon;
+            }
+
+            return Mathf.Abs(_value - StatParameter.GetStatValue(statComponent, _statParameter)) < float.Epsilon;
         }
     }
     
@@ -123,7 +138,7 @@ namespace QT.InGame
         {
         }
         
-        public override bool CheckCondition(StatComponent statComponent)
+        public override bool CheckCondition(StatComponent statComponent, int stack)
         {
             return UnityEngine.Random.Range(0.0f, 10000.0f) < _value;
         }
@@ -137,7 +152,7 @@ namespace QT.InGame
             _bounceMask = LayerMask.GetMask(target.Split(','));
         }
         
-        public override bool CheckCondition(StatComponent statComponent)
+        public override bool CheckCondition(StatComponent statComponent, int stack)
         {
             var playerPos = SystemManager.Instance.PlayerManager.Player.transform.position;
             var list = new List<IProjectile>();
@@ -154,7 +169,7 @@ namespace QT.InGame
         {
         }
         
-        public override bool CheckCondition(StatComponent statComponent)
+        public override bool CheckCondition(StatComponent statComponent, int stack)
         {
             var playerPos = SystemManager.Instance.PlayerManager.Player.transform.position;
             var list = new List<IHitAble>();
