@@ -100,6 +100,8 @@ namespace QT
         private void Awake()
         {
             _playerManager = SystemManager.Instance.PlayerManager;
+            
+            _itemDesc.Reset();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
