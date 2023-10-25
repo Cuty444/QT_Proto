@@ -11,7 +11,8 @@ namespace QT.InGame
     public class DullahanAttackState : FSMState<Dullahan>
     {
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
-
+        private const string BossAttackEffectPath = "Effect/Prefabs/FX_Boss_Slash.prefab";
+        
         private Coroutine _atkSeqence;
         
         private SoundManager _soundManager;
@@ -63,6 +64,8 @@ namespace QT.InGame
                     hit.Hit(hit.Position - pos, _data.AttackDamage);
                 }
             }
+            
+            SystemManager.Instance.ResourceManager.EmitParticle(BossAttackEffectPath, pos);
             
             yield return new WaitForSeconds(_data.AttackAfterDelay);
             
