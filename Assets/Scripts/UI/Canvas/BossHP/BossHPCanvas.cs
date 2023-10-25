@@ -18,6 +18,7 @@ namespace QT.UI
     
     public class BossHPCanvasModel : UIModelBase
     {
+        public override bool UseStack => false;
         public override UIType UIType => UIType.Popup;
         public override string PrefabPath => "BossHP.prefab";
         

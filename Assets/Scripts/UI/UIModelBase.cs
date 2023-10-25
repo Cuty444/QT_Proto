@@ -9,6 +9,7 @@ namespace QT.UI
     {
         public UIPanel UIView {get; private set;}
 
+        public virtual bool UseStack => false;
         public abstract UIType UIType {get;}
         public abstract string PrefabPath {get;}
 
