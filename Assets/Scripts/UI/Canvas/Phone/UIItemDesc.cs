@@ -33,6 +33,8 @@ namespace QT
                 _goldCost.text = itemData.CostGold.ToString();
             
             SetText(_localeGameDataBase);
+            
+            _descAnimation.Reset();
         }
 
         private void Awake()

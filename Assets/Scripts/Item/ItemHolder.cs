@@ -86,7 +86,6 @@ namespace QT
                     SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Altar_AppearSFX);
                     break;
                 default:
-                    _alterAnimator.gameObject.SetActive(false);
                     _soldObject.SetActive(false);
                     break;
             }

@@ -24,6 +24,7 @@ namespace QT.Tutorial
 
     public class TutorialCanvasModel : UIModelBase
     {
+        public override bool UseStack => true;
         public override UIType UIType => UIType.Popup;
         public override string PrefabPath => "Tutorial.prefab";
         

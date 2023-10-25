@@ -33,11 +33,14 @@ namespace QT.UI
         [field:Space]
         [field:SerializeField] public Button TitleButton { get; private set; }
         [field:SerializeField] public Button TutorialButton { get; private set; }
+        
+        [field:SerializeField] public Button ExitButton { get; private set; }
     }
 
 
     public class SettingCanvasModel : UIModelBase
     {
+        public override bool UseStack => true;
         public override UIType UIType => UIType.Popup;
         public override string PrefabPath => "Setting.prefab";
         
@@ -73,6 +76,7 @@ namespace QT.UI
             
             _settingCanvas.TitleButton.onClick.AddListener(OnClickTitleButton);
             _settingCanvas.TutorialButton.onClick.AddListener(OnClickTutorialButton);
+            _settingCanvas.ExitButton.onClick.AddListener(ReleaseUI);
         }
 
         public override void Show()

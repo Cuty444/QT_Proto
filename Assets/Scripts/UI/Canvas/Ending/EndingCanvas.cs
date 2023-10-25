@@ -16,6 +16,7 @@ namespace QT.UI
     
     public class EndingCanvasModel : UIModelBase
     {
+        public override bool UseStack => false;
         public override UIType UIType => UIType.Popup;
         public override string PrefabPath => "Ending.prefab";
         

@@ -82,7 +82,11 @@ namespace QT.UI
                     model.UIView.transform.SetParent(popupParent, false);
                     model.UIView.transform.SetAsLastSibling();
 
-                    _popupStack.Push(model);
+                    if (model.UseStack)
+                    {
+                        _popupStack.Push(model);
+                    }
+
                     break;
             }
             
@@ -101,7 +105,14 @@ namespace QT.UI
                     model.UIView.transform.SetParent(deActiveParent);
                     break;
                 case UIType.Popup:
-                    ReleasePopup(model);
+                    if (model.UseStack)
+                    {
+                        ReleasePopup(model);
+                    }
+                    else
+                    {
+                        model.UIView.transform.SetParent(deActiveParent);
+                    }
                     break;
             }
         }
@@ -214,8 +225,8 @@ namespace QT.UI
                 case UIState.InGame:
                 case UIState.Battle:
                 case UIState.Phone:
-                    
-                    if(_popupStack.TryPeek(out var model))
+
+                    if (_popupStack.TryPeek(out var model))
                     {
                         model.ReleaseUI();
                     }

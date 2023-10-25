@@ -59,7 +59,7 @@ namespace QT.InGame
             switch (_state)
             {
                 case 0:
-                    if (_time > 5)
+                    if (_time > 4.5f)
                     {
                         SystemManager.Instance.ResourceManager.EmitParticle(BossDeadEffectPath,
                             _ownerEntity.CenterTransform.position);
