@@ -65,7 +65,7 @@ namespace QT.InGame
                 }
             }
             
-            SystemManager.Instance.ResourceManager.EmitParticle(BossAttackEffectPath, pos);
+            //SystemManager.Instance.ResourceManager.EmitParticle(BossAttackEffectPath, pos);
             
             yield return new WaitForSeconds(_data.AttackAfterDelay);
             
