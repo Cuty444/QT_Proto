@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 using UnityEngine.Events;
-using TriggerTypes = QT.ItemEffectGameData.TriggerTypes;
+using TriggerTypes = QT.Core.TriggerTypes;
 
 namespace QT.InGame
 {

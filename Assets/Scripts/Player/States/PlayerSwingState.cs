@@ -3,7 +3,6 @@ using UnityEngine;
 using QT.Core;
 using QT.Core.Data;
 using QT.Sound;
-using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -175,7 +174,8 @@ namespace QT.InGame
                 var aimDir = ((Vector2) _ownerEntity.transform.position - _ownerEntity.AimPosition).normalized;
                 _ownerEntity.AttackImpulseSource.GenerateImpulse(aimDir * _ownerEntity.AttackImpulseForce);
 
-                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnSwingHit, null);
+                SystemManager.Instance.EventManager.InvokeEvent(_isCharged ? TriggerTypes.OnChargedSwingHit : TriggerTypes.OnSwingHit, null);
+                
                 _soundManager.PlayOneShot(_soundManager.SoundData.PlayerSwingHitSFX);
 
                 if (_isCharged)
@@ -188,7 +188,7 @@ namespace QT.InGame
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.BallAttackSFX);
                 
-                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnParry, null);
+                SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnParry, null);
             }
 
             if(ballHitCount == 0 && enemyHitCount == 0)
@@ -198,10 +198,10 @@ namespace QT.InGame
 
             if (stunEnemyCount > 0)
             {
-                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnAttackStunEnemy, null);
+                SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnAttackStunEnemy, null);
             }
             
-            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnSwing, null);
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnSwing, null);
 
             SetSwingAnimation();
 
@@ -253,7 +253,7 @@ namespace QT.InGame
                 _ownerEntity.ChargingEffectStop();
                 _soundManager.PlayOneShot(_soundManager.SoundData.ChargeEndSFX);
                 
-                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnCharged, null);
+                SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnCharged, null);
             }
         }
 

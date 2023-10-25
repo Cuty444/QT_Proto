@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 using UnityEngine.Events;
-using EventType = QT.Core.EventType;
-using TriggerTypes = QT.ItemEffectGameData.TriggerTypes;
+using TriggerTypes = QT.Core.TriggerTypes;
 
 namespace QT.InGame
 {
@@ -41,44 +40,10 @@ namespace QT.InGame
             _targetPlayer.StatComponent.GetStat(PlayerStats.ChargeBounceCount).OnValueChanged
                 .AddListener(() => InvokeTrigger(TriggerTypes.OnChargeBounceCountChanged));
             
-            SystemManager.Instance.EventManager.AddEvent(this, InvokeEvent);
+            SystemManager.Instance.EventManager.AddEvent(this, InvokeTrigger);
         }
 
-        private void InvokeEvent(EventType eventType, object data)
-        {
-            switch (eventType)
-            {
-                case EventType.OnDamage:
-                    InvokeTrigger(TriggerTypes.OnDamage);
-                    break;
-                case EventType.OnHeal:
-                    InvokeTrigger(TriggerTypes.OnHeal);
-                    break;
-                case EventType.OnGoldChanged:
-                    InvokeTrigger(TriggerTypes.OnGoldChanged);
-                    break;
-                case EventType.OnCharged:
-                    InvokeTrigger(TriggerTypes.OnCharged);
-                    break;
-                case EventType.OnSwing:
-                    InvokeTrigger(TriggerTypes.OnSwing);
-                    break;
-                case EventType.OnSwingHit:
-                    InvokeTrigger(TriggerTypes.OnSwingHit);
-                    break;
-                case EventType.OnAttackStunEnemy:
-                    InvokeTrigger(TriggerTypes.OnAttackStunEnemy);
-                    break;
-                case EventType.OnParry:
-                    InvokeTrigger(TriggerTypes.OnParry);
-                    break;
-                case EventType.OnDodge:
-                    InvokeTrigger(TriggerTypes.OnDodge);
-                    break;
-            }
-        }
-
-        private void InvokeTrigger(TriggerTypes triggerTypes)
+        private void InvokeTrigger(TriggerTypes triggerTypes, object data = null)
         {
             ActiveItem?.InvokeTrigger(triggerTypes);
             foreach (var item in _items)

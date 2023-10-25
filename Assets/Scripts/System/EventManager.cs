@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,37 +6,48 @@ using UnityEngine.Events;
 
 namespace QT.Core
 {
-    public enum EventType
+    
+    [Flags]
+    public enum TriggerTypes
     {
-        OnPlayerCreated,
-        
-        OnPlayerEnterDoor,
-        OnPlayerEnterRoom,
-        
-        OnHeal,
-        OnDamage,
-        
-        OnGoldChanged,
-        
-        OnCharged,
-        OnSwing,
-        OnSwingHit,
-        OnAttackStunEnemy,
-        OnParry,
-        OnDodge,
+        Equip = 1 << 0,
+            
+        Update = 1 << 1,
+            
+        OnActiveKey = 1 << 2,
+            
+        OnClearRoom = 1 << 3,
+            
+        OnCharged = 1 << 4,
+        OnGoldChanged = 1 << 5,
+            
+        OnDamage = 1 << 6,
+        OnHeal = 1 << 7,
+            
+        OnSwing = 1 << 8,
+        OnSwingHit = 1 << 9,
+        OnChargedSwingHit = 1 << 10,
+        OnAttackStunEnemy = 1 << 11,
+        OnParry = 1 << 12,
+            
+        OnDodge = 1 << 13,
+        OnDodgeEnd = 1 << 14,
+            
+        OnMovementSpdChanged = 1 << 20,
+        OnChargeBounceCountChanged = 1 << 21
     }
 
     public class EventManager
     {
-        private Dictionary<object, UnityAction<EventType, object>> _events = new ();
+        private Dictionary<object, UnityAction<TriggerTypes, object>> _events = new ();
 
 
-        public void AddEvent(object target, UnityAction<EventType, object> action)
+        public void AddEvent(object target, UnityAction<TriggerTypes, object> action)
         {
             _events.TryAdd(target, action);
         }
         
-        public void InvokeEvent(EventType type, object data)
+        public void InvokeEvent(TriggerTypes type, object data)
         {
             foreach (var target in _events.Values)
             {

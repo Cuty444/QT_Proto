@@ -8,7 +8,6 @@ using QT.UI;
 using Spine;
 using Spine.Unity;
 using UnityEngine.UI;
-using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -74,14 +73,14 @@ namespace QT.InGame
             HitAbleManager.Instance.UnRegister(_ownerEntity);
         }
 
-        private void InvokeEvent(EventType eventType, object data)
+        private void InvokeEvent(TriggerTypes triggerTypes, object data)
         {
-            if (eventType == EventType.OnDamage)
+            if (triggerTypes == TriggerTypes.OnDamage)
             {
                 var damageData = ((Vector2 dir, float damage)) data;
                 OnDamage(damageData.dir, damageData.damage);
             }
-            else if(eventType == EventType.OnHeal)
+            else if(triggerTypes == TriggerTypes.OnHeal)
             {
                 OnHeal((float) data);
             }

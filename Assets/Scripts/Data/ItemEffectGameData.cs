@@ -7,31 +7,6 @@ namespace QT
 {
     public class ItemEffectGameData : IGameData
     {
-        [Flags]
-        public enum TriggerTypes
-        {
-            Equip = 1 << 0,
-            
-            Update = 1 << 1,
-            
-            OnActiveKey = 1 << 2,
-            
-            OnCharged = 1 << 3,
-            OnGoldChanged = 1 << 4,
-            
-            OnDamage = 1 << 5,
-            OnHeal = 1 << 6,
-            
-            OnSwing = 1 << 7,
-            OnSwingHit = 1 << 8,
-            OnAttackStunEnemy = 1 << 9,
-            OnParry = 1 << 10,
-            OnDodge = 1 << 11,
-            
-            OnMovementSpdChanged = 1 << 12,
-            OnChargeBounceCountChanged = 1 << 13
-        }
-
         public int Index { get; set; }
         
         public int ApplyBuffId { get; set; }
