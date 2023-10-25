@@ -86,12 +86,11 @@ namespace QT.InGame
             
             await UniTask.Delay(EffectDuration, cancellationToken: _cancellationTokenSource.Token);
             
-            OnRemoved();
+            _player.TeleportEffect(false);
         }
 
         public override void OnRemoved()
         {
-            _player.TeleportEffect(false);
         }
 
 

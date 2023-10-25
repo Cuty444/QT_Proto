@@ -72,12 +72,6 @@ namespace QT.InGame
 
         public override void OnRemoved()
         {
-            _cancellationTokenSource?.Cancel();
-            
-            _player.OnAim.RemoveListener(OnAim);
-            
-            _player.ChangeState(Player.States.Move);
-            //_player.SetGlobalState(new PlayerGlobalState(_player));
         }
 
         private void OnAim(Vector2 aimPos)

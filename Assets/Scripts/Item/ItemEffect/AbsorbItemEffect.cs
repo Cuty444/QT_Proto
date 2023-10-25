@@ -64,7 +64,6 @@ namespace QT.InGame
 
         public override void OnRemoved()
         {
-            _cancellationTokenSource?.Cancel();
         }
 
         
