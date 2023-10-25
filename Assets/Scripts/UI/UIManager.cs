@@ -105,7 +105,14 @@ namespace QT.UI
                     model.UIView.transform.SetParent(deActiveParent);
                     break;
                 case UIType.Popup:
-                    ReleasePopup(model);
+                    if (model.UseStack)
+                    {
+                        ReleasePopup(model);
+                    }
+                    else
+                    {
+                        model.UIView.transform.SetParent(deActiveParent);
+                    }
                     break;
             }
         }
