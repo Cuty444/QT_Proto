@@ -67,6 +67,8 @@ namespace QT.InGame
             {
                 _chargingTime = 0;
                 _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.MovementSpd);
+                
+                SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnSwingStart, null);
             }
         }
 

@@ -17,21 +17,22 @@ namespace QT.Core
         OnActiveKey = 1 << 2,
             
         OnClearRoom = 1 << 3,
+        OnGoldChanged = 1 << 4,
             
-        OnCharged = 1 << 4,
-        OnGoldChanged = 1 << 5,
+        OnDamage = 1 << 5,
+        OnHeal = 1 << 6,
+        
+        OnSwingStart = 1 << 7,
+        OnCharged = 1 << 8,
+        
+        OnSwing = 1 << 9,
+        OnSwingHit = 1 << 10,
+        OnChargedSwingHit = 1 << 11,
+        OnAttackStunEnemy = 1 << 12,
+        OnParry = 1 << 13,
             
-        OnDamage = 1 << 6,
-        OnHeal = 1 << 7,
-            
-        OnSwing = 1 << 8,
-        OnSwingHit = 1 << 9,
-        OnChargedSwingHit = 1 << 10,
-        OnAttackStunEnemy = 1 << 11,
-        OnParry = 1 << 12,
-            
-        OnDodge = 1 << 13,
-        OnDodgeEnd = 1 << 14,
+        OnDodge = 1 << 14,
+        OnDodgeEnd = 1 << 15,
             
         OnMovementSpdChanged = 1 << 20,
         OnChargeBounceCountChanged = 1 << 21
