@@ -22,11 +22,16 @@ namespace QT
     [GameDataBase(typeof(SpecialEffectGameData), "SpecialEffectGameData")]
     public class SpecialEffectGameDataBase : IGameDataBase
     {
-        private readonly Dictionary<int, SpecialEffectGameData> _datas = new();
+        private readonly Dictionary<int, List<SpecialEffectGameData>> _datas = new();
 
         public void RegisterData(IGameData data)
         {
-            _datas.Add(data.Index, (SpecialEffectGameData)data);
+            if(!_datas.TryGetValue(data.Index, out var list))
+            {
+                _datas.Add(data.Index, list = new List<SpecialEffectGameData>());
+            }
+            
+            list.Add(data as SpecialEffectGameData);
         }
 
         public void OnInitialize(GameDataManager manager)
@@ -34,7 +39,7 @@ namespace QT
             
         }
         
-        public SpecialEffectGameData GetData(int id)
+        public List<SpecialEffectGameData> GetData(int id)
         {
             if (_datas.TryGetValue(id, out var value))
             {

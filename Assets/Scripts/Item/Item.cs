@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
@@ -9,13 +10,15 @@ namespace QT.InGame
 {
     public class Item
     {
+        public Action<int> OnStackChanged;
+        public int Stack;
+        
         private readonly int _itemDataId;
         public ItemGameData ItemGameData { get; }
         private List<ItemEffectGroup> _itemEffectList;
         
         private readonly Dictionary<TriggerTypes, UnityEvent> _applyPointEvents = new ();
-
-        private int UseCount { get; set; }
+        
         
         public Item(int itemDataId, Player player)
         {
@@ -45,15 +48,19 @@ namespace QT.InGame
 
                         if (data.ApplySpecialEffectId != 0)
                         {
-                            var specialData = dataManager.GetDataBase<SpecialEffectGameDataBase>().GetData(data.ApplySpecialEffectId);
+                            var specialDatas = dataManager.GetDataBase<SpecialEffectGameDataBase>().GetData(data.ApplySpecialEffectId);
 
-                            var effect = ItemEffectFactory.GetEffect(specialData.EffectType, player, data, specialData);
-                            effectGroup.Add(effect);
+                            foreach (var specialData in specialDatas)
+                            {
+                                var effect = ItemEffectFactory.GetEffect(specialData.EffectType, player, data, specialData);
+                                effectGroup.Add(effect);
+                            }
+                            
                         }
 
                         if (data.TriggerType.HasFlag(TriggerTypes.OnActiveKey))
                         {
-                            effectGroup.Add(new ActiveItemEffect(() => UseCount++));
+                            effectGroup.Add(new ActiveItemEffect(() => OnStackChanged?.Invoke(++Stack)));
                         }
                         
                         _itemEffectList.Add(effectGroup);
