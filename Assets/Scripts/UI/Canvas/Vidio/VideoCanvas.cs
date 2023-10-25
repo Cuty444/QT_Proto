@@ -15,6 +15,7 @@ namespace QT.UI
 
     public class VideoCanvasModel : UIModelBase
     {
+        public override bool UseStack => true;
         public override UIType UIType => UIType.Popup;
         public override string PrefabPath => "Video.prefab";
         

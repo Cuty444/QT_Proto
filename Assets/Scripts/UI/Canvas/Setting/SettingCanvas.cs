@@ -38,6 +38,7 @@ namespace QT.UI
 
     public class SettingCanvasModel : UIModelBase
     {
+        public override bool UseStack => true;
         public override UIType UIType => UIType.Popup;
         public override string PrefabPath => "Setting.prefab";
         
