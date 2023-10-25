@@ -24,12 +24,12 @@ namespace QT.UI
         {
             _itemFrames = _itemListParents.GetComponentsInChildren<UIInventoryItem>();
             _activeItemArea.SetActive(false);
-            _desc.Hide();
+            _desc.Reset();
         }
 
         public void OnDisable()
         {
-            _desc.Hide();
+            _desc.Reset();
         }
 
         public void SetInventoryUI()
