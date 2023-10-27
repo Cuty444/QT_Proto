@@ -30,10 +30,10 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private List<Saddy.States> _attackStates = new() {Saddy.States.Throw, Saddy.States.Summon};
+        private List<Saddy.States> _attackStates = new() {Saddy.States.Throw};
         private int _attackStateIndex;
 
-        private float _targetDistance = 5f;
+        private float _targetDistance = 7f;
 
         public SaddyNormalState(IFSMEntity owner) : base(owner)
         {
@@ -86,7 +86,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetFloat(MoveDirAnimHash, moveDir * speed);
             
             //targetDistance = ((Vector2)_target.position - (Vector2) _ownerEntity.transform.position).magnitude;
-            //CheckAttackStart(targetDistance);
+            CheckAttackStart(targetDistance);
         }
 
         public override void ClearState()
@@ -131,22 +131,8 @@ namespace QT.InGame
                 interest.AddWeight(-dir, 1);
             }
 
-            // 타겟 주위 회전
-            //interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
-
             // 1차 결과 계산
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
-
-            
-            // 1차 결과 계산 후 장애물 때문에 속도가 너무 느리면 반대로 회전 및 해당 방향 피하기
-            // if (danger.AddedWeightCount > 0 && interest.AddedWeightCount > 0)
-            // {
-            //     if (result.sqrMagnitude < TurnoverLimitSpeed)
-            //     {
-            //         _rotateSide = !_rotateSide;
-            //         _avoidDirDamper.ResetCurrentValue(-result);
-            //     }
-            // }
 
             // 회피 방향 적용해 2차 결과 계산
             var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
@@ -157,6 +143,35 @@ namespace QT.InGame
             }
 
             return result.normalized;
+        }
+        
+        
+        private void CheckAttackStart(float targetDistance)
+        {
+            if (_atkCoolTime < _enemyData.AtkCheckDelay)
+            {
+                return;
+            }
+
+            _atkCoolTime = 0;
+            _ownerEntity.ChangeState(PickAttackState());
+        }
+        
+        private Saddy.States PickAttackState()
+        {
+            _attackStateIndex++;
+            
+            if(_attackStateIndex < _attackStates.Count)
+            {
+                return _attackStates[_attackStateIndex];
+            }
+            
+            _attackStates.Shuffle();
+            _attackStateIndex = 0;
+            
+            //_targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
+
+            return _attackStates[_attackStateIndex];
         }
 
     }

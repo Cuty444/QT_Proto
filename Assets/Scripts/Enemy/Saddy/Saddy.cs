@@ -43,6 +43,7 @@ namespace QT.InGame
         
         [field:Space]
         [field: SerializeField] public Transform[] ShootPoints{ get; private set; }
+        [field: SerializeField] public Transform BatTransform{ get; private set; }
         
         [field:Space]
         [field: SerializeField] public Transform SaddyObject{ get; private set; }
