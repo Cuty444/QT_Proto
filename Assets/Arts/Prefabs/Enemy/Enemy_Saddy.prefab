@@ -48,7 +48,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965339287052476915}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
@@ -63,7 +63,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
@@ -131,11 +131,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9c8d949920874e32839bdaca9906f4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionRadius: 5
+  _detectionRadius: 2
   _obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 64768
-  _enemySize: 4
+  _enemySize: 1
 --- !u!114 &6207088794099989857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,6 +174,7 @@ GameObject:
   - component: {fileID: 9087681152812611073}
   - component: {fileID: 1544990547693621051}
   - component: {fileID: 4179099634767336889}
+  - component: {fileID: 6131583841063746291}
   m_Layer: 0
   m_Name: Spine Mecanim GameObject (Monster_Saddy)
   m_TagString: Untagged
@@ -308,6 +309,21 @@ MonoBehaviour:
     layerMixModes: 01000000
     layerBlendModes: 01000000
   updateTiming: 1
+--- !u!114 &6131583841063746291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705156617177400927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3893e13995f1444699d17a415a5356f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseMaterial: {fileID: 2100000, guid: 773dca8e508cef1458dc09e641f9c195, type: 2}
+  _hitMaterial: {fileID: 2100000, guid: dfabde552acaf4316893acc1bc196010, type: 2}
+  _rigidMaterial: {fileID: 2100000, guid: ac741a52c64994d6d94cc5bbbe86bc69, type: 2}
 --- !u!1 &4238159348530187639
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,7 +466,7 @@ Transform:
   m_GameObject: {fileID: 8191055954679258280}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.97493625, w: 0.22248448}
-  m_LocalPosition: {x: 0.60359675, y: 0.3012991, z: 0}
+  m_LocalPosition: {x: 0.6035967, y: 0.3012991, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
