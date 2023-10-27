@@ -16,7 +16,7 @@ namespace QT
 
         private Dictionary<Vector2Int, MapCellData> _mapCellData = new();
         
-        public bool IsBattle { get; private set; }
+        public virtual bool IsBattle { get; private set; }
         
         public Vector2Int PlayerPosition { get; private set; }
 
