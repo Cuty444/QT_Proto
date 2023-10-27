@@ -5,7 +5,6 @@ using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
 using UnityEngine;
-using EventType = QT.Core.EventType;
 
 namespace QT
 {
@@ -28,13 +27,13 @@ namespace QT
         [ConsoleMethod("Heal", "플레이어 회복")]
         public static void Heal(float amount)
         {
-            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnHeal, amount);
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnHeal, amount);
         }
         
         [ConsoleMethod("Hit", "플레이어 공격")]
         public static void Hit(float amount)
         {
-            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnDamage, (Vector2.zero, amount));
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDamage, (Vector2.zero, amount));
         }
         
         

@@ -1,21 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using UnityEngine;
 using UnityEngine.Events;
-using TriggerTypes = QT.ItemEffectGameData.TriggerTypes;
+using TriggerTypes = QT.Core.TriggerTypes;
 
 namespace QT.InGame
 {
     public class Item
     {
+        public Action<int> OnStackChanged;
+        public int Stack { get; private set; }
+
         private readonly int _itemDataId;
         public ItemGameData ItemGameData { get; }
         private List<ItemEffectGroup> _itemEffectList;
         
         private readonly Dictionary<TriggerTypes, UnityEvent> _applyPointEvents = new ();
-
-        private int UseCount { get; set; }
+        
         
         public Item(int itemDataId, Player player)
         {
@@ -35,25 +38,23 @@ namespace QT.InGame
                 {
                     if (data != null)
                     {
-                        var effectGroup = new ItemEffectGroup(player, data);
+                        var effectGroup = new ItemEffectGroup(this, player, data);
                         
                         if (data.ApplyBuffId != 0)
                         {
-                            var effect = ItemEffectFactory.GetEffect(ItemEffectTypes.Buff, player, data);
+                            var effect = ItemEffectFactory.GetEffect(this, ItemEffectTypes.Buff, player, data);
                             effectGroup.Add(effect);
                         }
 
                         if (data.ApplySpecialEffectId != 0)
                         {
-                            var specialData = dataManager.GetDataBase<SpecialEffectGameDataBase>().GetData(data.ApplySpecialEffectId);
+                            var specialDatas = dataManager.GetDataBase<SpecialEffectGameDataBase>().GetData(data.ApplySpecialEffectId);
 
-                            var effect = ItemEffectFactory.GetEffect(specialData.EffectType, player, data, specialData);
-                            effectGroup.Add(effect);
-                        }
-
-                        if (data.TriggerType.HasFlag(TriggerTypes.OnActiveKey))
-                        {
-                            effectGroup.Add(new ActiveItemEffect(() => UseCount++));
+                            foreach (var specialData in specialDatas)
+                            {
+                                var effect = ItemEffectFactory.GetEffect(this, specialData.EffectType, player, data, specialData);
+                                effectGroup.Add(effect);
+                            }
                         }
                         
                         _itemEffectList.Add(effectGroup);
@@ -123,6 +124,24 @@ namespace QT.InGame
             {
                 effect.OnRemoved();
             }
+        }
+
+        public void AddStack(int amount)
+        {
+            if (ItemGameData.MaxStack == -1)
+            {
+                return;
+            }
+            
+            Stack = Mathf.Clamp(Stack + amount, 0, ItemGameData.MaxStack);
+
+            OnStackChanged?.Invoke(Stack);
+        }
+        
+        public void ClearStack()
+        {
+            Stack = 0;
+            OnStackChanged?.Invoke(Stack);
         }
 
         public float GetCoolTimeProgress()

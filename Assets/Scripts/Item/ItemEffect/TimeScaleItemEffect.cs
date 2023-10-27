@@ -25,7 +25,7 @@ namespace QT.InGame
         
         private SkeletonGhost _ghostEffect;
         
-        public TimeScaleItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public TimeScaleItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _targetTimeScale = new StatModifier( specialEffectData.Param1, StatModifier.ModifierType.Multiply, this);
             //_duration = (int) (specialEffectData.Param2 / _targetTimeScale * 1000);
@@ -57,6 +57,10 @@ namespace QT.InGame
             Timer();
         }
 
+        public override void OnRemoved()
+        {
+        }
+
         private async UniTaskVoid Timer()
         {
             _cancellationTokenSource?.Cancel();
@@ -83,11 +87,11 @@ namespace QT.InGame
             }, 0f, 0.2f).SetUpdate(true);;
             
             SystemManager.Instance.ResourceManager.ReleaseObjectWithDelay(CyberEffectPath, cyberEffect, 0.5f);
-            
-            OnRemoved();
+
+            Remove();
         }
 
-        public override void OnRemoved()
+        private void Remove()
         {
             _ghostEffect.ghostingEnabled = false;
             //_ghostEffect.ClearGhosting();

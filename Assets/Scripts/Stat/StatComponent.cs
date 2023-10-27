@@ -49,6 +49,7 @@ namespace QT.InGame
         
         // 예외
         Gold,
+        Stack
     }
     
     public abstract class StatComponent

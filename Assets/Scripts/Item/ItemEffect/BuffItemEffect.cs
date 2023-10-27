@@ -12,7 +12,7 @@ namespace QT.InGame
         
         private int _buffId;
 
-        public BuffItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public BuffItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _buffComponent = player.BuffComponent;
 

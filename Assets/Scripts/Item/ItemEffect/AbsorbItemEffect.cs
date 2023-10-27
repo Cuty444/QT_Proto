@@ -32,7 +32,7 @@ namespace QT.InGame
         private float _chargingTime;
         private float _power;
 
-        public AbsorbItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public AbsorbItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _player = player;
             _absorbRange = specialEffectData.Param1;
@@ -64,7 +64,6 @@ namespace QT.InGame
 
         public override void OnRemoved()
         {
-            _cancellationTokenSource?.Cancel();
         }
 
         

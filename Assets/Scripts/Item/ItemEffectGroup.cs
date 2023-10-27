@@ -6,6 +6,8 @@ namespace QT.InGame
 {
     public class ItemEffectGroup
     {
+        private readonly Item _item;
+        
         public readonly ItemEffectGameData Data;
         private readonly EffectCondition _condition;
         private readonly StatComponent _ownerStatComponent;
@@ -14,11 +16,12 @@ namespace QT.InGame
 
         private List<ItemEffect> _effects = new ();
         
-        public ItemEffectGroup(Player player, ItemEffectGameData effectData)
+        public ItemEffectGroup(Item item, Player player, ItemEffectGameData effectData)
         {
+            _item = item;
             Data = effectData;
             _ownerStatComponent = player.StatComponent;
-            
+
             if (effectData.Condition != EffectConditions.None)
             {
                 _condition = EffectConditionFactory.GetCondition(effectData.Condition, effectData.ConditionTarget, effectData.ConditionValue);
@@ -37,7 +40,7 @@ namespace QT.InGame
                 return;
             }
             
-            bool isTrigger = _condition == null || _condition.CheckCondition(_ownerStatComponent);
+            bool isTrigger = _condition == null || _condition.CheckCondition(_ownerStatComponent, _item.Stack);
             
             
             foreach (var effect in _effects)

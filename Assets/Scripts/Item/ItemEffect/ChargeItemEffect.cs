@@ -44,7 +44,7 @@ namespace QT.InGame
         private bool _isCharging;
         private float _currentSpeed;
 
-        public ChargeItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public ChargeItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _player = player;
             _soundManager = SystemManager.Instance.SoundManager;
@@ -72,12 +72,6 @@ namespace QT.InGame
 
         public override void OnRemoved()
         {
-            _cancellationTokenSource?.Cancel();
-            
-            _player.OnAim.RemoveListener(OnAim);
-            
-            _player.ChangeState(Player.States.Move);
-            //_player.SetGlobalState(new PlayerGlobalState(_player));
         }
 
         private void OnAim(Vector2 aimPos)

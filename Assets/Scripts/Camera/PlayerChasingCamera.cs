@@ -8,7 +8,6 @@ using QT.InGame;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using EventType = QT.Core.EventType;
 
 [Serializable]
 public class VolumData
@@ -62,9 +61,9 @@ public class PlayerChasingCamera : MonoBehaviour
         SystemManager.Instance?.EventManager.RemoveEvent(this);
     }
 
-    private void InvokeEvent(EventType eventType, object data)
+    private void InvokeEvent(TriggerTypes triggerTypes, object data)
     {
-        if (eventType == EventType.OnDamage)
+        if (triggerTypes == TriggerTypes.OnDamage)
         {
             VignetteOn();
         }

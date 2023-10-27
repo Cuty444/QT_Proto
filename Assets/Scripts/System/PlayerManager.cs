@@ -60,7 +60,7 @@ namespace QT.Core
             
             (await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>()).SetGoldText(Gold);
             
-            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnGoldChanged, Gold);
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnGoldChanged, Gold);
         }
         
         public async void Reset()

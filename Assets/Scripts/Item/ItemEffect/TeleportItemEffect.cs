@@ -4,7 +4,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using QT.Core;
 using UnityEngine;
-using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -23,7 +22,7 @@ namespace QT.InGame
         
         private CancellationTokenSource _cancellationTokenSource;
 
-        public TeleportItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public TeleportItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _player = player;
             _teleportDistance = specialEffectData.Param1;
@@ -71,7 +70,7 @@ namespace QT.InGame
 
             PlayEffect();
             
-            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnAttackStunEnemy, null);
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnAttackStunEnemy, null);
         }
         
         private async UniTaskVoid PlayEffect()
@@ -86,12 +85,11 @@ namespace QT.InGame
             
             await UniTask.Delay(EffectDuration, cancellationToken: _cancellationTokenSource.Token);
             
-            OnRemoved();
+            _player.TeleportEffect(false);
         }
 
         public override void OnRemoved()
         {
-            _player.TeleportEffect(false);
         }
 
 

@@ -9,7 +9,7 @@ namespace QT.InGame
     {
         private readonly Player _player;
         
-        public ReverseAtkDirItemEffect(Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(player, effectData, specialEffectData)
+        public ReverseAtkDirItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _player = player;
         }

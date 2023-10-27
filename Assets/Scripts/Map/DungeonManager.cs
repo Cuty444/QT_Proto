@@ -83,6 +83,8 @@ namespace QT
         {
             SystemManager.Instance.UIManager.SetState(UIState.InGame);
             IsBattle = false;
+            
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnClearRoom, null);
         }
 
         private void MapTeleport(Vector2Int position)

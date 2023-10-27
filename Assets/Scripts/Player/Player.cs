@@ -8,7 +8,6 @@ using QT.Core.Data;
 using QT.UI;
 using UnityEngine.UI;
 using Spine.Unity;
-using EventType = QT.Core.EventType;
 
 namespace QT.InGame
 {
@@ -137,13 +136,13 @@ namespace QT.InGame
         {
             if(StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).IsFull() && StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).IsFull())
             {
-                SystemManager.Instance.EventManager.InvokeEvent(EventType.OnDamage, (dir, power));
+                SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDamage, (dir, power));
             }
         }
         
         public void Heal(float amount)
         {
-            SystemManager.Instance.EventManager.InvokeEvent(EventType.OnHeal, amount);
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnHeal, amount);
             HealEffectPlay();
         }
         
