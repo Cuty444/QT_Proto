@@ -1246,7 +1246,7 @@ AnimatorTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Rotation
-    m_EventTreshold: 4
+    m_EventTreshold: 3.9
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 43329315978388560}
   m_Solo: 0
@@ -1812,7 +1812,7 @@ AnimatorTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Rotation
-    m_EventTreshold: 3
+    m_EventTreshold: 2.9
   - m_ConditionMode: 4
     m_ConditionEvent: Rotation
     m_EventTreshold: 4
@@ -3941,18 +3941,6 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: DirectionX
-    m_Type: 1
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: DirectionY
-    m_Type: 1
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
   - m_Name: MoveDir
     m_Type: 1
     m_DefaultFloat: 0
@@ -4226,7 +4214,7 @@ BlendTree:
   m_Name: Blend Tree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 4517578324543236680}
+    m_Motion: {fileID: -3292719337885090888}
     m_Threshold: 0
     m_Position: {x: 0, y: 1}
     m_TimeScale: 1
@@ -4234,68 +4222,44 @@ BlendTree:
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -7453835807381925191}
-    m_Threshold: 0.24489799
-    m_Position: {x: -1, y: 0}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: Blend
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: -7453835807381925191}
-    m_Threshold: 0.48979598
+    m_Motion: {fileID: -3292719337885090888}
+    m_Threshold: 1
     m_Position: {x: 1, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -860727210235566492}
-    m_Threshold: 0.73469394
-    m_Position: {x: 0, y: -1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: Blend
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: -7453835807381925191}
-    m_Threshold: 0.97959197
+    m_Motion: {fileID: 793650038103619918}
+    m_Threshold: 2
     m_Position: {x: -0.7071, y: -0.7071}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -7453835807381925191}
-    m_Threshold: 1.2244899
+    m_Motion: {fileID: 6100726339597638488}
+    m_Threshold: 3
     m_Position: {x: -0.7071, y: 0.7071}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -7453835807381925191}
-    m_Threshold: 1.4693879
-    m_Position: {x: 0.7071, y: -0.7071}
+    m_Motion: {fileID: 6100726339597638488}
+    m_Threshold: 4
+    m_Position: {x: 0, y: -1}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: -7453835807381925191}
-    m_Threshold: 1.7142859
-    m_Position: {x: 0.7071, y: 0.7071}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: Blend
-    m_Mirror: 0
-  m_BlendParameter: DirectionX
+  m_BlendParameter: Rotation
   m_BlendParameterY: DirectionY
   m_MinThreshold: 0
-  m_MaxThreshold: 1.7142859
+  m_MaxThreshold: 4
   m_UseAutomaticThresholds: 1
   m_NormalizedBlendValues: 0
-  m_BlendType: 1
+  m_BlendType: 0
 --- !u!74 &477824293059097152
 AnimationClip:
   m_ObjectHideFlags: 0
@@ -4576,7 +4540,7 @@ AnimatorTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Rotation
-    m_EventTreshold: 3
+    m_EventTreshold: 2.9
   - m_ConditionMode: 4
     m_ConditionEvent: Rotation
     m_EventTreshold: 4
@@ -4621,7 +4585,7 @@ AnimatorTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Rotation
-    m_EventTreshold: 2
+    m_EventTreshold: 1.9
   - m_ConditionMode: 4
     m_ConditionEvent: Rotation
     m_EventTreshold: 3
@@ -7020,7 +6984,7 @@ AnimatorTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Rotation
-    m_EventTreshold: 1
+    m_EventTreshold: 0.9
   - m_ConditionMode: 4
     m_ConditionEvent: Rotation
     m_EventTreshold: 2
@@ -7946,7 +7910,7 @@ AnimatorTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Rotation
-    m_EventTreshold: 4
+    m_EventTreshold: 3.9
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8635577763671618015}
   m_Solo: 0
@@ -7963,7 +7927,7 @@ AnimatorTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Rotation
-    m_EventTreshold: 2
+    m_EventTreshold: 1.9
   - m_ConditionMode: 4
     m_ConditionEvent: Rotation
     m_EventTreshold: 3
@@ -9013,7 +8977,7 @@ AnimatorTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Rotation
-    m_EventTreshold: 1
+    m_EventTreshold: 0.9
   - m_ConditionMode: 4
     m_ConditionEvent: Rotation
     m_EventTreshold: 2

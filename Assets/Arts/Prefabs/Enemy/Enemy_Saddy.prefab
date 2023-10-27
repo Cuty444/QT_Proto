@@ -36,6 +36,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7471721487624290273}
+  - {fileID: 2364669503743973496}
   - {fileID: 5466425311392634948}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -113,23 +114,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7afe4610700c424180ed91ef33ffafc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyId: 0
-  <DullahanData>k__BackingField: {fileID: 0}
+  <SaddyData>k__BackingField: {fileID: 11400000, guid: ef5a022c5763d4e64b806e5bb9e2c1c1, type: 2}
+  <ColliderRad>k__BackingField: 3
   <ShootPoints>k__BackingField: []
-  <CenterTransform>k__BackingField: {fileID: 0}
-  <HandTransform>k__BackingField: {fileID: 0}
-  <WheelTransform>k__BackingField: {fileID: 0}
-  <RushColliderSize>k__BackingField: 0
-  <RushTrailObject>k__BackingField: {fileID: 0}
-  <RushShockImpulseSource>k__BackingField: {fileID: 0}
-  <AttackImpulseSource>k__BackingField: {fileID: 0}
-  <JumpReadyImpulseSource>k__BackingField: {fileID: 0}
-  <JumpImpulseSource>k__BackingField: {fileID: 0}
-  <LandingImpulseSource>k__BackingField: {fileID: 0}
-  <DeadImpulseSource>k__BackingField: {fileID: 0}
-  <ExplosionImpulseSource>k__BackingField: {fileID: 0}
-  <DullahanObject>k__BackingField: {fileID: 0}
-  <Shadow>k__BackingField: {fileID: 0}
+  <SaddyObject>k__BackingField: {fileID: 7471721487624290273}
+  <Shadow>k__BackingField: {fileID: 7072603811772144626}
 --- !u!114 &3639556812687226052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,11 +131,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9c8d949920874e32839bdaca9906f4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionRadius: 2
+  _detectionRadius: 5
   _obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 0
-  _enemySize: 0
+    m_Bits: 64768
+  _enemySize: 4
 --- !u!114 &6207088794099989857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aefb842f0902c4115b20d75044778477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShootPoint: {fileID: 0}
+  ShootPoint: {fileID: 2364669503743973496}
 --- !u!210 &426860252324966990
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -435,3 +424,57 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &8191055954679258280
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2364669503743973496}
+  - component: {fileID: 516261065557203173}
+  m_Layer: 0
+  m_Name: BatPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2364669503743973496
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8191055954679258280}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.97493625, w: 0.22248448}
+  m_LocalPosition: {x: 0.60359675, y: 0.3012991, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5568251923646748160}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &516261065557203173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8191055954679258280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1fd8daaed7b64148a34acb96ba14ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonRenderer: {fileID: 4179099634767336889}
+  boneName: bat_rotate
+  followXYPosition: 1
+  followZPosition: 1
+  followBoneRotation: 1
+  followSkeletonFlip: 1
+  followLocalScale: 1
+  followParentWorldScale: 1
+  maintainedAxisOrientation: 1
+  initializeOnAwake: 1
