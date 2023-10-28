@@ -131,10 +131,12 @@ namespace QT.InGame
             var hits = Physics2D.CircleCastAll(_rushCenter.position, _size, _dir, _speed * Time.deltaTime,
                 _ownerEntity.HitMask);
 
+#if UNITY_EDITOR
             Debug.DrawRay(_rushCenter.position, _dir * (_size + _speed * Time.deltaTime), Color.magenta, 1);
             Debug.DrawRay(_rushCenter.position, new Vector3(-_dir.y, _dir.x) * (_size), Color.magenta, 1);
             Debug.DrawRay(_rushCenter.position, new Vector3(_dir.y, -_dir.x) * (_size), Color.magenta, 1);
-
+#endif
+            
             foreach (var hit in hits)
             {
                 if (hit.collider != null)

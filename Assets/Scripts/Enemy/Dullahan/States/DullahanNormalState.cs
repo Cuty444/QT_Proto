@@ -34,6 +34,7 @@ namespace QT.InGame
         private List<Dullahan.States> _attackStates = new (){Dullahan.States.Rush, Dullahan.States.Smash, Dullahan.States.Throw, Dullahan.States.Summon};
         private int _attackStateIndex;
 
+        private Dullahan.States _nextState;
         private float _targetDistance;
 
         public DullahanNormalState(IFSMEntity owner) : base(owner)
@@ -43,7 +44,6 @@ namespace QT.InGame
 
             _attackStates.Shuffle();
             _attackStateIndex = 0;
-            _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
         }
 
         public override void InitializeState()
@@ -52,6 +52,8 @@ namespace QT.InGame
             _currentTargetPos = _target.position;
             
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
+            
+            _nextState = PickAttackState();
         }
 
         public override void UpdateState()
@@ -69,34 +71,25 @@ namespace QT.InGame
         public override void FixedUpdateState()
         {
             var targetDistance = (_currentTargetPos - (Vector2) _ownerEntity.transform.position).magnitude;
-
-            var speed = _ownerEntity.Rigidbody.velocity.sqrMagnitude /
-                        (_enemyData.MovementSpd * _enemyData.MovementSpd);
+            var currentDir = Move(targetDistance);
+            
+            var dampedDir = _dirDamper.GetDampedValue(currentDir, Time.deltaTime);
+            _ownerEntity.SetDir(dampedDir, 4);
+            
+            var speed = dampedDir.sqrMagnitude;
             _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, speed);
             
-            Move(targetDistance);
-            
-            targetDistance = ((Vector2)_target.position - (Vector2) _ownerEntity.transform.position).magnitude;
-            CheckAttackStart(targetDistance);
+            var targetDir = (Vector2) _target.position - (Vector2) _ownerEntity.transform.position;
+            CheckAttackStart(targetDir.magnitude);
         }
 
         public override void ClearState()
         {
         }
 
-        private void Move(float targetDistance)
+        private Vector2 Move(float targetDistance)
         {
-            var dir = Vector2.zero;
-
-            switch (_enemyData.MoveType)
-            {
-                case EnemyGameData.MoveTypes.Spacing:
-                    dir = SpacingMove(targetDistance, true);
-                    break;
-                case EnemyGameData.MoveTypes.SpacingLeft:
-                    dir = SpacingMove(targetDistance, true);
-                    break;
-            }
+            var dir = SpacingMove(targetDistance);
 
             var currentDir = Vector2.zero;
 
@@ -108,11 +101,11 @@ namespace QT.InGame
 
             _ownerEntity.Rigidbody.velocity = currentDir * (_enemyData.MovementSpd);
 
-            _ownerEntity.SetDir(_dirDamper.GetDampedValue(currentDir, Time.deltaTime), 4);
+            return currentDir;
         }
         
         
-        private Vector2 SpacingMove(float targetDistance, bool isRotate = false)
+        private Vector2 SpacingMove(float targetDistance)
         {
             var ownerPos = (Vector2) _ownerEntity.transform.position;
             var dir = _currentTargetPos - ownerPos;
@@ -133,30 +126,19 @@ namespace QT.InGame
             }
 
             // 타겟 주위 회전
-            if (isRotate)
-            {
-                interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
-            }
+            interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
 
             // 1차 결과 계산
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
 
             
             // 1차 결과 계산 후 장애물 때문에 속도가 너무 느리면 반대로 회전 및 해당 방향 피하기 (회전하지 않는 경우 interest가 없으면 회피 계산 무시)
-            if (danger.AddedWeightCount > 0 && (isRotate || interest.AddedWeightCount > 0))
+            if (danger.AddedWeightCount > 0)
             {
                 if (result.sqrMagnitude < TurnoverLimitSpeed)
                 {
                     _rotateSide = !_rotateSide;
-
-                    if (isRotate)
-                    {
-                        _avoidDirDamper.ResetCurrentValue(-result);
-                    }
-                    else
-                    {
-                        _avoidDirDamper.ResetCurrentValue((-result + Math.Rotate90Degree(dir, _rotateSide)).normalized);
-                    }
+                    _avoidDirDamper.ResetCurrentValue(-result);
                 }
             }
 
@@ -194,7 +176,7 @@ namespace QT.InGame
             
             _atkCoolTime = 0;
 
-            _ownerEntity.ChangeState(PickAttackState());
+            _ownerEntity.ChangeState(_nextState);
         }
 
         private Dullahan.States PickAttackState()
@@ -203,6 +185,7 @@ namespace QT.InGame
             
             if(_attackStateIndex < _attackStates.Count)
             {
+                _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
                 return _attackStates[_attackStateIndex];
             }
             
@@ -210,7 +193,6 @@ namespace QT.InGame
             _attackStateIndex = 0;
             
             _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
-
             return _attackStates[_attackStateIndex];
         }
         
