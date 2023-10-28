@@ -139,7 +139,20 @@ namespace QT.InGame
 
             // 1차 결과 계산
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
-
+            
+            // 장애물이 있으면 회전
+            if (danger.AddedWeightCount > 0)
+            {
+                if (result.sqrMagnitude < TurnoverLimitSpeed)
+                {
+                    _rotateSide = !_rotateSide;
+                    _avoidDirDamper.ResetCurrentValue(-result);
+                }
+                
+                interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
+            }
+            
+            
             // 회피 방향 적용해 2차 결과 계산
             var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
             if (avoidDir != Vector2.zero)
