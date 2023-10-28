@@ -29,9 +29,7 @@ namespace QT.InGame
 
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
-            
-            _ownerEntity.Shooter.ShootPoint = _ownerEntity.BatTransform;
-            
+
             _ownerEntity.Animator.SetInteger(ChargeLevelAnimHash, 1);
             _ownerEntity.StartCoroutine(AttackSequence());
         }

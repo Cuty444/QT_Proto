@@ -162,7 +162,7 @@ namespace QT.InGame
                 _atkCoolTime -= _data.SwingPlayTime;
             }
             
-            if (_atkCoolTime > _data.DodgeAttackCoolTime)
+            if (_atkCoolTime > _data.AttackCoolTime)
             {
                 _atkCoolTime = 0;
                 _ownerEntity.ChangeState(_nextState);
@@ -181,7 +181,6 @@ namespace QT.InGame
                 _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, 0);
                 _ownerEntity.Animator.SetInteger(SwingLevelAnimHash, 0);
                 
-                _ownerEntity.Shooter.ShootPoint = _ownerEntity.BatTransform;
                 _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.SwingAtkId, ProjectileOwner.Boss);
             };
         }

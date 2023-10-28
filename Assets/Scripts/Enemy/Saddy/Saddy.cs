@@ -8,7 +8,7 @@ namespace QT.InGame
     {
          public string PrefabPath { get; set; }
         
-        public LayerMask HitMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "Enemy", "InteractionCollider");
+        public LayerMask HitMask => LayerMask.GetMask("Wall","HardCollider","ProjectileCollider", "Player", "InteractionCollider");
 
         private static readonly int RotationAnimHash = Animator.StringToHash("Rotation");
         
@@ -49,7 +49,8 @@ namespace QT.InGame
         
         [field:Space]
         [field: SerializeField] public Transform[] ShootPoints{ get; private set; }
-        [field: SerializeField] public Transform BatTransform{ get; private set; }
+        [field: SerializeField] public Transform ShootPointPivot{ get; private set; }
+        [field: SerializeField] public Transform ShootPointTransform{ get; private set; }
         
         [field:Space]
         [field: SerializeField] public Transform SaddyObject{ get; private set; }
@@ -111,13 +112,16 @@ namespace QT.InGame
 
             SetDir(side, dir.x > 0);
             
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            ShootPointPivot.rotation = Quaternion.Euler(0, 0, angle);
+            
             return side;
         }
 
-        public void SetDir(int side, bool isFlip)
+        private void SetDir(int side, bool isFlip)
         {
             Animator.SetFloat(RotationAnimHash, side);
-            Animator.transform.rotation = Quaternion.Euler(0f, isFlip ? 180 : 0, 0f);
+            Animator.transform.rotation = Quaternion.Euler(0f, isFlip ? 180 : 0, 0f); 
         }
 
         public int GetSide(Vector2 dir, int sideCount)

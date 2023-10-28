@@ -1,13 +1,11 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using QT.Core;
 using QT.Core.Data;
-using QT.Ranking;
 using QT.UI;
 using Spine;
 using Spine.Unity;
-using UnityEngine.UI;
 
 namespace QT.InGame
 {
