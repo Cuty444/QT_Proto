@@ -57,7 +57,7 @@ namespace QT.InGame
                 yield return new WaitForSeconds(data.AfterDelay);
             }
 
-            _ownerEntity.ChangeState(Dullahan.States.Normal);
+            _ownerEntity.ChangeState(Saddy.States.PingPong);
         }
     }
 }

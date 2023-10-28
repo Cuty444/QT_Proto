@@ -62,7 +62,7 @@ namespace QT.InGame
                 _ownerEntity.Animator.SetInteger(ChargeLevelAnimHash, 1);
                 _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.RollingAttackAtkId, ProjectileOwner.Boss);
                 
-                _ownerEntity.ChangeState(Dullahan.States.Normal);
+                _ownerEntity.ChangeState(Saddy.States.Normal);
             }
             else
             {
