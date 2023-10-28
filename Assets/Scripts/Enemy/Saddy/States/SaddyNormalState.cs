@@ -89,7 +89,7 @@ namespace QT.InGame
             var targetDir = (Vector2) _target.position - (Vector2) _ownerEntity.transform.position;
             var moveDir = Vector2.Dot(targetDir, dampedDir) <= 0 ? -1f : 1f;
             
-            _ownerEntity.SetDir(dampedDir * moveDir, 5);
+            _ownerEntity.SetDir(dampedDir * moveDir, 4);
             _ownerEntity.Animator.SetFloat(MoveDirAnimHash, moveDir * speed);
             
             CheckAttackStart(targetDistance);
