@@ -35,7 +35,9 @@ namespace QT.InGame
 
             AddStat(PlayerStats.ChargeTime, new(atkData.ChargeTime));
 
-            AddStat(PlayerStats.ChargeAtkPierce, new(atkData.ChargeAtkPierce));
+            AddStat(PlayerStats.ProjectileGuide, new(atkData.ProjectileGuide));
+            AddStat(PlayerStats.ProjectileExplosion, new(atkData.ProjectileExplosion));
+            AddStat(PlayerStats.ProjectilePierce, new(atkData.ProjectilePierce));
 
             AddStat(PlayerStats.ChargeShootSpd, new(atkData.ChargeShootSpd));
 
@@ -48,7 +50,6 @@ namespace QT.InGame
 
             AddStat(PlayerStats.EnemyProjectileDmg, new(atkData.EnemyProjectileDmg));
 
-            AddStat(PlayerStats.ReflectCorrection, new(atkData.ReflectCorrection));
             AddStat(PlayerStats.AtkDmgPer, new(atkData.AtkDmgPer));
         }
     }

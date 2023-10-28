@@ -60,15 +60,13 @@ namespace QT.InGame
         private float _releaseDelay;
         private float _releaseTimer;
 
-        private float _reflectCorrection;
-        private Transform _playerTransform;
-
-
+        private Transform _targetTransform;
+        
         private float _currentStretch;
 
         private SoundManager _soundManager;
 
-        private bool _isPierce;
+        private ProjectileProperties _properties;
 
         private IHitAble _lastHitAble;
         
@@ -78,13 +76,7 @@ namespace QT.InGame
         private void Awake()
         {
             _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
-            Player player = SystemManager.Instance.PlayerManager.Player;
-            if (player == null)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            _playerTransform = player.transform;
+            
             _trailRenderer = GetComponentsInChildren<TrailRenderer>();
             _soundManager = SystemManager.Instance.SoundManager;
             _boss.SetActive(false);
@@ -109,7 +101,7 @@ namespace QT.InGame
             }
         }
 
-        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, float reflectCorrection, LayerMask bounceMask, ProjectileOwner owner, bool isPierce = false, float releaseDelay = 0, string path = "")
+        public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null, float releaseDelay = 0, string path = "")
         {
             _ballTransform.up = _direction = dir;
             _maxSpeed = _speed = speed;
@@ -130,9 +122,6 @@ namespace QT.InGame
                 _releaseDelay = 0;
             }
 
-            _isPierce = isPierce;
-
-            _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _bounceMask = bounceMask;
             _isReleased = false;
 
@@ -141,15 +130,12 @@ namespace QT.InGame
             _owner = owner;
             SetOwnerColor();
             TrailRendersSetEmitting(true);
+            
+            _properties = properties;
+            _targetTransform = target;
         }
 
-        public void Hit(Vector2 dir, float newSpeed, AttackType attackType)
-        {
-            ProjectileHit(dir, newSpeed, _bounceMask, _owner, _reflectCorrection);
-        }
-        
-        
-        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection = 0,bool isPierce = false)
+        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null)
         {
             _ballTransform.up  = _direction = dir;
             _maxSpeed = Mathf.Max(_speed, newSpeed);
@@ -171,10 +157,11 @@ namespace QT.InGame
             }
             
             _bounceMask = bounceMask;
-            _reflectCorrection = reflectCorrection * Mathf.Deg2Rad;
             _isReleased = false;
-            _isPierce = isPierce;
+            _properties = properties;
             SetOwnerColor();
+
+            _targetTransform = target;
         }
         
         public void ResetBounceCount(int maxBounce)
@@ -204,7 +191,12 @@ namespace QT.InGame
                 SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
                 TrailRendersSetEmitting(false);
             }
-
+            
+            if (_properties.HasFlag(ProjectileProperties.Guided) && (_targetTransform == null || !_targetTransform.gameObject.activeInHierarchy))
+            {
+                _properties &= ~ProjectileProperties.Guided;
+            }
+            
             CheckHit();
             Move();
         }
@@ -240,7 +232,7 @@ namespace QT.InGame
                     }
 
                     _lastHitAble = hitAble;
-                    pierceCheck = _isPierce;
+                    pierceCheck = _properties.HasFlag(ProjectileProperties.Pierce);
                 }
                 else
                 {
@@ -260,13 +252,22 @@ namespace QT.InGame
             transform.Translate(hit.normal * ColliderRad);
 
             SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
+            
+            _properties &= ~ProjectileProperties.Guided;
 
-            if (_reflectCorrection != 0)
+            if (_properties.HasFlag(ProjectileProperties.Explosion))
             {
-                var targetDir = ((Vector2) _playerTransform.transform.position - hit.point).normalized;
-                _direction = Vector3.RotateTowards(_direction, targetDir, _reflectCorrection, 0);
+                if (_owner == ProjectileOwner.Player)
+                {
+                    Explosion.MakeExplosion(Position, SystemManager.Instance.PlayerManager.Player);
+                }
+                else
+                {
+                    Explosion.MakeExplosion(Position);
+                }
+            _properties &= ~ProjectileProperties.Explosion;
             }
-
+            
             if (!_isReleased && --_bounceCount <= 0)
             {
                 _isReleased = true;
@@ -300,6 +301,13 @@ namespace QT.InGame
                 }
             }
 
+            
+            if (_properties.HasFlag(ProjectileProperties.Guided))
+            {
+                Vector2 targetDir = ((Vector2) _targetTransform.transform.position - Position).normalized;
+                _direction = Vector3.RotateTowards(_direction, targetDir, _globalData.BallGuidedAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
+            }
+            
             transform.Translate(_direction * (_speed * Time.deltaTime));
             
             // easeInQuad

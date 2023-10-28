@@ -15,7 +15,9 @@ namespace QT
         
         public float ChargeTime { get; set; }
         
-        public int ChargeAtkPierce { get; set; }
+        public int ProjectileGuide { get; set; }
+        public int ProjectileExplosion { get; set; }
+        public int ProjectilePierce { get; set; }
         
         public int ChargeShootSpd { get; set; }
         
@@ -28,7 +30,6 @@ namespace QT
         
         public int EnemyProjectileDmg { get; set; }
         
-        public float ReflectCorrection { get; set; }
         public float AtkDmgPer { get; set; }
     }
 

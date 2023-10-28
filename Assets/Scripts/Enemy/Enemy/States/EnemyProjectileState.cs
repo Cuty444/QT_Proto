@@ -45,12 +45,13 @@ namespace QT.InGame
         private float _releaseTimer;
         
         private Transform _transform;
+        private Transform _targetTransform;
 
         private SoundManager _soundManager;
 
         private float _lastStuckTime = 0f;
 
-        private bool _isPierce;
+        private ProjectileProperties _properties;
         
         private IHitAble _lastHitAble;
         
@@ -75,7 +76,7 @@ namespace QT.InGame
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
         }
 
-        public async void InitializeState(Vector2 dir, float power, LayerMask bounceMask, bool isPierce, bool playSound)
+        public async void InitializeState(Vector2 dir, float power, LayerMask bounceMask, ProjectileProperties properties, Transform target)
         {
             _direction = dir;
             _maxSpeed = _speed = power;
@@ -87,21 +88,20 @@ namespace QT.InGame
             _releaseDelay = 1;
             _releaseTimer = 0;
             _isReleased = false;
-            _isPierce = isPierce;
+            _properties = properties;
+
+            _targetTransform = target;
 
             _ownerEntity.SetPhysics(false);
             
             if (_ownerEntity.HP <= 0)
-            { 
-                if(playSound)
-                    _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
+            {
+                _soundManager.PlayOneShot(_soundManager.SoundData.MonsterStun);
             }
+            _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
 
             _ownerEntity.Animator.SetBool(ProjectileAnimHash, true);
             
-            if(playSound)
-                _soundManager.PlayOneShot(_soundManager.SoundData.Monster_AwaySFX);
-
             _damage = _ownerEntity.ProjectileDamage;
             
             _flyingEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(FlyingEffectPath, _ownerEntity.BallObject);
@@ -129,7 +129,12 @@ namespace QT.InGame
             {
                 _ownerEntity.ChangeState(Enemy.States.Dead);
             }
-
+            
+            if (_properties.HasFlag(ProjectileProperties.Guided) && (_targetTransform == null || !_targetTransform.gameObject.activeInHierarchy))
+            {
+                _properties &= ~ProjectileProperties.Guided;
+            }
+            
             CheckHit();
             Move();
         }
@@ -163,7 +168,7 @@ namespace QT.InGame
                     }
 
                     _lastHitAble = hitAble;
-                    pierceCheck = _isPierce;
+                    pierceCheck = _properties.HasFlag(ProjectileProperties.Pierce);
                     SystemManager.Instance.ResourceManager.EmitParticle(HitEnemyEffectPath, hit.point); 
                 }
                 else
@@ -190,6 +195,14 @@ namespace QT.InGame
 
             _direction = Vector2.Reflect(_direction, hit.normal);
             _transform.Translate(hit.normal * _size);
+            
+            _properties &= ~ProjectileProperties.Guided;
+            
+            if (_properties.HasFlag(ProjectileProperties.Explosion))
+            {
+                Explosion.MakeExplosion(_transform.position, SystemManager.Instance.PlayerManager.Player);
+                _properties &= ~ProjectileProperties.Explosion;
+            }
             
             if (--_bounceCount == 0)
             {
@@ -246,7 +259,13 @@ namespace QT.InGame
                     }
                 }
             }
-
+            
+            if (_properties.HasFlag(ProjectileProperties.Guided))
+            {
+                Vector2 targetDir = (_targetTransform.transform.position - _transform.position).normalized;
+                _direction = Vector3.RotateTowards(_direction, targetDir, _globalData.BallGuidedAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
+            }
+            
             _transform.Translate(_direction * (_speed * Time.deltaTime));
             
             // easeInQuad

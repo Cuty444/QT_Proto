@@ -31,14 +31,14 @@ namespace QT.InGame
             
         ChargeTime,
             
-        ChargeAtkPierce,
+        ProjectileGuide,
+        ProjectileExplosion,
+        ProjectilePierce,
         
         ChargeShootSpd,
         
         ChargeBounceCount,
-            
-        ReflectCorrection,
-        
+
         ChargeRigidDmg1,
         ChargeRigidDmg2,
         

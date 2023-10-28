@@ -71,6 +71,13 @@ namespace QT.Core.Data
         public float DeadAfterStunTime { get; private set; } = 5;
 
 
+        /// <summary>
+        /// 유도탄 유도 정도
+        /// </summary>
+        [field: SerializeField]
+        [Tooltip("유도탄 유도 정도")]
+        public float BallGuidedAngle { get; private set; } = 45;
+        
 
         /// <summary>
         /// 일정 속도에 도달시 삭제되는 속도값
