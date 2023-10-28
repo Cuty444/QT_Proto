@@ -3,7 +3,6 @@ using QT.Core;
 using QT.Core.Data;
 using QT.UI;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace QT.InGame
 {

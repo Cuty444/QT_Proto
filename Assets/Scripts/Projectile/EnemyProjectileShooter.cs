@@ -49,13 +49,19 @@ namespace QT.InGame
             
             foreach (var data in atkList)
             {
-                yield return new WaitForSeconds(data.BeforeDelay);
+                if (data.BeforeDelay != 0)
+                {
+                    yield return new WaitForSeconds(data.BeforeDelay);
+                }
 
                 _animator?.SetTrigger(AttackAnimHash);
                 Shoot(data.ShootDataId, data.AimType,owner);
-                
-                yield return new WaitForSeconds(data.AfterDelay);
-                
+
+                if (data.AfterDelay != 0)
+                {
+                    yield return new WaitForSeconds(data.AfterDelay);
+                }
+
                 _animator?.SetTrigger(AttackAnimHash);
             }
             

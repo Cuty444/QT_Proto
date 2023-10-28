@@ -53,7 +53,9 @@ namespace QT.InGame
             
             _dir = Vector3.RotateTowards(_dir, targetDir.normalized, _data.RollingAttackSteerAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
             
-            if (_timer > _data.RollingAttackLengthTime || targetDir.sqrMagnitude < _targetDistance)
+            
+            if (_timer > _data.RollingAttackLengthTime || 
+                (_timer > _data.RollingAttackDelay && targetDir.sqrMagnitude < _targetDistance))
             {
                 _ownerEntity.SetDir(_dir,4);
                 
@@ -79,7 +81,7 @@ namespace QT.InGame
             
             _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, 1 + progress);
 
-            if (CheckHit(speed))
+            if (_timer > _data.RollingAttackDelay && CheckHit(speed))
             {
                 _timer = _data.RollingAttackLengthTime;
             }
