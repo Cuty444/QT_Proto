@@ -17,13 +17,19 @@ namespace QT.InGame
             Global,
             
             // 살아있음
+            
+            // 일반
             Normal,
             
-            Swing,
+            RollingAttack,
+            SideStep,
+            
+            // 핑퐁
             Throw,
+            PingPong,
+            Stun, 
             
-            Jump,
-            
+            Struggle,
             Summon,
             
             Dead,
@@ -77,7 +83,7 @@ namespace QT.InGame
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
             
-            Shooter.Initialize(null);
+            Shooter.Initialize(Animator);
             
             SetUpStats();
             

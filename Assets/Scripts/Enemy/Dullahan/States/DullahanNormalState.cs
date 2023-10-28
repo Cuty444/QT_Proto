@@ -34,6 +34,7 @@ namespace QT.InGame
         private List<Dullahan.States> _attackStates = new (){Dullahan.States.Rush, Dullahan.States.Smash, Dullahan.States.Throw, Dullahan.States.Summon};
         private int _attackStateIndex;
 
+        private Dullahan.States _nextState;
         private float _targetDistance;
 
         public DullahanNormalState(IFSMEntity owner) : base(owner)
@@ -43,7 +44,6 @@ namespace QT.InGame
 
             _attackStates.Shuffle();
             _attackStateIndex = 0;
-            _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
         }
 
         public override void InitializeState()
@@ -52,6 +52,8 @@ namespace QT.InGame
             _currentTargetPos = _target.position;
             
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
+            
+            _nextState = PickAttackState();
         }
 
         public override void UpdateState()
@@ -174,7 +176,7 @@ namespace QT.InGame
             
             _atkCoolTime = 0;
 
-            _ownerEntity.ChangeState(PickAttackState());
+            _ownerEntity.ChangeState(_nextState);
         }
 
         private Dullahan.States PickAttackState()
@@ -183,6 +185,7 @@ namespace QT.InGame
             
             if(_attackStateIndex < _attackStates.Count)
             {
+                _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
                 return _attackStates[_attackStateIndex];
             }
             
@@ -190,7 +193,6 @@ namespace QT.InGame
             _attackStateIndex = 0;
             
             _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
-
             return _attackStates[_attackStateIndex];
         }
         

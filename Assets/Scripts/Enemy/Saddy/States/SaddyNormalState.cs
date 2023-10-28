@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using QT.Core;
 using QT.Util;
 using UnityEngine;
@@ -9,6 +10,8 @@ namespace QT.InGame
     [FSMState((int) Saddy.States.Normal)]
     public class SaddyNormalState : FSMState<Saddy>
     { 
+        private static readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
+        private static readonly int ChargeLevelAnimHash = Animator.StringToHash("ChargeLevel");
         private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
         private static readonly int MoveDirAnimHash = Animator.StringToHash("MoveDir");
         private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
@@ -17,12 +20,13 @@ namespace QT.InGame
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
 
         private readonly EnemyGameData _enemyData;
-        private readonly SaddyData _saddyData;
+        private readonly SaddyData _data;
 
         private float _targetUpdateCoolTime;
         public Transform _target;
         private Vector2 _currentTargetPos;
 
+        private float _swingCoolTime;
         private float _atkCoolTime;
 
         private bool _rotateSide;
@@ -30,22 +34,22 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private List<Saddy.States> _attackStates = new() {Saddy.States.Throw};
+        private List<Saddy.States> _attackStates = new() {Saddy.States.RollingAttack, Saddy.States.SideStep};
         private int _attackStateIndex;
 
-        private float _targetDistance = 7f;
+        private Saddy.States _nextState;
+        private float _targetDistance;
 
+        
         public SaddyNormalState(IFSMEntity owner) : base(owner)
         {
             _enemyData = _ownerEntity.Data;
-            _saddyData = _ownerEntity.SaddyData;
+            _data = _ownerEntity.SaddyData;
 
             _attackStates.Shuffle();
             _attackStateIndex = 0;
-            //_targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
         }
-        
-        
+
         public override void InitializeState()
         {
             _target = SystemManager.Instance.PlayerManager.Player.transform;
@@ -53,10 +57,13 @@ namespace QT.InGame
             
             _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, true);
+
+            _nextState = PickAttackState();
         }
 
         public override void UpdateState()
         {
+            _swingCoolTime += Time.deltaTime;
             _atkCoolTime += Time.deltaTime;
             _targetUpdateCoolTime += Time.deltaTime;
             
@@ -82,10 +89,9 @@ namespace QT.InGame
             var targetDir = (Vector2) _target.position - (Vector2) _ownerEntity.transform.position;
             var moveDir = Vector2.Dot(targetDir, dampedDir) <= 0 ? -1f : 1f;
             
-            _ownerEntity.SetDir(dampedDir * moveDir, 4);
+            _ownerEntity.SetDir(dampedDir * moveDir, 5);
             _ownerEntity.Animator.SetFloat(MoveDirAnimHash, moveDir * speed);
             
-            //targetDistance = ((Vector2)_target.position - (Vector2) _ownerEntity.transform.position).magnitude;
             CheckAttackStart(targetDistance);
         }
 
@@ -148,30 +154,66 @@ namespace QT.InGame
         
         private void CheckAttackStart(float targetDistance)
         {
-            if (_atkCoolTime < _enemyData.AtkCheckDelay)
+            if (_swingCoolTime > _data.SwingCoolTime)
             {
-                return;
+                Swing();
+              
+                _swingCoolTime = 0;
+                _atkCoolTime -= _data.SwingPlayTime;
             }
-
-            _atkCoolTime = 0;
-            _ownerEntity.ChangeState(PickAttackState());
+            
+            if (_atkCoolTime > _data.DodgeAttackCoolTime)
+            {
+                _atkCoolTime = 0;
+                _ownerEntity.ChangeState(_nextState);
+            }
         }
-        
+
+        private void Swing()
+        {
+            var swingLevel = _ownerEntity.Animator.GetFloat(ChargeLevelAnimHash);
+            DOTween.To(() => swingLevel, x =>
+            {
+                swingLevel = x;
+                _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, swingLevel);
+            }, 1, _data.SwingDelayTime).SetEase(Ease.OutExpo).onComplete += () =>
+            {
+                _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, 0);
+                _ownerEntity.Animator.SetInteger(SwingLevelAnimHash, 0);
+                
+                _ownerEntity.Shooter.ShootPoint = _ownerEntity.BatTransform;
+                _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.SwingAtkId, ProjectileOwner.Boss);
+            };
+        }
+
         private Saddy.States PickAttackState()
         {
             _attackStateIndex++;
             
             if(_attackStateIndex < _attackStates.Count)
             {
+                _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
                 return _attackStates[_attackStateIndex];
             }
             
             _attackStates.Shuffle();
             _attackStateIndex = 0;
             
-            //_targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
-
+            _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
             return _attackStates[_attackStateIndex];
+        }
+        
+        private float GetStateTargetDistance(Saddy.States states)
+        {
+            switch (states)
+            {
+                case Saddy.States.RollingAttack:
+                    return _data.RollingAttackDistance;
+                case Saddy.States.SideStep:
+                    return _data.SideStepDistance;
+            }
+
+            return _enemyData.SpacingRad;
         }
 
     }

@@ -8,10 +8,36 @@ namespace QT.InGame
 {
     public class SaddyData : ScriptableObject
     {
-        // 던지기
+        [field:Header("공격 그룹")]
+        
+        [field: Space]
+        [field: SerializeField] public float SwingCoolTime { get; private set; }
+        [field: SerializeField] public float SwingDelayTime { get; private set; }
+        [field: SerializeField] public float SwingPlayTime { get; private set; }
+        [field: SerializeField] public int SwingAtkId { get; private set; }
+        
+        [field: Space]
+        [field: Space]
+        [field: SerializeField] public float DodgeAttackCoolTime { get; private set; }
+        
+        [field: Space]
+        [field: SerializeField] public float RollingAttackDistance { get; private set; }
+        [field: SerializeField] public float RollingAttackSpeed { get; private set; }
+        [field: SerializeField] public float RollingAttackLengthTime { get; private set; }
+        [field: SerializeField] public float RollingAttackAtkDistance { get; private set; }
+        [field: SerializeField] public int RollingAttackAtkId { get; private set; }
+        
+
+        [field: Space]
+        [field: SerializeField] public float SideStepDistance { get; private set; }
+        [field: SerializeField] public int SideStepAtkId { get; private set; }
+        [field: SerializeField] public int SideStepEndAtkId { get; private set; }
+
+        
         [field: Space]
         [field: Space]
         [field: Space]
+        [field:Header("핑퐁 그룹")]
         [field: SerializeField] public float ThrowDistance { get; private set; }
         [field: Space]
         [field: SerializeField] public int ThrowAtkId { get; private set; }
