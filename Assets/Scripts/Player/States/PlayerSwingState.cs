@@ -116,13 +116,22 @@ namespace QT.InGame
             var properties = ProjectileProperties.None;
 
             Transform projectileTarget = null;
-            if (_ownerEntity.StatComponent.GetStat(PlayerStats.ChargeAtkPierce).Value >= 1)
+            if (_ownerEntity.StatComponent.GetStat(PlayerStats.ProjectilePierce).Value >= 1)
             {
                 properties |= ProjectileProperties.Pierce;
             }
             
-            // properties |= ProjectileProperties.Guided;
-            // projectileTarget = GetProjectileTarget();
+            if (_ownerEntity.StatComponent.GetStat(PlayerStats.ProjectileGuide).Value >= 1)
+            {
+                properties |= ProjectileProperties.Guided;
+                projectileTarget = GetProjectileTarget();
+            }
+            
+            if (_ownerEntity.StatComponent.GetStat(PlayerStats.ProjectileExplosion).Value >= 1)
+            {
+                properties |= ProjectileProperties.Explosion;
+            }
+            
             
 
             int hitCount = 0;

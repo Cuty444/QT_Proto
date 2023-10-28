@@ -47,7 +47,7 @@ namespace QT.InGame
             if (_statComponent != null)
             {
                 bounceStat = (int)_statComponent.GetStat(PlayerStats.ChargeBounceCount).Value;
-                if (_statComponent.GetStat(PlayerStats.ChargeAtkPierce).Value >= 1)
+                if (_statComponent.GetStat(PlayerStats.ProjectilePierce).Value >= 1)
                 {
                     properties |= ProjectileProperties.Pierce;
                 }
