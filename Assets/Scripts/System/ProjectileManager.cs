@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using QT.Core;
 using UnityEngine;
 
 namespace QT
@@ -14,6 +16,16 @@ namespace QT
         PlayerTeleport,
         PlayerAbsorb,
     }
+
+    [Flags]
+    public enum ProjectileProperties
+    {
+        None = 0,
+        
+        Pierce = 1 << 1,
+        Guided = 1 << 2,
+        Explosion = 1 << 3,
+    }
     
     public interface IProjectile
     {
@@ -23,7 +35,7 @@ namespace QT
         public float ColliderRad { get; }
         public LayerMask BounceMask { get; }
 
-        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, float reflectCorrection,bool isPierce);
+        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null);
 
         public void ResetBounceCount(int maxBounce);
         public void ResetProjectileDamage(int damage);
@@ -98,4 +110,5 @@ namespace QT
         }
 
     }
+
 }

@@ -174,8 +174,7 @@ namespace QT.InGame
                     
                     if (hit.collider.TryGetComponent(out IProjectile projectile))
                     {
-                        projectile.ProjectileHit(_dir, shootSpeed, _player.ProjectileShooter.BounceMask,
-                            ProjectileOwner.Player, 0, false);
+                        projectile.ProjectileHit(_dir, shootSpeed, _player.ProjectileShooter.BounceMask, ProjectileOwner.Player, ProjectileProperties.None);
                         isHit = true;
                     }
 

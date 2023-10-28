@@ -105,7 +105,7 @@ namespace QT.InGame
 
                     projectile.ProjectileHit((targetPos - projectile.Position).normalized, _power,
                         _player.ProjectileShooter.BounceMask,
-                        ProjectileOwner.PlayerAbsorb, 0, false);
+                        ProjectileOwner.PlayerAbsorb, ProjectileProperties.None);
                 }
             }
 
@@ -143,8 +143,7 @@ namespace QT.InGame
                 ProjectileManager.Instance.Register(projectile);
                 
                 projectile.ResetBounceCount(1);
-                projectile.ProjectileHit(GetNewProjectileDir(projectile), _power, _player.ProjectileShooter.BounceMask,
-                    ProjectileOwner.PlayerAbsorb, 0, false);
+                projectile.ProjectileHit(GetNewProjectileDir(projectile), _power, _player.ProjectileShooter.BounceMask, ProjectileOwner.PlayerAbsorb, ProjectileProperties.None);
             }
             _targets.Clear();
         }

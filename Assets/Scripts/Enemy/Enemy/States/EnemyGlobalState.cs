@@ -48,7 +48,7 @@ namespace QT.InGame
             }
         }
         
-        private void OnProjectileHit((Vector2 dir, float power) vector, LayerMask bounceMask, ProjectileOwner owner, bool isPierce)
+        private void OnProjectileHit((Vector2 dir, float power) vector, LayerMask bounceMask, ProjectileProperties properties, Transform target)
         {
             if (_ownerEntity.CurrentStateIndex >= (int) Enemy.States.Dead)
             {
@@ -56,7 +56,7 @@ namespace QT.InGame
             }
             
             var state = _ownerEntity.ChangeState(Enemy.States.Projectile);
-            ((EnemyProjectileState) state)?.InitializeState(vector.dir, vector.power, bounceMask, isPierce, owner != ProjectileOwner.PlayerAbsorb);
+            ((EnemyProjectileState) state)?.InitializeState(vector.dir, vector.power, bounceMask, properties, target);
         }
     }
 }

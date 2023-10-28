@@ -112,10 +112,19 @@ namespace QT.InGame
             
             var projectileDamage = (int)_ownerEntity.StatComponent.GetDmg(PlayerStats.ChargeProjectileDmg);
             var enemyProjectileDamage = (int) _ownerEntity.StatComponent.GetDmg(PlayerStats.EnemyProjectileDmg);
-
-            var pierce = (int) _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeAtkPierce).Value;
-            bool isPierce = _isCharged && pierce >= 1;
             
+            var properties = ProjectileProperties.None;
+
+            Transform projectileTarget = null;
+            if (_ownerEntity.StatComponent.GetStat(PlayerStats.ChargeAtkPierce).Value >= 1)
+            {
+                properties |= ProjectileProperties.Pierce;
+            }
+            
+            // properties |= ProjectileProperties.Guided;
+            // projectileTarget = GetProjectileTarget();
+            
+
             int hitCount = 0;
             int ballHitCount = 0;
             int enemyHitCount = 0;
@@ -138,7 +147,7 @@ namespace QT.InGame
                         enemy.ResetBounceCount(bounce);
                         enemy.ResetProjectileDamage(enemyProjectileDamage);
                         enemy.ProjectileHit(GetNewProjectileDir(enemy), shootSpd, mask, ProjectileOwner.Player,
-                            _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
+                            properties, projectileTarget);
                     
                         stunEnemyCount++;
                     }
@@ -157,7 +166,7 @@ namespace QT.InGame
                     projectile.ResetBounceCount(bounce);
                     projectile.ResetProjectileDamage(projectile is Enemy ? enemyProjectileDamage : projectileDamage);
                     projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player,
-                        _ownerEntity.StatComponent.GetStat(PlayerStats.ReflectCorrection), isPierce);
+                        properties, projectileTarget);
 
                     if (projectile is not IHitAble)
                     {
@@ -208,6 +217,34 @@ namespace QT.InGame
             SetSwingAnimation();
 
             _ownerEntity.ChangeState(Player.States.Move);
+        }
+
+        private Transform GetProjectileTarget()
+        {
+            var origin = _ownerEntity.AimPosition;
+            var allHitAble = HitAbleManager.Instance.GetAllHitAble();
+            var minDist = float.MaxValue;
+            IHitAble minHitable = null;
+            
+            foreach (var hitable in allHitAble)
+            {
+                if (hitable.IsClearTarget && !hitable.IsDead)
+                {
+                    var dist = (hitable.Position - origin).sqrMagnitude;
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        minHitable = hitable;
+                    }
+                }
+            }
+
+            if (minHitable == null)
+            {
+                return null;
+            }
+
+            return ((MonoBehaviour) minHitable).transform;
         }
 
         private void SetSwingAnimation()
