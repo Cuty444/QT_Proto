@@ -254,6 +254,19 @@ namespace QT.InGame
             SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
             
             _properties &= ~ProjectileProperties.Guided;
+
+            if (_properties.HasFlag(ProjectileProperties.Explosion))
+            {
+                if (_owner == ProjectileOwner.Player)
+                {
+                    Explosion.MakeExplosion(Position, SystemManager.Instance.PlayerManager.Player);
+                }
+                else
+                {
+                    Explosion.MakeExplosion(Position);
+                }
+            _properties &= ~ProjectileProperties.Explosion;
+            }
             
             if (!_isReleased && --_bounceCount <= 0)
             {

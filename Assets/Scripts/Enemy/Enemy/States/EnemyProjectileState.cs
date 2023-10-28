@@ -198,6 +198,12 @@ namespace QT.InGame
             
             _properties &= ~ProjectileProperties.Guided;
             
+            if (_properties.HasFlag(ProjectileProperties.Explosion))
+            {
+                Explosion.MakeExplosion(_transform.position, SystemManager.Instance.PlayerManager.Player);
+                _properties &= ~ProjectileProperties.Explosion;
+            }
+            
             if (--_bounceCount == 0)
             {
                 if (_ownerEntity.HP <= 0)
