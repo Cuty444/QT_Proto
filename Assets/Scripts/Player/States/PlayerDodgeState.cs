@@ -17,6 +17,9 @@ namespace QT.InGame
         private SoundManager _soundManager;
         private LayerMask _playerLayer;
 
+        private float _timer;
+        private float _duration;
+
         public PlayerDodgeState(IFSMEntity owner) : base(owner)
         {
             _soundManager = SystemManager.Instance.SoundManager;
@@ -32,20 +35,16 @@ namespace QT.InGame
                 return;
             }
             
-            _ownerEntity.gameObject.layer = _dodgeLayer;
-            
             _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
             _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
-            
-            _ownerEntity.Animator.SetBool(IsDodgeAnimHash, true);
-            _soundManager.PlayOneShot(_soundManager.SoundData.PlayerDashSFX);
-            
-            
+
             dir.Normalize();
             
+            _ownerEntity.Animator.SetBool(IsDodgeAnimHash, true);
             _ownerEntity.Animator.SetFloat(DirectionXAnimHash, dir.x);
             _ownerEntity.Animator.SetFloat(DirectionYAnimHash, dir.y);
 
+            _ownerEntity.gameObject.layer = _dodgeLayer;
             _ownerEntity.IsDodge = true;
             _ownerEntity.IsFlip = dir.x > 0;
             _ownerEntity.DodgeEffectPlay(dir);
@@ -54,9 +53,19 @@ namespace QT.InGame
             _ownerEntity.Rigidbody.velocity = dir * force;
 
             
-            var duration = _ownerEntity.StatComponent.GetStat(PlayerStats.DodgeDurationTime).Value;
+            _timer = 0;
+            _duration = _ownerEntity.StatComponent.GetStat(PlayerStats.DodgeDurationTime).Value;
+            
+            _soundManager.PlayOneShot(_soundManager.SoundData.PlayerDashSFX);
+            
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDodge, null);
+        }
 
-            _ownerEntity.StartCoroutine( Util.UnityUtil.WaitForFunc(() =>
+        public override void UpdateState()
+        {
+            _timer += Time.deltaTime;
+            
+            if (_timer > _duration)
             {
                 if (!_ownerEntity.CheckFall())
                 {
@@ -66,12 +75,9 @@ namespace QT.InGame
                 {
                     _ownerEntity.ChangeState(Player.States.Fall);
                 }
-                
-            },duration));
-            
-            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDodge, null);
+            }
         }
-        
+
         public override void ClearState()
         {
             SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDodgeEnd, null);
