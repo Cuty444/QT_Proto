@@ -20,13 +20,15 @@ namespace QT.InGame
         private readonly EnemyGameData _enemyData;
         private readonly SaddyData _data;
 
-        private Vector2 _currentTargetPos;
+        private Vector2 _targetPos;
+        private Vector2 _playerTargetPos;
 
         private bool _rotateSide;
         
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
+        private Player _player;
         
         public SaddyPingPongReadyState(IFSMEntity owner) : base(owner)
         {
@@ -36,17 +38,26 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            _currentTargetPos = _ownerEntity.MapData.PingPongReadyPoint.position;
+            _targetPos = _ownerEntity.MapData.PingPongReadyPoint.position;
+            _playerTargetPos = _ownerEntity.MapData.PingPongPlayerReadyPoint.position;
             
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, true);
+
+            _player = SystemManager.Instance.PlayerManager.Player;
         }
 
         public override void FixedUpdateState()
         {
-            var targetDistance = (_currentTargetPos - (Vector2) _ownerEntity.transform.position).sqrMagnitude;
+            var targetDistance = (_targetPos - (Vector2) _ownerEntity.transform.position).sqrMagnitude;
             if (targetDistance < 0.5f)
             {
-                _ownerEntity.ChangeState(_ownerEntity.GetNextGroupStartState()); /////
+                if (_ownerEntity.MapData.PingPongAreaCollider.bounds.Contains(_player.transform.position))
+                {
+                    (_player.ChangeState(Player.States.KnockBack) as PlayerKnockBackState).InitializeState(_playerTargetPos, 1);
+                }
+
+                _ownerEntity.MapData.BarrierObject.SetActive(true);
+                _ownerEntity.ChangeState(Saddy.States.Throw); 
                 return;
             }
 
@@ -81,20 +92,20 @@ namespace QT.InGame
         private Vector2 CalculateWeights()
         {
             var ownerPos = (Vector2) _ownerEntity.transform.position;
-            var dir = _currentTargetPos - ownerPos;
+            var dir = _targetPos - ownerPos;
             
             var danger = new DirectionWeights();
             var interest = new DirectionWeights();
             
             _ownerEntity.Steering.DetectObstacle(ref danger);
 
-            // Å¸°ÙÀ¸·Î ÀÌµ¿
+            // íƒ€ê²Ÿìœ¼ë¡œ ì´ë™
             interest.AddWeight(dir, 1);
 
-            // 1Â÷ °á°ú °è»ê
+            // 1ì°¨ ê²°ê³¼ ê³„ì‚°
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             
-            // Àå¾Ö¹°ÀÌ ÀÖÀ¸¸é È¸Àü
+            // ìž¥ì• ë¬¼ì´ ìžˆìœ¼ë©´ íšŒì „
             if (danger.AddedWeightCount > 0)
             {
                 if (result.sqrMagnitude < TurnoverLimitSpeed)
@@ -106,7 +117,7 @@ namespace QT.InGame
                 interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
             }
             
-            // È¸ÇÇ ¹æÇâ Àû¿ëÇØ 2Â÷ °á°ú °è»ê
+            // íšŒí”¼ ë°©í–¥ ì ìš©í•´ 2ì°¨ ê²°ê³¼ ê³„ì‚°
             var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
             if (avoidDir != Vector2.zero)
             {
