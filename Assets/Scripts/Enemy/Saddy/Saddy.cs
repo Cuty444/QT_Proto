@@ -26,8 +26,6 @@ namespace QT.InGame
             
             // 핑퐁
             PingPongReady,
-            
-            Throw,
             PingPong,
             Stun, 
             

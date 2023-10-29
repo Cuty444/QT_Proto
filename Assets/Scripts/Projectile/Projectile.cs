@@ -5,6 +5,7 @@ using QT.Core;
 using QT.Core.Data;
 using QT.Sound;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace QT.InGame
 {
@@ -19,8 +20,12 @@ namespace QT.InGame
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
         public LayerMask BounceMask => _bounceMask;
-
-        private string _prefabPath;
+        
+        public Vector2 Direction { get; private set; }
+        public float Speed { get; private set; }
+        
+        public IHitAble LastHitAble { get; private set; }
+        
         
         [SerializeField] private ProjectileOwner _owner;
         [SerializeField] private LayerMask _bounceMask;
@@ -45,38 +50,31 @@ namespace QT.InGame
         private TrailRenderer[] _trailRenderer;
         
         private float _maxSpeed;
-        private float _speed;
-        private float _speedDecay;
+        public float _speedDecay;
         private float _currentSpeedDecay;
 
         private int _maxBounce;
         private int _bounceCount;
-
-        private Vector2 _direction;
-
+        
         private float _damage;
 
         private bool _isReleased;
         private float _releaseDelay;
         private float _releaseTimer;
-
-        private Transform _targetTransform;
         
         private float _currentStretch;
-
-        private SoundManager _soundManager;
-
-        private ProjectileProperties _properties;
-
-        private IHitAble _lastHitAble;
         
+        private ProjectileProperties _properties;
+        
+        private Transform _targetTransform;
+        private SoundManager _soundManager;
         private GlobalData _globalData;
+        
+        private string _prefabPath;
 
 
         private void Awake()
         {
-            _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
-            
             _trailRenderer = GetComponentsInChildren<TrailRenderer>();
             _soundManager = SystemManager.Instance.SoundManager;
             _boss.SetActive(false);
@@ -87,6 +85,8 @@ namespace QT.InGame
         private void OnEnable()
         {
             ProjectileManager.Instance.Register(this);
+            
+            _speedDecay = _globalData.SpdDecay;
         }
 
         private void OnDisable()
@@ -103,8 +103,8 @@ namespace QT.InGame
 
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null, float releaseDelay = 0, string path = "")
         {
-            _ballTransform.up = _direction = dir;
-            _maxSpeed = _speed = speed;
+            _ballTransform.up = Direction = dir;
+            _maxSpeed = Speed = speed;
             _currentSpeedDecay = _speedDecay;
             
             _damage = data.DirectDmg;
@@ -137,9 +137,9 @@ namespace QT.InGame
 
         public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null)
         {
-            _ballTransform.up  = _direction = dir;
-            _maxSpeed = Mathf.Max(_speed, newSpeed);
-            _speed = newSpeed;
+            _ballTransform.up  = Direction = dir;
+            _maxSpeed = Mathf.Max(Speed, newSpeed);
+            Speed = newSpeed;
             _currentSpeedDecay = _speedDecay;
             
             _bounceCount = _maxBounce;
@@ -174,6 +174,11 @@ namespace QT.InGame
             _damage = damage;
         }
 
+        public void ResetSpeedDecay(float decay)
+        {
+            _speedDecay = decay;
+        }
+
         private void SetOwnerColor()
         {
             _player?.SetActive(_owner == ProjectileOwner.Player);
@@ -204,7 +209,7 @@ namespace QT.InGame
 
         private void CheckHit()
         {
-            var hit = Physics2D.CircleCast(transform.position, ColliderRad, _direction, _speed * Time.deltaTime,
+            var hit = Physics2D.CircleCast(transform.position, ColliderRad, Direction, Speed * Time.deltaTime,
                 _bounceMask);
             
             if (hit.collider == null)
@@ -213,14 +218,14 @@ namespace QT.InGame
             var pierceCheck = false;
             var isTriggerCheck = false;
 
-            if (_speed >_globalData.BallMinSpdToHit)
+            if (Speed >_globalData.BallMinSpdToHit)
             {
                 if (hit.collider.TryGetComponent(out IHitAble hitAble))
                 {
-                    if (_lastHitAble == hitAble)
+                    if (LastHitAble == hitAble)
                         return;
 
-                    hitAble.Hit(_direction, _damage);
+                    hitAble.Hit(Direction, _damage);
                     if (!hitAble.IsClearTarget)
                     {
                         isTriggerCheck = hit.collider.isTrigger;
@@ -231,12 +236,12 @@ namespace QT.InGame
                         _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
                     }
 
-                    _lastHitAble = hitAble;
+                    LastHitAble = hitAble;
                     pierceCheck = _properties.HasFlag(ProjectileProperties.Pierce);
                 }
                 else
                 {
-                    _lastHitAble = null;
+                    LastHitAble = null;
                     _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX, hit.transform.position);
                 }
             }
@@ -248,7 +253,7 @@ namespace QT.InGame
             _currentStretch = -1;
             _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
 
-            _direction = Vector2.Reflect(_direction, hit.normal);
+            Direction = Vector2.Reflect(Direction, hit.normal);
             transform.Translate(hit.normal * ColliderRad);
 
             SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
@@ -275,29 +280,29 @@ namespace QT.InGame
 
                 if (_releaseDelay > 0)
                 {
-                    _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
+                    _currentSpeedDecay = (Speed / _releaseDelay) + ReleaseDecayAddition;
                 }
             }
         }
 
         private void Move()
         {
-            _speed -= _currentSpeedDecay * Time.deltaTime;
+            Speed -= _currentSpeedDecay * Time.deltaTime;
             
             if (_isReleased)
             {
-                _speed = Mathf.Max(_speed, MinSpeed);
+                Speed = Mathf.Max(Speed, MinSpeed);
             }
             else
             {
-                _speed -= _speedDecay * Time.deltaTime;
+                Speed -= _speedDecay * Time.deltaTime;
                 
-                if (_speed <= 0)
+                if (Speed <= 0)
                 {
                     _isReleased = true;
                     _releaseTimer = 0;
                 
-                    _speed = MinSpeed;
+                    Speed = MinSpeed;
                 }
             }
 
@@ -305,22 +310,22 @@ namespace QT.InGame
             if (_properties.HasFlag(ProjectileProperties.Guided))
             {
                 Vector2 targetDir = ((Vector2) _targetTransform.transform.position - Position).normalized;
-                _direction = Vector3.RotateTowards(_direction, targetDir, _globalData.BallGuidedAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
+                Direction = Vector3.RotateTowards(Direction, targetDir, _globalData.BallGuidedAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
             }
             
-            transform.Translate(_direction * (_speed * Time.deltaTime));
+            transform.Translate(Direction * (Speed * Time.deltaTime));
             
             // easeInQuad
-            var height = _speed / _maxSpeed;
+            var height = Speed / _maxSpeed;
             height *= height;
 
             _ballTransform.transform.localPosition = Vector3.up * (height * _ballHeight);
-            _ballObject.Rotate(Vector3.forward, _speed * Time.deltaTime * _rotateSpeed);
+            _ballObject.Rotate(Vector3.forward, Speed * Time.deltaTime * _rotateSpeed);
 
             _currentStretch = Mathf.Lerp(_currentStretch, height, _dampSpeed * Time.deltaTime);
             _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
             
-            _ballTransform.up = Vector2.Lerp(_ballTransform.up, _direction, _dampSpeed * Time.deltaTime);
+            _ballTransform.up = Vector2.Lerp(_ballTransform.up, Direction, _dampSpeed * Time.deltaTime);
         }
 
         private Vector2 GetSquashSquashValue(float power)

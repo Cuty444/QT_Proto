@@ -21,7 +21,6 @@ namespace QT.InGame
         private readonly SaddyData _data;
 
         private Vector2 _targetPos;
-        private Vector2 _playerTargetPos;
 
         private bool _rotateSide;
         
@@ -39,7 +38,6 @@ namespace QT.InGame
         public override void InitializeState()
         {
             _targetPos = _ownerEntity.MapData.PingPongReadyPoint.position;
-            _playerTargetPos = _ownerEntity.MapData.PingPongPlayerReadyPoint.position;
             
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, true);
 
@@ -51,13 +49,8 @@ namespace QT.InGame
             var targetDistance = (_targetPos - (Vector2) _ownerEntity.transform.position).sqrMagnitude;
             if (targetDistance < 0.5f)
             {
-                if (_ownerEntity.MapData.PingPongAreaCollider.bounds.Contains(_player.transform.position))
-                {
-                    (_player.ChangeState(Player.States.KnockBack) as PlayerKnockBackState).InitializeState(_playerTargetPos, 1);
-                }
-
                 _ownerEntity.MapData.BarrierObject.SetActive(true);
-                _ownerEntity.ChangeState(Saddy.States.Throw); 
+                _ownerEntity.ChangeState(Saddy.States.PingPong); 
                 return;
             }
 

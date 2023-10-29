@@ -69,8 +69,12 @@ namespace QT.InGame
         [field: Space]
         [field: Space]
         [field:Header("핑퐁 그룹")]
-        [field: SerializeField] public float ThrowDistance { get; private set; }
-        [field: Space]
-        [field: SerializeField] public int ThrowAtkId { get; private set; }
+        [field: SerializeField] public float ReadyTime { get; private set; }
+        [field: SerializeField] public float ThrowTime { get; private set; }
+        [field: SerializeField] public int SaddyBallId { get; private set; }
+        [field: SerializeField] public float BallSpeedDecay { get; private set; }
+        
+        
+        [field: SerializeField] public float[] SaddyBallSpeed { get; private set; }
     }
 }
