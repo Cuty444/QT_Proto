@@ -28,7 +28,7 @@ namespace QT.InGame
             
 #if UNITY_EDITOR
 
-            if (DungeonManager.Instance == null)
+            if (DungeonManager.Instance is DungeonManagerDummy)
             {
                 _bossWave = GameObject.FindObjectOfType<BossMapData>(true).BossWave;
                 return;

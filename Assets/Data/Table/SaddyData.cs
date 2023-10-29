@@ -22,6 +22,8 @@ namespace QT.InGame
         [field: SerializeField] public float AttackCoolTime { get; private set; }
         
         [field: Space]
+        
+        [field:Header("구르기")]
         [field: SerializeField] public float RollingAttackDistance { get; private set; }
         [field: Space]
         [field: Space]
@@ -39,6 +41,7 @@ namespace QT.InGame
         [field: Space]
         [field: Space]
         [field: Space]
+        [field:Header("사이드 스텝")]
         [field: SerializeField] public float SideStepDistance { get; private set; }
         [field: Space]
         [field: Space]
@@ -52,6 +55,15 @@ namespace QT.InGame
         [field: SerializeField] public int SideStepAtkId { get; private set; }
         [field: SerializeField] public int SideStepEndAtkId { get; private set; }
 
+        
+        [field: Space]
+        [field: Space]
+        [field: Space]
+        [field:Header("소환")]
+        [field: SerializeField] public float SummonReadyTime { get; private set; }
+        [field: SerializeField] public float SummonTime { get; private set; }
+        
+        
         
         [field: Space]
         [field: Space]

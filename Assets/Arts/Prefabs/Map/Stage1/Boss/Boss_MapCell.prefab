@@ -11792,7 +11792,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6777717532363875519}
   - component: {fileID: 2413652273298260461}
-  - component: {fileID: 6797006386783067481}
+  - component: {fileID: 8512756007159538948}
   m_Layer: 0
   m_Name: Boss_MapCell
   m_TagString: Untagged
@@ -11819,6 +11819,7 @@ Transform:
   - {fileID: 6219593380989532675}
   - {fileID: 86066404398968666}
   - {fileID: 4877475018273632184}
+  - {fileID: 233029359993200273}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2413652273298260461
@@ -11850,7 +11851,7 @@ MonoBehaviour:
   - {fileID: 7854558149758844192}
   VolumeProfile: {fileID: 11400000, guid: 104dd9ded26121f48ad8230bd5aafe51, type: 2}
   CameraSize: 10
---- !u!114 &6797006386783067481
+--- !u!114 &8512756007159538948
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11859,11 +11860,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5138289980250206390}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9294bbf6f615479fb66e7cae12345fc, type: 3}
+  m_Script: {fileID: 11500000, guid: e16e1f429a68fe24490b63e93e537f6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MapPosition: {x: 0, y: 0}
   <BossWave>k__BackingField: {fileID: 5072362620446134802}
+  <PingPongReadyPoint>k__BackingField: {fileID: 233029359993200273}
+  <WallObject>k__BackingField: {fileID: 0}
 --- !u!1 &5403347155113206537
 GameObject:
   m_ObjectHideFlags: 0
@@ -17114,6 +17117,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpawnDelay: 0
   EnemyId: 506
+--- !u!1 &6430858713156181445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 233029359993200273}
+  m_Layer: 0
+  m_Name: PingPongReadyPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &233029359993200273
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6430858713156181445}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6777717532363875519}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6745053040783094287
 GameObject:
   m_ObjectHideFlags: 0
@@ -17632,8 +17666,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 8.96365, y: -8.63135, z: 0}
-    m_Extent: {x: 19.45045, y: 2.7414498, z: 0}
+    m_Center: {x: 8.96405, y: -8.64445, z: 0}
+    m_Extent: {x: 19.44925, y: 2.7408497, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
