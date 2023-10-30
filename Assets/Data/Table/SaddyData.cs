@@ -69,12 +69,31 @@ namespace QT.InGame
         [field: Space]
         [field: Space]
         [field:Header("핑퐁 그룹")]
-        [field: SerializeField] public float ReadyTime { get; private set; }
-        [field: SerializeField] public float ServeDelayTime { get; private set; }
-        [field: SerializeField] public int SaddyBallId { get; private set; }
+        [field: SerializeField] public float PingPongReadyTime { get; private set; }
+        
+        [field: Space]
+        [field: SerializeField] public int PingPongRetryCount { get; private set; }
+        
+        [field: Space]
+        [field: SerializeField] public int PingPongBallId { get; private set; }
         [field: SerializeField] public float BallSpeedDecay { get; private set; }
         
+        [field: SerializeField] public float BallHitDistance { get; private set; }
+        [field: SerializeField] public float[] PingPongBallSpeed { get; private set; }
         
-        [field: SerializeField] public float[] SaddyBallSpeed { get; private set; }
+        [field: SerializeField] public float PingPongSuccessDamagePer { get; private set; }
+        
+        
+        [field: Space]
+        [field:Header("스턴")]
+        [field: SerializeField] public float StunTime { get; private set; }
+        
+        
+        [field: Space]
+        [field:Header("발버둥")]
+        [field: SerializeField] public float StruggleHPPer { get; private set; }
+        [field: SerializeField] public float StruggleTime { get; private set; }
+        [field: SerializeField] public int StruggleAtkId { get; private set; }
+        
     }
 }

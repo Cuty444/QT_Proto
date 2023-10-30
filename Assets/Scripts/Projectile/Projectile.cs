@@ -16,6 +16,7 @@ namespace QT.InGame
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
+        public ProjectileOwner Owner { get; private set; }
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
@@ -25,9 +26,7 @@ namespace QT.InGame
         public float Speed { get; private set; }
         
         public IHitAble LastHitAble { get; private set; }
-        
-        
-        [SerializeField] private ProjectileOwner _owner;
+
         [SerializeField] private LayerMask _bounceMask;
         
         [Space]
@@ -63,7 +62,8 @@ namespace QT.InGame
         private float _releaseTimer;
         
         private float _currentStretch;
-        
+
+        private bool _lockProperties;
         private ProjectileProperties _properties;
         
         private Transform _targetTransform;
@@ -125,10 +125,11 @@ namespace QT.InGame
 
             _prefabPath = path;
 
-            _owner = owner;
+            Owner = owner;
             SetOwnerColor();
             TrailRendersSetEmitting(true);
             
+            _lockProperties = false;
             _properties = properties;
             _targetTransform = target;
         }
@@ -136,27 +137,31 @@ namespace QT.InGame
         public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null)
         {
             _ballTransform.up  = Direction = dir;
-            _maxSpeed = Mathf.Max(Speed, newSpeed);
-            Speed = newSpeed;
-            _currentSpeedDecay = _speedDecay = _globalData.SpdDecay;
-            
+
+            if (!_lockProperties)
+            {
+                _maxSpeed = Mathf.Max(Speed, newSpeed);
+                Speed = newSpeed;
+                _properties = properties;
+            }
+
             _bounceCount = _maxBounce;
+            _currentSpeedDecay = _speedDecay;
+            _bounceMask = bounceMask;
+            _isReleased = false;
 
             switch (owner)
             {
                 case ProjectileOwner.Player:
                 case ProjectileOwner.PlayerTeleport:
                 case ProjectileOwner.PlayerAbsorb:
-                    _owner = ProjectileOwner.Player;
+                    Owner = ProjectileOwner.Player;
                     break;
                 default:
-                    _owner = owner;
+                    Owner = owner;
                     break;
             }
             
-            _bounceMask = bounceMask;
-            _isReleased = false;
-            _properties = properties;
             SetOwnerColor();
 
             _targetTransform = target;
@@ -164,37 +169,60 @@ namespace QT.InGame
         
         public void ResetBounceCount(int maxBounce)
         {
-            _bounceCount = _maxBounce = maxBounce;
+            if (!_lockProperties)
+            {
+                _bounceCount = _maxBounce = maxBounce;
+            }
         }
 
         public void ResetProjectileDamage(int damage)
         {
-            _damage = damage;
+            if (!_lockProperties)
+            {
+                _damage = damage;
+            }
         }
 
         public void ResetSpeedDecay(float decay)
         {
-            _speedDecay = decay;
+            if (!_lockProperties)
+            {
+                _speedDecay = decay;
+            }
+        }
+        
+        public void LockProperties(bool isLock)
+        {
+            _lockProperties = isLock;
+        }
+
+        public void ForceToRelease()
+        {
+            SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
+            TrailRendersSetEmitting(false);
         }
 
         private void SetOwnerColor()
         {
-            _player?.SetActive(_owner == ProjectileOwner.Player);
-            _enemy?.SetActive(_owner == ProjectileOwner.Enemy);
-            _enemyElite?.SetActive(_owner == ProjectileOwner.EnemyElite);
-            _boss?.SetActive(_owner == ProjectileOwner.Boss);
+            _player?.SetActive(Owner == ProjectileOwner.Player);
+            _enemy?.SetActive(Owner == ProjectileOwner.Enemy);
+            _enemyElite?.SetActive(Owner == ProjectileOwner.EnemyElite);
+            _boss?.SetActive(Owner == ProjectileOwner.Boss);
         }
 
         
         private void Update()
         {
-            _releaseTimer += Time.deltaTime;
-            if (_isReleased && _releaseTimer > _releaseDelay)
+            if (_isReleased)
             {
-                SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
-                TrailRendersSetEmitting(false);
+                _releaseTimer += Time.deltaTime;
+                if (_releaseTimer > _releaseDelay)
+                {
+                    SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
+                    TrailRendersSetEmitting(false);
+                }
             }
-            
+
             if (_properties.HasFlag(ProjectileProperties.Guided) && (_targetTransform == null || !_targetTransform.gameObject.activeInHierarchy))
             {
                 _properties &= ~ProjectileProperties.Guided;
@@ -228,7 +256,7 @@ namespace QT.InGame
                     {
                         isTriggerCheck = hit.collider.isTrigger;
                     }
-                    else if (_owner == ProjectileOwner.Player)
+                    else if (Owner == ProjectileOwner.Player)
                     {
                         SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
                         _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
@@ -260,7 +288,7 @@ namespace QT.InGame
 
             if (_properties.HasFlag(ProjectileProperties.Explosion))
             {
-                if (_owner == ProjectileOwner.Player)
+                if (Owner == ProjectileOwner.Player)
                 {
                     Explosion.MakeExplosion(Position, SystemManager.Instance.PlayerManager.Player);
                 }
@@ -268,7 +296,8 @@ namespace QT.InGame
                 {
                     Explosion.MakeExplosion(Position);
                 }
-            _properties &= ~ProjectileProperties.Explosion;
+                
+                _properties &= ~ProjectileProperties.Explosion;
             }
             
             if (!_isReleased && --_bounceCount <= 0)

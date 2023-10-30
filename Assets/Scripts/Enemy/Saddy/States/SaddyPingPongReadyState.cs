@@ -27,7 +27,6 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private Player _player;
         
         public SaddyPingPongReadyState(IFSMEntity owner) : base(owner)
         {
@@ -40,8 +39,6 @@ namespace QT.InGame
             _targetPos = _ownerEntity.MapData.PingPongReadyPoint.position;
             
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, true);
-
-            _player = SystemManager.Instance.PlayerManager.Player;
         }
 
         public override void FixedUpdateState()
@@ -93,7 +90,7 @@ namespace QT.InGame
             _ownerEntity.Steering.DetectObstacle(ref danger);
 
             // 타겟으로 이동
-            interest.AddWeight(dir, 1);
+            interest.AddWeight(dir, 2);
 
             // 1차 결과 계산
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);

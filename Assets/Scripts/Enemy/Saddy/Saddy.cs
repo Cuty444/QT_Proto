@@ -156,10 +156,9 @@ namespace QT.InGame
 
             return Mathf.RoundToInt(angle / 180 * sideCount);
         }
-
         
         
-        private readonly States[] _groupStates = {States.Normal, States.Summon, States.PingPongReady, States.Summon};
+        private readonly States[] _groupStates = {States.Normal, States.Summon, States.PingPongReady, States.Struggle, States.Summon};
         private int _currentGroup = -1;
         
         public States GetNextGroupStartState()
