@@ -25,7 +25,7 @@ namespace QT.InGame
             SideStep,
             
             // 핑퐁
-            Throw,
+            PingPongReady,
             PingPong,
             Stun, 
             
@@ -42,6 +42,7 @@ namespace QT.InGame
         public bool IsRigid => false;
         
         public EnemyGameData Data { get; private set; }
+        public SaddyMapData MapData { get; private set; }
         
         
         [field: SerializeField] public SaddyData SaddyData{ get; private set; }
@@ -83,13 +84,28 @@ namespace QT.InGame
         {
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
+
+#if UNITY_EDITOR
+            if (DungeonManager.Instance is DungeonManagerDummy)
+            {
+                MapData = FindObjectOfType<SaddyMapData>(true);
+            }
+#endif
+            
+            var mapCellData = DungeonManager.Instance.GetCurrentMapCellData();
+            if(mapCellData != null && mapCellData.SpecialMapData != null)
+            {
+                MapData = mapCellData.SpecialMapData as SaddyMapData;
+            }
             
             Shooter.Initialize(Animator);
             
             SetUpStats();
+
+            _currentGroup = -1;
             
             SetGlobalState(new SaddyGlobalState(this));
-            SetUp(States.Normal);
+            SetUp(GetNextGroupStartState());
             
             HitAbleManager.Instance.Register(this);
         }
@@ -139,6 +155,21 @@ namespace QT.InGame
             }
 
             return Mathf.RoundToInt(angle / 180 * sideCount);
+        }
+        
+        
+        private readonly States[] _groupStates = {States.Normal, States.Summon, States.PingPongReady, States.Struggle, States.Summon};
+        private int _currentGroup = -1;
+        
+        public States GetNextGroupStartState()
+        {
+            _currentGroup++;
+            if (_currentGroup >= _groupStates.Length)
+            {
+                _currentGroup = 0;
+            }
+
+            return _groupStates[_currentGroup];
         }
     }
 }

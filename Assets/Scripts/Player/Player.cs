@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using QT.Core;
 using UnityEngine;
 using Cinemachine;
 using QT.Core.Data;
 using QT.UI;
 using UnityEngine.UI;
-using Spine.Unity;
 
 namespace QT.InGame
 {
@@ -22,6 +20,8 @@ namespace QT.InGame
             Dodge,
             Fall,
             Dead,
+            
+            KnockBack,
             
             Empty,
         }

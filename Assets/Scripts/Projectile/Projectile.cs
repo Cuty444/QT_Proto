@@ -5,6 +5,7 @@ using QT.Core;
 using QT.Core.Data;
 using QT.Sound;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace QT.InGame
 {
@@ -15,14 +16,17 @@ namespace QT.InGame
         private const float ReleaseDecayAddition = 2;
         private const float MinSpeed = 0.1f;
         
+        public ProjectileOwner Owner { get; private set; }
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
         public LayerMask BounceMask => _bounceMask;
-
-        private string _prefabPath;
         
-        [SerializeField] private ProjectileOwner _owner;
+        public Vector2 Direction { get; private set; }
+        public float Speed { get; private set; }
+        
+        public IHitAble LastHitAble { get; private set; }
+
         [SerializeField] private LayerMask _bounceMask;
         
         [Space]
@@ -45,38 +49,32 @@ namespace QT.InGame
         private TrailRenderer[] _trailRenderer;
         
         private float _maxSpeed;
-        private float _speed;
-        private float _speedDecay;
+        public float _speedDecay;
         private float _currentSpeedDecay;
 
         private int _maxBounce;
         private int _bounceCount;
-
-        private Vector2 _direction;
-
+        
         private float _damage;
 
         private bool _isReleased;
         private float _releaseDelay;
         private float _releaseTimer;
-
-        private Transform _targetTransform;
         
         private float _currentStretch;
 
-        private SoundManager _soundManager;
-
+        private bool _lockProperties;
         private ProjectileProperties _properties;
-
-        private IHitAble _lastHitAble;
         
+        private Transform _targetTransform;
+        private SoundManager _soundManager;
         private GlobalData _globalData;
+        
+        private string _prefabPath;
 
 
         private void Awake()
         {
-            _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
-            
             _trailRenderer = GetComponentsInChildren<TrailRenderer>();
             _soundManager = SystemManager.Instance.SoundManager;
             _boss.SetActive(false);
@@ -103,9 +101,9 @@ namespace QT.InGame
 
         public void Init(ProjectileGameData data, Vector2 dir, float speed, int maxBounce, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null, float releaseDelay = 0, string path = "")
         {
-            _ballTransform.up = _direction = dir;
-            _maxSpeed = _speed = speed;
-            _currentSpeedDecay = _speedDecay;
+            _ballTransform.up = Direction = dir;
+            _maxSpeed = Speed = speed;
+            _currentSpeedDecay = _speedDecay = _globalData.SpdDecay;
             
             _damage = data.DirectDmg;
             ColliderRad = data.ColliderRad * 0.5f;
@@ -127,38 +125,43 @@ namespace QT.InGame
 
             _prefabPath = path;
 
-            _owner = owner;
+            Owner = owner;
             SetOwnerColor();
             TrailRendersSetEmitting(true);
             
+            _lockProperties = false;
             _properties = properties;
             _targetTransform = target;
         }
 
         public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null)
         {
-            _ballTransform.up  = _direction = dir;
-            _maxSpeed = Mathf.Max(_speed, newSpeed);
-            _speed = newSpeed;
-            _currentSpeedDecay = _speedDecay;
-            
+            _ballTransform.up  = Direction = dir;
+
+            if (!_lockProperties)
+            {
+                _maxSpeed = Mathf.Max(Speed, newSpeed);
+                Speed = newSpeed;
+                _properties = properties;
+            }
+
             _bounceCount = _maxBounce;
+            _currentSpeedDecay = _speedDecay;
+            _bounceMask = bounceMask;
+            _isReleased = false;
 
             switch (owner)
             {
                 case ProjectileOwner.Player:
                 case ProjectileOwner.PlayerTeleport:
                 case ProjectileOwner.PlayerAbsorb:
-                    _owner = ProjectileOwner.Player;
+                    Owner = ProjectileOwner.Player;
                     break;
                 default:
-                    _owner = owner;
+                    Owner = owner;
                     break;
             }
             
-            _bounceMask = bounceMask;
-            _isReleased = false;
-            _properties = properties;
             SetOwnerColor();
 
             _targetTransform = target;
@@ -166,32 +169,60 @@ namespace QT.InGame
         
         public void ResetBounceCount(int maxBounce)
         {
-            _bounceCount = _maxBounce = maxBounce;
+            if (!_lockProperties)
+            {
+                _bounceCount = _maxBounce = maxBounce;
+            }
         }
 
         public void ResetProjectileDamage(int damage)
         {
-            _damage = damage;
+            if (!_lockProperties)
+            {
+                _damage = damage;
+            }
+        }
+
+        public void ResetSpeedDecay(float decay)
+        {
+            if (!_lockProperties)
+            {
+                _speedDecay = decay;
+            }
+        }
+        
+        public void LockProperties(bool isLock)
+        {
+            _lockProperties = isLock;
+        }
+
+        public void ForceToRelease()
+        {
+            SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
+            TrailRendersSetEmitting(false);
         }
 
         private void SetOwnerColor()
         {
-            _player?.SetActive(_owner == ProjectileOwner.Player);
-            _enemy?.SetActive(_owner == ProjectileOwner.Enemy);
-            _enemyElite?.SetActive(_owner == ProjectileOwner.EnemyElite);
-            _boss?.SetActive(_owner == ProjectileOwner.Boss);
+            _player?.SetActive(Owner == ProjectileOwner.Player);
+            _enemy?.SetActive(Owner == ProjectileOwner.Enemy);
+            _enemyElite?.SetActive(Owner == ProjectileOwner.EnemyElite);
+            _boss?.SetActive(Owner == ProjectileOwner.Boss);
         }
 
         
         private void Update()
         {
-            _releaseTimer += Time.deltaTime;
-            if (_isReleased && _releaseTimer > _releaseDelay)
+            if (_isReleased)
             {
-                SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
-                TrailRendersSetEmitting(false);
+                _releaseTimer += Time.deltaTime;
+                if (_releaseTimer > _releaseDelay)
+                {
+                    SystemManager.Instance.ResourceManager.ReleaseObject(_prefabPath, this);
+                    TrailRendersSetEmitting(false);
+                }
             }
-            
+
             if (_properties.HasFlag(ProjectileProperties.Guided) && (_targetTransform == null || !_targetTransform.gameObject.activeInHierarchy))
             {
                 _properties &= ~ProjectileProperties.Guided;
@@ -204,7 +235,7 @@ namespace QT.InGame
 
         private void CheckHit()
         {
-            var hit = Physics2D.CircleCast(transform.position, ColliderRad, _direction, _speed * Time.deltaTime,
+            var hit = Physics2D.CircleCast(transform.position, ColliderRad, Direction, Speed * Time.deltaTime,
                 _bounceMask);
             
             if (hit.collider == null)
@@ -213,30 +244,30 @@ namespace QT.InGame
             var pierceCheck = false;
             var isTriggerCheck = false;
 
-            if (_speed >_globalData.BallMinSpdToHit)
+            if (Speed >_globalData.BallMinSpdToHit)
             {
                 if (hit.collider.TryGetComponent(out IHitAble hitAble))
                 {
-                    if (_lastHitAble == hitAble)
+                    if (LastHitAble == hitAble)
                         return;
 
-                    hitAble.Hit(_direction, _damage);
+                    hitAble.Hit(Direction, _damage);
                     if (!hitAble.IsClearTarget)
                     {
                         isTriggerCheck = hit.collider.isTrigger;
                     }
-                    else if (_owner == ProjectileOwner.Player)
+                    else if (Owner == ProjectileOwner.Player)
                     {
                         SystemManager.Instance.ResourceManager.EmitParticle(HitEffectPath, hit.point);
                         _soundManager.PlayOneShot(_soundManager.SoundData.PlayerThrowHitSFX);
                     }
 
-                    _lastHitAble = hitAble;
+                    LastHitAble = hitAble;
                     pierceCheck = _properties.HasFlag(ProjectileProperties.Pierce);
                 }
                 else
                 {
-                    _lastHitAble = null;
+                    LastHitAble = null;
                     _soundManager.PlayOneShot(_soundManager.SoundData.BallBounceSFX, hit.transform.position);
                 }
             }
@@ -248,7 +279,7 @@ namespace QT.InGame
             _currentStretch = -1;
             _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
 
-            _direction = Vector2.Reflect(_direction, hit.normal);
+            Direction = Vector2.Reflect(Direction, hit.normal);
             transform.Translate(hit.normal * ColliderRad);
 
             SystemManager.Instance.ResourceManager.EmitParticle(ColliderDustEffectPath, hit.point);
@@ -257,7 +288,7 @@ namespace QT.InGame
 
             if (_properties.HasFlag(ProjectileProperties.Explosion))
             {
-                if (_owner == ProjectileOwner.Player)
+                if (Owner == ProjectileOwner.Player)
                 {
                     Explosion.MakeExplosion(Position, SystemManager.Instance.PlayerManager.Player);
                 }
@@ -265,7 +296,8 @@ namespace QT.InGame
                 {
                     Explosion.MakeExplosion(Position);
                 }
-            _properties &= ~ProjectileProperties.Explosion;
+                
+                _properties &= ~ProjectileProperties.Explosion;
             }
             
             if (!_isReleased && --_bounceCount <= 0)
@@ -275,29 +307,29 @@ namespace QT.InGame
 
                 if (_releaseDelay > 0)
                 {
-                    _currentSpeedDecay = (_speed / _releaseDelay) + ReleaseDecayAddition;
+                    _currentSpeedDecay = (Speed / _releaseDelay) + ReleaseDecayAddition;
                 }
             }
         }
 
         private void Move()
         {
-            _speed -= _currentSpeedDecay * Time.deltaTime;
+            Speed -= _currentSpeedDecay * Time.deltaTime;
             
             if (_isReleased)
             {
-                _speed = Mathf.Max(_speed, MinSpeed);
+                Speed = Mathf.Max(Speed, MinSpeed);
             }
             else
             {
-                _speed -= _speedDecay * Time.deltaTime;
+                Speed -= _speedDecay * Time.deltaTime;
                 
-                if (_speed <= 0)
+                if (Speed <= 0)
                 {
                     _isReleased = true;
                     _releaseTimer = 0;
                 
-                    _speed = MinSpeed;
+                    Speed = MinSpeed;
                 }
             }
 
@@ -305,22 +337,22 @@ namespace QT.InGame
             if (_properties.HasFlag(ProjectileProperties.Guided))
             {
                 Vector2 targetDir = ((Vector2) _targetTransform.transform.position - Position).normalized;
-                _direction = Vector3.RotateTowards(_direction, targetDir, _globalData.BallGuidedAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
+                Direction = Vector3.RotateTowards(Direction, targetDir, _globalData.BallGuidedAngle * Mathf.Deg2Rad * Time.deltaTime, 0);
             }
             
-            transform.Translate(_direction * (_speed * Time.deltaTime));
+            transform.Translate(Direction * (Speed * Time.deltaTime));
             
             // easeInQuad
-            var height = _speed / _maxSpeed;
+            var height = Speed / _maxSpeed;
             height *= height;
 
             _ballTransform.transform.localPosition = Vector3.up * (height * _ballHeight);
-            _ballObject.Rotate(Vector3.forward, _speed * Time.deltaTime * _rotateSpeed);
+            _ballObject.Rotate(Vector3.forward, Speed * Time.deltaTime * _rotateSpeed);
 
             _currentStretch = Mathf.Lerp(_currentStretch, height, _dampSpeed * Time.deltaTime);
             _ballTransform.localScale = GetSquashSquashValue(_currentStretch);
             
-            _ballTransform.up = Vector2.Lerp(_ballTransform.up, _direction, _dampSpeed * Time.deltaTime);
+            _ballTransform.up = Vector2.Lerp(_ballTransform.up, Direction, _dampSpeed * Time.deltaTime);
         }
 
         private Vector2 GetSquashSquashValue(float power)

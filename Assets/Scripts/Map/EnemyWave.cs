@@ -8,7 +8,7 @@ namespace QT.Map
 {
     public class EnemyWave : MonoBehaviour
     {
-        public bool IsAvailable => _spawnedCount <= 0;
+        public bool IsAvailable => _spawnedCount < _spawners.Length;
         
         private const float DefaultSpawnDelay = 0.4f;
         private const float SpawnDelay = 0.2f;

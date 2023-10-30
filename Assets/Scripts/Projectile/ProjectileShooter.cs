@@ -51,6 +51,14 @@ namespace QT.InGame
                 {
                     properties |= ProjectileProperties.Pierce;
                 }
+                if (_statComponent.GetStat(PlayerStats.ProjectileGuide).Value >= 1)
+                {
+                    properties |= ProjectileProperties.Guided;
+                }
+                if (_statComponent.GetStat(PlayerStats.ProjectileExplosion).Value >= 1)
+                {
+                    properties |= ProjectileProperties.Explosion;
+                }
             }
             
             foreach (var shoot in shootData)

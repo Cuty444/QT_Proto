@@ -39,7 +39,6 @@ namespace QT.InGame
 
         private Saddy.States _nextState;
         private float _targetDistance;
-
         
         public SaddyNormalState(IFSMEntity owner) : base(owner)
         {
@@ -47,7 +46,7 @@ namespace QT.InGame
             _data = _ownerEntity.SaddyData;
 
             _attackStates.Shuffle();
-            _attackStateIndex = 0;
+            _attackStateIndex = -1;
         }
 
         public override void InitializeState()
@@ -97,6 +96,7 @@ namespace QT.InGame
 
         public override void ClearState()
         {
+            _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, 0);
         }
 
         private Vector2 Move(float targetDistance)
@@ -209,10 +209,10 @@ namespace QT.InGame
             }
             
             _attackStates.Shuffle();
-            _attackStateIndex = 0;
-            
-            _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
-            return _attackStates[_attackStateIndex];
+            _attackStateIndex = -1;
+
+            _targetDistance = 5;//_enemyData.SpacingRad;
+            return _ownerEntity.GetNextGroupStartState();
         }
         
         private float GetStateTargetDistance(Saddy.States states)

@@ -21,9 +21,7 @@ namespace QT.InGame
         private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
         private static readonly int IsDodgeAnimHash = Animator.StringToHash("IsDodge");
         private static readonly int ChargeLevelAnimHash = Animator.StringToHash("SwingLevel");
-        private static readonly int AttackAnimHash = Animator.StringToHash("Attack");
 
-        private List<EnemyAtkGameData> _atkList;
         private SaddyData _data;
         
         private Transform _targetTransform;
@@ -44,7 +42,6 @@ namespace QT.InGame
 
         public SaddySideStepState(IFSMEntity owner) : base(owner)
         {
-            _atkList = SystemManager.Instance.DataManager.GetDataBase<EnemyAtkGameDataBase>().GetData(_ownerEntity.SaddyData.ThrowAtkId);
             _data = _ownerEntity.SaddyData;
         }
 
