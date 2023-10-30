@@ -85,8 +85,6 @@ namespace QT.InGame
         private void OnEnable()
         {
             ProjectileManager.Instance.Register(this);
-            
-            _speedDecay = _globalData.SpdDecay;
         }
 
         private void OnDisable()
@@ -105,7 +103,7 @@ namespace QT.InGame
         {
             _ballTransform.up = Direction = dir;
             _maxSpeed = Speed = speed;
-            _currentSpeedDecay = _speedDecay;
+            _currentSpeedDecay = _speedDecay = _globalData.SpdDecay;
             
             _damage = data.DirectDmg;
             ColliderRad = data.ColliderRad * 0.5f;
@@ -140,7 +138,7 @@ namespace QT.InGame
             _ballTransform.up  = Direction = dir;
             _maxSpeed = Mathf.Max(Speed, newSpeed);
             Speed = newSpeed;
-            _currentSpeedDecay = _speedDecay;
+            _currentSpeedDecay = _speedDecay = _globalData.SpdDecay;
             
             _bounceCount = _maxBounce;
 

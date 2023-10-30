@@ -34,25 +34,31 @@ namespace QT.InGame
         private Player _player;
 
 
+        private ProjectileGameData _projectileData;
         private Projectile _projectile;
         
         private PingPongState _state;
         private float _timer;
-        
+
         
         public SaddyPingPongState(IFSMEntity owner) : base(owner)
         {
             _enemyData = _ownerEntity.Data;
             _data = _ownerEntity.SaddyData;
+            
+            _projectileData = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>().GetData(_data.SaddyBallId);
         }
 
         public override void InitializeState()
         {
+            SystemManager.Instance.ResourceManager.CacheAsset(_projectileData.PrefabPath);
+            
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, false);
             
             _player = SystemManager.Instance.PlayerManager.Player;
             _playerTargetPos = _ownerEntity.MapData.PingPongPlayerReadyPoint.position;
             
+            ReadyProjectile();
             
             if (_ownerEntity.MapData.PingPongAreaCollider.bounds.Contains(_player.transform.position))
             {
@@ -78,14 +84,16 @@ namespace QT.InGame
                     {
                         _ownerEntity.Animator.SetTrigger(AttackAnimHash);
                         _timer = 0;
+                        _state = PingPongState.Serve;
                     }
                     break;
                 case PingPongState.Serve:
-                    if (_timer > _data.ThrowTime)
+                    if (_timer > _data.ServeDelayTime)
                     {
                         Shoot();
                         
                         _timer = 0;
+                        _state = PingPongState.Toss;
                     }
                     break;
                 
@@ -103,26 +111,39 @@ namespace QT.InGame
             }
             
         }
-        
-        private async void Shoot()
+
+        private async void ReadyProjectile()
         {
-            var projectileData = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>().GetData(_data.SaddyBallId);
-            if (projectileData == null)
+            if (_projectileData == null)
             {
                 return;
             }
+
+            if (_projectile == null)
+            {
+                _projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(_projectileData.PrefabPath);
+            }
+
+            _projectile.gameObject.SetActive(false);
+            _projectile.transform.parent = null;
+        }
+        
+        private void Shoot()
+        {
+            if (_projectile == null)
+            {
+                ReadyProjectile();
+            }
             
-            _projectile = await SystemManager.Instance.ResourceManager.GetFromPool<Projectile>(projectileData.PrefabPath);
+            _projectile.gameObject.SetActive(true);
             _projectile.transform.position = _ownerEntity.ShootPointTransform.position;
 
             var dir = (_player.Position - _ownerEntity.Position).normalized;
             var bounceMask = _ownerEntity.Shooter.BounceMask;
             var properties = ProjectileProperties.Guided | ProjectileProperties.Explosion;
             
-            _projectile.Init(projectileData, dir, _data.SaddyBallSpeed[0], 0, bounceMask, ProjectileOwner.Boss, properties, _player.transform, 0, projectileData.PrefabPath);
+            _projectile.Init(_projectileData, dir, _data.SaddyBallSpeed[0], 0, bounceMask, ProjectileOwner.Boss, properties, _player.transform, 0, _projectileData.PrefabPath);
             _projectile.ResetSpeedDecay(_data.BallSpeedDecay);
-            
-            _state = PingPongState.Toss;
         }
     }
 }
