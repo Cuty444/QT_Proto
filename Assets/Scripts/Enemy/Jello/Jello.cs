@@ -42,19 +42,17 @@ namespace QT.InGame
         public bool IsRigid => false;
         
         public EnemyGameData Data { get; private set; }
-        public SaddyMapData MapData { get; private set; }
         
         
-        [field: SerializeField] public SaddyData SaddyData{ get; private set; }
+        [field: SerializeField] public JelloData JelloData{ get; private set; }
         [field: SerializeField] public float ColliderRad { get; private set; }
         
         [field:Space]
-        [field: SerializeField] public Transform[] ShootPoints{ get; private set; }
         [field: SerializeField] public Transform ShootPointPivot{ get; private set; }
         [field: SerializeField] public Transform ShootPointTransform{ get; private set; }
         
         [field:Space]
-        [field: SerializeField] public Transform SaddyObject{ get; private set; }
+        [field: SerializeField] public Transform JelloObject{ get; private set; }
         [field: SerializeField] public SpriteRenderer Shadow{ get; private set; }
 
         public Rigidbody2D Rigidbody { get; private set; }
@@ -85,19 +83,6 @@ namespace QT.InGame
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
 
-#if UNITY_EDITOR
-            if (DungeonManager.Instance is DungeonManagerDummy)
-            {
-                MapData = FindObjectOfType<SaddyMapData>(true);
-            }
-#endif
-            
-            var mapCellData = DungeonManager.Instance.GetCurrentMapCellData();
-            if(mapCellData != null && mapCellData.SpecialMapData != null)
-            {
-                MapData = mapCellData.SpecialMapData as SaddyMapData;
-            }
-            
             Shooter.Initialize(Animator);
             
             SetUpStats();
@@ -107,7 +92,6 @@ namespace QT.InGame
             
             HitAbleManager.Instance.Register(this);
         }
-        
         
         
         public void SetPhysics(bool enable)
@@ -124,7 +108,7 @@ namespace QT.InGame
         {
             var side = GetSide(dir, sideCount);
 
-            SetDir(side, dir.x > 0);
+            SetDir(side);
             
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             ShootPointPivot.rotation = Quaternion.Euler(0, 0, angle);
@@ -132,27 +116,16 @@ namespace QT.InGame
             return side;
         }
 
-        private void SetDir(int side, bool isFlip)
+        private void SetDir(int side)
         {
             Animator.SetFloat(RotationAnimHash, side);
-            Animator.transform.rotation = Quaternion.Euler(0f, isFlip ? 180 : 0, 0f); 
         }
 
         public int GetSide(Vector2 dir, int sideCount)
         {
-            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 90;
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-            if (angle < 0)
-            {
-                angle += 360;
-            }
-
-            if (angle > 180)
-            {
-                angle = 360 - angle;
-            }
-
-            return Mathf.RoundToInt(angle / 180 * sideCount);
+            return Mathf.RoundToInt(angle / 360 * sideCount);
         }
         
     }
