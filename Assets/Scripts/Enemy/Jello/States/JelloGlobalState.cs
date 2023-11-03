@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int) Saddy.States.Global, false)]
-    public class SaddyGlobalState : FSMState<Saddy>
+    [FSMState((int) Jello.States.Global, false)]
+    public class JelloGlobalState : FSMState<Jello>
     {
         private static readonly int HitAnimHash = Animator.StringToHash("Hit");
         
@@ -17,7 +17,7 @@ namespace QT.InGame
         private float _rigidTimer;
         private bool _isRigid;
 
-        public SaddyGlobalState(IFSMEntity owner) : base(owner)
+        public JelloGlobalState(IFSMEntity owner) : base(owner)
         {
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
             
