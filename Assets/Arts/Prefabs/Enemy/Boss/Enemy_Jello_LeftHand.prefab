@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 9154045108834530444}
   - component: {fileID: 123503437355284955}
   - component: {fileID: 7079365993877156482}
-  - component: {fileID: 3723259454035287088}
+  - component: {fileID: 1729132103719658727}
   - component: {fileID: 4136226939055141616}
   - component: {fileID: 7667651606533159715}
   - component: {fileID: 6023091645372626560}
@@ -166,7 +166,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 1}
   m_Size: {x: 2, y: 1.5}
   m_Direction: 1
---- !u!114 &3723259454035287088
+--- !u!114 &1729132103719658727
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -175,17 +175,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 4967350920291216007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52656aae734f34ed2ac8b680dda7cdd8, type: 3}
+  m_Script: {fileID: 11500000, guid: a1d44727e94e908448fcdc924167fb52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <JelloData>k__BackingField: {fileID: 11400000, guid: 38e857f69e5324281a40f9649e91ceff, type: 2}
-  <ColliderRad>k__BackingField: 2.5
+  <JelloData>k__BackingField: {fileID: 11400000, guid: e1512366a757f4c47a8b6c144f41823b, type: 2}
+  <ColliderRad>k__BackingField: 0.7
+  <HpIndicator>k__BackingField: {fileID: 2572176159803178516}
   <ShootPointPivot>k__BackingField: {fileID: 1148817449720256807}
   <ShootPointTransform>k__BackingField: {fileID: 8245902661075271295}
-  <RightHandTransform>k__BackingField: {fileID: 0}
-  <LeftHandTransform>k__BackingField: {fileID: 0}
-  <JelloObject>k__BackingField: {fileID: 7046948061738867106}
-  <Shadow>k__BackingField: {fileID: 8730247095595399084}
+  <BallObject>k__BackingField: {fileID: 7008788084582903203}
+  <BallHeight>k__BackingField: 1
+  <BallHeightMin>k__BackingField: 0.2
+  <ShadowSprite>k__BackingField: {fileID: 8730247095595399084}
+  <Owner>k__BackingField: 3
 --- !u!114 &4136226939055141616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,6 +243,7 @@ GameObject:
   - component: {fileID: 288470222635585525}
   - component: {fileID: 3981419742200369894}
   - component: {fileID: 4127415422240350671}
+  - component: {fileID: 3262616912176236210}
   m_Layer: 0
   m_Name: Spine Mecanim GameObject (Jello_3)
   m_TagString: Untagged
@@ -257,7 +260,7 @@ Transform:
   m_GameObject: {fileID: 5105513403279935779}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -311,7 +314,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!95 &3981419742200369894
 Animator:
@@ -323,7 +326,7 @@ Animator:
   m_GameObject: {fileID: 5105513403279935779}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9475e3b2aaf8c1c47b5a1d265716ec5a, type: 2}
+  m_Controller: {fileID: 9100000, guid: 514eb7b5ec0e240459391c60cef0b013, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -375,6 +378,21 @@ MonoBehaviour:
     layerMixModes: 01000000
     layerBlendModes: 01000000
   updateTiming: 1
+--- !u!114 &3262616912176236210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5105513403279935779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3893e13995f1444699d17a415a5356f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseMaterial: {fileID: 2100000, guid: 9c53f14c19d4fc5449f7a50e50615103, type: 2}
+  _hitMaterial: {fileID: 2100000, guid: dfabde552acaf4316893acc1bc196010, type: 2}
+  _rigidMaterial: {fileID: 2100000, guid: ac741a52c64994d6d94cc5bbbe86bc69, type: 2}
 --- !u!1 &5920821828560242452
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,8 +502,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8523584847202684692}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00090026855, y: -0.0059000254, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 1, w: -0.00000004371139}
+  m_LocalPosition: {x: 0.3086996, y: 0.22009993, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -611,6 +629,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4f37ed438267c54ebb0e4da5e14357d, type: 3}
+--- !u!114 &2572176159803178516 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1958343252510830273, guid: c4f37ed438267c54ebb0e4da5e14357d, type: 3}
+  m_PrefabInstance: {fileID: 4080079126172209365}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4244789d7cc3cc46b31df38f097cee3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5363359000485205173 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8282437203551552608, guid: c4f37ed438267c54ebb0e4da5e14357d, type: 3}
