@@ -51,5 +51,21 @@ namespace QT.InGame
         [field: SerializeField] public float RushHitDamage { get; private set; }
         [field: SerializeField] public int RushAtkId { get; private set; }
         
+        
+        [field: Space]
+        [field: Space]
+        [field: Space]
+        [field:Header("분열")]
+        
+        [field: SerializeField] public float SplitDelay { get; private set; }
+        [field: SerializeField] public float SplitAfterDelay { get; private set; }
+        
+        
+        [field: SerializeField] public float SplitShootSpeed { get; private set; }
+        [field: Space]
+        [field: SerializeField] public int RightHandEnemyId { get; private set; }
+        [field: SerializeField] public int LeftHandEnemyId { get; private set; }
+
+
     }
 }
