@@ -61,6 +61,7 @@ namespace QT.InGame
 
         [field: SerializeField] public ProjectileOwner Owner { get; private set; }
         
+        
         private Collider2D[] _colliders;
 
         public int ProjectileDamage { get; private set; }

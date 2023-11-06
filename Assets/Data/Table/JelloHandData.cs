@@ -22,6 +22,21 @@ namespace QT.InGame
         [field: Space]
         [field:Header("돌진 패턴")]
         [field: SerializeField] public float RushDistance { get; private set; }
+        [field: Space]
+        [field: Space]
+        [field: SerializeField] public float RushReadyTime { get; private set; }
+        [field: Space]
+        [field: SerializeField] public float RushHitCheckDelay { get; private set; }
+        [field: SerializeField] public float RushLengthTime { get; private set; }
+        [field: SerializeField] public float RushEndDelay { get; private set; }
+        
+        [field: SerializeField] public float RushStartSpeed { get; private set; }
+        [field: SerializeField] public float RushEndSpeed { get; private set; }
+        [field: SerializeField] public float RushHitDamage { get; private set; }
+        
+        [field: SerializeField] public int RushBounceCount { get; private set; }
+        [field: SerializeField] public int RushReflectCorrection { get; private set; }
+        
         
     }
 }

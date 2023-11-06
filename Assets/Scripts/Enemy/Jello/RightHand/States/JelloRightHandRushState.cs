@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int) Jello.States.Rush)]
-    public class JelloRushState : FSMState<Jello>
+    [FSMState((int) JelloRightHand.States.Rush)]
+    public class JelloRightHandRushState : FSMState<JelloRightHand>
     {
         private enum RushState
         {
@@ -20,10 +20,11 @@ namespace QT.InGame
         
         private static readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         private static readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
+
+        private readonly LayerMask _bounceMask;
         
         private SoundManager _soundManager;
-        private readonly EnemyGameData _enemyData;
-        private readonly JelloData _data;
+        private readonly JelloHandData _data;
         
         
         private float _speed;
@@ -31,31 +32,34 @@ namespace QT.InGame
         private float _damage;
         
         private Vector2 _dir;
+        private Transform _target;
         private Transform _transform;
-        private Transform _rushCenter;
         
         
         private RushState _state;
         private float _timer;
+
+        private int _bounceCount;
         
 
-        public JelloRushState(IFSMEntity owner) : base(owner)
+        public JelloRightHandRushState(IFSMEntity owner) : base(owner)
         {
-            _enemyData = _ownerEntity.Data;
             _data = _ownerEntity.JelloData;
             _transform = _ownerEntity.transform;
-            _rushCenter = _ownerEntity.ShootPointPivot;
+            _bounceMask = _ownerEntity.Shooter.BounceMask;
         }
 
         public override void InitializeState()
         {
-            _speed = _data.RushSpeed;
+            _speed = _data.RushStartSpeed;
             _size = _ownerEntity.ColliderRad;
             _damage = _data.RushHitDamage;
 
             _soundManager = SystemManager.Instance.SoundManager;
 
-            _dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _transform.position).normalized;
+            _target = SystemManager.Instance.PlayerManager.Player.transform;
+            
+            _dir = (_target.position - _transform.position).normalized;
             _ownerEntity.SetDir(_dir, 4);
             
             _ownerEntity.Animator.SetTrigger(RushReadyAnimHash);
@@ -64,13 +68,12 @@ namespace QT.InGame
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             
             _state = RushState.Ready;
+            _bounceCount = 0;
             _timer = 0;
         }
         
         public override void ClearState()
         {
-            _ownerEntity.Shooter.StopAttack();
-            
             _ownerEntity.Animator.ResetTrigger(RushReadyAnimHash);
             _ownerEntity.Animator.SetBool(IsRushingAnimHash, false);
             _ownerEntity.SetPhysics(true);
@@ -105,59 +108,58 @@ namespace QT.InGame
                 return;
             }
             
-            if (_timer > _data.RushHitCheckDelay && CheckHit())
+            if (_timer > _data.RushHitCheckDelay)
             {
-                _ownerEntity.Shooter.StopAttack();
-                _ownerEntity.Animator.SetBool(IsRushingAnimHash, false);
-                _state = RushState.End;
-                _timer = 0;
+                CheckHit();
+
+                if (_bounceCount > _data.RushBounceCount)
+                {
+                    _ownerEntity.Animator.SetBool(IsRushingAnimHash, false);
+                    _state = RushState.End;
+                    _timer = 0;
+                }
             }
         }
 
-        private bool CheckHit()
+        private void CheckHit()
         {
-            var hits = Physics2D.CircleCastAll(_rushCenter.position, _size, _dir, _speed * Time.deltaTime,
-                _ownerEntity.HitMask);
+            var hit = Physics2D.CircleCast(_transform.position, _size, _dir, _speed * Time.deltaTime, _bounceMask);
 
 #if UNITY_EDITOR
-            Debug.DrawRay(_rushCenter.position, _dir * (_size + _speed * Time.deltaTime), Color.magenta, 1);
-            Debug.DrawRay(_rushCenter.position, new Vector3(-_dir.y, _dir.x) * (_size), Color.magenta, 1);
-            Debug.DrawRay(_rushCenter.position, new Vector3(_dir.y, -_dir.x) * (_size), Color.magenta, 1);
+            Debug.DrawRay(_transform.position, _dir * (_size + _speed * Time.deltaTime), Color.magenta, 1);
+            Debug.DrawRay(_transform.position, new Vector3(-_dir.y, _dir.x) * (_size), Color.magenta, 1);
+            Debug.DrawRay(_transform.position, new Vector3(_dir.y, -_dir.x) * (_size), Color.magenta, 1);
 #endif
+
+            if (hit.collider == null)
+            {
+                return;
+            }
             
-            foreach (var hit in hits)
+            if (hit.collider.TryGetComponent(out IHitAble hitable))
             {
-                if (hit.collider != null)
-                {
-                    if (hit.collider.TryGetComponent(out IHitAble hitable))
-                    {
-                        hitable.Hit(_dir, _damage);
-                    }
-
-                    // var normal = hit.normal;
-                    // var angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90;
-                    //
-                    // SystemManager.Instance.ResourceManager.EmitParticle(ShockEffectPath, hit.point, angle);
-                    // _ownerEntity.RushShockImpulseSource.GenerateImpulse(normal * 3);
-                }
+                hitable.Hit(_dir, _damage);
             }
 
-            if (hits.Length > 0)
-            {
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush_Crash, _ownerEntity.transform.position);
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
-                return true;
-            }
-
-            return false;
+            
+            Vector2 targetDir = (_target.transform.position - _transform.position).normalized;
+            _dir = Vector2.Reflect(_dir, hit.normal);
+            
+             _dir = Vector3.RotateTowards(_dir, targetDir, _data.RushReflectCorrection * Mathf.Deg2Rad, 0);
+             _ownerEntity.SetDir(_dir,4);
+            
+            _transform.Translate(hit.normal * _size);
+            
+            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush_Crash, _ownerEntity.transform.position);
+            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
+            
+            _bounceCount++;
         }
         
         private void Ready()
         {
             if (_timer > _data.RushReadyTime)
             {
-                _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.RushAtkId, ProjectileOwner.Boss);
-                
                 _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
                 
                 _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush, _ownerEntity.transform.position);
@@ -170,7 +172,12 @@ namespace QT.InGame
 
         private void Rushing()
         {
-            _transform.Translate(_dir * (_data.RushSpeed * Time.deltaTime));
+            var progress = _timer / _data.RushLengthTime;
+            progress *= progress; // easeInQuad
+            
+            _speed = Mathf.Lerp(_data.RushStartSpeed, _data.RushEndSpeed, progress);
+            
+            _transform.Translate(_dir * (_speed * Time.deltaTime));
             
             if (_timer > _data.RushLengthTime)
             {
