@@ -78,6 +78,7 @@ namespace QT.InGame
                 if (_ownerEntity.HP <= 0)
                 {
                     _ownerEntity.ChangeState(Saddy.States.Dead);
+                    _hpCanvas?.ReleaseUI();
                 }
 
                 _isRigid = false;

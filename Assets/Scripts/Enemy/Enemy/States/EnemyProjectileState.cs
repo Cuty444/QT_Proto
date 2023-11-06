@@ -63,17 +63,10 @@ namespace QT.InGame
         {
             _transform = _ownerEntity.transform;
             
-            var data = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
-                    .GetData(_ownerEntity.Data.ProjectileDataId);
-            
-            _size = data.ColliderRad * 0.5f;
-            _damage = data.DirectDmg;
-            
-            _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
+            _speedDecay = _globalData.SpdDecay;
 
             _soundManager = SystemManager.Instance.SoundManager;
-
-            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
         }
 
         public async void InitializeState(Vector2 dir, float power, LayerMask bounceMask, ProjectileProperties properties, Transform target)
@@ -102,6 +95,7 @@ namespace QT.InGame
 
             _ownerEntity.Animator.SetBool(ProjectileAnimHash, true);
             
+            _size = _ownerEntity.ColliderRad;
             _damage = _ownerEntity.ProjectileDamage;
             
             _flyingEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(FlyingEffectPath, _ownerEntity.BallObject);

@@ -17,8 +17,8 @@ namespace QT.InGame
             OnAir
         }
         
-        private readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
-        private readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
+        private static readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
+        private static readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
         private const string RushEffectPath = "Effect/Prefabs/FX_Boss_Rush_Air_Resistance.prefab";
         private const string SparkEffectPath = "Effect/Prefabs/FX_Boss_Rush_Spark.prefab";
@@ -59,13 +59,13 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
-            _speed = _ownerEntity.DullahanData.RushSpeed;
+            _speed =_data.RushSpeed;
             _size = _ownerEntity.RushColliderSize;
-            _damage = _ownerEntity.DullahanData.RushHitDamage;
+            _damage = _data.RushHitDamage;
 
             _soundManager = SystemManager.Instance.SoundManager;
 
-            _dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _ownerEntity.transform.position);
+            _dir = (SystemManager.Instance.PlayerManager.Player.transform.position - _transform.position);
             _rushSide = _ownerEntity.SetDir(_dir,2);
 
             _dir.Normalize();

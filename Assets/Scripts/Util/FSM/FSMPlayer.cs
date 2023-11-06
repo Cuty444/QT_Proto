@@ -14,6 +14,8 @@ namespace QT.Core
 
     public abstract class FSMPlayer<T> : MonoBehaviour where T : IFSMEntity
     {
+        private static readonly IEnumerable<Type> StateTypes;
+        
         private Dictionary<int, FSMState<T>> _states;
 
         private FSMState<T> _currentState = null;
@@ -21,7 +23,12 @@ namespace QT.Core
 
         public int PreviousStateIndex { get; private set; }
         public int CurrentStateIndex { get; private set; }
-        
+
+        static FSMPlayer()
+        {
+            StateTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(FSMState<T>) != t && typeof(FSMState<T>).IsAssignableFrom(t));
+        }
+
         protected virtual void Update()
         {
             if (Time.timeScale == 0)
@@ -48,9 +55,9 @@ namespace QT.Core
         protected void SetUp(ValueType firstState)
         {
             _states = new Dictionary<int, FSMState<T>>();
-            var stateTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(FSMState<T>) != t && typeof(FSMState<T>).IsAssignableFrom(t));
+            //var stateTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(FSMState<T>) != t && typeof(FSMState<T>).IsAssignableFrom(t));
 
-            foreach (var stateType in stateTypes)
+            foreach (var stateType in StateTypes)
             {
                 var attribute = stateType.GetCustomAttribute<FSMStateAttribute>();
 

@@ -18,11 +18,13 @@ namespace QT.InGame
         public bool IsAttacking { get;private set; }
 
         private Animator _animator;
+        private bool _useAnimator;
         
         public void Initialize(Animator animator)
         {
             StopAllCoroutines();
             _animator = animator;
+            _useAnimator = animator != null;
         }
 
         public void PlayEnemyAtkSequence(int atkDataId,ProjectileOwner owner, bool canOverlap = false)
@@ -43,10 +45,14 @@ namespace QT.InGame
 
         private IEnumerator AttackSequence(List<EnemyAtkGameData> atkList,ProjectileOwner owner)
         {
-            _animator?.ResetTrigger(AttackAnimHash);
-            _animator?.SetBool(IsAttackAnimHash, true);
+            if (_useAnimator)
+            {
+                _animator.ResetTrigger(AttackAnimHash);
+                _animator.SetBool(IsAttackAnimHash, true);
+            }
+
             IsAttacking = true;
-            
+
             foreach (var data in atkList)
             {
                 if (data.BeforeDelay != 0)
@@ -54,27 +60,42 @@ namespace QT.InGame
                     yield return new WaitForSeconds(data.BeforeDelay);
                 }
 
-                _animator?.SetTrigger(AttackAnimHash);
-                Shoot(data.ShootDataId, data.AimType,owner);
+                if (_useAnimator)
+                {
+                    _animator.SetTrigger(AttackAnimHash);
+                }
+
+                Shoot(data.ShootDataId, data.AimType, owner);
 
                 if (data.AfterDelay != 0)
                 {
                     yield return new WaitForSeconds(data.AfterDelay);
                 }
 
-                _animator?.SetTrigger(AttackAnimHash);
+                if (_useAnimator)
+                {
+                    _animator.SetTrigger(AttackAnimHash);
+                }
             }
-            
-            _animator?.ResetTrigger(AttackAnimHash);
-            _animator?.SetBool(IsAttackAnimHash, false);
+
+            if (_useAnimator)
+            {
+                _animator.ResetTrigger(AttackAnimHash);
+                _animator.SetBool(IsAttackAnimHash, false);
+            }
+
             IsAttacking = false;
         }
         
         public void StopAttack()
         {
             StopAllCoroutines();
-            _animator?.ResetTrigger(AttackAnimHash);
-            _animator?.SetBool(IsAttackAnimHash, false);
+            
+            if (_useAnimator)
+            {
+                _animator.ResetTrigger(AttackAnimHash);
+                _animator.SetBool(IsAttackAnimHash, false);
+            }
             IsAttacking = false;
         }
     }

@@ -27,7 +27,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetBool(DeadAnimHash, true);
             _ownerEntity.SetPhysics(false);
             _ownerEntity.BallObject.localPosition = Vector3.up * _ownerEntity.BallHeightMin;
-            _ownerEntity.HpCanvas.gameObject.SetActive(false);
+            _ownerEntity.HpIndicator.gameObject.SetActive(false);
             PlayerManager _playerManager = SystemManager.Instance.PlayerManager;
 
             var gold = _ownerEntity.RandomGoldDrop();

@@ -33,10 +33,8 @@ namespace QT.InGame
         public bool IsDead => HP <= 0;
         public bool IsRigid => CurrentStateIndex == (int)States.Rigid;
         public LayerMask BounceMask { get; set; }
-
-
-        [SerializeField] private int _enemyId;
-        [field: SerializeField] public Canvas HpCanvas { get; private set; }
+        
+        [field: SerializeField] public EnemyHPIndicator HpIndicator { get; private set; }
         
         public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
@@ -52,8 +50,6 @@ namespace QT.InGame
         [field: SerializeField] public SpriteRenderer ShadowSprite { get; private set; }
 
         [field: SerializeField] public ProjectileOwner Owner { get; private set; }
-
-        [HideInInspector] public Image HpImage;
 
         private Collider2D[] _colliders;
 
@@ -71,10 +67,6 @@ namespace QT.InGame
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
-            
-            HpCanvas.worldCamera = Camera.main;
-            HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
-            HpCanvas.gameObject.SetActive(false);
 
             LoadSound();
             
@@ -82,12 +74,10 @@ namespace QT.InGame
         
         public void initialization(int enemyId)
         {
-            _enemyId = enemyId;
+            var dataManager = SystemManager.Instance.DataManager;
             
-            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
-            
-            ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
-                .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
+            Data = dataManager.GetDataBase<EnemyGameDataBase>().GetData(enemyId);
+            ColliderRad =dataManager.GetDataBase<ProjectileGameDataBase>().GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
             
             Shooter.Initialize(Animator);
             BounceMask = Shooter.BounceMask;
@@ -98,9 +88,11 @@ namespace QT.InGame
             
             HitAbleManager.Instance.Register(this);
             ProjectileManager.Instance.Register(this);
-
+            
             BallObject.localPosition = Vector2.up * BallHeightMin;
             ShadowSprite.color = new Color(0, 0, 0, 0.5f);
+            
+            HpIndicator.gameObject.SetActive(false);
         }
 
 

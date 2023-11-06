@@ -91,7 +91,7 @@ namespace QT.InGame
             _ownerEntity.SetDir(dampedDir * moveDir, 4);
             _ownerEntity.Animator.SetFloat(MoveDirAnimHash, moveDir * speed);
             
-            CheckAttackStart(targetDistance);
+            CheckAttackStart();
         }
 
         public override void ClearState()
@@ -165,7 +165,7 @@ namespace QT.InGame
         }
         
         
-        private void CheckAttackStart(float targetDistance)
+        private void CheckAttackStart()
         {
             if (_swingCoolTime > _data.SwingCoolTime)
             {
@@ -211,7 +211,7 @@ namespace QT.InGame
             _attackStates.Shuffle();
             _attackStateIndex = -1;
 
-            _targetDistance = 5;//_enemyData.SpacingRad;
+            _targetDistance = _enemyData.SpacingRad;
             return _ownerEntity.GetNextGroupStartState();
         }
         

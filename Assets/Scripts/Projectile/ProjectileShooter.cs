@@ -65,7 +65,7 @@ namespace QT.InGame
             {
                 var dir = GetDirection(shoot.ShootAngle, aimType);
 
-                ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, shoot.MaxBounceCount + bounceStat, owner, properties);
+                ShootProjectile(shoot.ProjectileDataId, dir, shoot.InitalSpd, shoot.MaxBounceCount + bounceStat, owner, properties | shoot.Properties);
             }
         }
 
