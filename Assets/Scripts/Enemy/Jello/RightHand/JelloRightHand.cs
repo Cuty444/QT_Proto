@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace QT.InGame
 {
-    public partial class JelloHand : FSMPlayer<JelloHand>, IFSMEntity, IEnemy, IProjectile
+    public partial class JelloRightHand : FSMPlayer<JelloRightHand>, IFSMEntity, IEnemy, IProjectile
     {
         public string PrefabPath { get; set; }
         private static readonly int RotationAnimHash = Animator.StringToHash("Rotation");
@@ -21,8 +21,9 @@ namespace QT.InGame
             Normal,
             Rigid, 
             
-            Shoot,
+            Rush,
             
+            Return,
             
             // 사실상 죽어있음
             Projectile,
@@ -31,15 +32,14 @@ namespace QT.InGame
 
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
-        public float ColliderRad { get; private set; }
-        
         public bool IsClearTarget => true;
         public bool IsDead => HP <= 0;
         public bool IsRigid => CurrentStateIndex == (int)States.Rigid;
-        public LayerMask BounceMask { get; set; }
-
         
-        [field: SerializeField] public JelloData JelloData{ get; private set; }
+        public LayerMask BounceMask { get; set; }
+        
+        [field: SerializeField] public JelloHandData JelloData{ get; private set; }
+        [field: SerializeField] public float ColliderRad { get; private set; }
         [field: SerializeField] public EnemyHPIndicator HpIndicator { get; private set; }
         
         [field:Space]
@@ -83,15 +83,12 @@ namespace QT.InGame
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(enemyId);
             
-            ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
-                .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
-            
             Shooter.Initialize(Animator);
             BounceMask = Shooter.BounceMask;
             
             SetUpStats();
             SetUp(States.Normal);
-            SetGlobalState(new JelloHandGlobalState(this));
+            SetGlobalState(new JelloRightHandGlobalState(this));
             
             HitAbleManager.Instance.Register(this);
             ProjectileManager.Instance.Register(this);

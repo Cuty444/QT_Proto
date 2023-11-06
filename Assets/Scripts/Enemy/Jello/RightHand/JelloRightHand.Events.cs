@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace QT.InGame
 {
-    public partial class JelloHand
+    public partial class JelloRightHand
     {
         public UnityEvent<Vector2, float,AttackType> OnDamageEvent { get; } = new();
         public UnityEvent<(Vector2, float), LayerMask, ProjectileProperties, Transform> OnProjectileHitEvent { get; } = new();

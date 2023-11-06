@@ -151,12 +151,11 @@ namespace QT.InGame
 
                     enemyHitCount++;
 
-                    if (!_isCharged && hitAble.IsDead && hitAble is Enemy enemy)
+                    if (!_isCharged && hitAble.IsDead && hitAble is IProjectile projectile)
                     {
-                        enemy.ResetBounceCount(bounce);
-                        enemy.ResetProjectileDamage(enemyProjectileDamage);
-                        enemy.ProjectileHit(GetNewProjectileDir(enemy), shootSpd, mask, ProjectileOwner.Player,
-                            properties, projectileTarget);
+                        projectile.ResetBounceCount(bounce);
+                        projectile.ResetProjectileDamage(enemyProjectileDamage);
+                        projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player, properties, projectileTarget);
                     
                         stunEnemyCount++;
                     }
@@ -173,7 +172,7 @@ namespace QT.InGame
                 foreach (var projectile in _projectiles)
                 {
                     projectile.ResetBounceCount(bounce);
-                    projectile.ResetProjectileDamage(projectile is Enemy ? enemyProjectileDamage : projectileDamage);
+                    projectile.ResetProjectileDamage(projectile is IEnemy ? enemyProjectileDamage : projectileDamage);
                     projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player,
                         properties, projectileTarget);
 

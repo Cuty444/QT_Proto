@@ -6,18 +6,16 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int) JelloHand.States.Normal)]
-    public class JelloHandNormalState : FSMState<JelloHand>
+    [FSMState((int) JelloRightHand.States.Normal)]
+    public class JelloRightHandNormalState : FSMState<JelloRightHand>
     {
-       private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
-        private static readonly int MoveDirAnimHash = Animator.StringToHash("MoveDir");
-        private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
+        private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
         
         private const float AvoidDirDampTime = 30;
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
 
         private readonly EnemyGameData _enemyData;
-        private readonly JelloData _data;
+        private readonly JelloHandData _data;
 
         private Transform _transform;
         
@@ -32,13 +30,13 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private List<JelloHand.States> _attackStates = new() {JelloHand.States.Shoot};
+        private List<JelloRightHand.States> _attackStates = new() {JelloRightHand.States.Rush};
         private int _attackStateIndex;
 
-        private JelloHand.States _nextState;
+        private JelloRightHand.States _nextState;
         private float _targetDistance;
         
-        public JelloHandNormalState(IFSMEntity owner) : base(owner)
+        public JelloRightHandNormalState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
             _enemyData = _ownerEntity.Data;
@@ -78,7 +76,6 @@ namespace QT.InGame
             var dampedDir = _dirDamper.GetDampedValue(currentDir, Time.deltaTime);
             
             var speed = dampedDir.sqrMagnitude;
-            _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, speed);
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, speed > 0.1f);
             
             
@@ -86,7 +83,6 @@ namespace QT.InGame
             var moveDir = Vector2.Dot(targetDir, dampedDir) <= 0 ? -1f : 1f;
             
             _ownerEntity.SetDir(dampedDir * moveDir, 4);
-            _ownerEntity.Animator.SetFloat(MoveDirAnimHash, moveDir * speed);
             
             CheckAttackStart();
         }
@@ -169,7 +165,7 @@ namespace QT.InGame
             }
         }
 
-        private JelloHand.States PickAttackState()
+        private JelloRightHand.States PickAttackState()
         {
             _attackStateIndex++;
             
@@ -186,12 +182,12 @@ namespace QT.InGame
             return _attackStates[_attackStateIndex];
         }
         
-        private float GetStateTargetDistance(JelloHand.States states)
+        private float GetStateTargetDistance(JelloRightHand.States states)
         {
             switch (states)
             {
-                case JelloHand.States.Shoot:
-                    return _data.ShootDistance;
+                case JelloRightHand.States.Rush:
+                    return _data.RushDistance;
             }
 
             return _enemyData.SpacingRad;

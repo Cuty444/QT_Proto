@@ -8,12 +8,11 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int)JelloHand.States.Projectile)]
-    public class JelloHandProjectileState : FSMState<JelloHand>
+    [FSMState((int)JelloRightHand.States.Projectile)]
+    public class JelloRightHandProjectileState : FSMState<JelloRightHand>
     {
         private static readonly int ProjectileAnimHash = Animator.StringToHash("IsProjectile");
         private static readonly int ProjectileSpeedAnimHash = Animator.StringToHash("ProjectileSpeed");
-        private static readonly int RigidAnimHash = Animator.StringToHash("IsRigid");
         
         private const string HitEffectPath = "Effect/Prefabs/FX_M_Wall_Hit.prefab";
         private const string HitEnemyEffectPath = "Effect/Prefabs/FX_M_Ball_Hit_Boom.prefab";
@@ -59,15 +58,9 @@ namespace QT.InGame
 
         private ParticleSystem _flyingEffect;
         
-        public JelloHandProjectileState(IFSMEntity owner) : base(owner)
+        public JelloRightHandProjectileState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
-            
-            var data = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
-                    .GetData(_ownerEntity.Data.ProjectileDataId);
-            
-            _size = data.ColliderRad * 0.5f;
-            _damage = data.DirectDmg;
             
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
             _speedDecay = _globalData.SpdDecay;
@@ -89,6 +82,7 @@ namespace QT.InGame
             _isReleased = false;
             _properties = properties;
 
+            _size = _ownerEntity.ColliderRad;
             _targetTransform = target;
 
             _ownerEntity.SetPhysics(false);
@@ -126,7 +120,7 @@ namespace QT.InGame
             _releaseTimer += Time.deltaTime;
             if (_isReleased && _releaseTimer > _releaseDelay)
             {
-                _ownerEntity.ChangeState(JelloHand.States.Dead);
+                _ownerEntity.ChangeState(JelloRightHand.States.Dead);
             }
             
             if (_properties.HasFlag(ProjectileProperties.Guided) && (_targetTransform == null || !_targetTransform.gameObject.activeInHierarchy))
@@ -238,7 +232,7 @@ namespace QT.InGame
                         _ownerEntity.HP.SetStatus(0);
                         _isReleased = true;
                         _releaseTimer = 0;
-                        _ownerEntity.ChangeState(JelloHand.States.Dead);
+                        _ownerEntity.ChangeState(JelloRightHand.States.Dead);
                         return;
                     }
                     if (_ownerEntity.HP <= 0)
@@ -250,10 +244,9 @@ namespace QT.InGame
                     }
                     else
                     {
-                        _ownerEntity.Animator.SetBool(RigidAnimHash, false);
                         _ownerEntity.Animator.SetFloat(ProjectileSpeedAnimHash, 1);
                         _ownerEntity.SetPhysics(true);
-                        _ownerEntity.ChangeState(JelloHand.States.Normal);
+                        _ownerEntity.ChangeState(JelloRightHand.States.Normal);
                         return;
                     }
                 }

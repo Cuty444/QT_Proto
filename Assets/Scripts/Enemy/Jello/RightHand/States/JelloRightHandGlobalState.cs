@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int)JelloHand.States.Global, false)]
-    public class JelloHandGlobalState : FSMState<JelloHand>
+    [FSMState((int)JelloRightHand.States.Global, false)]
+    public class JelloRightHandGlobalState : FSMState<JelloRightHand>
     {
-        public JelloHandGlobalState(IFSMEntity owner) : base(owner)
+        public JelloRightHandGlobalState(IFSMEntity owner) : base(owner)
         {
         }
 
@@ -25,7 +25,7 @@ namespace QT.InGame
 
         private void OnDamage(Vector2 dir, float power, AttackType attackType)
         {
-            if (_ownerEntity.CurrentStateIndex >= (int) JelloHand.States.Dead)
+            if (_ownerEntity.CurrentStateIndex >= (int) JelloRightHand.States.Dead)
             {
                 return;
             }
@@ -35,7 +35,7 @@ namespace QT.InGame
             
             _ownerEntity.MaterialChanger.SetHitMaterial();
             
-            if (_ownerEntity.CurrentStateIndex >= (int) JelloHand.States.Projectile)
+            if (_ownerEntity.CurrentStateIndex >= (int) JelloRightHand.States.Projectile)
             {
                 return;
             }
@@ -44,21 +44,21 @@ namespace QT.InGame
             {
                 if (attackType != AttackType.PowerSwing)
                 {
-                    var state = _ownerEntity.ChangeState(JelloHand.States.Rigid);
-                    ((JelloHandRigidState) state)?.InitializeState(dir);
+                    var state = _ownerEntity.ChangeState(JelloRightHand.States.Rigid);
+                    ((JelloRightHandRigidState) state)?.InitializeState(dir);
                 }
             }
         }
         
         private void OnProjectileHit((Vector2 dir, float power) vector, LayerMask bounceMask, ProjectileProperties properties, Transform target)
         {
-            if (_ownerEntity.CurrentStateIndex >= (int) JelloHand.States.Dead)
+            if (_ownerEntity.CurrentStateIndex >= (int) JelloRightHand.States.Dead)
             {
                 return;
             }
             
-            var state = _ownerEntity.ChangeState(JelloHand.States.Projectile);
-            ((JelloHandProjectileState) state)?.InitializeState(vector.dir, vector.power, bounceMask, properties, target);
+            var state = _ownerEntity.ChangeState(JelloRightHand.States.Projectile);
+            ((JelloRightHandProjectileState) state)?.InitializeState(vector.dir, vector.power, bounceMask, properties, target);
         }
     }
 }

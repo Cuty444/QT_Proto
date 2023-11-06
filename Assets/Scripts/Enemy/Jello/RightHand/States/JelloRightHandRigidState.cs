@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int) JelloHand.States.Rigid)]
-    public class JelloHandRigidState : FSMState<JelloHand>
+    [FSMState((int) JelloRightHand.States.Rigid)]
+    public class JelloRightHandRigidState : FSMState<JelloRightHand>
     {
         private static readonly int StunAnimHash = Animator.StringToHash("IsStun");
 
@@ -20,7 +20,7 @@ namespace QT.InGame
         private SoundManager _soundManager;
         private GlobalData _globalData;
         
-        public JelloHandRigidState(IFSMEntity owner) : base(owner)
+        public JelloRightHandRigidState(IFSMEntity owner) : base(owner)
         {
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
             _soundManager = SystemManager.Instance.SoundManager;
@@ -69,7 +69,7 @@ namespace QT.InGame
             
             if (_timer > _clearTime)
             {
-                _ownerEntity.ChangeState(JelloHand.States.Dead);
+                _ownerEntity.ChangeState(JelloRightHand.States.Dead);
             }
         }
         

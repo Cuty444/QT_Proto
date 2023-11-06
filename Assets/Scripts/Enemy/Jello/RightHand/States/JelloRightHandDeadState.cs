@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int)JelloHand.States.Dead)]
-    public class JelloHandDeadState : FSMState<JelloHand>
+    [FSMState((int)JelloRightHand.States.Dead)]
+    public class JelloRightHandDeadState : FSMState<JelloRightHand>
     {
         private const float ReleaseTime = 2.0f;
 
@@ -18,7 +18,7 @@ namespace QT.InGame
         private float _releaseTime;
         private bool _isReleased;
         
-        public JelloHandDeadState(IFSMEntity owner) : base(owner)
+        public JelloRightHandDeadState(IFSMEntity owner) : base(owner)
         {
         }
 
@@ -48,6 +48,7 @@ namespace QT.InGame
             if (!_isReleased && (Time.timeSinceLevelLoad - _releaseTime) >= ReleaseTime)
             {
                 _isReleased = true;
+                _ownerEntity.gameObject.SetActive(false);
             }
         }
 
