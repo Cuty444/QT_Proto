@@ -36,7 +36,7 @@ namespace QT.InGame
 
 
         [SerializeField] private int _enemyId;
-        [field: SerializeField] public Canvas HpCanvas { get; private set; }
+        [field: SerializeField] public EnemyHPIndicator HpIndicator { get; private set; }
         
         public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
@@ -52,8 +52,6 @@ namespace QT.InGame
         [field: SerializeField] public SpriteRenderer ShadowSprite { get; private set; }
 
         [field: SerializeField] public ProjectileOwner Owner { get; private set; }
-
-        [HideInInspector] public Image HpImage;
 
         private Collider2D[] _colliders;
 
@@ -71,10 +69,6 @@ namespace QT.InGame
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
-            
-            HpCanvas.worldCamera = Camera.main;
-            HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
-            HpCanvas.gameObject.SetActive(false);
 
             LoadSound();
             
@@ -98,9 +92,11 @@ namespace QT.InGame
             
             HitAbleManager.Instance.Register(this);
             ProjectileManager.Instance.Register(this);
-
+            
             BallObject.localPosition = Vector2.up * BallHeightMin;
             ShadowSprite.color = new Color(0, 0, 0, 0.5f);
+            
+            HpIndicator.gameObject.SetActive(false);
         }
 
 
