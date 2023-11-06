@@ -11,6 +11,7 @@ namespace QT
         public int MaxBounceCount { get; set; }
         public int ProjectileDataId { get; set; }
         public float InitalSpd { get; set; }
+        public ProjectileProperties Properties { get; set; }
     }
 
 
