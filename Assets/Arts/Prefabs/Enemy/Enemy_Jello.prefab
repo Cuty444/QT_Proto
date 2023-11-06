@@ -148,6 +148,114 @@ Transform:
   - {fileID: 7909716548461954429}
   m_Father: {fileID: 8161172963857769144}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5237918182683117656
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6047107540959977478}
+  - component: {fileID: 7282098203403044193}
+  m_Layer: 11
+  m_Name: RightHand
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6047107540959977478
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237918182683117656}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.116324045, w: 0.9932113}
+  m_LocalPosition: {x: -1.4800987, y: 0.3873, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8161172963857769144}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7282098203403044193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237918182683117656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1fd8daaed7b64148a34acb96ba14ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonRenderer: {fileID: 1065391988830680659}
+  boneName: M_Hand
+  followXYPosition: 1
+  followZPosition: 1
+  followBoneRotation: 1
+  followSkeletonFlip: 1
+  followLocalScale: 1
+  followParentWorldScale: 1
+  maintainedAxisOrientation: 1
+  initializeOnAwake: 1
+--- !u!1 &5575346904453099854
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2688461516869993841}
+  - component: {fileID: 6401278073282865259}
+  m_Layer: 11
+  m_Name: LeftHand
+  m_TagString: Untagged
+  m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2688461516869993841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5575346904453099854}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.0123997, y: 0.5170002, z: 0}
+  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8161172963857769144}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6401278073282865259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5575346904453099854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1fd8daaed7b64148a34acb96ba14ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonRenderer: {fileID: 1065391988830680659}
+  boneName: M_Hand2
+  followXYPosition: 1
+  followZPosition: 1
+  followBoneRotation: 1
+  followSkeletonFlip: 1
+  followLocalScale: 1
+  followParentWorldScale: 1
+  maintainedAxisOrientation: 1
+  initializeOnAwake: 1
 --- !u!1 &7329296267532591101
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +294,8 @@ Transform:
   - {fileID: 7761786018597936637}
   - {fileID: 8580948099093948490}
   - {fileID: 9158380235053342553}
+  - {fileID: 6047107540959977478}
+  - {fileID: 2688461516869993841}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &8576872477788314297
@@ -263,9 +373,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <JelloData>k__BackingField: {fileID: 11400000, guid: 38e857f69e5324281a40f9649e91ceff, type: 2}
-  <ColliderRad>k__BackingField: 2
+  <ColliderRad>k__BackingField: 2.5
   <ShootPointPivot>k__BackingField: {fileID: 9158380235053342553}
   <ShootPointTransform>k__BackingField: {fileID: 7909716548461954429}
+  <RightHandTransform>k__BackingField: {fileID: 6047107540959977478}
+  <LeftHandTransform>k__BackingField: {fileID: 2688461516869993841}
   <JelloObject>k__BackingField: {fileID: 7761786018597936637}
   <Shadow>k__BackingField: {fileID: 7293269343423641662}
 --- !u!114 &1418277589054754472
@@ -354,6 +466,7 @@ GameObject:
   - component: {fileID: 8091789808003196016}
   - component: {fileID: 8502742137204592598}
   - component: {fileID: 1065391988830680659}
+  - component: {fileID: 196504072456641078}
   m_Layer: 0
   m_Name: Spine Mecanim GameObject (Jello_3)
   m_TagString: Untagged
@@ -489,3 +602,18 @@ MonoBehaviour:
     layerMixModes: 01000000
     layerBlendModes: 01000000
   updateTiming: 1
+--- !u!114 &196504072456641078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8387275764069393555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3893e13995f1444699d17a415a5356f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseMaterial: {fileID: 2100000, guid: 718f9ed0640105941aa3849eae319964, type: 2}
+  _hitMaterial: {fileID: 2100000, guid: dfabde552acaf4316893acc1bc196010, type: 2}
+  _rigidMaterial: {fileID: 2100000, guid: ac741a52c64994d6d94cc5bbbe86bc69, type: 2}

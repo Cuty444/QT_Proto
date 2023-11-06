@@ -51,6 +51,11 @@ namespace QT.InGame
         [field: SerializeField] public Transform ShootPointPivot{ get; private set; }
         [field: SerializeField] public Transform ShootPointTransform{ get; private set; }
         
+        
+        [field:Space]
+        [field: SerializeField] public Transform RightHandTransform{ get; private set; }
+        [field: SerializeField] public Transform LeftHandTransform{ get; private set; }
+        
         [field:Space]
         [field: SerializeField] public Transform JelloObject{ get; private set; }
         [field: SerializeField] public SpriteRenderer Shadow{ get; private set; }
@@ -83,7 +88,7 @@ namespace QT.InGame
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
 
-            Shooter.Initialize(Animator);
+            //Shooter.Initialize(Animator);
             
             SetUpStats();
 
@@ -125,6 +130,11 @@ namespace QT.InGame
         {
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
+            if (angle < 0)
+            {
+                angle += 360;
+            }
+            
             return Mathf.RoundToInt(angle / 360 * sideCount);
         }
         

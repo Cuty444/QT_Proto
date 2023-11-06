@@ -8,6 +8,48 @@ namespace QT.InGame
 {
     public class JelloData : ScriptableObject
     {
-      
+        [field: SerializeField] public float AttackCoolTime { get; private set; }
+        
+        
+        [field: Space]
+        [field: Space]
+        [field: Space]
+        [field:Header("발사 패턴")]
+        [field: SerializeField] public float ShootDistance { get; private set; }
+        [field: SerializeField] public float ShootPositionCorrectionSpeedMultiplier { get; private set; }
+        [field: Space]
+        [field: Space]
+        [field: SerializeField] public float ShootReadyDelay { get; private set; }
+        [field: Space]
+        [field: SerializeField] public float ShootRightHandDelay { get; private set; }
+        [field: SerializeField] public int ShootRightHandShootId { get; private set; }
+        [field: Space]
+        [field: SerializeField] public float ShootLeftHandDelay { get; private set; }
+        [field: SerializeField] public int ShootLeftHandShootId { get; private set; }
+        [field: Space]
+        [field: SerializeField] public float ShootFinalDelay { get; private set; }
+        [field: SerializeField] public int ShootFinalShootId { get; private set; }
+        [field: SerializeField] public int ShootFinalShootId2 { get; private set; }
+        
+        
+        
+        
+        [field: Space]
+        [field: Space]
+        [field: Space]
+        [field:Header("돌진 패턴")]
+        [field: SerializeField] public float RushDistance { get; private set; }
+        [field: Space]
+        [field: Space]
+        [field: SerializeField] public float RushReadyTime { get; private set; }
+        [field: Space]
+        [field: SerializeField] public float RushHitCheckDelay { get; private set; }
+        [field: SerializeField] public float RushLengthTime { get; private set; }
+        [field: SerializeField] public float RushEndDelay { get; private set; }
+        
+        [field: SerializeField] public float RushSpeed { get; private set; }
+        [field: SerializeField] public float RushHitDamage { get; private set; }
+        [field: SerializeField] public int RushAtkId { get; private set; }
+        
     }
 }

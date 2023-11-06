@@ -7,11 +7,9 @@ using UnityEngine;
 
 namespace QT.InGame
 {
-    [FSMState((int) Saddy.States.Normal)]
-    public class SaddyNormalState : FSMState<Saddy>
+    [FSMState((int) Jello.States.Normal)]
+    public class JelloNormalState : FSMState<Jello>
     { 
-        private static readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
-        private static readonly int ChargeLevelAnimHash = Animator.StringToHash("ChargeLevel");
         private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
         private static readonly int MoveDirAnimHash = Animator.StringToHash("MoveDir");
         private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
@@ -20,13 +18,14 @@ namespace QT.InGame
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
 
         private readonly EnemyGameData _enemyData;
-        private readonly SaddyData _data;
+        private readonly JelloData _data;
 
+        private Transform _transform;
+        
         private float _targetUpdateCoolTime;
         public Transform _target;
         private Vector2 _currentTargetPos;
 
-        private float _swingCoolTime;
         private float _atkCoolTime;
 
         private bool _rotateSide;
@@ -34,16 +33,17 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private List<Saddy.States> _attackStates = new() {Saddy.States.RollingAttack, Saddy.States.SideStep};
+        private List<Jello.States> _attackStates = new() {Jello.States.Shoot, Jello.States.Rush};
         private int _attackStateIndex;
 
-        private Saddy.States _nextState;
+        private Jello.States _nextState;
         private float _targetDistance;
         
-        public SaddyNormalState(IFSMEntity owner) : base(owner)
+        public JelloNormalState(IFSMEntity owner) : base(owner)
         {
+            _transform = _ownerEntity.transform;
             _enemyData = _ownerEntity.Data;
-            _data = _ownerEntity.SaddyData;
+            _data = _ownerEntity.JelloData;
 
             _attackStates.Shuffle();
             _attackStateIndex = -1;
@@ -62,7 +62,6 @@ namespace QT.InGame
 
         public override void UpdateState()
         {
-            _swingCoolTime += Time.deltaTime;
             _atkCoolTime += Time.deltaTime;
             _targetUpdateCoolTime += Time.deltaTime;
             
@@ -75,8 +74,7 @@ namespace QT.InGame
 
         public override void FixedUpdateState()
         {
-            var targetDistance = (_currentTargetPos - (Vector2) _ownerEntity.transform.position).magnitude;
-            var currentDir = Move(targetDistance);
+            var currentDir = Move();
             
             var dampedDir = _dirDamper.GetDampedValue(currentDir, Time.deltaTime);
             
@@ -85,7 +83,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, speed > 0.1f);
             
             
-            var targetDir = (Vector2) _target.position - (Vector2) _ownerEntity.transform.position;
+            var targetDir = (Vector2) _target.position - (Vector2) _transform.position;
             var moveDir = Vector2.Dot(targetDir, dampedDir) <= 0 ? -1f : 1f;
             
             _ownerEntity.SetDir(dampedDir * moveDir, 4);
@@ -94,32 +92,36 @@ namespace QT.InGame
             CheckAttackStart();
         }
 
-        public override void ClearState()
+        private Vector2 Move()
         {
-            _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, 0);
-        }
-
-        private Vector2 Move(float targetDistance)
-        {
-            var dir = SpacingMove(targetDistance);
+            var dir = SpacingMove();
 
             var currentDir = Vector2.zero;
+            var speed = _enemyData.MovementSpd;
 
             if (dir != Vector2.zero)
             {
                 currentDir = _ownerEntity.Rigidbody.velocity.normalized;
                 currentDir = Vector2.Lerp(currentDir, dir, 0.4f);
             }
-
-            _ownerEntity.Rigidbody.velocity = currentDir * (_enemyData.MovementSpd);
+            
+            // 발사 패턴에서는 플레이어 위쪽으로 이동할 필요가 있음
+            if (_nextState == Jello.States.Shoot && _transform.position.y < _currentTargetPos.y + _data.ShootDistance)
+            {
+                speed *= _data.ShootPositionCorrectionSpeedMultiplier;
+            }
+            
+            _ownerEntity.Rigidbody.velocity = currentDir * speed;
 
             return currentDir;
         }
         
         
-        private Vector2 SpacingMove(float targetDistance)
+        private Vector2 SpacingMove()
         {
-            var ownerPos = (Vector2) _ownerEntity.transform.position;
+            var ownerPos = (Vector2)_transform.position;
+            
+            var targetDistance = (_currentTargetPos - ownerPos).magnitude;
             var dir = _currentTargetPos - ownerPos;
             
             var danger = new DirectionWeights();
@@ -127,16 +129,25 @@ namespace QT.InGame
             
             _ownerEntity.Steering.DetectObstacle(ref danger);
 
-            // 타겟과의 거리 유지
-            if (targetDistance > _targetDistance)
+            
+            // 발사 패턴에서는 플레이어 위쪽으로 이동할 필요가 있음
+            if (_nextState == Jello.States.Shoot && ownerPos.y < _currentTargetPos.y + _data.ShootDistance)
             {
-                interest.AddWeight(dir, 1);
+                interest.AddWeight(Vector2.up, 1);
             }
-            else if(targetDistance < _targetDistance - 1)
+            else
             {
-                interest.AddWeight(-dir, 1);
+                // 타겟과의 거리 유지
+                if (targetDistance > _targetDistance)
+                {
+                    interest.AddWeight(dir, 1);
+                }
+                else if(targetDistance < _targetDistance - 1)
+                {
+                    interest.AddWeight(-dir, 1);
+                }
             }
-
+            
             // 1차 결과 계산
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             
@@ -167,14 +178,6 @@ namespace QT.InGame
         
         private void CheckAttackStart()
         {
-            if (_swingCoolTime > _data.SwingCoolTime)
-            {
-                Swing();
-              
-                _swingCoolTime = 0;
-                _atkCoolTime -= _data.SwingPlayTime;
-            }
-            
             if (_atkCoolTime > _data.AttackCoolTime)
             {
                 _atkCoolTime = 0;
@@ -182,23 +185,7 @@ namespace QT.InGame
             }
         }
 
-        private void Swing()
-        {
-            var swingLevel = _ownerEntity.Animator.GetFloat(ChargeLevelAnimHash);
-            DOTween.To(() => swingLevel, x =>
-            {
-                swingLevel = x;
-                _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, swingLevel);
-            }, 1, _data.SwingDelayTime).SetEase(Ease.OutExpo).onComplete += () =>
-            {
-                _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, 0);
-                _ownerEntity.Animator.SetInteger(SwingLevelAnimHash, 0);
-                
-                _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.SwingAtkId, ProjectileOwner.Boss);
-            };
-        }
-
-        private Saddy.States PickAttackState()
+        private Jello.States PickAttackState()
         {
             _attackStateIndex++;
             
@@ -209,20 +196,20 @@ namespace QT.InGame
             }
             
             _attackStates.Shuffle();
-            _attackStateIndex = -1;
-
-            _targetDistance = _enemyData.SpacingRad;
-            return _ownerEntity.GetNextGroupStartState();
+            _attackStateIndex = 0;
+            
+            _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
+            return _attackStates[_attackStateIndex];
         }
         
-        private float GetStateTargetDistance(Saddy.States states)
+        private float GetStateTargetDistance(Jello.States states)
         {
             switch (states)
             {
-                case Saddy.States.RollingAttack:
-                    return _data.RollingAttackDistance;
-                case Saddy.States.SideStep:
-                    return _data.SideStepDistance;
+                case Jello.States.Rush:
+                    return _data.RushDistance;
+                case Jello.States.Shoot:
+                    return _data.ShootDistance;
             }
 
             return _enemyData.SpacingRad;

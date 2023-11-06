@@ -104,10 +104,10 @@ namespace QT.Core.Data
         
         
         /// <summary>
-        /// 공이 충돌할 때 받는 데미지
+        /// 공 상태의 적이 벽에 충돌할 때 받는 데미지
         /// </summary>
         [field: SerializeField]
-        [Tooltip("공이 충돌할 때 받는 데미지")]
+        [Tooltip("공 상태의 적이 벽에 충돌할 때 받는 데미지")]
         public float BallBounceDamage { get; private set; } = 0.5f;
 
 
