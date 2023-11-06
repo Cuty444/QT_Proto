@@ -1,5 +1,5 @@
-using Cinemachine;
 using QT.Core;
+using Spine.Unity;
 using UnityEngine;
 
 namespace QT.InGame
@@ -44,21 +44,38 @@ namespace QT.InGame
         public EnemyGameData Data { get; private set; }
         
         
-        [field: SerializeField] public JelloData JelloData{ get; private set; }
+        [field: SerializeField] public JelloData JelloData { get; private set; }
         [field: SerializeField] public float ColliderRad { get; private set; }
         
         [field:Space]
-        [field: SerializeField] public Transform ShootPointPivot{ get; private set; }
-        [field: SerializeField] public Transform ShootPointTransform{ get; private set; }
+        [field: SerializeField] public Transform ShootPointPivot { get; private set; }
+        [field: SerializeField] public Transform ShootPointTransform { get; private set; }
         
         
         [field:Space]
-        [field: SerializeField] public Transform RightHandTransform{ get; private set; }
-        [field: SerializeField] public Transform LeftHandTransform{ get; private set; }
+        [field: SerializeField] public SkeletonRenderer SkeletonRenderer { get; private set; }
         
         [field:Space]
-        [field: SerializeField] public Transform JelloObject{ get; private set; }
-        [field: SerializeField] public SpriteRenderer Shadow{ get; private set; }
+        [field: SerializeField] public Transform RightHandTransform { get; private set; }
+
+        [field: SpineBone(dataField: "SkeletonRenderer")]
+        [field: SerializeField]
+        public string RightHandBoneName { get; private set; }
+
+        [field:Space]
+        [field: SerializeField] public Transform LeftHandTransform { get; private set; }
+        [field: SpineBone(dataField: "SkeletonRenderer")]
+        [field: SerializeField]
+        public string LeftHandBoneName { get; private set; }
+        
+        
+        [field:Space]
+        [field: SerializeField] public JelloRightHand RightHand { get; private set; }
+        [field: SerializeField] public JelloLeftHand LeftHand { get; private set; }
+
+        [field:Space]
+        [field: SerializeField] public Transform JelloObject { get; private set; }
+        [field: SerializeField] public SpriteRenderer Shadow { get; private set; }
 
         public Rigidbody2D Rigidbody { get; private set; }
         public Animator Animator { get; private set; }

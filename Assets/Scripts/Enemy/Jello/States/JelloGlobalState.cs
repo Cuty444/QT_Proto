@@ -77,7 +77,7 @@ namespace QT.InGame
 
                 if (_ownerEntity.HP <= 0)
                 {
-                    _ownerEntity.ChangeState(Saddy.States.Dead);
+                    _ownerEntity.ChangeState(Jello.States.Dead);
                     _hpCanvas?.ReleaseUI();
                 }
 
