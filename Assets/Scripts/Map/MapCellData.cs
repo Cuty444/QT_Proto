@@ -159,6 +159,47 @@ namespace QT.Map
             }
         }
 
+        public async void CreateBossDoor(Vector3 exitDoorPosition)
+        {
+            if (_dungeonMapSystem == null)
+            {
+                return;
+            }
+
+            
+            _doorTransforms[0].gameObject.SetActive(true);
+            var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<StageMoveDoor>("Doors/StageMove/StageUp.prefab", _doorTransforms[0]);
+            foreach (var door in _doorAnimators)
+            {
+                if (door.transform.parent.name == "DoorUp")
+                {
+                    door.gameObject.SetActive(false);
+                }
+            }
+            doorObject.transform.localPosition = Vector3.zero;
+            doorObject.StageMoveDoorInit(exitDoorPosition);
+            //doorObject.Init(Util.UnityUtil.PathDirections[0], StageMoveDoor);
+                
+            _doorAnimators.Add(doorObject);
+            
+        }
+
+        public async void CreateStairsDoor(Vector3 exitDoorPosition)
+        {
+            if (_dungeonMapSystem == null)
+            {
+                return;
+            }
+
+            
+            _doorTransforms[1].gameObject.SetActive(true);
+            var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<StageMoveDoor>("Doors/StageMove/StageDown.prefab", _doorTransforms[1]);
+            doorObject.transform.localPosition = Vector3.zero;
+            doorObject.StageMoveDoorInit(exitDoorPosition);
+            doorObject.DoorOpen();
+            _doorAnimators.Add(doorObject);
+        }
+
         private void PlayerMapEnter(Vector2Int enterPosition)
         {
             if (_cellPosition != enterPosition)
@@ -210,6 +251,11 @@ namespace QT.Map
                 return;
             _playerManager.Player.transform.position = _doorExitTransforms[1].position;
             _playerManager.Player.LastSafePosition = _doorExitTransforms[1].position;
+        }
+
+        public Vector3 GetStageEnterDoorPosition(int index)
+        {
+            return _doorExitTransforms[index].position;
         }
         
     }
