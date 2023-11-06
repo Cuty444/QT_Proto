@@ -388,8 +388,9 @@ namespace QT.Core.Map
             } while (bossRoom == new Vector2Int(9999, 9999));
 
             _mapNodeList.Add(bossRoom);
-            _map[bossRoom.y, bossRoom.x].RoomType =
-                _floorValue >= 2 ? RoomType.Boss : RoomType.Stairs; // TODO : 계단 층 타입이랑 추후 체크 필요
+            //_map[bossRoom.y, bossRoom.x].RoomType =
+            //    _floorValue >= 2 ? RoomType.Boss : RoomType.Stairs; // TODO : 계단 층 타입이랑 추후 체크 필요
+            _map[bossRoom.y, bossRoom.x].RoomType = RoomType.Boss;
             farthestRoomPosList.RemoveAt(randomIndex);
             randomIndex = UnityEngine.Random.Range(0, farthestRoomPosList.Count);
             var shopRoom = farthestRoomPosList[randomIndex].Position;
@@ -734,6 +735,7 @@ namespace QT.Core.Map
         {
             RoomType roomType = _mapData.Map[createPos.y, createPos.x].RoomType;
             GameObject cellMapObject = null;
+            MapCellData floorCellData = null;
             switch (roomType)
             {
                 case RoomType.None:
@@ -743,6 +745,12 @@ namespace QT.Core.Map
                     break;
                 case RoomType.Boss:
                     cellMapObject = BossMapObject();
+                    if (_floorValue < 2)
+                    {
+                        floorCellData = Instantiate(StairsMapObject(), DungeonTransform)
+                            .GetComponent<MapCellData>();
+                        floorCellData.transform.position = new Vector3((createPos.x * 100f) - GetMiniMapSizeToMapSize().x, (createPos.y * -100f) - GetMiniMapSizeToMapSize().y + 1000f,0f);
+                    }
                     break;
                 case RoomType.GoldShop:
                 case RoomType.HpShop:
@@ -766,7 +774,11 @@ namespace QT.Core.Map
             mapCellData.transform.position = new Vector3((createPos.x * 100.0f) - GetMiniMapSizeToMapSize().x,
                 (createPos.y * -100.0f) - GetMiniMapSizeToMapSize().y, 0f);
             mapCellData.CellDataSet(direction, createPos, roomType);
-
+            if (roomType == RoomType.Boss && _floorValue < 2)
+            {
+                mapCellData.CreateBossDoor(floorCellData.GetStageEnterDoorPosition(1));
+                floorCellData.CreateStairsDoor(mapCellData.GetStageEnterDoorPosition(0));
+            }
             return mapCellData;
         }
 
