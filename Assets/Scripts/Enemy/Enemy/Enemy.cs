@@ -33,9 +33,7 @@ namespace QT.InGame
         public bool IsDead => HP <= 0;
         public bool IsRigid => CurrentStateIndex == (int)States.Rigid;
         public LayerMask BounceMask { get; set; }
-
-
-        [SerializeField] private int _enemyId;
+        
         [field: SerializeField] public EnemyHPIndicator HpIndicator { get; private set; }
         
         public EnemyGameData Data { get; private set; }
@@ -76,9 +74,7 @@ namespace QT.InGame
         
         public void initialization(int enemyId)
         {
-            _enemyId = enemyId;
-            
-            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
+            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(enemyId);
             
             ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
                 .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;

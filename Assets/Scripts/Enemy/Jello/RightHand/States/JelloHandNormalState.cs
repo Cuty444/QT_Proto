@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Timers;
 using QT.Core;
 using QT.Util;
@@ -8,183 +9,145 @@ namespace QT.InGame
     [FSMState((int) JelloHand.States.Normal)]
     public class JelloHandNormalState : FSMState<JelloHand>
     {
-        private const float DirDampTime = 15;
-        private const float AvoidDirDampTime = 15;
+       private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
+        private static readonly int MoveDirAnimHash = Animator.StringToHash("MoveDir");
+        private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
+        
+        private const float AvoidDirDampTime = 30;
         private const float TurnoverLimitSpeed = 0.75f * 0.75f;
-        
-        private static readonly int DirXAnimHash = Animator.StringToHash("DirX");
-        private static readonly int DirYAnimHash = Animator.StringToHash("DirY");
-        private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
-        
-        private readonly EnemyGameData _data;
 
-        private float _moveTargetUpdateTimer;
-        private Vector2 _moveTarget;
+        private readonly EnemyGameData _enemyData;
+        private readonly JelloData _data;
 
-        private float _atkCheckTimer;
+        private Transform _transform;
+        
+        private float _targetUpdateCoolTime;
+        public Transform _target;
+        private Vector2 _currentTargetPos;
+
+        private float _atkCoolTime;
 
         private bool _rotateSide;
-        private bool _isAgro;
         
-        private InputVector2Damper _dirDamper = new (DirDampTime);
+        private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
+        private List<JelloHand.States> _attackStates = new() {JelloHand.States.Shoot};
+        private int _attackStateIndex;
+
+        private JelloHand.States _nextState;
+        private float _targetDistance;
+        
         public JelloHandNormalState(IFSMEntity owner) : base(owner)
         {
-            _data = _ownerEntity.Data;
+            _transform = _ownerEntity.transform;
+            _enemyData = _ownerEntity.Data;
+            _data = _ownerEntity.JelloData;
 
-            _ownerEntity.OnDamageEvent.AddListener((dir, power, type) => { _isAgro = true; });
+            _attackStates.Shuffle();
+            _attackStateIndex = -1;
         }
 
         public override void InitializeState()
         {
-            _moveTargetUpdateTimer = 9999;
-            _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
+            _target = SystemManager.Instance.PlayerManager.Player.transform;
+            _currentTargetPos = _target.position;
+            
+            _ownerEntity.Shooter.SetTarget(_target);
+            _ownerEntity.Animator.SetBool(IsMoveAnimHash, true);
+
+            _nextState = PickAttackState();
         }
 
         public override void UpdateState()
         {
-            _moveTargetUpdateTimer += Time.deltaTime;
-
-            if (!_ownerEntity.Shooter.IsAttacking)
-            {
-                _atkCheckTimer += Time.deltaTime;
-            }
+            _atkCoolTime += Time.deltaTime;
+            _targetUpdateCoolTime += Time.deltaTime;
             
-            if (_moveTargetUpdateTimer > _data.MoveTargetUpdatePeroid)
+            if (_targetUpdateCoolTime > _enemyData.MoveTargetUpdatePeroid)
             {
-                _moveTargetUpdateTimer = 0;
-                // todo : 재시작을 위한 임시 처리
-                Player player = SystemManager.Instance.PlayerManager.Player;
-                if (player == null)
-                {
-                    GameObject.Destroy(_ownerEntity.gameObject);
-                    return;
-                }
-                _moveTarget = SystemManager.Instance.PlayerManager.Player.transform.position;
+                _targetUpdateCoolTime = 0;
+                _currentTargetPos = _target.position;
             }
         }
 
         public override void FixedUpdateState()
         {
-            var targetDistance = (_moveTarget-(Vector2) _ownerEntity.transform.position).magnitude;
-
-            if (!CheckAgro(targetDistance))
-            {
-                return;
-            }
+            var currentDir = Move();
             
-            Move(targetDistance);
+            var dampedDir = _dirDamper.GetDampedValue(currentDir, Time.deltaTime);
             
-            CheckBodyContact();
+            var speed = dampedDir.sqrMagnitude;
+            _ownerEntity.Animator.SetFloat(MoveSpeedAnimHash, speed);
+            _ownerEntity.Animator.SetBool(IsMoveAnimHash, speed > 0.1f);
             
-            if (CheckAttackStart(targetDistance))
-            {
-                _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.AtkDataId,_ownerEntity.Owner);
-            }
             
-            // if (_ownerEntity.Steering.IsStuck())
-            // {
-            //     _ownerEntity.HP.SetStatus(0);
-            //     _ownerEntity.ChangeState(Enemy.States.Dead);
-            // }
+            var targetDir = (Vector2) _target.position - (Vector2) _transform.position;
+            var moveDir = Vector2.Dot(targetDir, dampedDir) <= 0 ? -1f : 1f;
+            
+            _ownerEntity.SetDir(dampedDir * moveDir, 4);
+            _ownerEntity.Animator.SetFloat(MoveDirAnimHash, moveDir * speed);
+            
+            CheckAttackStart();
         }
 
-        private bool CheckAgro(float targetDistance)
+        private Vector2 Move()
         {
-            if (targetDistance < _data.AgroRange)
-            {
-                _isAgro = true;
-            }
+            var dir = SpacingMove();
 
-            return _isAgro;
-        }
-
-        public override void ClearState()
-        {
-            _ownerEntity.Shooter.StopAttack();
-        }
-
-        private void Move(float targetDistance)
-        {
-            var dir = Vector2.zero;
-
-            switch (_data.MoveType)
-            {
-                case EnemyGameData.MoveTypes.Spacing :
-                    dir = SpacingMove(targetDistance,false);
-                    break;
-                case EnemyGameData.MoveTypes.SpacingLeft:
-                    dir = SpacingMove(targetDistance, true);
-                    break;
-            }
-
-            
             var currentDir = Vector2.zero;
+            var speed = _enemyData.MovementSpd;
 
             if (dir != Vector2.zero)
             {
                 currentDir = _ownerEntity.Rigidbody.velocity.normalized;
                 currentDir = Vector2.Lerp(currentDir, dir, 0.4f);
             }
+            
+            _ownerEntity.Rigidbody.velocity = currentDir * speed;
 
-            _ownerEntity.Rigidbody.velocity = currentDir * (_data.MovementSpd);
-
-
-            var dampedDir = _dirDamper.GetDampedValue(currentDir, Time.deltaTime);
-            _ownerEntity.Animator.SetFloat(DirXAnimHash, dampedDir.x);
-            _ownerEntity.Animator.SetFloat(DirYAnimHash, dampedDir.y);
-            _ownerEntity.Animator.SetBool(IsMoveAnimHash, dampedDir.sqrMagnitude > 0.1f);
+            return currentDir;
         }
-
-        private Vector2 SpacingMove(float targetDistance, bool isRotate = false)
+        
+        
+        private Vector2 SpacingMove()
         {
-            var ownerPos = (Vector2) _ownerEntity.transform.position;
-            var dir = _moveTarget - ownerPos;
+            var ownerPos = (Vector2)_transform.position;
+            
+            var targetDistance = (_currentTargetPos - ownerPos).magnitude;
+            var dir = _currentTargetPos - ownerPos;
             
             var danger = new DirectionWeights();
             var interest = new DirectionWeights();
             
             _ownerEntity.Steering.DetectObstacle(ref danger);
-
+            
             // 타겟과의 거리 유지
-            if (targetDistance > _data.SpacingRad)
+            if (targetDistance > _targetDistance)
             {
                 interest.AddWeight(dir, 1);
             }
-            else if(targetDistance < _data.SpacingRad - 1)
+            else if (targetDistance < _targetDistance - 1)
             {
                 interest.AddWeight(-dir, 1);
             }
-
-            // 타겟 주위 회전
-            if (isRotate)
-            {
-                interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
-            }
-
-            // 1차 결과 계산
-            var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
-
             
-            // 1차 결과 계산 후 장애물 때문에 속도가 너무 느리면 반대로 회전 및 해당 방향 피하기 (회전하지 않는 경우 interest가 없으면 회피 계산 무시)
-            if (danger.AddedWeightCount > 0 && (isRotate || interest.AddedWeightCount > 0))
+            interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
+            
+                // 1차 결과 계산
+            var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
+            
+            // 장애물이 있으면 회전
+            if (danger.AddedWeightCount > 0)
             {
                 if (result.sqrMagnitude < TurnoverLimitSpeed)
                 {
                     _rotateSide = !_rotateSide;
-
-                    if (isRotate)
-                    {
-                        _avoidDirDamper.ResetCurrentValue(-result);
-                    }
-                    else
-                    {
-                        _avoidDirDamper.ResetCurrentValue((-result + Math.Rotate90Degree(dir, _rotateSide)).normalized);
-                    }
+                    _avoidDirDamper.ResetCurrentValue(-result);
                 }
             }
-
+            
+            
             // 회피 방향 적용해 2차 결과 계산
             var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
             if (avoidDir != Vector2.zero)
@@ -195,51 +158,43 @@ namespace QT.InGame
 
             return result.normalized;
         }
-
-        private void CheckBodyContact()
+        
+        
+        private void CheckAttackStart()
         {
-            if (_data.BodyContactDmg <= 0)
+            if (_atkCoolTime > _data.AttackCoolTime)
             {
-                return;
-            }
-            
-            var hit = Physics2D.OverlapCircle(_ownerEntity.transform.position, _ownerEntity.ColliderRad,
-                _ownerEntity.Shooter.BounceMask);
-
-            var ownerPos = _ownerEntity.transform.position;
-            
-            if (hit != null && hit.TryGetComponent(out IHitAble hitable))
-            {
-                hitable.Hit((ownerPos - hit.transform.position).normalized, _data.BodyContactDmg);
+                _atkCoolTime = 0;
+                _ownerEntity.ChangeState(_nextState);
             }
         }
-        
-        private bool CheckAttackStart(float targetDistance)
+
+        private JelloHand.States PickAttackState()
         {
-            if (_data.AtkDataId == 0 || _atkCheckTimer < _data.AtkCheckDelay)
+            _attackStateIndex++;
+            
+            if(_attackStateIndex < _attackStates.Count)
             {
-                return false;
+                _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
+                return _attackStates[_attackStateIndex];
+            }
+            
+            _attackStates.Shuffle();
+            _attackStateIndex = 0;
+            
+            _targetDistance = GetStateTargetDistance(_attackStates[_attackStateIndex]);
+            return _attackStates[_attackStateIndex];
+        }
+        
+        private float GetStateTargetDistance(JelloHand.States states)
+        {
+            switch (states)
+            {
+                case JelloHand.States.Shoot:
+                    return _data.ShootDistance;
             }
 
-            switch (_data.AtkStartType)
-            {
-                case EnemyGameData.AtkStartTypes.AfterIdleSec:
-                {
-                    _atkCheckTimer = 0;
-                    return true;
-                }
-                case EnemyGameData.AtkStartTypes.Sight:
-                {
-                    if (targetDistance < _data.AtkStartParam)
-                    {
-                        _atkCheckTimer = 0;
-                        return true;
-                    }
-                    break;
-                }
-            }
-
-            return false;
+            return _enemyData.SpacingRad;
         }
     }
 }

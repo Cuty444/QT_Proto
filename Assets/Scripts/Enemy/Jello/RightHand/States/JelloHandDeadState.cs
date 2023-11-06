@@ -27,7 +27,6 @@ namespace QT.InGame
             _ownerEntity.Animator.SetBool(DeadAnimHash, true);
             _ownerEntity.SetPhysics(false);
             _ownerEntity.BallObject.localPosition = Vector3.up * _ownerEntity.BallHeightMin;
-            _ownerEntity.HpCanvas.gameObject.SetActive(false);
 
             _ownerEntity.ShadowSprite.DOFade(0, 1).SetEase(Ease.InQuad);
             
@@ -48,7 +47,6 @@ namespace QT.InGame
         {
             if (!_isReleased && (Time.timeSinceLevelLoad - _releaseTime) >= ReleaseTime)
             {
-                _ownerEntity.ReleaseObject();
                 _isReleased = true;
             }
         }

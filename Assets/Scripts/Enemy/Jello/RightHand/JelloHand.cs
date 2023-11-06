@@ -11,7 +11,8 @@ namespace QT.InGame
     public partial class JelloHand : FSMPlayer<JelloHand>, IFSMEntity, IEnemy, IProjectile
     {
         public string PrefabPath { get; set; }
-
+        private static readonly int RotationAnimHash = Animator.StringToHash("Rotation");
+        
         public enum States : int
         {
             Global,
@@ -20,11 +21,14 @@ namespace QT.InGame
             Normal,
             Rigid, 
             
+            Shoot,
+            
+            
             // 사실상 죽어있음
             Projectile,
             Dead,
         }
-        
+
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         public float ColliderRad { get; private set; }
@@ -34,9 +38,13 @@ namespace QT.InGame
         public bool IsRigid => CurrentStateIndex == (int)States.Rigid;
         public LayerMask BounceMask { get; set; }
 
-
-        [SerializeField] private int _enemyId;
-        [field: SerializeField] public Canvas HpCanvas { get; private set; }
+        
+        [field: SerializeField] public JelloData JelloData{ get; private set; }
+        [field: SerializeField] public EnemyHPIndicator HpIndicator { get; private set; }
+        
+        [field:Space]
+        [field: SerializeField] public Transform ShootPointPivot{ get; private set; }
+        [field: SerializeField] public Transform ShootPointTransform{ get; private set; }
         
         public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
@@ -52,9 +60,7 @@ namespace QT.InGame
         [field: SerializeField] public SpriteRenderer ShadowSprite { get; private set; }
 
         [field: SerializeField] public ProjectileOwner Owner { get; private set; }
-
-        [HideInInspector] public Image HpImage;
-
+        
         private Collider2D[] _colliders;
 
         public int ProjectileDamage { get; private set; }
@@ -71,17 +77,11 @@ namespace QT.InGame
             Animator = GetComponentInChildren<Animator>();
             MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
             Steering = GetComponent<Steering>();
-            
-            HpCanvas.worldCamera = Camera.main;
-            HpImage = HpCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>();
-            HpCanvas.gameObject.SetActive(false);
         }
         
         public void initialization(int enemyId)
         {
-            _enemyId = enemyId;
-            
-            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
+            Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(enemyId);
             
             ColliderRad = SystemManager.Instance.DataManager.GetDataBase<ProjectileGameDataBase>()
                 .GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
@@ -98,6 +98,8 @@ namespace QT.InGame
 
             BallObject.localPosition = Vector2.up * BallHeightMin;
             ShadowSprite.color = new Color(0, 0, 0, 0.5f);
+            
+            HpIndicator.gameObject.SetActive(false);
         }
 
 
@@ -110,21 +112,35 @@ namespace QT.InGame
                 collider.enabled = enable;
             }
         }
-       
-        
-        public void ReleaseObject()
+
+
+        public int SetDir(Vector2 dir, int sideCount)
         {
-            if (string.IsNullOrWhiteSpace(PrefabPath))
+            var side = GetSide(dir, sideCount);
+
+            SetDir(side);
+            
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            ShootPointPivot.rotation = Quaternion.Euler(0, 0, angle);
+            
+            return side;
+        }
+
+        private void SetDir(int side)
+        {
+            Animator.SetFloat(RotationAnimHash, side);
+        }
+
+        public int GetSide(Vector2 dir, int sideCount)
+        {
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            if (angle < 0)
             {
-                return;
+                angle += 360;
             }
             
-            OnDestroy();
-            
-            HitAbleManager.Instance.UnRegister(this);
-            ProjectileManager.Instance.UnRegister(this);
-            
-            SystemManager.Instance.ResourceManager.ReleaseObject(PrefabPath, transform);
+            return Mathf.RoundToInt(angle / 360 * sideCount);
         }
     }    
 }

@@ -69,11 +69,10 @@ namespace QT.InGame
             _size = data.ColliderRad * 0.5f;
             _damage = data.DirectDmg;
             
-            _speedDecay = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.SpdDecay;
+            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
+            _speedDecay = _globalData.SpdDecay;
 
             _soundManager = SystemManager.Instance.SoundManager;
-
-            _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
         }
 
         public async void InitializeState(Vector2 dir, float power, LayerMask bounceMask, ProjectileProperties properties, Transform target)

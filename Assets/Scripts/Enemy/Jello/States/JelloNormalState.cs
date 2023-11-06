@@ -54,7 +54,7 @@ namespace QT.InGame
             _target = SystemManager.Instance.PlayerManager.Player.transform;
             _currentTargetPos = _target.position;
             
-            _ownerEntity.Shooter.SetTarget(SystemManager.Instance.PlayerManager.Player.transform);
+            _ownerEntity.Shooter.SetTarget(_target);
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, true);
 
             _nextState = PickAttackState();
