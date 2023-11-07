@@ -23,6 +23,7 @@ namespace QT.InGame
         private GlobalData _globalData;
 
         private Bone _batBone;
+        private Bone _batEffectBone;
         private Stat _swingRadStat;
         
         private InputFloatDamper _swingRadDamper = new (100);
@@ -32,7 +33,10 @@ namespace QT.InGame
         {
             _globalData = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData;
             
-            _batBone = _ownerEntity.GetComponentInChildren<SkeletonRenderer>().Skeleton.FindBone("bat_size");
+            var skeleton = _ownerEntity.GetComponentInChildren<SkeletonRenderer>().Skeleton;
+            _batBone = skeleton.FindBone("bat_size");
+            _batEffectBone = skeleton.FindBone("Bat_eff");
+            
             _swingRadStat = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingRad);
         }
 
@@ -169,6 +173,9 @@ namespace QT.InGame
             
             _batBone.ScaleX = swingRad;
             _batBone.ScaleY = swingRad;
+            
+            _batEffectBone.ScaleX = swingRad * 2;
+            _batEffectBone.ScaleY = swingRad * 2;
         }
 
     }
