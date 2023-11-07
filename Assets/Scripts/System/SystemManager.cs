@@ -30,8 +30,6 @@ namespace QT.Core
         public SoundManager SoundManager { get; } = new();
 
         public StageLoadManager StageLoadManager { get; } = new();
-
-        public ItemPoolSystem ItemPoolSystem { get; } = new();
         
         [field:SerializeField]public UIManager UIManager { get; private set; }
         [SerializeField] private SoundPathData _soundPathData;

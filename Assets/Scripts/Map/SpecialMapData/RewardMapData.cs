@@ -26,14 +26,14 @@ namespace QT
         {
             if (position == MapPosition)
             {
-                var items = SystemManager.Instance.ItemPoolSystem.GetItemsWithDropPercentage(1,
+                var items = SystemManager.Instance.GetSystem<ItemPoolSystem>().GetItemsWithDropPercentage(1,
                     DropGameType.Shop);
                 
                 var holder = Instantiate(_itemObject, _rewardItemTransform).GetComponent<ItemHolder>();
                     
                 holder.gameObject.SetActive(true);
                 holder.Init(items[0]);
-                SystemManager.Instance.ItemPoolSystem.HolderItemCreatedEvent.Invoke(items);
+                SystemManager.Instance.GetSystem<ItemPoolSystem>().HolderItemCreatedEvent.Invoke(items);
                 SystemManager.Instance.PlayerManager.PlayerMapPosition.RemoveListener(ItemCreate);
             }
         }

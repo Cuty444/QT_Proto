@@ -22,7 +22,7 @@ namespace QT
         
         private void ItemCreate()
         {
-            var items = SystemManager.Instance.ItemPoolSystem.GetItemsWithDropPercentage(_shopItemTransforms.Length,
+            var items = SystemManager.Instance.GetSystem<ItemPoolSystem>().GetItemsWithDropPercentage(_shopItemTransforms.Length,
                 DropGameType.Start);
             for (int i = 0; i < items.Count; i++)
             {
