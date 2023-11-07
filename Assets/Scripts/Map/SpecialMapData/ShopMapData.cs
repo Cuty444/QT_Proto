@@ -24,11 +24,8 @@ namespace QT
         {
             if (position == MapPosition)
             {
-                var percent = SystemManager.Instance.DataManager.GetDataBase<DropGameDataBase>().GetData((int)DropGameType.Shop);
-                
-                var items = SystemManager.Instance.DataManager.GetDataBase<ItemGameDataBase>()
-                    .GetItemsWithDropPercentage(percent, _shopItemTransforms.Length,
-                        SystemManager.Instance.PlayerManager.Player.Inventory);
+                var items = SystemManager.Instance.GetSystem<ItemPoolSystem>().GetItemsWithDropPercentage(_shopItemTransforms.Length,
+                    DropGameType.Shop);
                 
                 for (int i = 0; i < items.Count; i++)
                 {
@@ -37,6 +34,7 @@ namespace QT
                     holder.gameObject.SetActive(true);
                     holder.Init(items[i]);
                 }
+                SystemManager.Instance.GetSystem<ItemPoolSystem>().HolderItemCreatedEvent.Invoke(items);
                 SystemManager.Instance.PlayerManager.PlayerMapPosition.RemoveListener(ItemCreate);
             }
         }

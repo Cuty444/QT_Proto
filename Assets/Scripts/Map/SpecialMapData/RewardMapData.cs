@@ -26,14 +26,14 @@ namespace QT
         {
             if (position == MapPosition)
             {
-                var percent = SystemManager.Instance.DataManager.GetDataBase<DropGameDataBase>().GetData((int)DropGameType.Shop);
-                
-                var item = SystemManager.Instance.DataManager.GetDataBase<ItemGameDataBase>().PickRandom(percent.RandomGradeType());
+                var items = SystemManager.Instance.GetSystem<ItemPoolSystem>().GetItemsWithDropPercentage(1,
+                    DropGameType.Shop);
                 
                 var holder = Instantiate(_itemObject, _rewardItemTransform).GetComponent<ItemHolder>();
                     
                 holder.gameObject.SetActive(true);
-                holder.Init(item);
+                holder.Init(items[0]);
+                SystemManager.Instance.GetSystem<ItemPoolSystem>().HolderItemCreatedEvent.Invoke(items);
                 SystemManager.Instance.PlayerManager.PlayerMapPosition.RemoveListener(ItemCreate);
             }
         }

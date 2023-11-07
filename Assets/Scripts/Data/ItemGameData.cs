@@ -106,7 +106,7 @@ namespace QT
             return null;
         }
 
-        public List<ItemGameData> GetItemsWithDropPercentage(DropPercentage percentage, int count, Inventory inventory)
+        public List<ItemGameData> GetItemsWithDropPercentage(DropPercentage percentage, int count, Inventory inventory, List<ItemGameData> holder)
         {
             var result = new List<ItemGameData>();
 
@@ -114,7 +114,7 @@ namespace QT
             {
                 var item = PickRandom(percentage.RandomGradeType());
                 
-                if (item != null && !result.Contains(item) && !inventory.Contains(item.Index))
+                if (item != null && !result.Contains(item) && !inventory.Contains(item.Index) && !holder.Contains(item))
                 {
                     result.Add(item);
                 }

@@ -17,6 +17,20 @@ namespace QT
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Coin_GetSFX);
         }
         
+        public static async void SpawnDelayStay(int count, Vector2 position, Vector2 dir, float power,float delayTime)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var coin = await SystemManager.Instance.ResourceManager.GetFromPool<Coin>(Constant.CoinPrefabPath);
+                coin.transform.position = position;
+                coin.Drop(dir, power);
+                coin._isDelay = true;
+                coin.Invoke(nameof(DelayOff), delayTime);
+            }
+            
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Coin_GetSFX);
+        }
+        
         
         
         private const float SpeedMultiplier = 0.2f;
@@ -57,6 +71,8 @@ namespace QT
 
         private Transform _player;
 
+        private bool _isDelay = false;
+
         public void Drop(Vector2 dir, float power)
         {
             var randomDir =  new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)).normalized;
@@ -79,12 +95,17 @@ namespace QT
                 SystemManager.Instance.ResourceManager.ReleaseObject(Constant.CoinPrefabPath, this);
                 return;
             }
+            
 
             switch (_state)
             {
                 case 0:
                     DropMove();
                     BounceEffect();
+                    if (_isDelay)
+                    {
+                        return;
+                    }
                     
                     if (_speed <= 0)
                     {
@@ -172,6 +193,11 @@ namespace QT
             }
 
             return new Vector2(2 - power, power);
+        }
+
+        private void DelayOff()
+        {
+            _isDelay = false;
         }
         
     }

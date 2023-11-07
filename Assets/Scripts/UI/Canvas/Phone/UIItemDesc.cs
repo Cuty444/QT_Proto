@@ -80,6 +80,10 @@ namespace QT
             _descAnimation.Reset();
         }
 
+        public void SetGoldCost(string text)
+        {
+            _goldCost.text = text;
+        }
         public void PlayFailButtonAnimation()
         {
             _failButtonAnimation?.ReStart();
