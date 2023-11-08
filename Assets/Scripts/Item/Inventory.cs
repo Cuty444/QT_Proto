@@ -110,6 +110,8 @@ namespace QT.InGame
                     return true;
             }
 
+            if (ActiveItem?.ItemGameData.Index == itemId)
+                return true;
             return false;
         }
         
@@ -119,6 +121,13 @@ namespace QT.InGame
             _items.CopyTo(result);
             
             return result;
+        }
+
+        public int GetItemCount()
+        {
+            if (ActiveItem != null)
+                return _items.Count + 1;
+            return _items.Count;
         }
 
         public void ClearInventory()

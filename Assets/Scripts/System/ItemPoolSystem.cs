@@ -35,7 +35,7 @@ namespace QT
         private void OnDestroy()
         {
             HolderItemCreatedEvent.RemoveListener(HolderAddRange);
-            SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapGeneratedEvent.RemoveListener(HolderItemClear);
+            //SystemManager.Instance.GetSystem<DungeonMapSystem>().DungeonMapGeneratedEvent.RemoveListener(HolderItemClear);
         }
 
         public List<ItemGameData> GetItemsWithDropPercentage(int count,DropGameType gameType)
