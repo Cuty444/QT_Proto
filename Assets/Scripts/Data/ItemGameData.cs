@@ -49,11 +49,11 @@ namespace QT
         
         private readonly Dictionary<ItemGameData.GradeTypes, List<ItemGameData>> _itemGradeDictionary = new();
         private readonly Dictionary<int, ItemGameData> _datas = new();
+        private int _totalItemCount = 0;
 
         public void RegisterData(IGameData data)
         {
             var itemData = (ItemGameData)data;
-            
             _datas.Add(data.Index, itemData);
             
             
@@ -63,6 +63,7 @@ namespace QT
             }
 
             list.Add(itemData);
+            _totalItemCount++;
         }
 
         public void OnInitialize(GameDataManager manager)
@@ -110,6 +111,11 @@ namespace QT
         {
             var result = new List<ItemGameData>();
 
+            if (_totalItemCount < inventory.GetItemCount() + count)
+            {
+                count = _totalItemCount - inventory.GetItemCount();
+            }
+            
             for (int i = 0; result.Count < count && i < MaxIteration; i++)
             {
                 var item = PickRandom(percentage.RandomGradeType());
