@@ -57,6 +57,8 @@ namespace QT.InGame
         [field: Space]
         [field:Header("분열")]
         
+        [field: SerializeField] public float SplitCondition { get; private set; }
+        
         [field: SerializeField] public float SplitDelay { get; private set; }
         [field: SerializeField] public float SplitAfterDelay { get; private set; }
         

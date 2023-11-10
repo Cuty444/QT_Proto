@@ -7,6 +7,8 @@ namespace QT.InGame
     [FSMState((int)JelloLeftHand.States.Global, false)]
     public class JelloLeftHandGlobalState : FSMState<JelloLeftHand>
     {
+        private static readonly int HitAnimHash = Animator.StringToHash("Hit");
+        
         public JelloLeftHandGlobalState(IFSMEntity owner) : base(owner)
         {
         }
@@ -40,6 +42,8 @@ namespace QT.InGame
                 return;
             }
 
+            _ownerEntity.Animator.SetTrigger(HitAnimHash);
+            
             if (_ownerEntity.HP <= 0)
             {
                 if (attackType != AttackType.PowerSwing)

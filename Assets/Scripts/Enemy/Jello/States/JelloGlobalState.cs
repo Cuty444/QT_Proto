@@ -13,12 +13,17 @@ namespace QT.InGame
         
         private BossHPCanvasModel _hpCanvas;
         
+        private JelloData _data;
+
         private float _rigidTime;
         private float _rigidTimer;
         private bool _isRigid;
 
+        private float _lastMaxHp;
+
         public JelloGlobalState(IFSMEntity owner) : base(owner)
         {
+            _data = _ownerEntity.JelloData;
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
             
             _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
@@ -29,6 +34,8 @@ namespace QT.InGame
             _hpCanvas = await SystemManager.Instance.UIManager.Get<JelloBossHPCanvas>();
             _hpCanvas.SetHPGuage(_ownerEntity.HP);
             _hpCanvas.Show();
+
+            _lastMaxHp = _ownerEntity.HP.Value;
         }
 
         public override void ClearState()
@@ -82,8 +89,10 @@ namespace QT.InGame
                     _ownerEntity.ChangeState(Jello.States.Dead);
                     _hpCanvas?.ReleaseUI();
                 }
-                else if (!IsSplit() && hp.StatusValue / hp.Value < 0.5f)
+                else if (!IsSplit() && (_lastMaxHp - _ownerEntity.HP) > (_data.SplitCondition * _ownerEntity.HP.Value))
                 {
+                    _lastMaxHp = hp.StatusValue;
+                    
                     _ownerEntity.ChangeState(Jello.States.Split);
                 }
                 

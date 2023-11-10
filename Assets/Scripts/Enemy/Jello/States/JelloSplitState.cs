@@ -96,10 +96,10 @@ namespace QT.InGame
             bone.ScaleY = 0;
             
             var ownerTransform = _ownerEntity.transform;
-            var targetPos = bone.GetWorldPosition(ownerTransform);
+            //var targetPos = bone.GetWorldPosition(ownerTransform);
             
             transform.parent = ownerTransform.parent;
-            transform.position = targetPos;
+            transform.position = _ownerEntity.ShootPointPivot.position;
             transform.gameObject.SetActive(true);
             //
             // projectile.ResetBounceCount(0);
