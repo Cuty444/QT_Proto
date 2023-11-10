@@ -19,7 +19,7 @@ namespace QT.InGame
             End
         }
         
-        private static readonly int SplitAnimHash = Animator.StringToHash("RushReady");
+        private static readonly int SplitAnimHash = Animator.StringToHash("Split");
         
         private SoundManager _soundManager;
         private readonly JelloData _data;
@@ -69,6 +69,12 @@ namespace QT.InGame
                     }
                     break;
                 case SplitState.End:
+
+                    if (_timer > _data.SplitAfterDelay)
+                    {
+                        _ownerEntity.ChangeState(Jello.States.SplitMove);
+                    }
+
                     break;
             }
             
