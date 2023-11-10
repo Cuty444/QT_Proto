@@ -27,7 +27,7 @@ namespace QT.InGame
         
         public override async void InitializeState()
         {
-            _hpCanvas = await SystemManager.Instance.UIManager.Get<BossHPCanvasModel>();
+            _hpCanvas = await SystemManager.Instance.UIManager.Get<DullahanBossHPCanvas>();
             _hpCanvas.SetHPGuage(_ownerEntity.HP);
             _hpCanvas.Show();
             
