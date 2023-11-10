@@ -26,7 +26,7 @@ namespace QT.InGame
         
         public override async void InitializeState()
         {
-            _hpCanvas = await SystemManager.Instance.UIManager.Get<BossHPCanvasModel>();
+            _hpCanvas = await SystemManager.Instance.UIManager.Get<JelloBossHPCanvas>();
             _hpCanvas.SetHPGuage(_ownerEntity.HP);
             _hpCanvas.Show();
         }
@@ -53,8 +53,8 @@ namespace QT.InGame
                 changer.SetHitMaterial();
             }
             
-            _ownerEntity.Rigidbody.velocity = Vector2.zero; 
-            _ownerEntity.Rigidbody.AddForce(-dir, ForceMode2D.Impulse);
+            // _ownerEntity.Rigidbody.velocity = Vector2.zero; 
+            // _ownerEntity.Rigidbody.AddForce(-dir, ForceMode2D.Impulse);
             
             _ownerEntity.Animator.SetTrigger(HitAnimHash);
             
@@ -75,14 +75,25 @@ namespace QT.InGame
             {
                 _ownerEntity.Animator.ResetTrigger(HitAnimHash);
 
-                if (_ownerEntity.HP <= 0)
+                var hp = _ownerEntity.HP;
+
+                if (hp <= 0)
                 {
                     _ownerEntity.ChangeState(Jello.States.Dead);
                     _hpCanvas?.ReleaseUI();
                 }
-
+                else if (!IsSplit() && hp.StatusValue / hp.Value < 0.5f)
+                {
+                    _ownerEntity.ChangeState(Jello.States.Split);
+                }
+                
                 _isRigid = false;
             }
+        }
+        
+        private bool IsSplit()
+        {
+            return (Jello.States) _ownerEntity.CurrentStateIndex is >= Jello.States.Split and <= Jello.States.Restore;
         }
     }
 }

@@ -28,6 +28,8 @@ namespace QT.InGame
             
             SplitMove,
             
+            Stomp,
+            
             Merge,
             
             Restore,
@@ -42,6 +44,7 @@ namespace QT.InGame
         public bool IsRigid => false;
         
         public EnemyGameData Data { get; private set; }
+        public JelloMapData MapData { get; private set; }
         
         
         [field: SerializeField] public JelloData JelloData { get; private set; }
@@ -105,6 +108,19 @@ namespace QT.InGame
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
 
+#if UNITY_EDITOR
+            if (DungeonManager.Instance is DungeonManagerDummy)
+            {
+                MapData = FindObjectOfType<JelloMapData>(true);
+            }
+#endif
+            
+            var mapCellData = DungeonManager.Instance.GetCurrentMapCellData();
+            if(mapCellData != null && mapCellData.SpecialMapData != null)
+            {
+                MapData = mapCellData.SpecialMapData as JelloMapData;
+            }
+            
             //Shooter.Initialize(Animator);
             
             SetUpStats();

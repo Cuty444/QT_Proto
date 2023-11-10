@@ -19,7 +19,7 @@ namespace QT.InGame
             End
         }
         
-        private static readonly int SplitAnimHash = Animator.StringToHash("RushReady");
+        private static readonly int SplitAnimHash = Animator.StringToHash("Split");
         
         private SoundManager _soundManager;
         private readonly JelloData _data;
@@ -69,6 +69,12 @@ namespace QT.InGame
                     }
                     break;
                 case SplitState.End:
+
+                    if (_timer > _data.SplitAfterDelay)
+                    {
+                        _ownerEntity.ChangeState(Jello.States.SplitMove);
+                    }
+
                     break;
             }
             
@@ -77,13 +83,11 @@ namespace QT.InGame
 
         private void SpawnHands()
         {
-            _ownerEntity.LeftHand.gameObject.SetActive(true);
-            _ownerEntity.LeftHand.initialization(_data.LeftHandEnemyId);
             InitHand(_ownerEntity.LeftHand,_ownerEntity.LeftHand.transform, _leftHandBone);
+            _ownerEntity.LeftHand.initialization(_data.LeftHandEnemyId);
             
-            _ownerEntity.RightHand.gameObject.SetActive(true);
-            _ownerEntity.RightHand.initialization(_data.RightHandEnemyId);
             InitHand(_ownerEntity.RightHand,_ownerEntity.RightHand.transform, _rightHandBone);
+            _ownerEntity.RightHand.initialization(_data.RightHandEnemyId);
         }
 
         private void InitHand(IProjectile projectile, Transform transform, Bone bone)
@@ -96,11 +100,12 @@ namespace QT.InGame
             
             transform.parent = ownerTransform.parent;
             transform.position = targetPos;
-            
-            projectile.ResetBounceCount(0);
-            projectile.ResetProjectileDamage(25);
-            projectile.ProjectileHit((targetPos - ownerTransform.position).normalized, _data.SplitShootSpeed, 
-                _ownerEntity.Shooter.BounceMask, ProjectileOwner.Boss, ProjectileProperties.None);
+            transform.gameObject.SetActive(true);
+            //
+            // projectile.ResetBounceCount(0);
+            // projectile.ResetProjectileDamage(25);
+            // projectile.ProjectileHit((targetPos - ownerTransform.position).normalized, _data.SplitShootSpeed, 
+            //     _ownerEntity.Shooter.BounceMask, ProjectileOwner.Boss, ProjectileProperties.None);
         }
 
     }

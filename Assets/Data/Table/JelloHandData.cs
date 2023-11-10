@@ -11,6 +11,10 @@ namespace QT.InGame
         [field: SerializeField] public float AttackCoolTime { get; private set; }
         
         
+        [field:Header("스폰")]
+        [field: SerializeField] public float SpawnSpeed { get; private set; }
+        [field: SerializeField] public float SpawnTime { get; private set; }
+        
         [field: Space]
         [field: Space]
         [field: Space]

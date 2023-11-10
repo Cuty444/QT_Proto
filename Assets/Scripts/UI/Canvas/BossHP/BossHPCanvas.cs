@@ -1,3 +1,5 @@
+using System.Collections;
+using DG.Tweening;
 using QT.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +10,7 @@ namespace QT.UI
     public class BossHPCanvas : UIPanel
     {
         [field:SerializeField] public Image HpImage { get; private set; }
+        [field:SerializeField] public Image HPWhiteImage { get; private set; }
         
         [field:Space]
         [field:SerializeField] public TweenAnimator PopAnimator { get; private set; }
@@ -20,7 +23,7 @@ namespace QT.UI
     {
         public override bool UseStack => false;
         public override UIType UIType => UIType.Popup;
-        public override string PrefabPath => "BossHP.prefab";
+        public override string PrefabPath => "D_BossHP.prefab";
         
         private BossHPCanvas _bossHpCanvas;
 
@@ -41,8 +44,11 @@ namespace QT.UI
 
         public void SetHPGuage(Status hp)
         {
-            _bossHpCanvas.HpImage.fillAmount = hp.StatusValue / hp.Value;
-            
+            var fillAmount = hp.StatusValue / hp.Value;
+            _bossHpCanvas.HpImage.fillAmount = fillAmount;
+
+            _bossHpCanvas.HPWhiteImage.DOFillAmount(fillAmount, 0.5f);
+
             if (_bossHpCanvas.HpImage.fillAmount <= 0)
             {
                 _bossHpCanvas.ReleaseAnimator.ReStart();
@@ -52,6 +58,24 @@ namespace QT.UI
                 _bossHpCanvas.HitAnimation.ReStart();
             }
         }
-        
+
     }
+
+    
+    public class JelloBossHPCanvas : BossHPCanvasModel
+    {
+        public override string PrefabPath => "J_BossHP.prefab";
+    }
+    
+    
+    public class SaddyBossHPCanvas : BossHPCanvasModel
+    {
+        public override string PrefabPath => "S_BossHP.prefab";
+    }
+    
+    public class DullahanBossHPCanvas : BossHPCanvasModel
+    {
+            public override string PrefabPath => "D_BossHP.prefab";
+    }
+    
 }

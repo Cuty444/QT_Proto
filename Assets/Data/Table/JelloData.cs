@@ -65,6 +65,16 @@ namespace QT.InGame
         [field: Space]
         [field: SerializeField] public int RightHandEnemyId { get; private set; }
         [field: SerializeField] public int LeftHandEnemyId { get; private set; }
+        
+        
+        [field: Space]
+        [field: Space]
+        [field: Space]
+        [field:Header("분열 움직임")]
+        
+        [field: SerializeField] public float SplitMoveDistance { get; private set; }
+        [field: SerializeField] public float SplitAttackCoolTime { get; private set; }
+        
 
 
     }
