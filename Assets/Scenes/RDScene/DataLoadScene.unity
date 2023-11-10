@@ -123,6 +123,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &138052653
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 138052654}
+  - component: {fileID: 138052655}
+  m_Layer: 0
+  m_Name: ItemPoolSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &138052654
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138052653}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1645622496}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &138052655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138052653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f60d5fa5bce1d4439e7f6903752350e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &178758839
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,7 +326,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mapWidth: 7
   _mapHeight: 7
-  _maxRoomValue: 10
   _floorValue: 0
   _manyPathCorrection: 0.9
 --- !u!1 &842886725
@@ -500,6 +543,7 @@ Transform:
   m_Children:
   - {fileID: 466087788}
   - {fileID: 806937147}
+  - {fileID: 138052654}
   - {fileID: 2068545644}
   - {fileID: 1499529187}
   m_Father: {fileID: 0}

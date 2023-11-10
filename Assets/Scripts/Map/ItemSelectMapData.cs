@@ -17,32 +17,13 @@ namespace QT
         
         private void Awake()
         {
-            if (_dropGameType == DropGameType.Select)
-            {
-                SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(ItemCreate);
-            }
-            else if (_dropGameType == DropGameType.Start)
-            {
-                ItemCreate();
-            }
-        }
-
-        private void ItemCreate(Vector2Int position)
-        {
-            if (position == MapPosition)
-            {
-                ItemCreate();
-            }
+            ItemCreate();
         }
         
         private void ItemCreate()
         {
-            var percent = SystemManager.Instance.DataManager.GetDataBase<DropGameDataBase>().GetData((int)_dropGameType);
-                
-            var items = SystemManager.Instance.DataManager.GetDataBase<ItemGameDataBase>()
-                .GetItemsWithDropPercentage(percent, _shopItemTransforms.Length,
-                    SystemManager.Instance.PlayerManager.Player.Inventory);
-
+            var items = SystemManager.Instance.GetSystem<ItemPoolSystem>().GetItemsWithDropPercentage(_shopItemTransforms.Length,
+                DropGameType.Start);
             for (int i = 0; i < items.Count; i++)
             {
                 var holder = Instantiate(_itemObject, _shopItemTransforms[i]).GetComponent<ItemHolder>();

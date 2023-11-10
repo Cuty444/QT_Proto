@@ -10,6 +10,7 @@ using QT.UI;
 using QT.Util;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.Events;
 
 namespace QT.Core.Map
 {
@@ -100,6 +101,7 @@ namespace QT.Core.Map
         private Transform _dungeonTransform;
         public Transform DungeonTransform => _dungeonTransform;
 
+        public UnityEvent DungeonMapGeneratedEvent { get; } = new();
         
         private Vector2 _mapSizePosition;
 
@@ -168,6 +170,7 @@ namespace QT.Core.Map
                 _mapData.Map[pos.y,pos.x].DoorDirection = DirectionCheck(pos);
             }
             
+            DungeonMapGeneratedEvent.Invoke();
         }
 
 
