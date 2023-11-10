@@ -126,6 +126,8 @@ namespace QT.InGame
                 interest.AddWeight(-dir, 1);
             }
             
+            interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
+            
             // 1차 결과 계산
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             
@@ -138,7 +140,7 @@ namespace QT.InGame
                     _avoidDirDamper.ResetCurrentValue(-result);
                 }
                 
-                interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
+                //interest.AddWeight(Math.Rotate90Degree(dir, _rotateSide), 1);
             }
             
             
