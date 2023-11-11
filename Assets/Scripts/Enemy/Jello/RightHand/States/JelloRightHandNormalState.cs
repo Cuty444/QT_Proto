@@ -87,7 +87,7 @@ namespace QT.InGame
             var speed = _enemyData.MovementSpd;
             
             // 타겟과의 거리 유지
-            if ((_dest - (Vector2)_transform.position).sqrMagnitude > _targetDistance * _targetDistance)
+            if ((_dest - (Vector2)_transform.position).sqrMagnitude > _targetDistance)
             {
                 speed *= _data.PositionCorrectionSpeedMultiplier;
             }

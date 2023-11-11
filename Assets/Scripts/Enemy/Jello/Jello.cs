@@ -30,6 +30,8 @@ namespace QT.InGame
             
             Stomp,
             
+            HandSkill,
+            
             Merge,
             
             Restore,

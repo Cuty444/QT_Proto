@@ -85,7 +85,7 @@ namespace QT.InGame
                         _ownerEntity.Shooter.Shoot(_data.ShootFinalShootId, AimTypes.Target, ProjectileOwner.Boss);
                         _ownerEntity.Shooter.Shoot(_data.ShootFinalShootId2, AimTypes.Target, ProjectileOwner.Boss);
 
-                        _ownerEntity.ChangeState(Jello.States.Normal);
+                        _ownerEntity.RevertToPreviousState();
                     }
                     break;
             }

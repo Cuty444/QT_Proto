@@ -138,7 +138,7 @@ namespace QT.Util
         }
     }
 
-    public static class RandomSeedS
+    public static class RandomSeed
     {
         private const string stringSeeds =
             "abcdefghijklmnopqrstuvwxyz0123456789";

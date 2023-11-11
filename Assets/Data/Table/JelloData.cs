@@ -82,6 +82,19 @@ namespace QT.InGame
         [field: SerializeField] public float SplitAttackCoolTime { get; private set; }
         
 
-
+        [field: Space]
+        [field: Space]
+        [field:Header("내려찍기")]
+        [field: SerializeField] public float StompReadyTime { get; private set; }
+        [field: SerializeField] public float StompLengthTime { get; private set; }
+        [field: SerializeField] public float StompEndDelay { get; private set; }
+        
+        [field: Space]
+        [field: SerializeField] public float StompAirSpeed { get; private set; }
+        [field: SerializeField] public int StompShootId { get; private set; }
+        
+        [field: Space]
+        [field: SerializeField] public int StompRepeatCount { get; private set; }
+        
     }
 }

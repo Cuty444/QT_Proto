@@ -71,6 +71,7 @@ namespace QT.InGame
         public override void ClearState()
         {
             _ownerEntity.Shooter.StopAttack();
+            _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPointTransform;
             
             _ownerEntity.Animator.ResetTrigger(RushReadyAnimHash);
             _ownerEntity.Animator.SetBool(IsRushingAnimHash, false);
@@ -95,7 +96,7 @@ namespace QT.InGame
                 case RushState.End:
                     if (_timer > _data.RushEndDelay)
                     {
-                        _ownerEntity.ChangeState(Jello.States.Normal);
+                        _ownerEntity.RevertToPreviousState();
                     }
                     break;
             }
@@ -160,6 +161,7 @@ namespace QT.InGame
         {
             if (_timer > _data.RushReadyTime)
             {
+                _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPointPivot;
                 _ownerEntity.Shooter.PlayEnemyAtkSequence(_data.RushAtkId, ProjectileOwner.Boss);
                 
                 _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
@@ -180,7 +182,7 @@ namespace QT.InGame
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
                 
-                _ownerEntity.ChangeState(Jello.States.Normal);
+                _ownerEntity.RevertToPreviousState();
                 _timer = 0;
             }
         }
