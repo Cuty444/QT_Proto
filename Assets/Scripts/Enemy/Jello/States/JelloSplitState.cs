@@ -30,6 +30,9 @@ namespace QT.InGame
         private Bone _leftHandBone;
         private Bone _rightHandBone;
         
+        public Transform _target;
+        private Transform _transform;
+        
 
         public JelloSplitState(IFSMEntity owner) : base(owner)
         {
@@ -37,10 +40,12 @@ namespace QT.InGame
             
             _leftHandBone = _ownerEntity.SkeletonRenderer.Skeleton.FindBone(_ownerEntity.LeftHandBoneName);
             _rightHandBone = _ownerEntity.SkeletonRenderer.Skeleton.FindBone(_ownerEntity.RightHandBoneName);
+            _transform = _ownerEntity.transform;
         }
 
         public override void InitializeState()
         {
+            _target = SystemManager.Instance.PlayerManager.Player.transform;
             _soundManager = SystemManager.Instance.SoundManager;
 
             _ownerEntity.Animator.SetTrigger(SplitAnimHash);
@@ -83,31 +88,36 @@ namespace QT.InGame
 
         private void SpawnHands()
         {
+            Vector2 dir = (_target.position - _transform.position).normalized * 0.5f;
+            
             _ownerEntity.LeftHand.gameObject.SetActive(true);
             _ownerEntity.LeftHand.initialization(_data.LeftHandEnemyId);
-            InitHand(_ownerEntity.LeftHand,_ownerEntity.LeftHand.transform, _leftHandBone);
+            InitHand(_ownerEntity.LeftHand, _ownerEntity.LeftHand.transform, _leftHandBone, dir);
             
             _ownerEntity.RightHand.gameObject.SetActive(true);
             _ownerEntity.RightHand.initialization(_data.RightHandEnemyId);
-            InitHand(_ownerEntity.RightHand,_ownerEntity.RightHand.transform, _rightHandBone);
+            InitHand(_ownerEntity.RightHand, _ownerEntity.RightHand.transform, _rightHandBone, dir);
         }
 
-        private void InitHand(IProjectile projectile, Transform transform, Bone bone)
+        private void InitHand(IProjectile projectile, Transform transform, Bone bone, Vector2 dir)
         {
             bone.ScaleX = 0;
             bone.ScaleY = 0;
             
-            var ownerTransform = _ownerEntity.transform;
-            var targetPos = bone.GetWorldPosition(ownerTransform);
-            var spawnPos = _ownerEntity.ShootPointPivot.position;
+            Vector2 targetPos = bone.GetWorldPosition(_transform);
+            Vector2 spawnPos = _ownerEntity.ShootPointPivot.position;
             
-            transform.parent = ownerTransform.parent;
+            transform.parent = _transform.parent;
             transform.position = spawnPos;
             //
             projectile.ResetBounceCount(0);
             projectile.ResetProjectileDamage(25);
-            projectile.ProjectileHit(new ProjectileHitData((targetPos - spawnPos).normalized, _data.SplitShootSpeed,
-                _ownerEntity.Shooter.BounceMask, ProjectileOwner.Boss, ProjectileProperties.None));
+
+            dir += (targetPos - spawnPos).normalized;
+            dir.Normalize();
+            
+            projectile.ProjectileHit(new ProjectileHitData(dir, _data.SplitShootSpeed, _ownerEntity.Shooter.BounceMask,
+                ProjectileOwner.Boss, ProjectileProperties.None));
         }
 
     }

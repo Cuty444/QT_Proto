@@ -58,6 +58,8 @@ namespace QT.InGame
 
         private ParticleSystem _flyingEffect;
         
+        private bool _isDamageOnBounce;
+        
         public JelloRightHandProjectileState(IFSMEntity owner) : base(owner)
         {
             _transform = _ownerEntity.transform;
@@ -84,6 +86,8 @@ namespace QT.InGame
             _size = _ownerEntity.ColliderRad;
             _targetTransform = data.Target;
 
+            _isDamageOnBounce = data.Owner != ProjectileOwner.Boss;
+            
             _ownerEntity.SetPhysics(false);
             
             if (_ownerEntity.HP <= 0)
@@ -180,7 +184,7 @@ namespace QT.InGame
                 return;
 
             
-            if (_speed > _globalData.BallMinSpdToHit && _ownerEntity.HP > 0)
+            if (_isDamageOnBounce && _speed > _globalData.BallMinSpdToHit && _ownerEntity.HP > 0)
             {
                 _ownerEntity.OnDamageEvent.Invoke(-_direction, _speed * _globalData.BallBounceDamage, AttackType.Ball);
             }

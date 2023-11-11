@@ -17,8 +17,6 @@ namespace QT.InGame
         {
             Global,
             
-            Spawn,
-            
             // 살아있음
             Normal,
             Rigid, 
@@ -90,7 +88,7 @@ namespace QT.InGame
             BounceMask = Shooter.BounceMask;
             
             SetUpStats();
-            SetUp(States.Spawn);
+            SetUp(States.Normal);
             SetGlobalState(new JelloRightHandGlobalState(this));
             
             HitAbleManager.Instance.Register(this);
