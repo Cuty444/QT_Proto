@@ -60,7 +60,7 @@ namespace QT.InGame
             var targetDir = (Vector2) _target.position - (Vector2) _transform.position;
             _ownerEntity.SetDir(targetDir, 4);
             
-            CheckAttackStart();
+            //CheckAttackStart();
         }
 
         private Vector2 Move()

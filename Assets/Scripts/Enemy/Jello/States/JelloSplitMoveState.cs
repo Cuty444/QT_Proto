@@ -32,7 +32,7 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private List<Jello.States> _attackStates = new() {Jello.States.Stomp};
+        private List<Jello.States> _attackStates = new() {Jello.States.Stomp, Jello.States.HandSkill};
         private int _attackStateIndex;
 
         private Jello.States _nextState;

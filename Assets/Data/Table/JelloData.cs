@@ -96,5 +96,10 @@ namespace QT.InGame
         [field: Space]
         [field: SerializeField] public int StompRepeatCount { get; private set; }
         
+        
+        [field: Space]
+        [field: Space]
+        [field:Header("손기술")]
+        [field: SerializeField] public float HandSkillLengthTime { get; private set; }
     }
 }

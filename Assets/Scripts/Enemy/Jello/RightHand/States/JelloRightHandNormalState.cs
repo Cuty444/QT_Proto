@@ -31,8 +31,6 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private int _attackStateIndex;
-
         private float _targetDistance;
         
         public JelloRightHandNormalState(IFSMEntity owner) : base(owner)
@@ -40,8 +38,6 @@ namespace QT.InGame
             _transform = _ownerEntity.transform;
             _enemyData = _ownerEntity.Data;
             _data = _ownerEntity.JelloData;
-
-            _attackStateIndex = -1;
         }
 
         public override void InitializeState()
@@ -74,7 +70,7 @@ namespace QT.InGame
             var targetDir = (Vector2) _target.position - (Vector2) _transform.position;
             _ownerEntity.SetDir(targetDir, 4);
             
-            CheckAttackStart();
+            //CheckAttackStart();
         }
 
         private Vector2 Move()
