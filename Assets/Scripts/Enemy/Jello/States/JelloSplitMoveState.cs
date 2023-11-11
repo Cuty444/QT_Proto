@@ -108,9 +108,9 @@ namespace QT.InGame
         {
             var ownerPos = (Vector2)_transform.position;
             
-            var targetDistance = (_centerPos - ownerPos).magnitude;
             var dir = _centerPos - ownerPos;
-            
+            var targetDistance = dir.magnitude;
+
             var danger = new DirectionWeights();
             var interest = new DirectionWeights();
             
@@ -148,7 +148,7 @@ namespace QT.InGame
             var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
             if (avoidDir != Vector2.zero)
             {
-                interest.AddWeight(_avoidDirDamper.GetDampedValue(avoidDir, Time.deltaTime), 1);
+                interest.AddWeight(avoidDir, 1);
                 result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             }
 

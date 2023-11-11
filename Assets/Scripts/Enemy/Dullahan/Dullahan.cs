@@ -89,7 +89,7 @@ namespace QT.InGame
             Rigidbody.GetAttachedColliders(_colliders);
         }
         
-        public void initialization(int enemyId)
+        public void Initialization(int enemyId)
         {
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);

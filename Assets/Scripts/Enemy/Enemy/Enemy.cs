@@ -72,7 +72,7 @@ namespace QT.InGame
             
         }
         
-        public void initialization(int enemyId)
+        public void Initialization(int enemyId)
         {
             var dataManager = SystemManager.Instance.DataManager;
             

@@ -134,23 +134,23 @@ namespace QT.InGame
             _targetTransform = target;
         }
 
-        public void ProjectileHit(Vector2 dir, float newSpeed, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null)
+        public void ProjectileHit(ProjectileHitData data)
         {
-            _ballTransform.up  = Direction = dir;
+            _ballTransform.up  = Direction = data.Dir;
 
             if (!_lockProperties)
             {
-                _maxSpeed = Mathf.Max(Speed, newSpeed);
-                Speed = newSpeed;
-                _properties = properties;
+                _maxSpeed = Mathf.Max(Speed, data.Power);
+                Speed = data.Power;
+                _properties = data.Properties;
             }
 
             _bounceCount = _maxBounce;
             _currentSpeedDecay = _speedDecay;
-            _bounceMask = bounceMask;
+            _bounceMask = data.BounceMask;
             _isReleased = false;
 
-            switch (owner)
+            switch (data.Owner)
             {
                 case ProjectileOwner.Player:
                 case ProjectileOwner.PlayerTeleport:
@@ -158,13 +158,13 @@ namespace QT.InGame
                     Owner = ProjectileOwner.Player;
                     break;
                 default:
-                    Owner = owner;
+                    Owner = data.Owner;
                     break;
             }
             
             SetOwnerColor();
 
-            _targetTransform = target;
+            _targetTransform = data.Target;
         }
         
         public void ResetBounceCount(int maxBounce)

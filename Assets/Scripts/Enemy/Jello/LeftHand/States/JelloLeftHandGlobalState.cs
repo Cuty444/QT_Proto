@@ -7,6 +7,8 @@ namespace QT.InGame
     [FSMState((int)JelloLeftHand.States.Global, false)]
     public class JelloLeftHandGlobalState : FSMState<JelloLeftHand>
     {
+        private static readonly int HitAnimHash = Animator.StringToHash("Hit");
+        
         public JelloLeftHandGlobalState(IFSMEntity owner) : base(owner)
         {
         }
@@ -40,6 +42,8 @@ namespace QT.InGame
                 return;
             }
 
+            _ownerEntity.Animator.SetTrigger(HitAnimHash);
+            
             if (_ownerEntity.HP <= 0)
             {
                 if (attackType != AttackType.PowerSwing)
@@ -50,7 +54,7 @@ namespace QT.InGame
             }
         }
         
-        private void OnProjectileHit((Vector2 dir, float power) vector, LayerMask bounceMask, ProjectileProperties properties, Transform target)
+        private void OnProjectileHit(ProjectileHitData data)
         {
             if (_ownerEntity.CurrentStateIndex >= (int) JelloLeftHand.States.Dead)
             {
@@ -58,7 +62,7 @@ namespace QT.InGame
             }
             
             var state = _ownerEntity.ChangeState(JelloLeftHand.States.Projectile);
-            ((JelloLeftHandProjectileState) state)?.InitializeState(vector.dir, vector.power, bounceMask, properties, target);
+            ((JelloLeftHandProjectileState) state)?.InitializeState(data);
         }
     }
 }

@@ -60,7 +60,7 @@ namespace QT.InGame
             _player.OnAim.Invoke(aimDir);
             
             ((IProjectile) tpTarget).ResetProjectileDamage(damage);
-            ((IProjectile) tpTarget).ProjectileHit((target.Position - tpTarget.Position).normalized, shootSpeed, BounceMask, ProjectileOwner.PlayerTeleport, ProjectileProperties.None);
+            ((IProjectile) tpTarget).ProjectileHit(new ProjectileHitData((target.Position - tpTarget.Position).normalized, shootSpeed, BounceMask, ProjectileOwner.PlayerTeleport, ProjectileProperties.None));
             
             Debug.DrawLine(tpTarget.Position, target.Position, Color.green,3);
             

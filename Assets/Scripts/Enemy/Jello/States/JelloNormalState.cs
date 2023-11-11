@@ -25,6 +25,7 @@ namespace QT.InGame
         private float _targetUpdateCoolTime;
         public Transform _target;
         private Vector2 _currentTargetPos;
+        private Vector2 _centerPos;
 
         private float _atkCoolTime;
 
@@ -53,6 +54,7 @@ namespace QT.InGame
         {
             _target = SystemManager.Instance.PlayerManager.Player.transform;
             _currentTargetPos = _target.position;
+            _centerPos = _ownerEntity.MapData.MapCenter.position;
             
             _ownerEntity.Shooter.SetTarget(_target);
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, true);
@@ -128,7 +130,6 @@ namespace QT.InGame
             var interest = new DirectionWeights();
             
             _ownerEntity.Steering.DetectObstacle(ref danger);
-
             
             // 발사 패턴에서는 플레이어 위쪽으로 이동할 필요가 있음
             if (_nextState == Jello.States.Shoot && ownerPos.y < _currentTargetPos.y + _data.ShootDistance)
@@ -141,12 +142,15 @@ namespace QT.InGame
                 if (targetDistance > _targetDistance)
                 {
                     interest.AddWeight(dir, 1);
+                    interest.AddWeight(_centerPos - ownerPos, 1);
                 }
                 else if(targetDistance < _targetDistance - 1)
                 {
                     interest.AddWeight(-dir, 1);
+                    interest.AddWeight(_centerPos - ownerPos, 1);
                 }
             }
+            
             
             // 1차 결과 계산
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
@@ -168,7 +172,7 @@ namespace QT.InGame
             var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
             if (avoidDir != Vector2.zero)
             {
-                interest.AddWeight(_avoidDirDamper.GetDampedValue(avoidDir, Time.deltaTime), 1);
+                interest.AddWeight(avoidDir, 1);
                 result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             }
 

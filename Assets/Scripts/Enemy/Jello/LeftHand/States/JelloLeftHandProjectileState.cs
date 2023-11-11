@@ -57,6 +57,8 @@ namespace QT.InGame
         private GlobalData _globalData;
 
         private ParticleSystem _flyingEffect;
+
+        private bool _isDamageOnBounce;
         
         public JelloLeftHandProjectileState(IFSMEntity owner) : base(owner)
         {
@@ -68,22 +70,23 @@ namespace QT.InGame
             _soundManager = SystemManager.Instance.SoundManager;
         }
 
-        public async void InitializeState(Vector2 dir, float power, LayerMask bounceMask, ProjectileProperties properties, Transform target)
+        public async void InitializeState(ProjectileHitData data)
         {
-            _direction = dir;
-            _maxSpeed = _speed = power;
-            _bounceMask = bounceMask;
-            _ownerEntity.BounceMask = bounceMask;
+            _direction = data.Dir;
+            _maxSpeed = _speed = data.Power;
+            _ownerEntity.BounceMask = _bounceMask = data.BounceMask;
 
             _currentSpeedDecay = _speedDecay;
             _bounceCount = _maxBounce = 2;
             _releaseDelay = 1;
             _releaseTimer = 0;
             _isReleased = false;
-            _properties = properties;
+            _properties = data.Properties;
 
             _size = _ownerEntity.ColliderRad;
-            _targetTransform = target;
+            _targetTransform = data.Target;
+            
+            _isDamageOnBounce = data.Owner != ProjectileOwner.Boss;
 
             _ownerEntity.SetPhysics(false);
             
@@ -102,7 +105,7 @@ namespace QT.InGame
             
             _flyingEffect.Play();
 
-            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            var angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
             SystemManager.Instance.ResourceManager.EmitParticle(FlyingStartEffectPath, Vector2.zero,  Quaternion.Euler(0, 0, angle), _ownerEntity.BallObject);
         }
         
@@ -181,7 +184,7 @@ namespace QT.InGame
                 return;
 
             
-            if (_speed > _globalData.BallMinSpdToHit && _ownerEntity.HP > 0)
+            if (_isDamageOnBounce && _speed > _globalData.BallMinSpdToHit && _ownerEntity.HP > 0)
             {
                 _ownerEntity.OnDamageEvent.Invoke(-_direction, _speed * _globalData.BallBounceDamage, AttackType.Ball);
             }

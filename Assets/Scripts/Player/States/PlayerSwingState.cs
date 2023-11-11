@@ -139,6 +139,9 @@ namespace QT.InGame
             int enemyHitCount = 0;
             int stunEnemyCount = 0;
 
+            var hitData = new ProjectileHitData(Vector2.zero, shootSpd, mask, ProjectileOwner.Player, properties,
+                projectileTarget);
+            
             foreach (var hitAble in _hitAbles)
             {
                 if (hitAble == _ownerEntity)
@@ -155,7 +158,9 @@ namespace QT.InGame
                     {
                         projectile.ResetBounceCount(bounce);
                         projectile.ResetProjectileDamage(enemyProjectileDamage);
-                        projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player, properties, projectileTarget);
+
+                        hitData.Dir = GetNewProjectileDir(projectile);
+                        projectile.ProjectileHit(hitData);
                     
                         stunEnemyCount++;
                     }
@@ -173,8 +178,9 @@ namespace QT.InGame
                 {
                     projectile.ResetBounceCount(bounce);
                     projectile.ResetProjectileDamage(projectile is IEnemy ? enemyProjectileDamage : projectileDamage);
-                    projectile.ProjectileHit(GetNewProjectileDir(projectile), shootSpd, mask, ProjectileOwner.Player,
-                        properties, projectileTarget);
+                    
+                    hitData.Dir = GetNewProjectileDir(projectile);
+                    projectile.ProjectileHit(hitData);
 
                     if (projectile is not IHitAble)
                     {

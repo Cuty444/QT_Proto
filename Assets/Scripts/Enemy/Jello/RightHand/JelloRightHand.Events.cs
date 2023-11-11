@@ -6,16 +6,16 @@ namespace QT.InGame
     public partial class JelloRightHand
     {
         public UnityEvent<Vector2, float,AttackType> OnDamageEvent { get; } = new();
-        public UnityEvent<(Vector2, float), LayerMask, ProjectileProperties, Transform> OnProjectileHitEvent { get; } = new();
+        public UnityEvent<ProjectileHitData> OnProjectileHitEvent { get; } = new();
 
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
             OnDamageEvent.Invoke(dir, power,attackType);
         }
 
-        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null)
+        public void ProjectileHit(ProjectileHitData data)
         {
-            OnProjectileHitEvent.Invoke((dir, power), bounceMask, properties, target);
+            OnProjectileHitEvent.Invoke(data);
         }
         
         public void ResetBounceCount(int maxBounce)
@@ -26,7 +26,6 @@ namespace QT.InGame
         public void ResetProjectileDamage(int damage)
         {
             ProjectileDamage = damage;
-
         }
     }
 }

@@ -210,7 +210,7 @@ namespace QT.InGame
         {
             _transform.Translate(-_dir * (_data.RushAirSpeed * Time.deltaTime));
             
-            if (_time > _ownerEntity.DullahanData.RushAirTime)
+            if (_time > _data.RushAirTime)
             {
                 _ownerEntity.ChangeState(Dullahan.States.Stun);
                 _time = 0;
