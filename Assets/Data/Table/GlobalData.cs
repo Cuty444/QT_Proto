@@ -9,14 +9,7 @@ namespace QT.Core.Data
     {
 
         [field: Header("플레이어 공격")]
-
-        /// <summary>
-        /// 플레이어 공격 범위 색깔
-        /// </summary>
-        [field: SerializeField]
-        [Tooltip("플레이어 공격 범위 색깔")]
-        public Color SwingAreaColor { get; private set; }
-
+        
         /// <summary>
         /// 플레이어 배트 크기 배수
         /// </summary>
