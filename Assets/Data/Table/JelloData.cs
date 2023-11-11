@@ -45,9 +45,13 @@ namespace QT.InGame
         [field: Space]
         [field: SerializeField] public float RushHitCheckDelay { get; private set; }
         [field: SerializeField] public float RushLengthTime { get; private set; }
+        [field: SerializeField] public float RushAirTime { get; private set; }
         [field: SerializeField] public float RushEndDelay { get; private set; }
         
+        [field: Space]
         [field: SerializeField] public float RushSpeed { get; private set; }
+        [field: SerializeField] public float RushAirSpeed { get; private set; }
+        [field: Space]
         [field: SerializeField] public float RushHitDamage { get; private set; }
         [field: SerializeField] public int RushAtkId { get; private set; }
         

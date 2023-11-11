@@ -130,7 +130,6 @@ namespace QT.InGame
             var interest = new DirectionWeights();
             
             _ownerEntity.Steering.DetectObstacle(ref danger);
-
             
             // 발사 패턴에서는 플레이어 위쪽으로 이동할 필요가 있음
             if (_nextState == Jello.States.Shoot && ownerPos.y < _currentTargetPos.y + _data.ShootDistance)
@@ -139,9 +138,6 @@ namespace QT.InGame
             }
             else
             {
-                // 가운데로 이동하려는 성질
-                interest.AddWeight(_centerPos - ownerPos, 1);
-                
                 // 타겟과의 거리 유지
                 if (targetDistance > _targetDistance)
                 {
@@ -152,6 +148,9 @@ namespace QT.InGame
                     interest.AddWeight(-dir, 1);
                 }
             }
+            
+            // 가운데로 이동하려는 성질
+            interest.AddWeight(_centerPos - ownerPos, 1);
             
             
             // 1차 결과 계산

@@ -15,6 +15,7 @@ namespace QT.InGame
         {
             Ready,
             Rushing,
+            OnAir,
             End
         }
         
@@ -88,6 +89,9 @@ namespace QT.InGame
                 case RushState.Rushing:
                     Rushing();
                     break;
+                case RushState.OnAir:
+                    OnAir();
+                    break;
                 case RushState.End:
                     if (_timer > _data.RushEndDelay)
                     {
@@ -109,7 +113,7 @@ namespace QT.InGame
             {
                 _ownerEntity.Shooter.StopAttack();
                 _ownerEntity.Animator.SetBool(IsRushingAnimHash, false);
-                _state = RushState.End;
+                _state = RushState.OnAir;
                 _timer = 0;
             }
         }
@@ -177,6 +181,18 @@ namespace QT.InGame
                 _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
                 
                 _ownerEntity.ChangeState(Jello.States.Normal);
+                _timer = 0;
+            }
+        }
+        
+        
+        private void OnAir()
+        {
+            _transform.Translate(-_dir * (_data.RushAirSpeed * Time.deltaTime));
+            
+            if (_timer > _data.RushAirTime)
+            {
+                _state = RushState.End;
                 _timer = 0;
             }
         }
