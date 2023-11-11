@@ -159,6 +159,9 @@ namespace QT.InGame
             Debug.DrawRay(position, new Vector3(_dir.y, -_dir.x) * (_size), Color.magenta, 1);
 
             bool isHit = false;
+
+            var hitData = new ProjectileHitData(_dir, shootSpeed, _player.ProjectileShooter.BounceMask,
+                ProjectileOwner.Player, ProjectileProperties.None);
             
             foreach (var hit in hits)
             {
@@ -174,7 +177,7 @@ namespace QT.InGame
                     
                     if (hit.collider.TryGetComponent(out IProjectile projectile))
                     {
-                        projectile.ProjectileHit(_dir, shootSpeed, _player.ProjectileShooter.BounceMask, ProjectileOwner.Player, ProjectileProperties.None);
+                        projectile.ProjectileHit(hitData);
                         isHit = true;
                     }
 

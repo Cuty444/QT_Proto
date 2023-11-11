@@ -87,6 +87,8 @@ namespace QT.InGame
                 var rotation = (_chargingTime * 2) * 360;
                 var playerPos = (Vector2)_player.transform.position;
                 
+                var hitData = new ProjectileHitData(Vector2.zero, _power, _player.ProjectileShooter.BounceMask, ProjectileOwner.PlayerAbsorb, ProjectileProperties.None);
+                
                 for (var i = 0; i < _targets.Count; i++)
                 {
                     var projectile = _targets[i];
@@ -103,9 +105,8 @@ namespace QT.InGame
                     }
                     Debug.DrawLine(playerPos, targetPos);
 
-                    projectile.ProjectileHit((targetPos - projectile.Position).normalized, _power,
-                        _player.ProjectileShooter.BounceMask,
-                        ProjectileOwner.PlayerAbsorb, ProjectileProperties.None);
+                    hitData.Dir = (targetPos - projectile.Position).normalized;
+                    projectile.ProjectileHit(hitData);
                 }
             }
 
@@ -138,12 +139,17 @@ namespace QT.InGame
         private void Shoot()
         {
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.ActiveOneKiOkThrowSFX);
+            
+            var hitData = new ProjectileHitData(Vector2.zero, _power, _player.ProjectileShooter.BounceMask, ProjectileOwner.PlayerAbsorb, ProjectileProperties.None);
+            
             foreach (var projectile in _targets)
             {
                 ProjectileManager.Instance.Register(projectile);
                 
                 projectile.ResetBounceCount(1);
-                projectile.ProjectileHit(GetNewProjectileDir(projectile), _power, _player.ProjectileShooter.BounceMask, ProjectileOwner.PlayerAbsorb, ProjectileProperties.None);
+                
+                hitData.Dir = GetNewProjectileDir(projectile);
+                projectile.ProjectileHit(hitData);
             }
             _targets.Clear();
         }

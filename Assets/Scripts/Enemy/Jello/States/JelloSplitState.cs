@@ -106,8 +106,8 @@ namespace QT.InGame
             //
             projectile.ResetBounceCount(0);
             projectile.ResetProjectileDamage(25);
-            projectile.ProjectileHit((targetPos - spawnPos).normalized, _data.SplitShootSpeed, 
-                _ownerEntity.Shooter.BounceMask, ProjectileOwner.Boss, ProjectileProperties.None);
+            projectile.ProjectileHit(new ProjectileHitData((targetPos - spawnPos).normalized, _data.SplitShootSpeed,
+                _ownerEntity.Shooter.BounceMask, ProjectileOwner.Boss, ProjectileProperties.None));
         }
 
     }

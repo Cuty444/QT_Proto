@@ -54,7 +54,7 @@ namespace QT.InGame
             }
         }
         
-        private void OnProjectileHit((Vector2 dir, float power) vector, LayerMask bounceMask, ProjectileProperties properties, Transform target)
+        private void OnProjectileHit(ProjectileHitData data)
         {
             if (_ownerEntity.CurrentStateIndex >= (int) JelloRightHand.States.Dead)
             {
@@ -62,7 +62,7 @@ namespace QT.InGame
             }
             
             var state = _ownerEntity.ChangeState(JelloRightHand.States.Projectile);
-            ((JelloRightHandProjectileState) state)?.InitializeState(vector.dir, vector.power, bounceMask, properties, target);
+            ((JelloRightHandProjectileState) state)?.InitializeState(data);
         }
     }
 }

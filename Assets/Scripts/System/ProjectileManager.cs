@@ -26,6 +26,27 @@ namespace QT
         Guided = 1 << 2,
         Explosion = 1 << 3,
     }
+
+    public struct ProjectileHitData
+    {
+        public Vector2 Dir;
+        public float Power;
+        public LayerMask BounceMask;
+        public ProjectileOwner Owner;
+        public ProjectileProperties Properties;
+        public Transform Target;
+
+        public ProjectileHitData(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null)
+        {
+            Dir = dir;
+            Power = power;
+            BounceMask = bounceMask;
+            Owner = owner;
+            Properties = properties;
+
+            Target = target;
+        }
+    }
     
     public interface IProjectile
     {
@@ -35,7 +56,7 @@ namespace QT
         public float ColliderRad { get; }
         public LayerMask BounceMask { get; }
 
-        public void ProjectileHit(Vector2 dir, float power, LayerMask bounceMask, ProjectileOwner owner, ProjectileProperties properties, Transform target = null);
+        public void ProjectileHit(ProjectileHitData data);
 
         public void ResetBounceCount(int maxBounce);
         public void ResetProjectileDamage(int damage);
