@@ -16,6 +16,8 @@ namespace QT.InGame
         private const string SwingChargedBatHitPath = "Effect/Prefabs/FX_M_Bat_Hit_Boom.prefab";
         
         private const string SwingChargedHitPath = "Effect/Prefabs/FullScreen/FX_FullScreen.prefab";
+
+        private static readonly int SwingLevelShaderHash = Shader.PropertyToID("_Progress");
         
         private readonly int SwingAnimHash = Animator.StringToHash("Swing");
         private readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
@@ -70,6 +72,11 @@ namespace QT.InGame
                 
                 SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnSwingStart, null);
             }
+            else
+            {
+                OnSwing(_ownerEntity.GetActionValue(Player.ButtonActions.Swing));
+            }
+
         }
 
         public override void ClearState()
@@ -291,11 +298,11 @@ namespace QT.InGame
             
             var chargeTime = _ownerEntity.StatComponent.GetStat(PlayerStats.ChargeTime).Value;
             var chargeLevel = _chargingTime / chargeTime;
-            chargeLevel *= chargeLevel * chargeLevel;
+            chargeLevel *= chargeLevel * chargeLevel * chargeLevel * chargeLevel;
             chargeLevel = Mathf.Clamp01(chargeLevel);
             
             _ownerEntity.Animator.SetFloat(ChargeLevelAnimHash, chargeLevel);
-            _ownerEntity.SwingAreaMeshRenderer.material.color = Color.Lerp(Color.clear, _globalData.SwingAreaColor, chargeLevel);
+            _ownerEntity.SwingAreaMeshRenderer.material.SetFloat(SwingLevelShaderHash, chargeLevel);
             
             
             if (!_isCharged && chargeTime < _chargingTime)

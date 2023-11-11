@@ -12,7 +12,7 @@ namespace QT.InGame
     {
         private readonly int AttackAnimHash = Animator.StringToHash("Smash");
 
-        private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Smash.prefab";
+        private const string SmashEffectPath = "Effect/Prefabs/Boss/FX_Boss_Smash.prefab";
         
         private List<EnemyAtkGameData> _atkList;
         private Coroutine _atkSeqence;

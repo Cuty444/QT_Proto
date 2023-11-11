@@ -27,7 +27,7 @@ namespace QT.InGame
         {
             _ownerEntity.OnMove = OnMove;
             _ownerEntity.OnAim.AddListener(OnAim);
-            _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing, true);
+            _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing);
             _ownerEntity.SetAction(Player.ButtonActions.Dodge, OnDodge);
             _ownerEntity.SetAction(Player.ButtonActions.Interaction,OnInteraction);
 

@@ -87,6 +87,7 @@ namespace QT.InGame
         [field: Space]
         [field:Header("스턴")]
         [field: SerializeField] public float StunTime { get; private set; }
+        [field: SerializeField] public float StunAfterDelay { get; private set; }
         
         
         [field: Space]

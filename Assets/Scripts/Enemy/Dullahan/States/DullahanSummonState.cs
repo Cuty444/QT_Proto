@@ -13,7 +13,7 @@ namespace QT.InGame
     {
         private readonly int SummonAnimHash = Animator.StringToHash("IsSummon");
         
-        private const string SummonEffectPath = "Effect/Prefabs/FX_Boss_Howling.prefab";
+        private const string SummonEffectPath = "Effect/Prefabs/Boss/FX_Boss_Howling.prefab";
         
         private Coroutine _summonSequence;
         

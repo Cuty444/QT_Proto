@@ -12,8 +12,8 @@ namespace QT.InGame
         private readonly int IsJumpingAnimHash = Animator.StringToHash("IsJumping");
         private readonly int JumpReadyAnimHash = Animator.StringToHash("JumpReady");
         
-        private const string ChargingEffectPath = "Effect/Prefabs/FX_Boss_Jmup_Charging.prefab";
-        private const string SmashEffectPath = "Effect/Prefabs/FX_Boss_Jump.prefab";
+        private const string ChargingEffectPath = "Effect/Prefabs/Boss/FX_Boss_Jmup_Charging.prefab";
+        private const string SmashEffectPath = "Effect/Prefabs/Boss/FX_Boss_Jump.prefab";
         
         private int _state;
 

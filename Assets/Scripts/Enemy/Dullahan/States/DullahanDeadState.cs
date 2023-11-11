@@ -12,8 +12,8 @@ namespace QT.InGame
     public class DullahanDeadState : FSMState<Dullahan>
     {
         private readonly int IsDeadAnimHash = Animator.StringToHash("IsDead");
-        private const string BossEndEffectPath = "Effect/Prefabs/FX_Sunising_Sun.prefab";
-        private const string BossDeadEffectPath = "Effect/Prefabs/FX_Boss_Dead.prefab";
+        private const string BossEndEffectPath = "Effect/Prefabs/Boss/FX_Sunising_Sun.prefab";
+        private const string BossDeadEffectPath = "Effect/Prefabs/Boss/FX_Boss_Dead.prefab";
         
         private float _time;
         private int _state;
