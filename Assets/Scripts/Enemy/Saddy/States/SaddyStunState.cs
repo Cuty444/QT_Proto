@@ -18,6 +18,8 @@ namespace QT.InGame
         
         private SaddyData _data;
 
+        private bool _isStun;
+        
         private float _timer;
         
         public SaddyStunState(IFSMEntity owner) : base(owner)
@@ -34,7 +36,8 @@ namespace QT.InGame
             
             _ownerEntity.Animator.SetBool(StunAnimHash, true);
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, false);
-            
+
+            _isStun = true;
             _timer = 0;
         }
 
@@ -42,10 +45,22 @@ namespace QT.InGame
         {
             _timer += Time.deltaTime;
 
-            if (_timer > _data.StunTime)
+            if (_isStun)
             {
-                _ownerEntity.ChangeState(_ownerEntity.GetNextGroupStartState());
+                if (_timer > _data.StunTime)
+                {
+                    _isStun = false;
+                    _timer = 0;
+                }
             }
+            else
+            {
+                if (_timer > _data.StunAfterDelay)
+                {
+                    _ownerEntity.ChangeState(_ownerEntity.GetNextGroupStartState());
+                }
+            }
+            
         }
 
         public override void ClearState()
