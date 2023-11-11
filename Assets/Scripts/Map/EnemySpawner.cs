@@ -66,7 +66,7 @@ namespace QT.Map
 
             Target = (await SystemManager.Instance.ResourceManager.GetFromPool<Transform>(data.PrefabPath, transform)).GetComponent<IEnemy>();
             
-            Target.initialization(EnemyId);
+            Target.Initialization(EnemyId);
             Target.PrefabPath = data.PrefabPath;
             
             var targetTransform = (Target as MonoBehaviour).transform;

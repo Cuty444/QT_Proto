@@ -142,15 +142,14 @@ namespace QT.InGame
                 if (targetDistance > _targetDistance)
                 {
                     interest.AddWeight(dir, 1);
+                    interest.AddWeight(_centerPos - ownerPos, 1);
                 }
                 else if(targetDistance < _targetDistance - 1)
                 {
                     interest.AddWeight(-dir, 1);
+                    interest.AddWeight(_centerPos - ownerPos, 1);
                 }
             }
-            
-            // 가운데로 이동하려는 성질
-            interest.AddWeight(_centerPos - ownerPos, 1);
             
             
             // 1차 결과 계산
@@ -173,7 +172,7 @@ namespace QT.InGame
             var avoidDir = _avoidDirDamper.GetDampedValue(Vector2.zero, Time.deltaTime);
             if (avoidDir != Vector2.zero)
             {
-                interest.AddWeight(_avoidDirDamper.GetDampedValue(avoidDir, Time.deltaTime), 1);
+                interest.AddWeight(avoidDir, 1);
                 result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             }
 

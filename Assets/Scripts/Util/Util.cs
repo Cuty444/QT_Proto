@@ -131,9 +131,14 @@ namespace QT.Util
         {
             return  isClockwise ? new Vector2(-dir.y, dir.x) : new Vector2(dir.y, -dir.x);
         }
+        
+        public static float Vector2Cross(Vector2 value1, Vector2 value2)
+        {
+            return value1.x * value2.y - value1.y * value2.x;
+        }
     }
 
-    public static class RandomSeed
+    public static class RandomSeedS
     {
         private const string stringSeeds =
             "abcdefghijklmnopqrstuvwxyz0123456789";

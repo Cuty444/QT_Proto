@@ -46,6 +46,7 @@ namespace QT.InGame
         [field: SerializeField] public Transform ShootPointPivot{ get; private set; }
         [field: SerializeField] public Transform ShootPointTransform{ get; private set; }
         
+        public Jello Jello { get; set; }
         public EnemyGameData Data { get; private set; }
         public Rigidbody2D Rigidbody { get; private set; }
         
@@ -80,7 +81,7 @@ namespace QT.InGame
             Steering = GetComponent<Steering>();
         }
         
-        public void initialization(int enemyId)
+        public void Initialization(int enemyId)
         {
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(enemyId);
             

@@ -101,9 +101,12 @@ namespace QT.InGame
             
             _colliders = new Collider2D[Rigidbody.attachedColliderCount];
             Rigidbody.GetAttachedColliders(_colliders);
+            
+            RightHand.Jello = this;
+            LeftHand.Jello = this;
         }
         
-        public void initialization(int enemyId)
+        public void Initialization(int enemyId)
         {
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);

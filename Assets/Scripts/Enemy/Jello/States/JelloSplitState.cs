@@ -91,11 +91,11 @@ namespace QT.InGame
             Vector2 dir = (_target.position - _transform.position).normalized * 0.5f;
             
             _ownerEntity.LeftHand.gameObject.SetActive(true);
-            _ownerEntity.LeftHand.initialization(_data.LeftHandEnemyId);
+            _ownerEntity.LeftHand.Initialization(_data.LeftHandEnemyId);
             InitHand(_ownerEntity.LeftHand, _ownerEntity.LeftHand.transform, _leftHandBone, dir);
             
             _ownerEntity.RightHand.gameObject.SetActive(true);
-            _ownerEntity.RightHand.initialization(_data.RightHandEnemyId);
+            _ownerEntity.RightHand.Initialization(_data.RightHandEnemyId);
             InitHand(_ownerEntity.RightHand, _ownerEntity.RightHand.transform, _rightHandBone, dir);
         }
 
