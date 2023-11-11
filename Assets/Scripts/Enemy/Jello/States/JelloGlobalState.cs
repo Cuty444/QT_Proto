@@ -16,7 +16,7 @@ namespace QT.InGame
         private JelloData _data;
 
         private float _rigidTime;
-        private float _rigidTimer;
+        private float _timer;
         private bool _isRigid;
 
         private float _lastMaxHp;
@@ -25,6 +25,7 @@ namespace QT.InGame
         {
             _data = _ownerEntity.JelloData;
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
+            _ownerEntity.OnHealEvent.AddListener(OnHeal);
             
             _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
         }
@@ -40,13 +41,15 @@ namespace QT.InGame
 
         public override void ClearState()
         {
-            base.ClearState();
+            _ownerEntity.OnDamageEvent.RemoveListener(OnDamage);
+            _ownerEntity.OnHealEvent.RemoveListener(OnHeal);
+            
             _hpCanvas?.ReleaseUI();
         }
 
         private void OnDamage(Vector2 dir, float power,AttackType attackType)
         {
-            if (_ownerEntity.CurrentStateIndex == (int)Saddy.States.Dead)
+            if (_ownerEntity.CurrentStateIndex == (int)Jello.States.Dead)
             {
                 return;
             }
@@ -66,7 +69,18 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(HitAnimHash);
             
             _isRigid = true;
-            _rigidTime = 0;
+            _timer = 0;
+        }
+
+        private void OnHeal(float amount)
+        {
+            if (_ownerEntity.CurrentStateIndex == (int)Jello.States.Dead)
+            {
+                return;
+            }
+            
+            _ownerEntity.HP.AddStatus(amount);
+            _hpCanvas.SetHPGuage(_ownerEntity.HP);
         }
 
         public override void UpdateState()
@@ -76,9 +90,9 @@ namespace QT.InGame
                 return;
             }
             
-            _rigidTime += Time.deltaTime;
+            _timer += Time.deltaTime;
             
-            if(_rigidTime >= _rigidTimer)
+            if(_rigidTime < _timer)
             {
                 _ownerEntity.Animator.ResetTrigger(HitAnimHash);
 
@@ -102,6 +116,11 @@ namespace QT.InGame
         
         private bool IsSplit()
         {
+            if ((Jello.States) _ownerEntity.PreviousStateIndex == Jello.States.Merge)
+            {
+                return true;
+            }
+            
             return (Jello.States) _ownerEntity.CurrentStateIndex is >= Jello.States.Split and <= Jello.States.Restore;
         }
     }

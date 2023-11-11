@@ -194,6 +194,7 @@ namespace QT.InGame
             
             if (_timer > _data.RushAirTime)
             {
+                _ownerEntity.SetPhysics(true);
                 _state = RushState.End;
                 _timer = 0;
             }

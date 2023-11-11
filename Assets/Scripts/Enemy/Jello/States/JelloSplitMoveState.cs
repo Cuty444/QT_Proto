@@ -26,13 +26,14 @@ namespace QT.InGame
         private Vector2 _centerPos;
 
         private float _atkCoolTime;
+        private float _timer;
 
         private bool _rotateSide;
         
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private List<Jello.States> _attackStates = new() {Jello.States.Stomp};
+        private List<Jello.States> _attackStates = new() {Jello.States.Stomp, Jello.States.HandSkill};
         private int _attackStateIndex;
 
         private Jello.States _nextState;
@@ -62,6 +63,7 @@ namespace QT.InGame
 
         public override void UpdateState()
         {
+            _timer += Time.deltaTime;
             _atkCoolTime += Time.deltaTime;
         }
 
@@ -158,7 +160,13 @@ namespace QT.InGame
         
         private void CheckAttackStart()
         {
-            if (_atkCoolTime > _data.SplitAttackCoolTime)
+            if (_timer > _data.SplitTime)
+            {
+                _timer = 0;
+                _atkCoolTime = 0;
+                _ownerEntity.ChangeState(Jello.States.Merge);
+            }
+            else if (_atkCoolTime > _data.SplitAttackCoolTime)
             {
                 _atkCoolTime = 0;
                 _ownerEntity.ChangeState(_nextState);
@@ -178,6 +186,10 @@ namespace QT.InGame
             _attackStateIndex = 0;
             
             return _attackStates[_attackStateIndex];
+            
+            //_attackStateIndex = -1;
+            
+            //return Jello.States.Merge;
         }
 
     }

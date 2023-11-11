@@ -9,13 +9,14 @@ namespace QT.InGame
     public class JelloHandData : ScriptableObject
     {
         [field: SerializeField] public float AttackCoolTime { get; private set; }
+        [field: SerializeField] public float PositionCorrectionSpeedMultiplier { get; private set; }
         
+        [field: SerializeField] public float BallSpeedDecay { get; private set; }
         
         [field: Space]
         [field: Space]
         [field: Space]
         [field:Header("왼손이")]
-        [field: SerializeField] public float PositionCorrectionSpeedMultiplier { get; private set; }
         [field: SerializeField] public int ShootAtkId { get; private set; }
         
         
@@ -23,9 +24,6 @@ namespace QT.InGame
         [field: Space]
         [field: Space]
         [field:Header("돌진 패턴")]
-        [field: SerializeField] public float RushDistance { get; private set; }
-        [field: Space]
-        [field: Space]
         [field: SerializeField] public float RushReadyTime { get; private set; }
         [field: Space]
         [field: SerializeField] public float RushHitCheckDelay { get; private set; }

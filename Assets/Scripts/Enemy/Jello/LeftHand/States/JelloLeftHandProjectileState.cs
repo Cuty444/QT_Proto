@@ -76,6 +76,8 @@ namespace QT.InGame
             _maxSpeed = _speed = data.Power;
             _ownerEntity.BounceMask = _bounceMask = data.BounceMask;
 
+            _speedDecay = _ownerEntity.JelloData.BallSpeedDecay;
+            
             _currentSpeedDecay = _speedDecay;
             _bounceCount = _maxBounce = 2;
             _releaseDelay = 1;

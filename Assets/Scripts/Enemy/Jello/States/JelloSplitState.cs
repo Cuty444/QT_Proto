@@ -83,7 +83,6 @@ namespace QT.InGame
                     break;
             }
             
-           
         }
 
         private void SpawnHands()
@@ -91,11 +90,11 @@ namespace QT.InGame
             Vector2 dir = (_target.position - _transform.position).normalized * 0.5f;
             
             _ownerEntity.LeftHand.gameObject.SetActive(true);
-            _ownerEntity.LeftHand.Initialization(_data.LeftHandEnemyId);
+            _ownerEntity.LeftHand.ChangeState(JelloLeftHand.States.Normal);
             InitHand(_ownerEntity.LeftHand, _ownerEntity.LeftHand.transform, _leftHandBone, dir);
             
             _ownerEntity.RightHand.gameObject.SetActive(true);
-            _ownerEntity.RightHand.Initialization(_data.RightHandEnemyId);
+            _ownerEntity.RightHand.ChangeState(JelloRightHand.States.Normal);
             InitHand(_ownerEntity.RightHand, _ownerEntity.RightHand.transform, _rightHandBone, dir);
         }
 

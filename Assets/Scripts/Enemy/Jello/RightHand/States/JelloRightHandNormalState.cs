@@ -21,7 +21,6 @@ namespace QT.InGame
         private Transform _target;
         private Transform _JelloTransform;
         private Vector2 _currentTargetPos;
-        private Vector2 _dest;
 
         private float _atkCoolTime;
 
@@ -31,8 +30,6 @@ namespace QT.InGame
         private InputVector2Damper _dirDamper = new ();
         private InputVector2Damper _avoidDirDamper = new (AvoidDirDampTime);
 
-        private int _attackStateIndex;
-
         private float _targetDistance;
         
         public JelloRightHandNormalState(IFSMEntity owner) : base(owner)
@@ -40,8 +37,6 @@ namespace QT.InGame
             _transform = _ownerEntity.transform;
             _enemyData = _ownerEntity.Data;
             _data = _ownerEntity.JelloData;
-
-            _attackStateIndex = -1;
         }
 
         public override void InitializeState()
@@ -74,20 +69,22 @@ namespace QT.InGame
             var targetDir = (Vector2) _target.position - (Vector2) _transform.position;
             _ownerEntity.SetDir(targetDir, 4);
             
-            CheckAttackStart();
+            //CheckAttackStart();
         }
 
         private Vector2 Move()
         {
-            _dest = _currentTargetPos + (_currentTargetPos - (Vector2) _JelloTransform.position).normalized * _targetDistance;
-            
             var dir = SpacingMove();
 
             var currentDir = Vector2.zero;
             var speed = _enemyData.MovementSpd;
             
             // 타겟과의 거리 유지
-            if ((_dest - (Vector2)_transform.position).sqrMagnitude > _targetDistance)
+
+            var jelloToBall = ((Vector2) _JelloTransform.position - (Vector2) _transform.position).sqrMagnitude;
+            var ballToTarget = ((Vector2) _transform.position - _currentTargetPos).sqrMagnitude;
+            
+            if (jelloToBall < _targetDistance * _targetDistance || ballToTarget > _targetDistance * _targetDistance)
             {
                 speed *= _data.PositionCorrectionSpeedMultiplier;
             }
@@ -127,10 +124,12 @@ namespace QT.InGame
                 interest.AddWeight(-dir, 1);
             }
 
-
+            
             // 타겟까지 회전
             var weight = Vector2.zero;
-            var destDir = _dest - ownerPos;
+            
+            var dest = _currentTargetPos + (_currentTargetPos - (Vector2) _JelloTransform.position).normalized * _targetDistance;
+            var destDir = dest - ownerPos;
             if (destDir.sqrMagnitude > 1)
             {
                 weight = Math.Rotate90Degree(dir, Math.Vector2Cross(dir, destDir) > 0);
@@ -141,8 +140,7 @@ namespace QT.InGame
             {
                 interest.AddWeight(rotDir, 1);
             }
-
-
+            
             // 1차 결과 계산
             var result = _ownerEntity.Steering.CalculateContexts(danger, interest);
             

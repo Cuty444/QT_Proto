@@ -23,11 +23,10 @@ namespace QT.InGame
             
             Rush,
             
-            Return,
-            
             // 사실상 죽어있음
             Projectile,
             Dead,
+            Return,
         }
 
         public int InstanceId => gameObject.GetInstanceID();
@@ -68,7 +67,7 @@ namespace QT.InGame
         public int ProjectileDamage { get; private set; }
         
         
-        private void Awake()
+        private void GetComponent()
         {
             Rigidbody = GetComponent<Rigidbody2D>();
             
@@ -76,13 +75,15 @@ namespace QT.InGame
             Rigidbody.GetAttachedColliders(_colliders);
             
             Shooter = GetComponent<EnemyProjectileShooter>();
-            Animator = GetComponentInChildren<Animator>();
-            MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>();
+            Animator = GetComponentInChildren<Animator>(true);
+            MaterialChanger = GetComponentInChildren<SkeletalMaterialChanger>(true);
             Steering = GetComponent<Steering>();
         }
         
         public void Initialization(int enemyId)
         {
+            GetComponent();
+            
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(enemyId);
             
             Shooter.Initialize(Animator);
@@ -91,16 +92,25 @@ namespace QT.InGame
             SetUpStats();
             SetUp(States.Normal);
             SetGlobalState(new JelloRightHandGlobalState(this));
+        }
+        
+        public void OnEnable()
+        {
+            HP.SetStatus(Data.MaxHp);
             
             HitAbleManager.Instance.Register(this);
             ProjectileManager.Instance.Register(this);
 
             BallObject.localPosition = Vector2.up * BallHeightMin;
-            ShadowSprite.color = new Color(0, 0, 0, 0.5f);
             
             HpIndicator.gameObject.SetActive(false);
         }
-
+        
+        private void OnDisable()
+        {
+            HitAbleManager.Instance.UnRegister(this);
+            ProjectileManager.Instance.UnRegister(this);
+        }
 
         public void SetPhysics(bool enable)
         {
