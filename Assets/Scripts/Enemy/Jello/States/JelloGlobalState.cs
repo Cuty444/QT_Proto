@@ -25,6 +25,7 @@ namespace QT.InGame
         {
             _data = _ownerEntity.JelloData;
             _ownerEntity.OnDamageEvent.AddListener(OnDamage);
+            _ownerEntity.OnHealEvent.AddListener(OnHeal);
             
             _rigidTime = SystemManager.Instance.GetSystem<GlobalDataSystem>().GlobalData.RigidTime;
         }
@@ -40,7 +41,9 @@ namespace QT.InGame
 
         public override void ClearState()
         {
-            base.ClearState();
+            _ownerEntity.OnDamageEvent.RemoveListener(OnDamage);
+            _ownerEntity.OnHealEvent.RemoveListener(OnHeal);
+            
             _hpCanvas?.ReleaseUI();
         }
 
@@ -67,6 +70,17 @@ namespace QT.InGame
             
             _isRigid = true;
             _rigidTime = 0;
+        }
+
+        private void OnHeal(float amount)
+        {
+            if (_ownerEntity.CurrentStateIndex == (int)Saddy.States.Dead)
+            {
+                return;
+            }
+            
+            _ownerEntity.HP.AddStatus(amount);
+            _hpCanvas.SetHPGuage(_ownerEntity.HP);
         }
 
         public override void UpdateState()
@@ -102,6 +116,11 @@ namespace QT.InGame
         
         private bool IsSplit()
         {
+            if ((Jello.States) _ownerEntity.PreviousStateIndex == Jello.States.Merge)
+            {
+                return true;
+            }
+            
             return (Jello.States) _ownerEntity.CurrentStateIndex is >= Jello.States.Split and <= Jello.States.Restore;
         }
     }

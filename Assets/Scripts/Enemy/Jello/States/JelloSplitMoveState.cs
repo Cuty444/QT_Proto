@@ -175,9 +175,9 @@ namespace QT.InGame
             }
             
             _attackStates.Shuffle();
-            _attackStateIndex = 0;
+            _attackStateIndex = -1;
             
-            return _attackStates[_attackStateIndex];
+            return Jello.States.Merge;
         }
 
     }

@@ -134,9 +134,11 @@ namespace QT.InGame
             SetUp(States.Normal);
             
             HitAbleManager.Instance.Register(this);
+            
+            LeftHand.Initialization(JelloData.LeftHandEnemyId);
+            RightHand.Initialization(JelloData.RightHandEnemyId);
         }
-        
-        
+
         public void SetPhysics(bool enable)
         {
             Rigidbody.simulated = enable;

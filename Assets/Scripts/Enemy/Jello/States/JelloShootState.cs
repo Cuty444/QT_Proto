@@ -16,7 +16,8 @@ namespace QT.InGame
             Ready,
             Right,
             Left,
-            Final
+            Final,
+            After
         }
         
         
@@ -61,9 +62,13 @@ namespace QT.InGame
                 case ShootState.Right:
                     if (_timer > _data.ShootRightHandDelay)
                     {
-                        _ownerEntity.Shooter.ShootPoint = _ownerEntity.RightHandTransform;
-                        _ownerEntity.Shooter.Shoot(_data.ShootRightHandShootId, AimTypes.World, ProjectileOwner.Boss);
-                        
+                        if (!_ownerEntity.RightHand.IsDead)
+                        {
+                            _ownerEntity.Shooter.ShootPoint = _ownerEntity.RightHandTransform;
+                            _ownerEntity.Shooter.Shoot(_data.ShootRightHandShootId, AimTypes.World,
+                                ProjectileOwner.Boss);
+                        }
+
                         _state = ShootState.Left;
                         _timer = 0;
                     }
@@ -71,9 +76,13 @@ namespace QT.InGame
                 case ShootState.Left:
                     if (_timer > _data.ShootLeftHandDelay)
                     {
-                        _ownerEntity.Shooter.ShootPoint = _ownerEntity.LeftHandTransform;
-                        _ownerEntity.Shooter.Shoot(_data.ShootLeftHandShootId, AimTypes.World, ProjectileOwner.Boss);
-                        
+                        if (!_ownerEntity.LeftHand.IsDead)
+                        {
+                            _ownerEntity.Shooter.ShootPoint = _ownerEntity.LeftHandTransform;
+                            _ownerEntity.Shooter.Shoot(_data.ShootLeftHandShootId, AimTypes.World,
+                                ProjectileOwner.Boss);
+                        }
+
                         _state = ShootState.Final;
                         _timer = 0;
                     }
@@ -83,8 +92,19 @@ namespace QT.InGame
                     {
                         _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPointPivot;
                         _ownerEntity.Shooter.Shoot(_data.ShootFinalShootId, AimTypes.Target, ProjectileOwner.Boss);
-                        _ownerEntity.Shooter.Shoot(_data.ShootFinalShootId2, AimTypes.Target, ProjectileOwner.Boss);
 
+                        if (!_ownerEntity.LeftHand.IsDead && !_ownerEntity.RightHand.IsDead)
+                        {
+                            _ownerEntity.Shooter.Shoot(_data.ShootFinalShootId2, AimTypes.Target, ProjectileOwner.Boss);
+                        }
+
+                        _state = ShootState.After;
+                        _timer = 0;
+                    }
+                    break;
+                case ShootState.After:
+                    if (_timer > _data.ShootAfterDelay)
+                    {
                         _ownerEntity.RevertToPreviousState();
                     }
                     break;

@@ -31,6 +31,8 @@ namespace QT.InGame
         [field: SerializeField] public int ShootFinalShootId { get; private set; }
         [field: SerializeField] public int ShootFinalShootId2 { get; private set; }
         
+        [field: Space]
+        [field: SerializeField] public float ShootAfterDelay { get; private set; }
         
         
         
@@ -101,5 +103,20 @@ namespace QT.InGame
         [field: Space]
         [field:Header("손기술")]
         [field: SerializeField] public float HandSkillLengthTime { get; private set; }
+        
+        
+        [field: Space]
+        [field: Space]
+        [field:Header("합체")]
+        [field: SerializeField] public float MergeDelay { get; private set; }
+        [field: SerializeField] public float MergeAfterDelay { get; private set; }
+        [field: Space]
+        [field: SerializeField] public float MergeHealAmount { get; private set; }
+        
+        [field: Space]
+        [field: Space]
+        [field:Header("복구")]
+        [field: SerializeField] public float RestoreDelay { get; private set; }
+        [field: SerializeField] public float RestoreAfterDelay { get; private set; }
     }
 }
