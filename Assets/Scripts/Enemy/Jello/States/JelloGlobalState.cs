@@ -103,10 +103,12 @@ namespace QT.InGame
                     _ownerEntity.ChangeState(Jello.States.Dead);
                     _hpCanvas?.ReleaseUI();
                 }
-                else if (!IsSplit() && (_lastMaxHp - _ownerEntity.HP) > (_data.SplitCondition * _ownerEntity.HP.Value))
+                else if (IsSplit())
                 {
                     _lastMaxHp = hp.StatusValue;
-                    
+                }
+                else if ((_lastMaxHp - _ownerEntity.HP) > (_data.SplitCondition * _ownerEntity.HP.Value))
+                {
                     _ownerEntity.ChangeState(Jello.States.Split);
                 }
                 
