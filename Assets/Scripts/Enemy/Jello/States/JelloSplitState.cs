@@ -83,11 +83,13 @@ namespace QT.InGame
 
         private void SpawnHands()
         {
-            InitHand(_ownerEntity.LeftHand,_ownerEntity.LeftHand.transform, _leftHandBone);
+            _ownerEntity.LeftHand.gameObject.SetActive(true);
             _ownerEntity.LeftHand.initialization(_data.LeftHandEnemyId);
+            InitHand(_ownerEntity.LeftHand,_ownerEntity.LeftHand.transform, _leftHandBone);
             
-            InitHand(_ownerEntity.RightHand,_ownerEntity.RightHand.transform, _rightHandBone);
+            _ownerEntity.RightHand.gameObject.SetActive(true);
             _ownerEntity.RightHand.initialization(_data.RightHandEnemyId);
+            InitHand(_ownerEntity.RightHand,_ownerEntity.RightHand.transform, _rightHandBone);
         }
 
         private void InitHand(IProjectile projectile, Transform transform, Bone bone)
@@ -96,16 +98,16 @@ namespace QT.InGame
             bone.ScaleY = 0;
             
             var ownerTransform = _ownerEntity.transform;
-            //var targetPos = bone.GetWorldPosition(ownerTransform);
+            var targetPos = bone.GetWorldPosition(ownerTransform);
+            var spawnPos = _ownerEntity.ShootPointPivot.position;
             
             transform.parent = ownerTransform.parent;
-            transform.position = _ownerEntity.ShootPointPivot.position;
-            transform.gameObject.SetActive(true);
+            transform.position = spawnPos;
             //
-            // projectile.ResetBounceCount(0);
-            // projectile.ResetProjectileDamage(25);
-            // projectile.ProjectileHit((targetPos - ownerTransform.position).normalized, _data.SplitShootSpeed, 
-            //     _ownerEntity.Shooter.BounceMask, ProjectileOwner.Boss, ProjectileProperties.None);
+            projectile.ResetBounceCount(0);
+            projectile.ResetProjectileDamage(25);
+            projectile.ProjectileHit((targetPos - spawnPos).normalized, _data.SplitShootSpeed, 
+                _ownerEntity.Shooter.BounceMask, ProjectileOwner.Boss, ProjectileProperties.None);
         }
 
     }
