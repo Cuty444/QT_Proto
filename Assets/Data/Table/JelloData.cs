@@ -82,6 +82,7 @@ namespace QT.InGame
         
         [field: SerializeField] public float SplitMoveDistance { get; private set; }
         [field: SerializeField] public float SplitAttackCoolTime { get; private set; }
+        [field: SerializeField] public float SplitTime { get; private set; }
         
 
         [field: Space]

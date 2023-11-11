@@ -47,10 +47,10 @@ namespace QT.InGame
             _ballObject.localPosition = new Vector2(0, Mathf.Sin(Mathf.PI * outQuad));
             _ballObject.localScale = Vector2.one * (1 - inQuad);
 
-            if (_timer >= _targetTime)
-            {
-                _ownerEntity.ChangeState(JelloLeftHand.States.Normal);
-            }
+            // if (_timer >= _targetTime)
+            // {
+            //     _ownerEntity.ChangeState(JelloLeftHand.States.Normal);
+            // }
         }
         
         public override void ClearState()

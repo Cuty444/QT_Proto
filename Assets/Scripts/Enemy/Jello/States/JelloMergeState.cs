@@ -95,13 +95,13 @@ namespace QT.InGame
             Vector2 targetPos = _ownerEntity.ShootPointPivot.position;
             
             var rightHand = _ownerEntity.RightHand;
-            if (!rightHand.IsDead)
+            if (rightHand.CurrentStateIndex != (int) JelloRightHand.States.Dead)
             {
                 (rightHand.ChangeState(JelloRightHand.States.Return) as JelloRightHandReturnState).InitializeState(targetPos, _data.MergeDelay);
             }
 
             var leftHand = _ownerEntity.LeftHand;
-            if (!leftHand.IsDead)
+            if (leftHand.CurrentStateIndex != (int) JelloLeftHand.States.Dead)
             {
                 (leftHand.ChangeState(JelloLeftHand.States.Return) as JelloLeftHandReturnState).InitializeState(targetPos, _data.MergeDelay);
             }
