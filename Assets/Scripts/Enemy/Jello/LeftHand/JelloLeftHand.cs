@@ -23,11 +23,10 @@ namespace QT.InGame
             
             Shoot,
             
-            Return,
-            
             // 사실상 죽어있음
             Projectile,
             Dead,
+            Return,
         }
 
         public int InstanceId => gameObject.GetInstanceID();

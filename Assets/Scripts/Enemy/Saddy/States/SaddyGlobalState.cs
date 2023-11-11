@@ -14,7 +14,7 @@ namespace QT.InGame
         private BossHPCanvasModel _hpCanvas;
         
         private float _rigidTime;
-        private float _rigidTimer;
+        private float _timer;
         private bool _isRigid;
 
         public SaddyGlobalState(IFSMEntity owner) : base(owner)
@@ -59,7 +59,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(HitAnimHash);
             
             _isRigid = true;
-            _rigidTime = 0;
+            _timer = 0;
         }
 
         public override void UpdateState()
@@ -69,9 +69,9 @@ namespace QT.InGame
                 return;
             }
             
-            _rigidTime += Time.deltaTime;
+            _timer += Time.deltaTime;
             
-            if(_rigidTime >= _rigidTimer)
+            if(_rigidTime < _timer)
             {
                 _ownerEntity.Animator.ResetTrigger(HitAnimHash);
 

@@ -16,7 +16,7 @@ namespace QT.InGame
         private JelloData _data;
 
         private float _rigidTime;
-        private float _rigidTimer;
+        private float _timer;
         private bool _isRigid;
 
         private float _lastMaxHp;
@@ -49,7 +49,7 @@ namespace QT.InGame
 
         private void OnDamage(Vector2 dir, float power,AttackType attackType)
         {
-            if (_ownerEntity.CurrentStateIndex == (int)Saddy.States.Dead)
+            if (_ownerEntity.CurrentStateIndex == (int)Jello.States.Dead)
             {
                 return;
             }
@@ -69,12 +69,12 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(HitAnimHash);
             
             _isRigid = true;
-            _rigidTime = 0;
+            _timer = 0;
         }
 
         private void OnHeal(float amount)
         {
-            if (_ownerEntity.CurrentStateIndex == (int)Saddy.States.Dead)
+            if (_ownerEntity.CurrentStateIndex == (int)Jello.States.Dead)
             {
                 return;
             }
@@ -90,9 +90,9 @@ namespace QT.InGame
                 return;
             }
             
-            _rigidTime += Time.deltaTime;
+            _timer += Time.deltaTime;
             
-            if(_rigidTime >= _rigidTimer)
+            if(_rigidTime < _timer)
             {
                 _ownerEntity.Animator.ResetTrigger(HitAnimHash);
 

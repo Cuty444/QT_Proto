@@ -31,8 +31,6 @@ namespace QT.InGame
         
         private Bone _leftHandBone;
         private Bone _rightHandBone;
-        
-        private Transform _transform;
 
         public JelloMergeState(IFSMEntity owner) : base(owner)
         {
@@ -40,7 +38,6 @@ namespace QT.InGame
             
             _leftHandBone = _ownerEntity.SkeletonRenderer.Skeleton.FindBone(_ownerEntity.LeftHandBoneName);
             _rightHandBone = _ownerEntity.SkeletonRenderer.Skeleton.FindBone(_ownerEntity.RightHandBoneName);
-            _transform = _ownerEntity.transform;
         }
 
         public override void InitializeState()
@@ -95,7 +92,7 @@ namespace QT.InGame
 
         private void CallHands()
         {
-            var targetPos = _transform.position;
+            Vector2 targetPos = _ownerEntity.ShootPointPivot.position;
             
             var rightHand = _ownerEntity.RightHand;
             if (!rightHand.IsDead)

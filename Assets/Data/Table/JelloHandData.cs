@@ -11,6 +11,7 @@ namespace QT.InGame
         [field: SerializeField] public float AttackCoolTime { get; private set; }
         [field: SerializeField] public float PositionCorrectionSpeedMultiplier { get; private set; }
         
+        [field: SerializeField] public float BallSpeedDecay { get; private set; }
         
         [field: Space]
         [field: Space]
