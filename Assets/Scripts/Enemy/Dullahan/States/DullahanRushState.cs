@@ -20,9 +20,9 @@ namespace QT.InGame
         private static readonly int IsRushingAnimHash = Animator.StringToHash("IsRushing");
         private static readonly int RushReadyAnimHash = Animator.StringToHash("RushReady");
         
-        private const string RushEffectPath = "Effect/Prefabs/FX_Boss_Rush_Air_Resistance.prefab";
-        private const string SparkEffectPath = "Effect/Prefabs/FX_Boss_Rush_Spark.prefab";
-        private const string ShockEffectPath = "Effect/Prefabs/FX_Boss_Rush_Shock.prefab";
+        private const string RushEffectPath = "Effect/Prefabs/Boss/FX_Boss_Rush_Air_Resistance.prefab";
+        private const string SparkEffectPath = "Effect/Prefabs/Boss/FX_Boss_Rush_Spark.prefab";
+        private const string ShockEffectPath = "Effect/Prefabs/Boss/FX_Boss_Rush_Shock.prefab";
         
         private RushState _state=0;
         

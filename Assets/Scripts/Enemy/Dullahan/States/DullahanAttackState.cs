@@ -11,7 +11,7 @@ namespace QT.InGame
     public class DullahanAttackState : FSMState<Dullahan>
     {
         private readonly int AttackAnimHash = Animator.StringToHash("Attack");
-        private const string BossAttackEffectPath = "Effect/Prefabs/FX_Boss_Slash.prefab";
+        private const string BossAttackEffectPath = "Effect/Prefabs/Boss/FX_Boss_Slash.prefab";
         
         private Coroutine _atkSeqence;
         
