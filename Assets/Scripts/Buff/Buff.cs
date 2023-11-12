@@ -24,11 +24,11 @@ namespace QT.InGame
             Source = source;
         }
         
-        public void ApplyBuff()
+        public void ApplyBuff(int stack)
         {
             foreach (var calculator in _calculators)
             {
-                calculator.ApplyEffect(_statComponent, this);
+                calculator.ApplyEffect(_statComponent, stack, this);
             }
             _timer = 0;
         }
@@ -41,12 +41,12 @@ namespace QT.InGame
             }
         }
         
-        public void RefreshBuff()
+        public void RefreshBuff(int stack)
         {
             foreach (var calculator in _calculators)
             {
                 calculator.RemoveEffect(_statComponent, this);
-                calculator.ApplyEffect(_statComponent, this);
+                calculator.ApplyEffect(_statComponent, stack, this);
             }
             
             _timer = 0;

@@ -57,7 +57,7 @@ namespace QT.InGame
         }
 
 
-        public void ApplyEffect(StatComponent statComponent, object source)
+        public void ApplyEffect(StatComponent statComponent, int stack, object source)
         {
             var target = statComponent.GetStat(_applyStat);
 
@@ -66,7 +66,11 @@ namespace QT.InGame
             for (var i = 0; i < _params.Length; i++)
             {
                 var param = _params[i];
-                float value = StatParameter.GetStatValue(statComponent, param);
+                float value = stack;
+                if (param.Stat != PlayerStats.Stack)
+                {
+                    value = StatParameter.GetStatValue(statComponent, param);
+                }
 
                 expression = expression.Replace($"[{i}]", value.ToString());
             }

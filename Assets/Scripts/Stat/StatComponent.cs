@@ -56,6 +56,8 @@ namespace QT.InGame
     {
         protected readonly Dictionary<PlayerStats, Stat> _stats = new();
 
+        public int Stack;
+        
         public Stat GetStat(PlayerStats stat)
         {
             return _stats[stat];

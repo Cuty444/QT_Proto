@@ -10,12 +10,14 @@ namespace QT.InGame
         private readonly BuffComponent _buffComponent;
         private Buff _buff;
         
-        private int _buffId;
+        private readonly int _buffId;
+        private readonly Item _item;
 
         public BuffItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
         {
             _buffComponent = player.BuffComponent;
 
+            _item = item;
             _buffId = effectData.ApplyBuffId;
         }
 
@@ -33,11 +35,11 @@ namespace QT.InGame
             
             if (_buff == null || _buff.Duration > 0)
             {
-                _buff = _buffComponent.AddBuff(_buffId, this);
+                _buff = _buffComponent.AddBuff(_buffId, _item.Stack, this);
             }
             else
             {
-                _buff.RefreshBuff();
+                _buff.RefreshBuff(_item.Stack);
             }
         }
 

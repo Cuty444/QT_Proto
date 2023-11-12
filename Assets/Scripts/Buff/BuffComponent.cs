@@ -16,10 +16,10 @@ namespace QT.InGame
             _statComponent = statComponent;
         }
         
-        public Buff AddBuff(int buffId, object source)
+        public Buff AddBuff(int buffId, int stack, object source)
         {
             var buff = new Buff(buffId, _statComponent, source);
-            buff.ApplyBuff();
+            buff.ApplyBuff(stack);
             
             _buffs.Add(buff);
 
