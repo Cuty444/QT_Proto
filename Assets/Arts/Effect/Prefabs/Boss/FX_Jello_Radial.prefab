@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8034959064947409342}
   - component: {fileID: 7522474538815230479}
   - component: {fileID: 6783609634427236430}
+  - component: {fileID: 8277413226915450818}
   m_Layer: 0
   m_Name: energy charging
   m_TagString: Untagged
@@ -41,7 +42,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1235499869708621473}
   serializedVersion: 8
-  lengthInSec: 0.35
+  lengthInSec: 0.7
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -56,7 +57,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 0.3
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -751,7 +752,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 3
+      value: 3.6
       mode: 0
       spread: 0
       speed:
@@ -1034,7 +1035,7 @@ ParticleSystem:
       repeatInterval: 0.01
       probability: 1
     - serializedVersion: 2
-      time: 0.25
+      time: 0.05
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -4954,6 +4955,18 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!210 &8277413226915450818
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235499869708621473}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 19
+  m_SortAtRoot: 1
 --- !u!1 &4270218932107387123
 GameObject:
   m_ObjectHideFlags: 0
@@ -5010,7 +5023,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0.6
+    scalar: 1.25
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -9902,7 +9915,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4556622924050816694}
   serializedVersion: 8
-  lengthInSec: 0.05
+  lengthInSec: 1.5
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -14745,7 +14758,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0.6
+    scalar: 1.3
     minScalar: 0
     maxCurve:
       serializedVersion: 2

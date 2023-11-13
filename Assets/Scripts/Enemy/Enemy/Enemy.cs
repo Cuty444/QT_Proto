@@ -77,7 +77,7 @@ namespace QT.InGame
             var dataManager = SystemManager.Instance.DataManager;
             
             Data = dataManager.GetDataBase<EnemyGameDataBase>().GetData(enemyId);
-            ColliderRad =dataManager.GetDataBase<ProjectileGameDataBase>().GetData(Data.ProjectileDataId).ColliderRad * 0.5f;
+            ColliderRad = dataManager.GetDataBase<ProjectileGameDataBase>().GetData(Data.ProjectileDataId).ColliderRad;
             
             Shooter.Initialize(Animator);
             BounceMask = Shooter.BounceMask;

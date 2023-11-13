@@ -85,7 +85,7 @@ namespace QT.InGame
             _isReleased = false;
             _properties = data.Properties;
 
-            _size = _ownerEntity.ColliderRad;
+            _size = _ownerEntity.ColliderRad * 0.5f;
             _targetTransform = data.Target;
             
             _isDamageOnBounce = data.Owner != ProjectileOwner.Boss;

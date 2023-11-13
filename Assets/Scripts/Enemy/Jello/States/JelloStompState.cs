@@ -18,6 +18,8 @@ namespace QT.InGame
             End
         }
         
+        private const string SplashEffectPath = "Effect/Prefabs/Boss/FX_Jello_Water.prefab";
+        
         private static readonly int JumpReadyAnimHash = Animator.StringToHash("JumpReady");
         private static readonly int IsJumpingAnimHash = Animator.StringToHash("IsJumping");
         
@@ -145,6 +147,8 @@ namespace QT.InGame
                 
                 _ownerEntity.Shooter.ShootPoint = _transform;
                 _ownerEntity.Shooter.Shoot(_data.StompShootId, AimTypes.World, ProjectileOwner.Boss);
+                
+                SystemManager.Instance.ResourceManager.EmitParticle(SplashEffectPath, _ownerEntity.transform.position);
 
                 if (_repeatCount < _data.StompRepeatCount)
                 {

@@ -94,7 +94,7 @@ namespace QT.InGame
 
             _ownerEntity.Animator.SetBool(ProjectileAnimHash, true);
             
-            _size = _ownerEntity.ColliderRad;
+            _size = _ownerEntity.ColliderRad * 0.5f;
             _damage = _ownerEntity.ProjectileDamage;
             
             _flyingEffect = await SystemManager.Instance.ResourceManager.GetFromPool<ParticleSystem>(FlyingEffectPath, _ownerEntity.BallObject);
