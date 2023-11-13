@@ -19,7 +19,9 @@ namespace QT.InGame
             Final,
             After
         }
-        
+
+        private const string ShootEffectPath = "Effect/Prefabs/Boss/FX_Jello_BigBall.prefab";
+        private const string StompEffectPath = "Effect/Prefabs/Boss/FX_Jello_Radial.prefab";
         
         private static readonly int ShootReadyAnimHash = Animator.StringToHash("ShootReady");
         private static readonly int ShootAnimHash = Animator.StringToHash("Shoot");
@@ -67,6 +69,8 @@ namespace QT.InGame
                             _ownerEntity.Shooter.ShootPoint = _ownerEntity.RightHandTransform;
                             _ownerEntity.Shooter.Shoot(_data.ShootRightHandShootId, AimTypes.World,
                                 ProjectileOwner.Boss);
+                            
+                            SystemManager.Instance.ResourceManager.EmitParticle(ShootEffectPath, _ownerEntity.RightHandTransform.position);
                         }
 
                         _state = ShootState.Left;
@@ -81,8 +85,11 @@ namespace QT.InGame
                             _ownerEntity.Shooter.ShootPoint = _ownerEntity.LeftHandTransform;
                             _ownerEntity.Shooter.Shoot(_data.ShootLeftHandShootId, AimTypes.World,
                                 ProjectileOwner.Boss);
+                            
+                            SystemManager.Instance.ResourceManager.EmitParticle(ShootEffectPath, _ownerEntity.LeftHandTransform.position);
                         }
 
+                        SystemManager.Instance.ResourceManager.EmitParticle(StompEffectPath, _ownerEntity.ShootPointPivot.position);
                         _state = ShootState.Final;
                         _timer = 0;
                     }
