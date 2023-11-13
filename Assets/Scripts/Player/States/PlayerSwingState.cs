@@ -72,11 +72,8 @@ namespace QT.InGame
                 
                 SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnSwingStart, null);
             }
-            else
-            {
-                OnSwing(_ownerEntity.GetActionValue(Player.ButtonActions.Swing));
-            }
-
+            
+            OnSwing(_ownerEntity.GetActionValue(Player.ButtonActions.Swing));
         }
 
         public override void ClearState()

@@ -35,6 +35,8 @@ namespace QT.InGame
                 return;
             }
             
+            _ownerEntity.SetAction(Player.ButtonActions.Swing, OnSwing);
+            
             _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeCooldown).SetStatus(0);
             _ownerEntity.StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).SetStatus(0);
 
@@ -82,11 +84,22 @@ namespace QT.InGame
         {
             SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDodgeEnd, null);
             
+            _ownerEntity.ClearAction(Player.ButtonActions.Swing);
             _ownerEntity.Animator.SetBool(IsDodgeAnimHash, false);
             
             _ownerEntity.gameObject.layer = _playerLayer;
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             _ownerEntity.IsDodge = false;
+        }
+        
+        protected virtual void OnSwing(bool isOn)
+        {
+            if (!isOn)
+            {
+                return;
+            }
+            
+            _ownerEntity.ResetSwingTime(true);
         }
     }
 }

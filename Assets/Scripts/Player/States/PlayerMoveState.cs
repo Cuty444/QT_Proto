@@ -16,7 +16,7 @@ namespace QT.InGame
         protected Stat _moveSpeed;
         
         private Vector2 _lastSafePosition;
-
+        
         
         public PlayerMoveState(IFSMEntity owner) : base(owner)
         {
@@ -43,6 +43,15 @@ namespace QT.InGame
             _ownerEntity.ClearAction(Player.ButtonActions.Swing);
             _ownerEntity.ClearAction(Player.ButtonActions.Dodge);
             _ownerEntity.ClearAction(Player.ButtonActions.Interaction);
+        }
+
+        public override void UpdateState()
+        {
+            if (_ownerEntity.IsSwingAble() && _ownerEntity.StatComponent.GetStatus(PlayerStats.SwingCooldown).IsFull())
+            {
+                _ownerEntity.ResetSwingTime(false);
+                _ownerEntity.ChangeState(Player.States.Swing);
+            }
         }
 
         public override void FixedUpdateState()
@@ -81,9 +90,19 @@ namespace QT.InGame
 
         protected virtual void OnSwing(bool isOn)
         {
-            if (isOn && _ownerEntity.StatComponent.GetStatus(PlayerStats.SwingCooldown).IsFull())
+            if (!isOn)
             {
+                return;
+            }
+            
+            if (_ownerEntity.StatComponent.GetStatus(PlayerStats.SwingCooldown).IsFull())
+            {
+                _ownerEntity.ResetSwingTime(false);
                 _ownerEntity.ChangeState(Player.States.Swing);
+            }
+            else
+            {
+                _ownerEntity.ResetSwingTime(true);
             }
         }
 
