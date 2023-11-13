@@ -99,7 +99,7 @@ namespace QT.UI
         private async void OnClickRetry()
         {
             _gameOverCanvas.RetryButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
-            
+            SystemManager.Instance.PlayerManager.ReleasePlayer();
             SetInputs(false);
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
@@ -107,7 +107,6 @@ namespace QT.UI
             _gameOverCanvas.PopAnimator.Pause();
             _gameOverCanvas.ReleaseAnimator.ReStart();
             //_gameOverCanvas.SpineAnimation.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
-            
             await SystemManager.Instance.StageLoadManager.StageLoad(1);
             SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
             
@@ -120,7 +119,8 @@ namespace QT.UI
         private void OnClickExit()
         {
             _gameOverCanvas.TitleButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
-            
+            SystemManager.Instance.PlayerManager.ReleasePlayer();
+
             SetInputs(false);
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);

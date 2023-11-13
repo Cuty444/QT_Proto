@@ -818,15 +818,15 @@ namespace QT.Core.Map
             
             _floorValue++;
             
-            var _playerManager = SystemManager.Instance.PlayerManager;
+            //var _playerManager = SystemManager.Instance.PlayerManager;
 
-            _playerManager.PlayerIndexInventory = _playerManager.Player.Inventory.GetItemList()
-                .Select((x) => x.ItemGameData.Index).ToList();
-            
-            if (_playerManager.Player.Inventory.ActiveItem != null)
-            {
-                _playerManager.PlayerActiveItemIndex = _playerManager.Player.Inventory.ActiveItem.ItemGameData.Index;
-            }
+            //_playerManager.PlayerIndexInventory = _playerManager.Player.Inventory.GetItemList()
+            //    .Select((x) => x.ItemGameData.Index).ToList();
+            //
+            //if (_playerManager.Player.Inventory.ActiveItem != null)
+            //{
+            //    _playerManager.PlayerActiveItemIndex = _playerManager.Player.Inventory.ActiveItem.ItemGameData.Index;
+            //}
             
             SystemManager.Instance.UIManager.SetState(UIState.Loading);
             

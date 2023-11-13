@@ -60,6 +60,10 @@ namespace QT.InGame
         [SerializeField] private Transform[] _attackSpeedBackground;
         [SerializeField] private Image[] _attackGaugeImages;
         
+        private static readonly int IsPause = Animator.StringToHash("IsPause");
+        private static readonly int IsWarp = Animator.StringToHash("IsWarp");
+        private static readonly int Swing = Animator.StringToHash("Swing");
+
         [field:SerializeField] public CinemachineImpulseSource DamageImpulseSource { get; private set; }
         [field: SerializeField] public float DamageImpulseForce { get; private set; } = 3;
         [field:SerializeField] public CinemachineImpulseSource AttackImpulseSource { get; private set; }
@@ -108,12 +112,14 @@ namespace QT.InGame
             SetUp(States.Move);
             SetGlobalState(new PlayerGlobalState(this));
             
-            Inventory.CopyItemList(_playerManager.PlayerIndexInventory, _playerManager.PlayerActiveItemIndex);
+            //Inventory.CopyItemList(_playerManager.PlayerIndexInventory, _playerManager.PlayerActiveItemIndex);
+            
+            _playerManager.PlayerNextFloor.AddListener(NextFloorChangeCamera);
         }
 
         protected override void Update()
         {
-            if (Time.timeScale == 0)
+            if (Time.timeScale == 0 )
             {
                 return;
             }
@@ -128,6 +134,7 @@ namespace QT.InGame
         {
             base.OnDestroy();
             
+            _playerManager.PlayerNextFloor.RemoveListener(NextFloorChangeCamera);
             Inventory.ClearInventory();
         }
 
@@ -155,7 +162,7 @@ namespace QT.InGame
             PauseGame(isPause);
             
             PlayerFocusCam.SetActive(isPause);
-            Animator.SetBool("IsPause", isPause);
+            Animator.SetBool(IsPause, isPause);
         }
 
         public void Warp(Vector2Int cellPos)
@@ -163,22 +170,22 @@ namespace QT.InGame
             SystemManager.Instance.UIManager.SetState(UIState.InGame);
             
             PauseGame(true);
-            Animator.SetTrigger("IsWarp");
+            Animator.SetTrigger(IsWarp);
             
             StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
             {
                 _warpEffectParticle.Play();
-                Animator.ResetTrigger("IsWarp");
+                Animator.ResetTrigger(IsWarp);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData
                     .WarpMapSFX);
                 StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
                 {
-                    Animator.SetTrigger("IsWarp");
+                    Animator.SetTrigger(IsWarp);
                     SystemManager.Instance.PlayerManager.PlayerMapTeleportPosition.Invoke(cellPos);
                     StartCoroutine(Util.UnityUtil.WaitForFunc(() => { PauseGame(false); }, 0.5f));
                 }, 0.37f));
             }, 0.3f));
-            Animator.ResetTrigger("Swing");
+            Animator.ResetTrigger(Swing);
         }
 
         private void PauseGame(bool isPause)
@@ -193,6 +200,12 @@ namespace QT.InGame
                 inputActions.Enable();
                 Animator.updateMode = AnimatorUpdateMode.Normal;
             }
+        }
+
+        private void NextFloorChangeCamera()
+        {
+            Pause(false);
+            _camera = Camera.main;
         }
     }
 }

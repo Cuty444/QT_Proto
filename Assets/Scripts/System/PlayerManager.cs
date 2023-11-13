@@ -25,6 +25,8 @@ namespace QT.Core
         public UnityEvent<int> OnGoldValueChanged { get; } = new();
 
         public UnityEvent<VolumeProfile, float> OnMapCellChanged { get; } = new();
+
+        public UnityEvent PlayerNextFloor { get; } = new();
         
         public Player Player { get; private set; }
         public int PlayerActiveItemIndex = -1;
@@ -42,7 +44,15 @@ namespace QT.Core
         public async void CreatePlayer()
         {
             PlayerMapPass.RemoveAllListeners();
-            Player = await SystemManager.Instance.ResourceManager.GetFromPool<Player>(Constant.PlayerPrefabPath);
+            if (Player == null)
+            {
+                Player = await SystemManager.Instance.ResourceManager.GetFromPool<Player>(Constant.PlayerPrefabPath);
+                Object.DontDestroyOnLoad(Player);
+            }
+            else
+            {
+                PlayerNextFloor.Invoke();
+            }
             Player.transform.localPosition = new Vector3(0f, 0f, 0f);
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
             
@@ -70,6 +80,12 @@ namespace QT.Core
             PlayerIndexInventory.Clear();
             PlayerActiveItemIndex = -1;
             (await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>()).SetGoldText(Gold);
+        }
+
+        public void ReleasePlayer()
+        {
+            SystemManager.Instance.ResourceManager.ReleaseObject(Constant.PlayerPrefabPath,Player);
+            Player = null;
         }
     }
 }
