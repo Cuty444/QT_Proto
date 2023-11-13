@@ -10,6 +10,8 @@ namespace QT.InGame
     [FSMState((int) Saddy.States.Normal)]
     public class SaddyNormalState : FSMState<Saddy>
     { 
+        private const string ChargeEffectPath = "Effect/Prefabs/Boss/FX_Saddy_Charging.prefab";
+        
         private static readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
         private static readonly int ChargeLevelAnimHash = Animator.StringToHash("ChargeLevel");
         private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
@@ -184,6 +186,8 @@ namespace QT.InGame
 
         private void Swing()
         {
+            SystemManager.Instance.ResourceManager.EmitParticle(ChargeEffectPath, Vector2.zero, 0, _ownerEntity.ShootPointPivot);
+            
             var swingLevel = _ownerEntity.Animator.GetFloat(ChargeLevelAnimHash);
             DOTween.To(() => swingLevel, x =>
             {
