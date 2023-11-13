@@ -47,9 +47,11 @@ namespace QT.InGame
         [HideInInspector] public bool IsFlip;
         [HideInInspector] public bool IsReverseLookDir = false;
         [HideInInspector] public bool LockAim = false;
-
-
+        
         [HideInInspector] public bool IsMoveFlip;
+        
+        [HideInInspector] public float LastSwingTime;
+        
         private void InitInputs()
         {
             buttonActions = new Dictionary<ButtonActions, InputAction>();
@@ -175,6 +177,23 @@ namespace QT.InGame
             {
                 buttonEvents.Remove(type);
             }
+        }
+        
+        public void ResetSwingTime(bool isPressed)
+        {
+            if (isPressed)
+            {
+                LastSwingTime = Time.time;
+            }
+            else
+            {
+                LastSwingTime = -9999;
+            }
+        }
+        
+        public bool IsSwingAble()
+        {
+            return LastSwingTime + 0.2f > Time.time;
         }
     }
 }
