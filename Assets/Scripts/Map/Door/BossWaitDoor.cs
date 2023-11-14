@@ -19,7 +19,7 @@ namespace QT
 
         public void PlayerEnter()
         {
-            _waveHardCollider.enabled = false;
+            _waveHardCollider.enabled = true;
             _waveStartCollider.enabled = false;
             _mapCellData.PlayBossEnterRoom();
             DoorClose();
