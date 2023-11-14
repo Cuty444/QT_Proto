@@ -59,6 +59,11 @@ namespace QT.UI
                 
                 _activeCells.Add(_cells[i]);
             }
+
+            if (_activeCells.Count == 1)
+            {
+                _activeCells[0].SetRouteDirection(MapDirection.None);
+            }
         }
         
         public void ChangeCenter(Vector2Int position)
