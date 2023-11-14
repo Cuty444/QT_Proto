@@ -24,6 +24,12 @@ namespace QT
             _mapCellData.PlayBossEnterRoom();
             DoorClose();
         }
+
+        public void BossClear()
+        {
+            _waveHardCollider.enabled = false;
+            DoorOpen();
+        }
         
     }
 }

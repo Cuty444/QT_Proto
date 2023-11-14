@@ -139,6 +139,13 @@ namespace QT.Map
                 if (SpecialMapData.TryGetComponent(out IBossClearEvent bossClearEvent))
                 {
                     bossClearEvent.BossClear();
+                    foreach (var door in _doorAnimators)
+                    {
+                        if (door.TryGetComponent(out BossWaitDoor bossWaitDoor))
+                        {
+                            bossWaitDoor.BossClear();
+                        }
+                    }
                 }
             }
             
@@ -230,6 +237,12 @@ namespace QT.Map
             //doorObject.StageMoveDoorInit(exitDoorPosition);
             doorObject.DoorOpen();
             _doorAnimators.Add(doorObject);
+            _doorTransforms[1].gameObject.SetActive(true);
+            doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<Door>("Doors/Normal/NormalDown.prefab", _doorTransforms[1]);
+            doorObject.transform.localPosition = Vector3.zero;
+            doorObject.Init(Util.UnityUtil.PathDirections[1], BossWaitExitDoor);
+            doorObject.DoorOpen();
+            _doorAnimators.Add(doorObject);
         }
 
         public Transform GetDownTransform()
@@ -279,6 +292,11 @@ namespace QT.Map
         private void ExitDoor(Vector2Int direction)
         {
             gameObject.SetActive(false);
+            SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(direction);
+        }
+
+        private void BossWaitExitDoor(Vector2Int direction)
+        {
             SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(direction);
         }
 
