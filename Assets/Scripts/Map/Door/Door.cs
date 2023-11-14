@@ -51,6 +51,11 @@ namespace QT
             }
         }
 
+        public void DoorClose()
+        {
+            _animator?.PlayBackwards();
+        }
+
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (_isOpen)
