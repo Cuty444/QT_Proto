@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QT
 {
-    public class JelloMapData : SpecialMapData
+    public class JelloMapData : SpecialMapData,IBossClearEvent
     {
         [field: SerializeField] public Transform MapCenter { get; private set; }
 
@@ -17,5 +17,16 @@ namespace QT
         //     }
         // }
         // #endif
+        [SerializeField] private GameObject _caseterNPC;
+
+        private void Start()
+        {
+            _caseterNPC.gameObject.SetActive(false);
+        }
+
+        public void BossClear()
+        {
+            _caseterNPC.gameObject.SetActive(true);
+        }
     }
 }

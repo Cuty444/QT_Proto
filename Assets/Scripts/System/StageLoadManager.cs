@@ -15,13 +15,14 @@ namespace QT
             
             SystemManager.Instance.LoadingManager.MapReLoad();
             
-            await UniTask.WhenAll(SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().ShopLoad(stageNumberString),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().StartRoomLoad(stageNumberString),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().BossRoomLoad(stageNumberString),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().StairsRoomLoad(stageNumberString),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().RewardRoomLoad(stageNumberString),
-                SystemManager.Instance.GetSystem<DungeonMapSystem>().HpHealRoomLoad(stageNumberString));
+            await UniTask.WhenAll(SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString,RoomType.Normal),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString,RoomType.Start),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString,RoomType.GoldShop),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString,RoomType.Boss),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString,RoomType.Stairs),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString,RoomType.Reward),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString,RoomType.HpHeal),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad(stageNumberString,RoomType.Wait));
 
             SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(stageNumber - 1);
             

@@ -89,6 +89,25 @@ namespace QT.Map
 
         public void PlayRoom(Vector2Int position)
         {
+            if (RoomType.Boss == _roomType)
+                return;
+            _changer?.Spawn();
+
+            _isPlaying = true;
+            _playerManager.PlayerMapPass.Invoke(false);
+
+            if (EnemyWaves is {Length: > 0})
+            {
+                EnemyWaves[0].Spawn();
+            }
+            else
+            {
+                ClearRoom();
+            }
+        }
+
+        public void PlayBossEnterRoom()
+        {
             _changer?.Spawn();
 
             _isPlaying = true;
@@ -115,6 +134,14 @@ namespace QT.Map
                 door.DoorOpen();
             }
 
+            if (_roomType == RoomType.Boss)
+            {
+                if (SpecialMapData.TryGetComponent(out IBossClearEvent bossClearEvent))
+                {
+                    bossClearEvent.BossClear();
+                }
+            }
+            
             _isPlaying = false;
         }
         
@@ -154,37 +181,15 @@ namespace QT.Map
                 {
                     doorObject.DoorOpen();
                 }
-                
+                else if (_roomType == RoomType.Boss && i == 1)
+                {
+                    doorObject.gameObject.SetActive(false);
+                }
                 _doorAnimators.Add(doorObject);
             }
         }
 
-        public async void CreateBossDoor(Vector3 exitDoorPosition)
-        {
-            if (_dungeonMapSystem == null)
-            {
-                return;
-            }
-
-            
-            _doorTransforms[0].gameObject.SetActive(true);
-            var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<StageMoveDoor>("Doors/StageMove/StageUp.prefab", _doorTransforms[0]);
-            foreach (var door in _doorAnimators)
-            {
-                if (door.transform.parent.name == "DoorUp")
-                {
-                    door.gameObject.SetActive(false);
-                }
-            }
-            doorObject.transform.localPosition = Vector3.zero;
-            doorObject.StageMoveDoorInit(exitDoorPosition);
-            //doorObject.Init(Util.UnityUtil.PathDirections[0], StageMoveDoor);
-                
-            _doorAnimators.Add(doorObject);
-            
-        }
-
-        public async void CreateStairsDoor(Vector3 exitDoorPosition)
+        public async void CreateBossDoor(Transform exitDownPosition)
         {
             if (_dungeonMapSystem == null)
             {
@@ -193,13 +198,45 @@ namespace QT.Map
 
             
             _doorTransforms[1].gameObject.SetActive(true);
-            var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<StageMoveDoor>("Doors/StageMove/StageDown.prefab", _doorTransforms[1]);
+            var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<BossWaitDoor>("Doors/Boss/BossWaitDown.prefab", _doorTransforms[1]);
+            foreach (var door in _doorAnimators)
+            {
+                if (door.transform.parent.name == "DoorDown")
+                {
+                    door.gameObject.SetActive(false);
+                }
+            }
             doorObject.transform.localPosition = Vector3.zero;
-            doorObject.StageMoveDoorInit(exitDoorPosition);
+            //doorObject.StageMoveDoorInit(exitDoorPosition);
+            //doorObject.Init(Util.UnityUtil.PathDirections[0], StageMoveDoor);
+            _doorExitTransforms[1] = exitDownPosition;
+            doorObject._mapCellData = this;
+            doorObject.DoorOpen();
+            _doorAnimators.Add(doorObject);
+            
+        }
+
+        public async void CreateWaitDoor()
+        {
+            if (_dungeonMapSystem == null)
+            {
+                return;
+            }
+
+            
+            _doorTransforms[0].gameObject.SetActive(true);
+            var doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<Door>("Doors/Boss/BossWaitUp.prefab", _doorTransforms[0]);
+            doorObject.transform.localPosition = Vector3.zero;
+            //doorObject.StageMoveDoorInit(exitDoorPosition);
             doorObject.DoorOpen();
             _doorAnimators.Add(doorObject);
         }
 
+        public Transform GetDownTransform()
+        {
+            return _doorTransforms[1];
+        }
+        
         private void PlayerMapEnter(Vector2Int enterPosition)
         {
             if (_cellPosition != enterPosition)
@@ -253,10 +290,9 @@ namespace QT.Map
             _playerManager.Player.LastSafePosition = _doorExitTransforms[1].position;
         }
 
-        public Vector3 GetStageEnterDoorPosition(int index)
+        public Transform GetStageEnterDoorPosition(int index)
         {
-            return _doorExitTransforms[index].position;
+            return _doorExitTransforms[index];
         }
-        
     }
 }
