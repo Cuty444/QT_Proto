@@ -79,10 +79,11 @@ namespace QT.Core
             
             PlayerIndexInventory.Clear();
             PlayerActiveItemIndex = -1;
+            ReleasePlayer();
             (await SystemManager.Instance.UIManager.Get<PlayerHPCanvasModel>()).SetGoldText(Gold);
         }
 
-        public void ReleasePlayer()
+        private void ReleasePlayer()
         {
             SystemManager.Instance.ResourceManager.ReleaseObject(Constant.PlayerPrefabPath,Player);
             Player = null;

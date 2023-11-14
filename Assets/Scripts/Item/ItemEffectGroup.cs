@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using QT.Core;
 using UnityEngine;
 
 namespace QT.InGame
@@ -15,6 +16,8 @@ namespace QT.InGame
         private float _lastTime;
 
         private List<ItemEffect> _effects = new ();
+
+        private PlayerManager _playerManager;
         
         public ItemEffectGroup(Item item, Player player, ItemEffectGameData effectData)
         {
@@ -26,6 +29,8 @@ namespace QT.InGame
             {
                 _condition = EffectConditionFactory.GetCondition(effectData.Condition, effectData.ConditionTarget, effectData.ConditionValue);
             }
+
+            _playerManager = SystemManager.Instance.PlayerManager;
         }
 
         public void Add(ItemEffect effect)
@@ -63,6 +68,7 @@ namespace QT.InGame
             }
 
             _lastTime = 0;
+            _playerManager.PlayerNextFloor.AddListener(ResetLastTime);
         }
 
         public void OnRemoved()
@@ -71,6 +77,7 @@ namespace QT.InGame
             {
                 effect.OnRemoved();
             }
+            _playerManager.PlayerNextFloor.RemoveListener(ResetLastTime);
         }
         
         public float GetCoolTimeProgress()
@@ -81,6 +88,11 @@ namespace QT.InGame
             }
             
             return 1 - Mathf.Min(1, (Time.timeSinceLevelLoad - _lastTime) / Data.CoolTime);
+        }
+
+        private void ResetLastTime()
+        {
+            _lastTime = 0f;
         }
         
     }
