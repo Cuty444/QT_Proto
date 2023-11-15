@@ -63,10 +63,10 @@ namespace QT.UI
         {
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
             
-            SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+            //SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
             
             SystemManager.Instance.PlayerManager.Reset();;
-            SystemManager.Instance.LoadingManager.LoadScene(1);
+            SystemManager.Instance.LoadingManager.LoadScene(SceneNumber.Lobby);
         }
 
         

@@ -24,7 +24,7 @@ namespace QT
         private Animator _animator = null;
         
         private static readonly int Talk = Animator.StringToHash("Talk");
-        private const string SummonPrefabPath = "Effect/Prefabs/FX_Summons_Teleport.prefab";
+        private const string SummonPrefabPath = "Effect/Prefabs/FX_NPC_Ppyong_Dust.prefab";
 
 
         private void Start()
