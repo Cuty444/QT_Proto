@@ -10,12 +10,14 @@ namespace QT
     {
         public bool IsTutorialGate;
         
-        private void OnTriggerEnter2D(Collider2D col)
+        private async void OnTriggerEnter2D(Collider2D col)
         {
             //SystemManager.Instance.PlayerManager.Player.Pause(true);
 
             if (IsTutorialGate)
             {
+                await SystemManager.Instance.StageLoadManager.TutorialStage();
+                
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().TutorialMapGenerate();
             }
             else
