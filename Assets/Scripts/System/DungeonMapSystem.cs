@@ -789,7 +789,7 @@ namespace QT.Core.Map
 
             await SystemManager.Instance.StageLoadManager.StageLoad(GetFloor() + 1);
             
-            SystemManager.Instance.LoadingManager.LoadScene(1);
+            SystemManager.Instance.LoadingManager.LoadScene(SceneNumber.InGame);
             DungenMapGenerate();
         }
 

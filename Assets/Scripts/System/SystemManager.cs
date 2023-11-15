@@ -63,7 +63,7 @@ namespace QT.Core
             //타이틀씬으로 이동
             if (!IsTestMode)
             {
-                LoadingManager.LoadScene(2);
+                LoadingManager.LoadScene(SceneNumber.Title);
             }
             
             IsInitialized = true;

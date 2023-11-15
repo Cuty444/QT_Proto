@@ -112,7 +112,7 @@ namespace QT.UI
             var sequenceLength = _gameOverCanvas.ReleaseAnimator.SequenceLength;
             
             _gameOverCanvas.StopAllCoroutines();
-            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(sequenceLength,1));
+            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(sequenceLength,SceneNumber.InGame));
         }
         
         private void OnClickExit()
@@ -129,7 +129,7 @@ namespace QT.UI
             var sequenceLength = 0;//_gameOverCanvas.ReleaseAnimator.SequenceLength;
             
             _gameOverCanvas.StopAllCoroutines();
-            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(sequenceLength,2));
+            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(sequenceLength,SceneNumber.Title));
         }
 
 
@@ -148,7 +148,7 @@ namespace QT.UI
             _gameOverCanvas.RetryButton.enabled = enable;
         }
 
-        private IEnumerator WaitForReleaseAnimation(float waitTime, int SceneNumber)
+        private IEnumerator WaitForReleaseAnimation(float waitTime, SceneNumber SceneNumber)
         {
             yield return new WaitForSecondsRealtime(waitTime);
             

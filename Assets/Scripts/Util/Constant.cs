@@ -4,6 +4,15 @@ using UnityEngine;
 
 namespace QT.Core
 {
+    public enum SceneNumber
+    {
+        Load = 0,
+        Title = 1,
+        Lobby = 2,
+        Tutorial = 4,
+        InGame = 3
+    }
+    
     public static class Constant
     {
         public const string PlayerPrefabPath = "Prefabs/Player.prefab";
