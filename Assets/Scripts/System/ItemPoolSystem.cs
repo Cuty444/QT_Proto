@@ -53,6 +53,11 @@ namespace QT
             _holderItems.AddRange(items);
         }
 
+        public void HolderItemRemover(ItemGameData item)
+        {
+            _holderItems.Remove(item);
+        }
+        
         private void HolderItemClear()
         {
             _holderItems.Clear();

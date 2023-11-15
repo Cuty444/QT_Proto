@@ -8,10 +8,11 @@ using UnityEngine;
 
 namespace QT
 {
-    public class NpcInteraction : MonoBehaviour, IHitAble
+    public class StoreNpcInteraction : MonoBehaviour, IHitAble
     {
         private readonly int AnimationHitHash = Animator.StringToHash("Hit");
         private readonly int AnimationSoldHash = Animator.StringToHash("Sold");
+        [SerializeField] private UIItemDesc _uiItemDesc;
 
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
@@ -21,10 +22,19 @@ namespace QT
 
         private Animator _animator;
 
+        private ShopMapData _shopMapData;
+
+        private PlayerManager _playerManager;
+
         private void Awake()
         {
             _animator = GetComponentInChildren<Animator>();
+            _shopMapData = GetComponentInParent<ShopMapData>();
+            _uiItemDesc.SetGoldCost("X " + _shopMapData.GetReRollGold());
             SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(Sold);
+            _shopMapData._rerollEvnet.AddListener(Sold);
+            _playerManager = SystemManager.Instance.PlayerManager;
+            _uiItemDesc.Hide();
         }
 
         private void OnEnable()
@@ -40,6 +50,7 @@ namespace QT
         private void OnDestroy()
         {
             SystemManager.Instance?.PlayerManager.AddItemEvent.RemoveListener(Sold);
+            _shopMapData?._rerollEvnet.RemoveListener(Sold);
         }
 
         private void Hit()
@@ -68,6 +79,38 @@ namespace QT
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
             Hit();
+        }
+        
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
+                other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
+            {
+                _playerManager.PlayerItemInteraction.AddListener(ReRoll);
+                _uiItemDesc.Show();
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
+                other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
+            {
+                _playerManager.PlayerItemInteraction.RemoveListener(ReRoll);
+                _uiItemDesc.Hide();
+            }
+        }
+
+        private void ReRoll()
+        {
+            int price = _shopMapData.GetReRollGold();
+            if (price > _playerManager.Gold)
+                return;
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData
+                .Shop_BuySFX);
+            _playerManager.OnGoldValueChanged.Invoke(-price);
+            _shopMapData._rerollEvnet.Invoke();
+            _uiItemDesc.SetGoldCost("X " + _shopMapData.GetReRollGold());
         }
     }
 }
