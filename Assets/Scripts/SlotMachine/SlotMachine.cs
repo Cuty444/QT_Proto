@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Util;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -71,19 +72,20 @@ namespace QT
         [Space]
         [SerializeField] private UIItemDesc _uiItemDesc;
 
+        [SerializeField] private Animator _animator;
 
         private PlayerManager _playerManager;
         private SlotDropPercentage _slotDropPercentage;
-        private SpriteRenderer _sprite;
 
-        private bool isAnimationStay = false;
-        
+        private static readonly int Run = Animator.StringToHash("Run");
+        private static readonly int Result = Animator.StringToHash("Result");
+        private static readonly int Value = Animator.StringToHash("Value");
+
         private void Awake()
         {
             _uiItemDesc.SetGoldCost(string.Format("X {0}", _priceGold));
             _uiItemDesc.Hide();
             _slotDropPercentage = new SlotDropPercentage(_slotPrizeData);
-            _sprite = GetComponent<SpriteRenderer>();
         }
 
         private void Start()
@@ -113,7 +115,8 @@ namespace QT
 
         private void PlaySlotMachine()
         {
-            if (isAnimationStay)
+            AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+            if (!stateInfo.IsName("Idle"))
             {
                 return;
             }
@@ -123,30 +126,37 @@ namespace QT
                 return;
             }
             _playerManager.OnGoldValueChanged.Invoke(-_priceGold);
-            isAnimationStay = true;
-            _sprite.color = Color.yellow;
+            _animator.SetTrigger(Run);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
                 var data = _slotPrizeData[_slotDropPercentage.RandomSlotPrize()];
+                _animator.SetTrigger(Result);
                 switch (data.SlotPrizeType)
                 {
                     case SlotPrizeType.gold:
                         Coin.SpawnDelayStay(data.DropCount, transform.position, Vector2.zero, 20,1f);
+                        if (data.DropCount < 50)
+                        {
+                            _animator.SetFloat(Value,0.25f);
+                        }
+                        else
+                        {
+                            _animator.SetFloat(Value,1f);
+                        }
                         break;
                     case SlotPrizeType.hp:
                         _playerManager.Player.Heal(data.DropCount);
                         _playerManager.AddItemEvent.Invoke();
+                        _animator.SetFloat(Value,0.5f);
                         break;
                     case SlotPrizeType.item:
                         SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Item_GetSFX);
                         var itemData = SystemManager.Instance.GetSystem<ItemPoolSystem>().GetItemsWithDropPercentage(data.DropCount,DropGameType.Select);
                         _playerManager.Player.AddItem(itemData[0]);
+                        _animator.SetFloat(Value,0.75f);
                         _playerManager.AddItemEvent.Invoke();
                         break;
                 }
-
-                _sprite.color = Color.white;
-                isAnimationStay = false;
             },1f));
         }
     }
