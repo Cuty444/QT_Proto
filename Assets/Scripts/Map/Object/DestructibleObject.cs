@@ -5,6 +5,7 @@ using FMODUnity;
 using QT.Core;
 using Spine.Unity;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace QT
 {
@@ -22,6 +23,8 @@ namespace QT
         [SerializeField] private  GameObject _object;
         [SerializeField] private  Transform _fragmentsParent;
         [SerializeField] private bool _isReverse;
+
+        public UnityEvent OnHit;
         
         private Fragment[] _fragments;
         private Collider2D _collider2D;
@@ -85,6 +88,7 @@ namespace QT
             }
 
             _isDead = true;
+            OnHit?.Invoke();
             HitAbleManager.Instance.UnRegister(this);
         }
         
