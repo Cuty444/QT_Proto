@@ -60,9 +60,9 @@ namespace QT.Core.Map
         public bool IsVisited;
         public bool IsClear;
 
-        public CellData()
+        public CellData(RoomType type = RoomType.None)
         {
-            RoomType = RoomType.None;
+            RoomType = type;
             IsVisited = false;
             IsClear = false;
         }
@@ -89,8 +89,11 @@ namespace QT.Core.Map
 
     public class DungeonMapSystem : SystemBase
     {
-        [SerializeField] private int _mapWidth = 11;
-        [SerializeField] private int _mapHeight = 7;
+        [SerializeField] private Vector2Int _mapSize = new Vector2Int(7, 7);
+        
+        private int _mapWidth = 11;
+        private int _mapHeight = 7;
+        
         [SerializeField] private int _floorValue = 0;
         [Range(0.0f, 1.0f)] [SerializeField] private float _manyPathCorrection = 1.0f;
 
@@ -154,6 +157,9 @@ namespace QT.Core.Map
 
         public void DungenMapGenerate()
         {
+            _mapWidth = _mapSize.x;
+            _mapHeight = _mapSize.y;
+            
             var data = SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>()
                 .GetData(800 + _floorValue);
 
@@ -174,6 +180,35 @@ namespace QT.Core.Map
             var roomPositionValues = GetFarthestRoomFromStart();
             SpecialRoomGenerate();
             _mapData = new MapData(_map, startPos, roomPositionValues.Item1, roomPositionValues.Item2, _mapNodeList);
+            
+            foreach (var pos in _mapData.MapNodeList)
+            {
+                _mapData.Map[pos.y,pos.x].DoorDirection = DirectionCheck(pos);
+            }
+            
+            DungeonMapGeneratedEvent.Invoke();
+        }
+
+        public void TutorialMapGenerate()
+        {
+            _mapWidth = 4;
+            _mapHeight = 3;
+            
+            _map = new CellData[3,4]
+            {
+                {new (RoomType.Start), new (RoomType.Normal), new (RoomType.Normal), new (RoomType.Normal) },
+                {new (),                           new (),                              new (),                              new (RoomType.Normal) },
+                {new (),                           new (),                              new (RoomType.Normal), new (RoomType.Normal) }
+            };
+
+            _mapNodeList = new List<Vector2Int>
+            {
+                new(0, 0), new(1, 0), new(2, 0), new(3, 0),
+                new(3, 1),
+                new(3, 2), new(2, 2)
+            };
+            
+            _mapData = new MapData(_map, Vector2Int.zero, Vector2Int.zero, Vector2Int.zero, _mapNodeList);
             
             foreach (var pos in _mapData.MapNodeList)
             {
