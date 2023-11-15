@@ -193,21 +193,21 @@ namespace QT.Core.Map
 
         public void TutorialMapGenerate()
         {
-            _mapWidth = 4;
+            _mapWidth = 3;
             _mapHeight = 3;
             
-            _map = new CellData[3,4]
+            _map = new CellData[3,3]
             {
-                {new (RoomType.Start), new (RoomType.Tutorial), new (RoomType.Tutorial), new (RoomType.Tutorial) },
-                {new (),                               new (),                                new (),                               new (RoomType.Tutorial) },
-                {new (),                               new (),                                new (RoomType.Tutorial), new (RoomType.Tutorial) }
+                {new (RoomType.Start), new (RoomType.Tutorial), new (RoomType.Tutorial)},
+                {new (),                               new (),                                new (RoomType.Tutorial)},
+                {new (),                               new (RoomType.Tutorial), new (RoomType.Tutorial) }
             };
 
             _mapNodeList = new List<Vector2Int>
             {
-                new(0, 0), new(1, 0), new(2, 0), new(3, 0),
-                new(3, 1),
-                new(3, 2), new(2, 2)
+                new(0, 0), new(1, 0), new(2, 0),
+                new(2, 1),
+                new(2, 2), new(1, 2)
             };
             
             _mapData = new MapData(_map, Vector2Int.zero, Vector2Int.zero, Vector2Int.zero, _mapNodeList);
