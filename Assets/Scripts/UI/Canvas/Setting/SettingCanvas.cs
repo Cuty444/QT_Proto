@@ -136,7 +136,7 @@ namespace QT.UI
             
             Time.timeScale = 1;
             SystemManager.Instance.PlayerManager.Reset();
-            SystemManager.Instance.LoadingManager.LoadScene(2);
+            SystemManager.Instance.LoadingManager.LoadScene(SceneNumber.Title);
         }
     }
 }
