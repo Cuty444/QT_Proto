@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.InGame;
 using UnityEngine;
 using QT.Util;
 
@@ -24,7 +25,8 @@ namespace QT
         [SerializeField] private Transform[] _waypointsTransform;
         [SerializeField] private float _moveSpeed;
         [SerializeField] private NpcTextPopup _npcTextPopup;
-        
+        [Header("풀피회복 여부")]
+        [SerializeField] private bool _isFullHeal = false;
         private Animator _animator = null;
 
         private PlayerManager _playerManager;
@@ -37,13 +39,25 @@ namespace QT
         {
             _animator = GetComponentInChildren<Animator>();
             _playerManager = SystemManager.Instance.PlayerManager;
-            _animator.SetTrigger(AnimationShiverHash);
-            _playerManager.PlayerMapClearPosition.AddListener(StopShiver);
+            if (!_isFullHeal)
+            {
+                _animator.SetTrigger(AnimationShiverHash);
+                _playerManager.PlayerMapClearPosition.AddListener(StopShiver);
+            }
         }
 
         private void OnEnable()
         {
             HitAbleManager.Instance.Register(this);
+            if (_isFullHeal)
+            {
+                if (_animator == null)
+                {
+                    _animator = GetComponentInChildren<Animator>();
+                }
+                _animator.SetBool(AnimationIdleHash,true);
+                return;
+            }
             if (_currentWayPointIndex >= _waypointsTransform.Length)
             {
                 _animator.SetBool(AnimationIdleHash,true);
@@ -54,6 +68,8 @@ namespace QT
         {
             HitAbleManager.Instance.UnRegister(this);
             if (_animator == null)
+                return;
+            if (_isFullHeal)
                 return;
             if (_currentWayPointIndex < _waypointsTransform.Length)
             {
@@ -141,7 +157,7 @@ namespace QT
             _isHeal = true;
             _npcTextPopup.Hide();
             _animator.SetTrigger(AnimationTalkHash);
-            _playerManager.Player.Heal(50f);
+            _playerManager.Player.Heal(_isFullHeal ? _playerManager.Player.StatComponent.GetStatus(PlayerStats.HP).Value : 50);
             _playerManager.AddItemEvent.Invoke();
             _playerManager.PlayerItemInteraction.RemoveListener(Heal);
         }
