@@ -26,6 +26,8 @@ namespace QT.Core.Map
         Reward,
         HpHeal,
         Wait,
+        Tutorial,
+        
         Length,
     }
 
@@ -196,9 +198,9 @@ namespace QT.Core.Map
             
             _map = new CellData[3,4]
             {
-                {new (RoomType.Start), new (RoomType.Normal), new (RoomType.Normal), new (RoomType.Normal) },
-                {new (),                           new (),                              new (),                              new (RoomType.Normal) },
-                {new (),                           new (),                              new (RoomType.Normal), new (RoomType.Normal) }
+                {new (RoomType.Start), new (RoomType.Tutorial), new (RoomType.Tutorial), new (RoomType.Tutorial) },
+                {new (),                               new (),                                new (),                               new (RoomType.Tutorial) },
+                {new (),                               new (),                                new (RoomType.Tutorial), new (RoomType.Tutorial) }
             };
 
             _mapNodeList = new List<Vector2Int>
@@ -663,12 +665,14 @@ namespace QT.Core.Map
                 await SystemManager.Instance.ResourceManager
                     .GetLocations(_stagePath + stageNum + RoomTypeToPath(roomType));
             var objectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
-
+            
             switch (roomType)
             {
                 case RoomType.None:
                 case RoomType.Normal:
-                    _mapList[roomType] = QT.Util.RandomSeed.GetRandomIndexes(objectList.ToList(), _maxRoomCount);
+                    var list = objectList.ToList();
+                    list.Shuffle();
+                    _mapList[roomType] = list;
                     return;
             }
             _mapList[roomType] = objectList.ToList();
@@ -680,6 +684,7 @@ namespace QT.Core.Map
             {
                 case RoomType.None:
                 case RoomType.Normal:
+                case RoomType.Tutorial:
                     return string.Empty;
                 case RoomType.Boss:
                     return "Boss";
@@ -711,6 +716,7 @@ namespace QT.Core.Map
             {
                 case RoomType.None:
                 case RoomType.Normal:
+                case RoomType.Tutorial:
                     return _mapList[roomType][_mapCount++ % _mapList[roomType].Count];
                 case RoomType.Reward:
                     if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
@@ -734,25 +740,25 @@ namespace QT.Core.Map
         private MapCellData CellCreate(Vector2Int createPos, MapDirection direction)
         {
             RoomType roomType = _mapData.Map[createPos.y, createPos.x].RoomType;
-            GameObject cellMapObject = null;
-            MapCellData floorCellData = null;
             if (roomType == RoomType.None)
             {
                 return null;
             }
             
-            cellMapObject = GetMapObject(roomType,_mapData.Map[createPos.y,createPos.x].DoorDirection);
+            var cellMapObject = GetMapObject(roomType,_mapData.Map[createPos.y,createPos.x].DoorDirection);
 
-            var mapCellData = Instantiate(cellMapObject, DungeonTransform).GetComponent<MapCellData>();
-            Vector2 cellPosition = new Vector2((createPos.x * 100.0f) - GetMiniMapSizeToMapSize().x,
+            var cellPosition = new Vector2((createPos.x * 100.0f) - GetMiniMapSizeToMapSize().x,
                 (createPos.y * -100.0f) - GetMiniMapSizeToMapSize().y);
+            
+            var mapCellData = Instantiate(cellMapObject, DungeonTransform).GetComponent<MapCellData>();
             mapCellData.transform.position = cellPosition;
             mapCellData.CellDataSet(direction, createPos, roomType);
+            
             if (roomType == RoomType.Boss)
             {
                 if (_floorValue < 2)
                 {
-                    floorCellData = Instantiate(GetMapObject(RoomType.Stairs,MapDirection.None), DungeonTransform)
+                    var floorCellData = Instantiate(GetMapObject(RoomType.Stairs,MapDirection.None), DungeonTransform)
                         .GetComponent<MapCellData>();
                     floorCellData.transform.position = new Vector3(cellPosition.x, cellPosition.y + 1000f,0f);
                     //mapCellData.CreateBossDoor(floorCellData.GetStageEnterDoorPosition(1));
@@ -764,7 +770,6 @@ namespace QT.Core.Map
                 waitCellData.transform.position = new Vector3(mapCellData.GetDownTransform().position.x, mapCellData.GetDownTransform().position.y - 19f, 0f);
                 mapCellData.CreateBossDoor(waitCellData.GetStageEnterDoorPosition(1));
                 waitCellData.CreateWaitDoor();
-
             }
             return mapCellData;
         }

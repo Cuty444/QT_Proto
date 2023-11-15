@@ -28,5 +28,14 @@ namespace QT
             
             SystemManager.Instance.LoadingManager.IsMapLoaded();
         }
+        
+        public async UniTask TutorialStage()
+        {
+            await UniTask.WhenAll(SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad("Tuto",RoomType.Tutorial),
+                SystemManager.Instance.GetSystem<DungeonMapSystem>().MapLoad("Tuto",RoomType.Start));
+            
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().SetFloor(0);
+            SystemManager.Instance.LoadingManager.IsMapLoaded();
+        }
     }
 }

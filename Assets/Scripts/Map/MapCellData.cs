@@ -162,7 +162,7 @@ namespace QT.Map
             
             _doorAnimators = new();
             
-            bool isSpecial = _roomType != RoomType.Normal && _roomType != RoomType.None;
+            bool isSpecial = _roomType != RoomType.Normal &&  _roomType != RoomType.Tutorial && _roomType != RoomType.None;
             
             for (int i = 0; i < _doorTransforms.Length; i++)
             {
