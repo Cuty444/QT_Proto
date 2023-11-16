@@ -149,6 +149,7 @@ namespace QT.InGame
         public void Heal(float amount)
         {
             SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnHeal, amount);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_Heal);
             HealEffectPlay();
         }
         
