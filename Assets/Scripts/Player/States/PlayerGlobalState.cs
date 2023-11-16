@@ -140,12 +140,9 @@ namespace QT.InGame
             _ownerEntity.Animator.SetTrigger(RigidAnimHash);
             //_ownerEntity.PlayerHitEffectPlay();
             
-            var hp = statComponent.GetStatus(PlayerStats.HP);
-            hp.AddStatus(-damage);
-
             _ownerEntity.DamageImpulseSource.GenerateImpulse(dir * _ownerEntity.DamageImpulseForce);
             
-            if (hp <= 0)
+            if (statComponent.GetStatus(PlayerStats.HP) <= 0)
             {
                 _ownerEntity.PlayerDead();
             }

@@ -142,6 +142,7 @@ namespace QT.InGame
         {
             if(StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).IsFull() && StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).IsFull())
             {
+                StatComponent.GetStatus(PlayerStats.HP).AddStatus(-power);
                 SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDamage, (dir, power));
             }
         }
