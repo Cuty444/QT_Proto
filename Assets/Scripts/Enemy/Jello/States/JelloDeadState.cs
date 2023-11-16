@@ -27,15 +27,17 @@ namespace QT.InGame
         {
             _soundManager = SystemManager.Instance.SoundManager;
             
-            _ownerEntity.Rigidbody.velocity = Vector2.zero;
-            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            _ownerEntity.SetPhysics(false);
             
             _ownerEntity.Animator.SetBool(DeadAnimHash, true);
+            
+            _ownerEntity.LeftHand.Hit(Vector2.zero, 99999, AttackType.Ball);
+            _ownerEntity.RightHand.Hit(Vector2.zero, 99999, AttackType.Ball);
         }
 
         public override void ClearState()
         {
-            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            _ownerEntity.SetPhysics(true);
             _ownerEntity.Animator.SetBool(DeadAnimHash, false);
         }
 

@@ -51,6 +51,7 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
+            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
             _target = SystemManager.Instance.PlayerManager.Player.transform;
             _soundManager = SystemManager.Instance.SoundManager;
             _jelloObject = _ownerEntity.JelloObject;
@@ -65,6 +66,7 @@ namespace QT.InGame
         {
             _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPointTransform;
             
+            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
             _ownerEntity.Animator.ResetTrigger(JumpReadyAnimHash);
             _ownerEntity.Animator.SetBool(IsJumpingAnimHash, false);
             _jelloObject.localPosition = Vector2.zero;

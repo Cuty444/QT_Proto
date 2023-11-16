@@ -45,6 +45,8 @@ namespace QT.InGame
         
         [SerializeField] private int _enemyId;
         public EnemyGameData Data { get; private set; }
+        public BossMapData MapData { get; private set; }
+        
         [field: SerializeField] public DullahanData DullahanData{ get; private set; }
         
         
@@ -93,6 +95,19 @@ namespace QT.InGame
         {
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
+            
+#if UNITY_EDITOR
+            if (DungeonManager.Instance is DungeonManagerDummy)
+            {
+                MapData = FindObjectOfType<BossMapData>(true);
+            }
+#endif
+            
+            var mapCellData = DungeonManager.Instance.GetCurrentMapCellData();
+            if(mapCellData != null && mapCellData.SpecialMapData != null)
+            {
+                MapData = mapCellData.SpecialMapData as BossMapData;
+            }
             
             Shooter.Initialize(null);
             

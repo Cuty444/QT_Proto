@@ -31,8 +31,7 @@ namespace QT.InGame
             _time = 0;
             _state = 0;
             
-            _ownerEntity.Rigidbody.velocity = Vector2.zero;
-            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            _ownerEntity.SetPhysics(false);
             
             _ownerEntity.Animator.SetBool(IsDeadAnimHash, true);
 
@@ -50,6 +49,8 @@ namespace QT.InGame
             {
                 changer.SetRigidMaterial();
             }
+            
+            _ownerEntity.MapData.BossWave.Kill();
         }
 
         public override void UpdateState()
@@ -91,6 +92,7 @@ namespace QT.InGame
 
         public override void ClearState()
         {
+            _ownerEntity.SetPhysics(true);
             _ownerEntity.Animator.SetBool(IsDeadAnimHash, false);
         }
     }

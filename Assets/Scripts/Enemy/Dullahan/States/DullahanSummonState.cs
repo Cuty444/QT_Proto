@@ -25,22 +25,7 @@ namespace QT.InGame
         public DullahanSummonState(IFSMEntity owner) : base(owner)
         {
             _data = _ownerEntity.DullahanData;
-            
-#if UNITY_EDITOR
-
-            if (DungeonManager.Instance is DungeonManagerDummy)
-            {
-                _bossWave = GameObject.FindObjectOfType<BossMapData>(true).BossWave;
-                return;
-            }
-            
-#endif
-            
-            var mapCellData = DungeonManager.Instance.GetCurrentMapCellData();
-            if(mapCellData != null && mapCellData.SpecialMapData != null)
-            {
-                _bossWave = (mapCellData.SpecialMapData as BossMapData).BossWave;
-            }
+            _bossWave = _ownerEntity.MapData.BossWave;
         }
 
         public override void InitializeState()

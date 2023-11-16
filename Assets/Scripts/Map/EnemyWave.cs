@@ -43,6 +43,15 @@ namespace QT.Map
             }
         }
 
+        public void Kill()
+        {
+            _spawnedCount = 0;
+            foreach (var spawner in _spawners)
+            {
+                spawner.Kill();
+            }
+        }
+
         private void OnDead()
         {
             _spawnedCount -= 1;
