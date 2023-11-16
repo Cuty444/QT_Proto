@@ -25,6 +25,7 @@ namespace QT
         [SerializeField] private Transform[] _waypointsTransform;
         [SerializeField] private float _moveSpeed;
         [SerializeField] private NpcTextPopup _npcTextPopup;
+        [SerializeField] private ParticleSystem _particleSystem;
         [Header("풀피회복 여부")]
         [SerializeField] private bool _isFullHeal = false;
         private Animator _animator = null;
@@ -37,6 +38,7 @@ namespace QT
         private bool _isHeal;
         private void Start()
         {
+            _particleSystem.Stop();
             _animator = GetComponentInChildren<Animator>();
             _playerManager = SystemManager.Instance.PlayerManager;
             if (!_isFullHeal)
@@ -121,6 +123,7 @@ namespace QT
         private void StopShiver(Vector2Int position)
         {
             _animator.SetTrigger(AnimationShiverStopHash);
+            _particleSystem.Play();
             _playerManager.PlayerMapClearPosition.RemoveListener(StopShiver);
             StartCoroutine(UnityUtil.WaitForFunc(MoveWayPoint,2.667f));
         }
