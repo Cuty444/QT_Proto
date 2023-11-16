@@ -72,7 +72,7 @@ namespace QT
         [Space]
         [SerializeField] private UIItemDesc _uiItemDesc;
 
-        [SerializeField] private Animator _animator;
+        private Animator _animator;
 
         private PlayerManager _playerManager;
         private SlotDropPercentage _slotDropPercentage;
@@ -83,6 +83,7 @@ namespace QT
 
         private void Awake()
         {
+            _animator = GetComponentInChildren<Animator>();
             _uiItemDesc.SetGoldCost(string.Format("X {0}", _priceGold));
             _uiItemDesc.Hide();
             _slotDropPercentage = new SlotDropPercentage(_slotPrizeData);
