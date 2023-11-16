@@ -19,6 +19,8 @@ namespace QT.Sound
         [field: SerializeField] public EventReference PlayerThrowHitSFX{ get; private set; }
         [field: SerializeField] public EventReference PlayerDashSFX{ get; private set; }
         
+        [field: SerializeField] public EventReference Player_Heal { get; private set; }
+
         [field: SerializeField] public EventReference ActiveOneKiOkStartSFX{ get; private set; }
         [field: SerializeField] public EventReference ActiveOneKiOkThrowSFX{ get; private set; }
         
@@ -112,6 +114,20 @@ namespace QT.Sound
         [field: SerializeField] public EventReference Boss_Landing { get; private set; }
         
         [field: SerializeField] public EventReference Boss_Dead { get; private set; }
+        
+        
+        [field: SerializeField] public EventReference Light_TurnOn { get; private set; }
+        [field: SerializeField] public EventReference Doctor_Heal_Mark { get; private set; }
+        
+        [field: SerializeField] public EventReference Roulette_Insert { get; private set; }
+        [field: SerializeField] public EventReference Roulette_Start { get; private set; }
+        [field: SerializeField] public EventReference Roulette_Reward { get; private set; }
+        [field: SerializeField] public EventReference Roulette_Jackpot { get; private set; }
+        
+        
+        [field: SerializeField] public EventReference Store_Reroll { get; private set; }
+        [field: SerializeField] public EventReference Npc_Bat_Dialog { get; private set; }
+        [field: SerializeField] public EventReference Npc_Bat_Appear { get; private set; }
 
         [field: SerializeField] public string[] Bank{ get; private set; }
         
