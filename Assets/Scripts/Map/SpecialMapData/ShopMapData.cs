@@ -74,6 +74,9 @@ namespace QT
                 _itemHolders[i].Init(items[i]);
                 createdHolders.Add(items[i]);
             }
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Store_Reroll);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData
+                .Shop_BuySFX);
             _itemPoolSystem.HolderItemCreatedEvent.Invoke(createdHolders);
         }
 

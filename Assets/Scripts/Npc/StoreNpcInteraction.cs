@@ -106,8 +106,6 @@ namespace QT
             int price = _shopMapData.GetReRollGold();
             if (price > _playerManager.Gold)
                 return;
-            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData
-                .Shop_BuySFX);
             _playerManager.OnGoldValueChanged.Invoke(-price);
             _shopMapData._rerollEvnet.Invoke();
             _uiItemDesc.SetGoldCost("X " + _shopMapData.GetReRollGold());
