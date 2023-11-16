@@ -209,5 +209,36 @@ namespace QT.InGame
             Pause(false);
             _camera = Camera.main;
         }
+        
+        public Transform SetProjectileTarget()
+        {
+            var origin = AimPosition;
+            var allHitAble = HitAbleManager.Instance.GetAllHitAble();
+            var minDist = float.MaxValue;
+            IHitAble minHitable = null;
+            
+            foreach (var hitable in allHitAble)
+            {
+                if (hitable.IsClearTarget && !hitable.IsDead)
+                {
+                    var dist = (hitable.Position - origin).sqrMagnitude;
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        minHitable = hitable;
+                    }
+                }
+            }
+
+            Transform target = null;
+            if (minHitable != null)
+            {
+                target = ((MonoBehaviour) minHitable).transform;
+            }
+
+            ProjectileShooter.SetTarget(target);
+
+            return target;
+        }
     }
 }

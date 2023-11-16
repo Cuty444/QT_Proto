@@ -207,7 +207,15 @@
 			"ApplySpecialEffectId":"9006",
 			"CoolTime":"0",
 			"TriggerType":"OnSwing",
-			"Condition":"None",
+			"ConditionTarget":"Gold",
+			"Condition":"GreaterThan",
+			"ConditionValue":"1",
+		},
+		{
+			"Index":"9006",
+			"ApplySpecialEffectId":"9106",
+			"CoolTime":"0",
+			"TriggerType":"OnKillEnemy",
 		},
 		{
 			"Index":"9007",
@@ -216,7 +224,7 @@
 			"TriggerType":"OnDamage",
 			"ConditionTarget":"Gold",
 			"Condition":"GreaterThan",
-			"ConditionValue":"9",
+			"ConditionValue":"19",
 		},
 		{
 			"Index":"10000",

@@ -30,9 +30,10 @@ namespace QT.Core
         OnChargedSwingHit = 1 << 11,
         OnAttackStunEnemy = 1 << 12,
         OnParry = 1 << 13,
+        OnKillEnemy = 1 << 14,
             
-        OnDodge = 1 << 14,
-        OnDodgeEnd = 1 << 15,
+        OnDodge = 1 << 15,
+        OnDodgeEnd = 1 << 16,
             
         OnMovementSpdChanged = 1 << 20,
         OnChargeBounceCountChanged = 1 << 21
