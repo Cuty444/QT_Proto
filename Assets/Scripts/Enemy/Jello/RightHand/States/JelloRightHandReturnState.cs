@@ -45,7 +45,7 @@ namespace QT.InGame
 
             _transform.position = Vector2.Lerp(_startPos, _targetPos, outQuad);
             _ballObject.localPosition = new Vector2(0, Mathf.Sin(Mathf.PI * outQuad));
-            _ballObject.localScale = Vector2.one * (1 - inQuad);
+            _ballObject.localScale = Vector2.one * Mathf.Clamp01(1 - inQuad);
 
             // if (_timer >= _targetTime)
             // {

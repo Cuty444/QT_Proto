@@ -119,13 +119,9 @@ namespace QT.InGame
 
         }
 
-        public override void FixedUpdateState()
-        {
-            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
-        }
-
         public override void ClearState()
         {
+            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
             _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPointPivot;
         }
         

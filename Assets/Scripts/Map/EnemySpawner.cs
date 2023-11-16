@@ -39,6 +39,14 @@ namespace QT.Map
             StartCoroutine(SpawnProcess());
         }
 
+        public void Kill()
+        {
+            Target?.Hit(Vector2.zero, 99999);
+            Target = null;
+            
+            enabled = false;
+        }
+
         private IEnumerator SpawnProcess()
         {
             var position = transform.position;
