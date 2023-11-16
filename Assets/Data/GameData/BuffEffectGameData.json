@@ -30,9 +30,9 @@
 		},
 		{
 			"Index":"7003",
-			"ApplyStat":"AtkDmgPer",
-			"ApplyValue":"0.2",
-			"ValueOperatorType":"Addition",
+			"ApplyStat":"ChargeTime",
+			"ApplyValue":"0.8",
+			"ValueOperatorType":"Multiply",
 			"Duration":"5",
 		},
 		{
@@ -47,6 +47,13 @@
 			"ApplyStat":"HP",
 			"ApplyValue":"50",
 			"ValueOperatorType":"Addition",
+			"Duration":"-1",
+		},
+		{
+			"Index":"7006",
+			"ApplyStat":"ProjectileGuide",
+			"ApplyValue":"1",
+			"ValueOperatorType":"Hard",
 			"Duration":"-1",
 		},
 		{
@@ -85,18 +92,32 @@
 			"Duration":"-1",
 		},
 		{
-			"Index":"9000",
-			"ApplyStat":"SwingCooldown",
-			"ApplyValue":"1.5",
-			"ValueOperatorType":"Multiply",
-			"Duration":"-1",
-		},
-		{
-			"Index":"9000",
+			"Index":"8009",
 			"ApplyStat":"ChargeTime",
 			"ApplyValue":"0",
+			"ValueOperatorType":"Hard",
+			"Duration":"0.1",
+		},
+		{
+			"Index":"8010",
+			"ApplyStat":"ChargeProjectileDmg",
+			"ApplyValue":"1.1000000000000001",
 			"ValueOperatorType":"Multiply",
-			"Duration":"-1",
+			"Duration":"1",
+		},
+		{
+			"Index":"8010",
+			"ApplyStat":"EnemyProjectileDmg",
+			"ApplyValue":"1.1000000000000001",
+			"ValueOperatorType":"Multiply",
+			"Duration":"1",
+		},
+		{
+			"Index":"8010",
+			"ApplyStat":"ChargeShootSpd",
+			"ApplyValue":"2",
+			"ValueOperatorType":"Multiply",
+			"Duration":"1",
 		},
 		{
 			"Index":"9001",
@@ -134,13 +155,6 @@
 			"Duration":"-1",
 		},
 		{
-			"Index":"9007",
-			"ApplyStat":"GoldGain",
-			"ApplyValue":"0.6",
-			"ValueOperatorType":"Addition",
-			"Duration":"-1",
-		},
-		{
 			"Index":"9104",
 			"ApplyStat":"MovementSpd",
 			"ApplyValue":"0.8",
@@ -157,15 +171,8 @@
 		{
 			"Index":"9106",
 			"ApplyStat":"SwingRad",
-			"ApplyValue":"1.6",
+			"ApplyValue":"1.3",
 			"ValueOperatorType":"Addition",
-			"Duration":"-1",
-		},
-		{
-			"Index":"9106",
-			"ApplyStat":"SwingCooldown",
-			"ApplyValue":"1.2",
-			"ValueOperatorType":"Multiply",
 			"Duration":"-1",
 		},
 		{

@@ -33,6 +33,8 @@ namespace QT.InGame
             
             _ownerEntity.LeftHand.Hit(Vector2.zero, 99999, AttackType.Ball);
             _ownerEntity.RightHand.Hit(Vector2.zero, 99999, AttackType.Ball);
+            
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnKillEnemy, null);
         }
 
         public override void ClearState()

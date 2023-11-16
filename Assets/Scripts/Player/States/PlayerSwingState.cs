@@ -128,7 +128,7 @@ namespace QT.InGame
             if (_ownerEntity.StatComponent.GetStat(PlayerStats.ProjectileGuide).Value >= 1)
             {
                 properties |= ProjectileProperties.Guided;
-                projectileTarget = GetProjectileTarget();
+                projectileTarget = _ownerEntity.SetProjectileTarget();
             }
             
             if (_ownerEntity.StatComponent.GetStat(PlayerStats.ProjectileExplosion).Value >= 1)
@@ -235,34 +235,6 @@ namespace QT.InGame
             SetSwingAnimation();
 
             _ownerEntity.ChangeState(Player.States.Move);
-        }
-
-        private Transform GetProjectileTarget()
-        {
-            var origin = _ownerEntity.AimPosition;
-            var allHitAble = HitAbleManager.Instance.GetAllHitAble();
-            var minDist = float.MaxValue;
-            IHitAble minHitable = null;
-            
-            foreach (var hitable in allHitAble)
-            {
-                if (hitable.IsClearTarget && !hitable.IsDead)
-                {
-                    var dist = (hitable.Position - origin).sqrMagnitude;
-                    if (dist < minDist)
-                    {
-                        minDist = dist;
-                        minHitable = hitable;
-                    }
-                }
-            }
-
-            if (minHitable == null)
-            {
-                return null;
-            }
-
-            return ((MonoBehaviour) minHitable).transform;
         }
 
         private void SetSwingAnimation()

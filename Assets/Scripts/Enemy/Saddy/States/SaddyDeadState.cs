@@ -37,6 +37,8 @@ namespace QT.InGame
             _ownerEntity.Animator.SetBool(IsDeadAnimHash, true);
             
             _ownerEntity.MapData.BossWave.Kill();
+            
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnKillEnemy, null);
         }
 
         public override void ClearState()
