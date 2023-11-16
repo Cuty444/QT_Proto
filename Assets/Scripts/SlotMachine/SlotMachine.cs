@@ -127,6 +127,8 @@ namespace QT
                 return;
             }
             _playerManager.OnGoldValueChanged.Invoke(-_priceGold);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Insert);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Start);
             _animator.SetTrigger(Run);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
@@ -142,6 +144,7 @@ namespace QT
                         }
                         else
                         {
+                            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Jackpot);
                             _animator.SetFloat(Value,1f);
                         }
                         break;
@@ -156,6 +159,7 @@ namespace QT
                         _playerManager.Player.AddItem(itemData[0]);
                         _animator.SetFloat(Value,0.75f);
                         _playerManager.AddItemEvent.Invoke();
+                        SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Reward);
                         break;
                 }
             },1f));

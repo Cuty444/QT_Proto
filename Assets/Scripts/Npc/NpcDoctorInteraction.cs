@@ -24,6 +24,7 @@ namespace QT
 
         [SerializeField] private Transform[] _waypointsTransform;
         [SerializeField] private float _moveSpeed;
+        [SerializeField] private GameObject _lightObject;
         [SerializeField] private NpcTextPopup _npcTextPopup;
         [SerializeField] private ParticleSystem _particleSystem;
         [Header("풀피회복 여부")]
@@ -101,6 +102,7 @@ namespace QT
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
                 _npcTextPopup.Show();
+                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Dialog);
                 _playerManager.PlayerItemInteraction.AddListener(Heal);
             }
         }
@@ -124,7 +126,10 @@ namespace QT
         {
             _animator.SetTrigger(AnimationShiverStopHash);
             _particleSystem.Play();
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Doctor_Heal_Mark);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Light_TurnOn);
             _playerManager.PlayerMapClearPosition.RemoveListener(StopShiver);
+            _lightObject.SetActive(true);
             StartCoroutine(UnityUtil.WaitForFunc(MoveWayPoint,2.667f));
         }
 

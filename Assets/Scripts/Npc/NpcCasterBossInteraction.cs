@@ -39,6 +39,7 @@ namespace QT
             {
                 _image.gameObject.SetActive(true);
             }, 0.3f));
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Appear);
             _uiDesc.Hide();
         }
 
@@ -49,6 +50,7 @@ namespace QT
             {
                 _playerManager.PlayerItemInteraction.AddListener(MoveStairMap);
                 _animator.SetBool(Talk,true);
+                SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Dialog);
                 _uiDesc.Show();
             }
         }
