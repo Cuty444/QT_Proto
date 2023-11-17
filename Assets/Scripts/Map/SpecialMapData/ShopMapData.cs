@@ -56,6 +56,7 @@ namespace QT
 
         private void ReRoll()
         {
+            SystemManager.Instance.PlayerManager.OnGoldValueChanged.Invoke(-_rerollGoldValue);
             _rerollGoldValue += _rerollGoldAmountIncreases;
             for (int i = 0; i < _itemHolders.Count; i++)
             {
@@ -83,6 +84,21 @@ namespace QT
         public int GetReRollGold()
         {
             return _rerollGoldValue;
+        }
+
+        public bool ReRollCheck()
+        {
+            bool isUsedCheck = false;
+            for (int i = 0; i < _itemHolders.Count; i++)
+            {
+                if (!_itemHolders[i].IsUsed())
+                {
+                    isUsedCheck = true;
+                    break;
+                }
+            }
+
+            return isUsedCheck;
         }
     }
 }

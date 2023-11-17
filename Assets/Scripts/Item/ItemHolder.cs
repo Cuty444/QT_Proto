@@ -42,7 +42,8 @@ namespace QT
         private UnityAction _onGainItem;
 
         private bool _used;
-
+        private bool _isFirst = false;
+        
 
         public void Init(ItemGameData itemGameData, UnityAction onGainItem = null)
         {
@@ -91,15 +92,20 @@ namespace QT
                     break;
             }
 
-            if (DropType == DropGameType.Shop)
-            {
-                SystemManager.Instance.ResourceManager.EmitParticle(InitDustEffectPath, _iconObject.transform.position);
-            }
             SetColliders(true);
             
             _itemDesc.SetData(itemGameData);
             
             _used = false;
+            if (DropType == DropGameType.Shop)
+            {
+                if (!_isFirst)
+                {
+                    _isFirst = true;
+                    return;
+                }
+                SystemManager.Instance.ResourceManager.EmitParticle(InitDustEffectPath, _iconObject.transform.position);
+            }
         }
 
         private void Awake()
