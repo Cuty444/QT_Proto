@@ -30,7 +30,7 @@ namespace QT.InGame
             _hpCanvas.SetHPGuage(_ownerEntity.HP);
             _hpCanvas.Show();
             
-            SystemManager.Instance.UIManager.Show<SaddyVidioCanvas>();
+            SystemManager.Instance.UIManager.Show<SaddyIntroVidioCanvas>();
         }
 
         public override void ClearState()

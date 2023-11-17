@@ -31,7 +31,7 @@ namespace QT.InGame
             _hpCanvas.SetHPGuage(_ownerEntity.HP);
             _hpCanvas.Show();
 
-            SystemManager.Instance.UIManager.Show<DullahanVidioCanvas>();
+            SystemManager.Instance.UIManager.Show<DullahanIntroVidioCanvas>();
         }
 
         public override void ClearState()
