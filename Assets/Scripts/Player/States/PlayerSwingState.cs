@@ -21,10 +21,10 @@ namespace QT.InGame
         
         private readonly int SwingAnimHash = Animator.StringToHash("Swing");
         private readonly int SwingLevelAnimHash = Animator.StringToHash("SwingLevel");
+        private readonly int SwingSpeedAnimHash = Animator.StringToHash("SwingSpeed");
         private readonly int ChargeLevelAnimHash = Animator.StringToHash("ChargeLevel");
         
         private const int Segments = 16;
-        private const int MaxLineCount = 10;
 
         private List<IProjectile> _projectiles = new();
         private List<IHitAble> _hitAbles = new();
@@ -37,6 +37,7 @@ namespace QT.InGame
         private bool _isCharged = false;
         private float _chargingTime;
         private float _currentSwingRad, _currentSwingCentralAngle;
+        private int _chargeLevel;
 
         private SoundManager _soundManager;
         private GlobalData _globalData;
@@ -239,7 +240,10 @@ namespace QT.InGame
 
         private void SetSwingAnimation()
         {
-            _ownerEntity.Animator.SetInteger(SwingLevelAnimHash, _isCharged ? 1 : 0);
+            var speed = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingCooldown);
+
+            _ownerEntity.Animator.SetFloat(SwingSpeedAnimHash, speed.BaseValue / speed.Value);
+            _ownerEntity.Animator.SetInteger(SwingLevelAnimHash, _isCharged ? 2 : ++_chargeLevel % 2);
             _ownerEntity.Animator.SetTrigger(SwingAnimHash);
             
             _ownerEntity.LockAim = true; 
