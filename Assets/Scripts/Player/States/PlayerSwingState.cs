@@ -42,8 +42,6 @@ namespace QT.InGame
         private SoundManager _soundManager;
         private GlobalData _globalData;
         
-        private Coroutine _swingAfterCoroutine;
-        
         
         public PlayerSwingState(IFSMEntity owner) : base(owner)
         {
@@ -68,12 +66,13 @@ namespace QT.InGame
             
             if (_ownerEntity.PreviousStateIndex != (int) Player.States.Dodge)
             {
-                _chargingTime = 0;
+                _chargingTime = 0.0001f;
                 _moveSpeed = _ownerEntity.StatComponent.GetStat(PlayerStats.MovementSpd);
                 
                 SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnSwingStart, null);
             }
-            
+
+            GetChargeLevel();
             OnSwing(_ownerEntity.GetActionValue(Player.ButtonActions.Swing));
         }
 
@@ -241,15 +240,13 @@ namespace QT.InGame
         private void SetSwingAnimation()
         {
             var speed = _ownerEntity.StatComponent.GetStat(PlayerStats.SwingCooldown);
+            var attackTime = speed.BaseValue / speed.Value;
 
-            _ownerEntity.Animator.SetFloat(SwingSpeedAnimHash, speed.BaseValue / speed.Value);
+            _ownerEntity.Animator.SetFloat(SwingSpeedAnimHash, attackTime);
             _ownerEntity.Animator.SetInteger(SwingLevelAnimHash, _isCharged ? 2 : ++_chargeLevel % 2);
             _ownerEntity.Animator.SetTrigger(SwingAnimHash);
-            
-            _ownerEntity.LockAim = true; 
-            if(_swingAfterCoroutine != null)
-                _ownerEntity.StopCoroutine(_swingAfterCoroutine);
-            _swingAfterCoroutine = _ownerEntity.StartCoroutine(Util.UnityUtil.WaitForFunc(() => { _ownerEntity.LockAim = false; }, _isCharged ? 0.7f : 0.3f));
+
+            _ownerEntity.LockAim(attackTime * 0.3f);
         }
 
         

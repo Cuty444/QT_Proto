@@ -46,11 +46,13 @@ namespace QT.InGame
         [HideInInspector] public bool IsDodge;
         [HideInInspector] public bool IsFlip;
         [HideInInspector] public bool IsReverseLookDir = false;
-        [HideInInspector] public bool LockAim = false;
-        
+
         [HideInInspector] public bool IsMoveFlip;
         
         [HideInInspector] public float LastSwingTime;
+        
+        private float _lockAimTime = 0;
+        private float _lockAimTimer = 0;
         
         private void InitInputs()
         {
@@ -91,9 +93,18 @@ namespace QT.InGame
             AimPosition = _camera.ScreenToWorldPoint(lookInput);
 
             OnMove?.Invoke(moveInput);
-            
-            if(!LockAim)
+
+            _lockAimTimer += Time.deltaTime;
+            if (_lockAimTimer > _lockAimTime)
+            {
                 OnAim?.Invoke(AimPosition);
+            }
+        }
+
+        public void LockAim(float lockTime)
+        {
+            _lockAimTime = lockTime;
+            _lockAimTimer = 0;
         }
 
         private void OnEnable()
