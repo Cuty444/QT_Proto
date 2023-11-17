@@ -98,7 +98,7 @@ namespace QT.UI
 
         private async void OnClickRetry()
         {
-            _gameOverCanvas.RetryButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
+            //_gameOverCanvas.RetryButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
             SetInputs(false);
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);
@@ -117,7 +117,7 @@ namespace QT.UI
         
         private void OnClickExit()
         {
-            _gameOverCanvas.TitleButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
+            //_gameOverCanvas.TitleButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
 
             SetInputs(false);
             
