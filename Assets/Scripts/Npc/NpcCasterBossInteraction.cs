@@ -16,6 +16,8 @@ namespace QT
         public bool IsClearTarget => false;
         public bool IsDead => false;
         
+        public int DialogueId;
+        
         [SerializeField] private TextBalloon _textBalloon;
         [SerializeField] private GameObject _image;
 
@@ -51,7 +53,7 @@ namespace QT
                 _playerManager.PlayerItemInteraction.AddListener(MoveStairMap);
                 _animator.SetBool(Talk,true);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Dialog);
-                _textBalloon.Show("다음 역으로 이동하시겠습니까?", 1);
+                _textBalloon.Show(DialogueId);
             }
         }
 
