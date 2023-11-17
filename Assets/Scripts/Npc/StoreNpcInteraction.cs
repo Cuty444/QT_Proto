@@ -106,7 +106,8 @@ namespace QT
             int price = _shopMapData.GetReRollGold();
             if (price > _playerManager.Gold)
                 return;
-            _playerManager.OnGoldValueChanged.Invoke(-price);
+            if (!_shopMapData.ReRollCheck())
+                return;
             _shopMapData._rerollEvnet.Invoke();
             _uiItemDesc.SetGoldCost("X " + _shopMapData.GetReRollGold());
         }

@@ -130,6 +130,7 @@ namespace QT.Core.Map
         private GlobalData _globalData;
 
         [HideInInspector] public Transform _stairRoomEnterTransform;
+        [HideInInspector] public bool IsBossWaitEnter = false; // TODO : 보스 대기방인지 보스방 입장했는 시점 체크 여부
 
         public override void OnInitialized()
         {
@@ -159,6 +160,7 @@ namespace QT.Core.Map
 
         public void DungenMapGenerate()
         {
+            IsBossWaitEnter = false;
             _mapWidth = _mapSize.x;
             _mapHeight = _mapSize.y;
             
