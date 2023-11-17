@@ -37,6 +37,8 @@ namespace QT.InGame
             _hpCanvas.Show();
 
             _lastMaxHp = _ownerEntity.HP.Value;
+            
+            SystemManager.Instance.UIManager.Show<JelloVidioCanvas>();
         }
 
         public override void ClearState()
