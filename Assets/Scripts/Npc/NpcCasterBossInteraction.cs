@@ -16,7 +16,7 @@ namespace QT
         public bool IsClearTarget => false;
         public bool IsDead => false;
         
-        [SerializeField] private UIItemDesc _uiDesc;
+        [SerializeField] private TextBalloon _textBalloon;
         [SerializeField] private GameObject _image;
 
         private PlayerManager _playerManager;
@@ -40,7 +40,7 @@ namespace QT
                 _image.gameObject.SetActive(true);
             }, 0.3f));
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Appear);
-            _uiDesc.Hide();
+            _textBalloon.Hide();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -51,7 +51,7 @@ namespace QT
                 _playerManager.PlayerItemInteraction.AddListener(MoveStairMap);
                 _animator.SetBool(Talk,true);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Dialog);
-                _uiDesc.Show();
+                _textBalloon.Show("다음 역으로 이동하시겠습니까?", 1);
             }
         }
 
@@ -62,7 +62,7 @@ namespace QT
             {
                 _playerManager.PlayerItemInteraction.RemoveListener(MoveStairMap);
                 _animator.SetBool(Talk,false);
-                _uiDesc.Hide();
+                _textBalloon.Hide();
             }
         }
 
