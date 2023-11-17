@@ -92,6 +92,11 @@ namespace QT
                     break;
             }
 
+            SetColliders(true);
+            
+            _itemDesc.SetData(itemGameData);
+            
+            _used = false;
             if (DropType == DropGameType.Shop)
             {
                 if (!_isFirst)
@@ -101,11 +106,6 @@ namespace QT
                 }
                 SystemManager.Instance.ResourceManager.EmitParticle(InitDustEffectPath, _iconObject.transform.position);
             }
-            SetColliders(true);
-            
-            _itemDesc.SetData(itemGameData);
-            
-            _used = false;
         }
 
         private void Awake()
