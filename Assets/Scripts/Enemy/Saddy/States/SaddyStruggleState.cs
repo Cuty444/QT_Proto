@@ -62,6 +62,7 @@ namespace QT.InGame
 
         public override void ClearState()
         {
+            _ownerEntity.Shooter.StopAttack();
             _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPointTransform;
             
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;

@@ -19,16 +19,16 @@ namespace QT
             SceneManager.sceneLoaded += OnSceneUnloaded;
         }
         
-        public void LoadScene(int sceneIndex)
+        public void LoadScene(SceneNumber sceneIndex)
         {
             SystemManager.Instance.StartCoroutine(LoadAsynchronously(sceneIndex));
             
             SystemManager.Instance.UIManager.SetState(UIState.Loading);
         }
         
-        private IEnumerator LoadAsynchronously(int sceneIndex)
+        private IEnumerator LoadAsynchronously(SceneNumber sceneIndex)
         {
-            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
+            AsyncOperation operation = SceneManager.LoadSceneAsync((int)sceneIndex);
             operation.allowSceneActivation = false;
             
             yield return new WaitForSeconds(WaitTime);

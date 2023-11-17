@@ -49,6 +49,8 @@ namespace QT.InGame
 
             _releaseTime = Time.timeSinceLevelLoad;
             _isReleased = false;
+            
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnKillEnemy, null);
         }
 
         public override void UpdateState()

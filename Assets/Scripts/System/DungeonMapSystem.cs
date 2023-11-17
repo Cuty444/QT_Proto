@@ -25,6 +25,10 @@ namespace QT.Core.Map
         Stairs,
         Reward,
         HpHeal,
+        Wait,
+        Tutorial,
+        
+        Length,
     }
 
     [Flags]
@@ -58,9 +62,9 @@ namespace QT.Core.Map
         public bool IsVisited;
         public bool IsClear;
 
-        public CellData()
+        public CellData(RoomType type = RoomType.None)
         {
-            RoomType = RoomType.None;
+            RoomType = type;
             IsVisited = false;
             IsClear = false;
         }
@@ -87,8 +91,11 @@ namespace QT.Core.Map
 
     public class DungeonMapSystem : SystemBase
     {
-        [SerializeField] private int _mapWidth = 11;
-        [SerializeField] private int _mapHeight = 7;
+        [SerializeField] private Vector2Int _mapSize = new Vector2Int(7, 7);
+        
+        private int _mapWidth = 11;
+        private int _mapHeight = 7;
+        
         [SerializeField] private int _floorValue = 0;
         [Range(0.0f, 1.0f)] [SerializeField] private float _manyPathCorrection = 1.0f;
 
@@ -107,19 +114,22 @@ namespace QT.Core.Map
 
         private int _maxRoomCount = 10;
         
-        private List<GameObject> _mapList;
-        private List<GameObject> _startList;
-        private List<GameObject> _shopMapList;
-        private List<GameObject> _bossMapList;
-        private List<GameObject> _stairsMapList;
-        private List<GameObject> _rewardMapList;
-        private List<GameObject> _hpHealMapList;
+        //private List<GameObject> _mapList;
+        //private List<GameObject> _startList;
+        //private List<GameObject> _shopMapList;
+        //private List<GameObject> _bossMapList;
+        //private List<GameObject> _stairsMapList;
+        //private List<GameObject> _rewardMapList;
+        //private List<GameObject> _hpHealMapList;
+        private Dictionary<RoomType, List<GameObject>> _mapList = new Dictionary<RoomType, List<GameObject>>();
         private int _mapCount;
         private Dictionary<Vector2Int, MapDirection> _pathDirections = new ();
 
         private const string _stagePath = "Stage";
 
         private GlobalData _globalData;
+
+        [HideInInspector] public Transform _stairRoomEnterTransform;
 
         public override void OnInitialized()
         {
@@ -129,6 +139,11 @@ namespace QT.Core.Map
             _pathDirections.Add(Vector2Int.right, MapDirection.Left);
             _pathDirections.Add(Vector2Int.left, MapDirection.Right);
             _maxRoomCount--; // TODO : 보스방 생성에 의해 1개 줄임
+
+            for (int i = 0; i < (int) RoomType.Length; i++)
+            {
+                _mapList.Add((RoomType) i, null);
+            }
 
             SystemManager.Instance.PlayerManager.PlayerMapClearPosition.AddListener(position =>
             {
@@ -144,6 +159,9 @@ namespace QT.Core.Map
 
         public void DungenMapGenerate()
         {
+            _mapWidth = _mapSize.x;
+            _mapHeight = _mapSize.y;
+            
             var data = SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>()
                 .GetData(800 + _floorValue);
 
@@ -164,6 +182,35 @@ namespace QT.Core.Map
             var roomPositionValues = GetFarthestRoomFromStart();
             SpecialRoomGenerate();
             _mapData = new MapData(_map, startPos, roomPositionValues.Item1, roomPositionValues.Item2, _mapNodeList);
+            
+            foreach (var pos in _mapData.MapNodeList)
+            {
+                _mapData.Map[pos.y,pos.x].DoorDirection = DirectionCheck(pos);
+            }
+            
+            DungeonMapGeneratedEvent.Invoke();
+        }
+
+        public void TutorialMapGenerate()
+        {
+            _mapWidth = 3;
+            _mapHeight = 3;
+            
+            _map = new CellData[3,3]
+            {
+                {new (RoomType.Start), new (RoomType.Tutorial), new (RoomType.Tutorial)},
+                {new (),                               new (),                                new (RoomType.Tutorial)},
+                {new (),                               new (RoomType.Tutorial), new (RoomType.Tutorial) }
+            };
+
+            _mapNodeList = new List<Vector2Int>
+            {
+                new(0, 0), new(1, 0), new(2, 0),
+                new(2, 1),
+                new(2, 2), new(1, 2)
+            };
+            
+            _mapData = new MapData(_map, Vector2Int.zero, Vector2Int.zero, Vector2Int.zero, _mapNodeList);
             
             foreach (var pos in _mapData.MapNodeList)
             {
@@ -612,117 +659,73 @@ namespace QT.Core.Map
 
         #region MapDataLoad
 
-        public async UniTask MapLoad(string stageNum)
+        public async UniTask MapLoad(string stageNum,RoomType roomType)
         {
             var stageLocationList =
                 await SystemManager.Instance.ResourceManager
-                    .GetLocations(_stagePath + stageNum); //TODO : 추후 레이블 스테이지 리스트로 관리
+                    .GetLocations(_stagePath + stageNum + RoomTypeToPath(roomType));
             var objectList = await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageLocationList);
-            _mapList = QT.Util.RandomSeed.GetRandomIndexes(objectList.ToList(), _maxRoomCount);
+            
+            switch (roomType)
+            {
+                case RoomType.None:
+                case RoomType.Normal:
+                    var list = objectList.ToList();
+                    list.Shuffle();
+                    _mapList[roomType] = list;
+                    return;
+            }
+            _mapList[roomType] = objectList.ToList();
         }
 
-        public async UniTask ShopLoad(string stageNum)
+        private string RoomTypeToPath(RoomType roomType)
         {
-            var stageShopLocationList =
-                await SystemManager.Instance.ResourceManager.GetLocations(_stagePath + stageNum +
-                                                                          "Shop"); //TODO : 추후 레이블 스테이지 리스트로 관리
-            var shopObjectList =
-                await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageShopLocationList);
-            _shopMapList = shopObjectList.ToList();
-        }
-
-        public async UniTask StartRoomLoad(string stageNum)
-        {
-            var stageStartLocationList =
-                await SystemManager.Instance.ResourceManager.GetLocations(_stagePath + stageNum +
-                                                                          "Start"); //TODO : 추후 레이블 스테이지 리스트로 관리
-            var startObjectList =
-                await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageStartLocationList);
-            _startList = startObjectList.ToList();
-        }
-
-        public async UniTask BossRoomLoad(string stageNum)
-        {
-            var stageBossLocationList =
-                await SystemManager.Instance.ResourceManager.GetLocations(_stagePath + stageNum +
-                                                                          "Boss"); //TODO : 추후 레이블 스테이지 리스트로 관리
-            var bossObjectList =
-                await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageBossLocationList);
-            _bossMapList = bossObjectList.ToList();
-        }
-
-        public async UniTask StairsRoomLoad(string stageNum)
-        {
-            var stageStairsLocationList =
-                await SystemManager.Instance.ResourceManager.GetLocations(_stagePath + stageNum +
-                                                                          "Stairs"); //TODO : 추후 레이블 스테이지 리스트로 관리
-            var stairsObjectList =
-                await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageStairsLocationList);
-            _stairsMapList = stairsObjectList.ToList();
-        }
-        
-        public async UniTask RewardRoomLoad(string stageNum)
-        {
-            var stageRewardLocationList =
-                await SystemManager.Instance.ResourceManager.GetLocations(_stagePath + stageNum +
-                                                                          "Reward"); //TODO : 추후 레이블 스테이지 리스트로 관리
-            var rewardObjectList =
-                await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageRewardLocationList);
-            _rewardMapList = rewardObjectList.ToList();
-        }
-        
-        public async UniTask HpHealRoomLoad(string stageNum)
-        {
-            var stageHpHealLocationList =
-                await SystemManager.Instance.ResourceManager.GetLocations(_stagePath + stageNum +
-                                                                          "Hp"); //TODO : 추후 레이블 스테이지 리스트로 관리
-            var hpHealObjectList =
-                await SystemManager.Instance.ResourceManager.LoadAssets<GameObject>(stageHpHealLocationList);
-            _hpHealMapList = hpHealObjectList.ToList();
+            switch (roomType)
+            {
+                case RoomType.None:
+                case RoomType.Normal:
+                case RoomType.Tutorial:
+                    return string.Empty;
+                case RoomType.Boss:
+                    return "Boss";
+                case RoomType.GoldShop:
+                case RoomType.HpShop:
+                    return "Shop";
+                case RoomType.Start:
+                    return "Start";
+                case RoomType.Stairs:
+                    return "Stairs";
+                case RoomType.Reward:
+                    return "Reward";
+                case RoomType.HpHeal:
+                    return "Hp";
+                case RoomType.Wait:
+                    return "Wait";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(roomType), roomType, null);
+            }
         }
 
         #endregion
 
         #region GetMapData
 
-        public GameObject GetMapObject()
+        public GameObject GetMapObject(RoomType roomType,MapDirection mapDirection)
         {
-            return _mapList[_mapCount++ % _mapList.Count];
-        }
-
-        public GameObject ShopMapObject()
-        {
-            return _shopMapList[Random.Range(0, _shopMapList.Count)];
-        }
-
-        public GameObject StartMapObject()
-        {
-            return _startList[Random.Range(0, _startList.Count)];
-        }
-
-        public GameObject BossMapObject()
-        {
-            return _bossMapList[Random.Range(0, _bossMapList.Count)];
-        }
-
-        public GameObject StairsMapObject()
-        {
-            return _stairsMapList[Random.Range(0, _stairsMapList.Count)];
-        }
-
-        public GameObject RewardMapObject(MapDirection mapDirection)
-        {
-            if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
-            { 
-                return _rewardMapList[0];
+            switch (roomType)
+            {
+                case RoomType.None:
+                case RoomType.Normal:
+                case RoomType.Tutorial:
+                    return _mapList[roomType][_mapCount++ % _mapList[roomType].Count];
+                case RoomType.Reward:
+                    if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
+                    {
+                        return _mapList[roomType][0];
+                    }
+                    return _mapList[roomType][1];
             }
-
-            return _rewardMapList[1];
-        }
-        
-        public GameObject HpMapObject()
-        {
-            return _hpHealMapList[Random.Range(0, _hpHealMapList.Count)];
+            return _mapList[roomType][Random.Range(0, _mapList[roomType].Count)];
         }
         
         public CellData GetCellData(Vector2Int pos)
@@ -737,50 +740,36 @@ namespace QT.Core.Map
         private MapCellData CellCreate(Vector2Int createPos, MapDirection direction)
         {
             RoomType roomType = _mapData.Map[createPos.y, createPos.x].RoomType;
-            GameObject cellMapObject = null;
-            MapCellData floorCellData = null;
-            switch (roomType)
+            if (roomType == RoomType.None)
             {
-                case RoomType.None:
-                    return null;
-                case RoomType.Normal:
-                    cellMapObject = GetMapObject();
-                    break;
-                case RoomType.Boss:
-                    cellMapObject = BossMapObject();
-                    if (_floorValue < 2)
-                    {
-                        floorCellData = Instantiate(StairsMapObject(), DungeonTransform)
-                            .GetComponent<MapCellData>();
-                        floorCellData.transform.position = new Vector3((createPos.x * 100f) - GetMiniMapSizeToMapSize().x, (createPos.y * -100f) - GetMiniMapSizeToMapSize().y + 1000f,0f);
-                    }
-                    break;
-                case RoomType.GoldShop:
-                case RoomType.HpShop:
-                    cellMapObject = ShopMapObject();
-                    break;
-                case RoomType.Start:
-                    cellMapObject = StartMapObject();
-                    break;
-                case RoomType.Stairs:
-                    cellMapObject = StairsMapObject();
-                    break;
-                case RoomType.Reward:
-                    cellMapObject = RewardMapObject(_mapData.Map[createPos.y,createPos.x].DoorDirection);
-                    break;
-                case RoomType.HpHeal:
-                    cellMapObject = HpMapObject();
-                    break;
+                return null;
             }
+            
+            var cellMapObject = GetMapObject(roomType,_mapData.Map[createPos.y,createPos.x].DoorDirection);
 
+            var cellPosition = new Vector2((createPos.x * 100.0f) - GetMiniMapSizeToMapSize().x,
+                (createPos.y * -100.0f) - GetMiniMapSizeToMapSize().y);
+            
             var mapCellData = Instantiate(cellMapObject, DungeonTransform).GetComponent<MapCellData>();
-            mapCellData.transform.position = new Vector3((createPos.x * 100.0f) - GetMiniMapSizeToMapSize().x,
-                (createPos.y * -100.0f) - GetMiniMapSizeToMapSize().y, 0f);
+            mapCellData.transform.position = cellPosition;
             mapCellData.CellDataSet(direction, createPos, roomType);
-            if (roomType == RoomType.Boss && _floorValue < 2)
+            
+            if (roomType == RoomType.Boss)
             {
-                mapCellData.CreateBossDoor(floorCellData.GetStageEnterDoorPosition(1));
-                floorCellData.CreateStairsDoor(mapCellData.GetStageEnterDoorPosition(0));
+                if (_floorValue < 2)
+                {
+                    var floorCellData = Instantiate(GetMapObject(RoomType.Stairs,MapDirection.None), DungeonTransform)
+                        .GetComponent<MapCellData>();
+                    floorCellData.transform.position = new Vector3(cellPosition.x, cellPosition.y + 1000f,0f);
+                    //mapCellData.CreateBossDoor(floorCellData.GetStageEnterDoorPosition(1));
+                    //floorCellData.CreateStairsDoor(mapCellData.GetStageEnterDoorPosition(0));
+                    _stairRoomEnterTransform = floorCellData.GetStageEnterDoorPosition(1);
+                }
+
+                var waitCellData = Instantiate(GetMapObject(RoomType.Wait, MapDirection.None), DungeonTransform).GetComponent<MapCellData>();
+                waitCellData.transform.position = new Vector3(mapCellData.GetDownTransform().position.x, mapCellData.GetDownTransform().position.y - 19f, 0f);
+                mapCellData.CreateBossDoor(waitCellData.GetStageEnterDoorPosition(1));
+                waitCellData.CreateWaitDoor();
             }
             return mapCellData;
         }
@@ -811,6 +800,11 @@ namespace QT.Core.Map
 
         #region Floor
 
+        public void EnterStairMap()
+        {
+            _mapData.MapNodeList.Clear();
+            _mapData.MapNodeList.Add(_mapData.BossRoomPosition);
+        }
         public async void NextFloor()
         {
             if (_floorValue == 2)
@@ -835,7 +829,7 @@ namespace QT.Core.Map
 
             await SystemManager.Instance.StageLoadManager.StageLoad(GetFloor() + 1);
             
-            SystemManager.Instance.LoadingManager.LoadScene(1);
+            SystemManager.Instance.LoadingManager.LoadScene(SceneNumber.InGame);
             DungenMapGenerate();
         }
 

@@ -54,6 +54,8 @@ namespace QT.InGame
         public SkeletalMaterialChanger MaterialChanger { get; private set; }
         public SkeletonGhost GhostEffect { get; private set; }
         
+        public bool IsPlayerInputPause { get; private set; }
+        
         private PlayerManager _playerManager;
 
         [SerializeField] private Transform _attackSpeedCanvas;
@@ -142,6 +144,7 @@ namespace QT.InGame
         {
             if(StatComponent.GetStatus(PlayerStats.MercyInvincibleTime).IsFull() && StatComponent.GetStatus(PlayerStats.DodgeInvincibleTime).IsFull())
             {
+                StatComponent.GetStatus(PlayerStats.HP).AddStatus(-power);
                 SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDamage, (dir, power));
             }
         }
@@ -149,6 +152,7 @@ namespace QT.InGame
         public void Heal(float amount)
         {
             SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnHeal, amount);
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Player_Heal);
             HealEffectPlay();
         }
         
@@ -163,6 +167,18 @@ namespace QT.InGame
             
             PlayerFocusCam.SetActive(isPause);
             Animator.SetBool(IsPause, isPause);
+        }
+
+        public void InputPause(bool isPause) // TODO : 정거장 이동중 입력 방지용
+        {
+            Pause(isPause);
+            IsPlayerInputPause = isPause;
+        }
+
+        public void PlayerInputPause(bool isPause) // TODO : 룰렛머신 사용중 입력 방지용
+        {
+            PauseGame(isPause);
+            IsPlayerInputPause = isPause;
         }
 
         public void Warp(Vector2Int cellPos)
@@ -204,8 +220,39 @@ namespace QT.InGame
 
         private void NextFloorChangeCamera()
         {
-            Pause(false);
+            InputPause(false);
             _camera = Camera.main;
+        }
+        
+        public Transform SetProjectileTarget()
+        {
+            var origin = AimPosition;
+            var allHitAble = HitAbleManager.Instance.GetAllHitAble();
+            var minDist = float.MaxValue;
+            IHitAble minHitable = null;
+            
+            foreach (var hitable in allHitAble)
+            {
+                if (hitable.IsClearTarget && !hitable.IsDead)
+                {
+                    var dist = (hitable.Position - origin).sqrMagnitude;
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        minHitable = hitable;
+                    }
+                }
+            }
+
+            Transform target = null;
+            if (minHitable != null)
+            {
+                target = ((MonoBehaviour) minHitable).transform;
+            }
+
+            ProjectileShooter.SetTarget(target);
+
+            return target;
         }
     }
 }

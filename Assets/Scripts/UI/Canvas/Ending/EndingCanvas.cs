@@ -50,7 +50,7 @@ namespace QT.UI
             ReleaseUI();
             
             SystemManager.Instance.PlayerManager.Reset();;
-            SystemManager.Instance.LoadingManager.LoadScene(2);
+            SystemManager.Instance.LoadingManager.LoadScene(SceneNumber.Title);
         }
         
     }

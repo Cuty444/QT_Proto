@@ -13,7 +13,8 @@ namespace QT.InGame
     {
         private int _shootDataId;
         private AimTypes _aimType;
-        
+
+        private Player _player;
         private ProjectileShooter _shooter;
         
         public ShootItemEffect(Item item, Player player, ItemEffectGameData effectData, SpecialEffectGameData specialEffectData) : base(item, player, effectData, specialEffectData)
@@ -21,6 +22,7 @@ namespace QT.InGame
             _shootDataId = (int)specialEffectData.Param1;
             _aimType = (AimTypes)specialEffectData.Param2;
 
+            _player = player;
             _shooter = player.ProjectileShooter;
         }
 
@@ -32,6 +34,7 @@ namespace QT.InGame
         {
             if (success)
             {
+                _player.SetProjectileTarget();
                 _shooter.Shoot(_shootDataId, _aimType, ProjectileOwner.Player);
             }
         }

@@ -205,6 +205,13 @@ namespace QT.UI
 
         private void OnClickPhoneKey(InputAction.CallbackContext context)
         {
+            if (SystemManager.Instance.PlayerManager.Player != null)
+            {
+                if (SystemManager.Instance.PlayerManager.Player.IsPlayerInputPause)
+                {
+                    return;
+                }
+            }
             switch (State)
             {
                 case UIState.InGame:

@@ -13,6 +13,7 @@ namespace QT
     public class ItemHolder : MonoBehaviour
     {
         private const string AltarDustEffectPath = "Effect/Prefabs/FX_Altar.prefab";
+        private const string InitDustEffectPath = "Effect/Prefabs/FX_Ppyong_Dust.prefab";
         private readonly int AnimationExitHash = Animator.StringToHash("Exit");
         
         
@@ -90,6 +91,10 @@ namespace QT
                     break;
             }
 
+            if (DropType == DropGameType.Shop)
+            {
+                SystemManager.Instance.ResourceManager.EmitParticle(InitDustEffectPath, _iconObject.transform.position);
+            }
             SetColliders(true);
             
             _itemDesc.SetData(itemGameData);
@@ -216,5 +221,9 @@ namespace QT
              ClearItem();
          }
 
+        public bool IsUsed()
+        {
+            return _used;
+        }
     }
 }

@@ -29,18 +29,21 @@ namespace QT.InGame
         {
             _soundManager = SystemManager.Instance.SoundManager;
             
-            _ownerEntity.Rigidbody.velocity = Vector2.zero;
-            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            _ownerEntity.SetPhysics(false);
             
             _ownerEntity.Animator.SetBool(IsStunAnimHash, false);
             _ownerEntity.Animator.SetBool(IsSpawnAnimHash, false);
             
             _ownerEntity.Animator.SetBool(IsDeadAnimHash, true);
+            
+            _ownerEntity.MapData.BossWave.Kill();
+            
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnKillEnemy, null);
         }
 
         public override void ClearState()
         {
-            _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            _ownerEntity.SetPhysics(true);
             _ownerEntity.Animator.SetBool(IsDeadAnimHash, false);
         }
 
