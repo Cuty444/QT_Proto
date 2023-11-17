@@ -238,7 +238,7 @@ namespace QT.Map
             doorObject.DoorOpen();
             _doorAnimators.Add(doorObject);
             _doorTransforms[1].gameObject.SetActive(true);
-            doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<Door>("Doors/Normal/NormalDown.prefab", _doorTransforms[1]);
+            doorObject = await SystemManager.Instance.ResourceManager.GetFromPool<Door>("Doors/Boss/BossDown.prefab", _doorTransforms[1]);
             doorObject.transform.localPosition = Vector3.zero;
             doorObject.Init(Util.UnityUtil.PathDirections[1], BossWaitExitDoor);
             doorObject.DoorOpen();

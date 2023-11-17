@@ -129,13 +129,13 @@ namespace QT.Map
         public void SetRoomType(RoomType roomType)
         {
             _roomType = roomType;
-            if (_roomType == RoomType.Boss)
-            {
-                if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() < 2)
-                {
-                    _roomType = RoomType.Stairs;
-                }
-            }
+            //if (_roomType == RoomType.Boss)
+            //{
+            //    if (SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor() < 2)
+            //    {
+            //        _roomType = RoomType.Stairs;
+            //    }
+            //}
         }
 
         private void OnClickTeleportButton()
@@ -149,7 +149,19 @@ namespace QT.Map
             
             if (playerPos == _cellPos) return;
             if (!_dungeonMapSystem.GetCellData(_cellPos).IsVisited) return;
-            if (!_dungeonMapSystem.GetCellData(playerPos).IsClear) return; 
+            
+            if (!_dungeonMapSystem.GetCellData(playerPos).IsClear)
+            {
+                if (_dungeonMapSystem.DungeonMapData.BossRoomPosition == playerPos)
+                {
+                    if (SystemManager.Instance.GetSystem<DungeonMapSystem>().IsBossWaitEnter)
+                        return;
+                }
+                else
+                {
+                    return;
+                }
+            } 
             
             _playerManager.Player.Warp(_cellPos);
         }
