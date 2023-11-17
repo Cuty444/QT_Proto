@@ -54,6 +54,8 @@ namespace QT.InGame
         public SkeletalMaterialChanger MaterialChanger { get; private set; }
         public SkeletonGhost GhostEffect { get; private set; }
         
+        public bool IsPlayerInputPause { get; private set; }
+        
         private PlayerManager _playerManager;
 
         [SerializeField] private Transform _attackSpeedCanvas;
@@ -167,9 +169,16 @@ namespace QT.InGame
             Animator.SetBool(IsPause, isPause);
         }
 
-        public void PlayerInputPause(bool isPause)
+        public void InputPause(bool isPause) // TODO : 정거장 이동중 입력 방지용
+        {
+            Pause(isPause);
+            IsPlayerInputPause = isPause;
+        }
+
+        public void PlayerInputPause(bool isPause) // TODO : 룰렛머신 사용중 입력 방지용
         {
             PauseGame(isPause);
+            IsPlayerInputPause = isPause;
         }
 
         public void Warp(Vector2Int cellPos)
@@ -211,7 +220,7 @@ namespace QT.InGame
 
         private void NextFloorChangeCamera()
         {
-            Pause(false);
+            InputPause(false);
             _camera = Camera.main;
         }
         

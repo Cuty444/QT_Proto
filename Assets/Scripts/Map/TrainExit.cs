@@ -35,7 +35,7 @@ namespace QT.Map
         
         private void OnTriggerEnter2D(Collider2D col)
         {
-            SystemManager.Instance.PlayerManager.Player.Pause(true);
+            SystemManager.Instance.PlayerManager.Player.InputPause(true);
             
             StopAllCoroutines();
             StartCoroutine(ExitSequence());

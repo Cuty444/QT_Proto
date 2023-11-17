@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
 using QT.Util;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace QT
