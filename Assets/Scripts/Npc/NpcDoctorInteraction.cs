@@ -165,7 +165,8 @@ namespace QT
             _isHeal = true;
             _npcTextPopup.Hide();
             _animator.SetTrigger(AnimationTalkHash);
-            _playerManager.Player.Heal(_isFullHeal ? _playerManager.Player.StatComponent.GetStatus(PlayerStats.HP).Value : 50);
+            //_playerManager.Player.Heal(_isFullHeal ? _playerManager.Player.StatComponent.GetStatus(PlayerStats.HP).Value : 50);
+            _playerManager.Player.Heal(50);
             _playerManager.AddItemEvent.Invoke();
             _playerManager.PlayerItemInteraction.RemoveListener(Heal);
         }
