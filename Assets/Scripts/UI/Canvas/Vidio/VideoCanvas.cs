@@ -52,18 +52,18 @@ namespace QT.UI
         
     }
 
-    public class JelloVidioCanvas : VideoCanvasModel
+    public class JelloIntroVidioCanvas : VideoCanvasModel
     {
         public override string PrefabPath => "JelloIntro.prefab";
     }
     
-    public class SaddyVidioCanvas : VideoCanvasModel
+    public class SaddyIntroVidioCanvas : VideoCanvasModel
     {
         public override string PrefabPath => "SaddyIntro.prefab";
     }
     
-    public class DullahanVidioCanvas : VideoCanvasModel
+    public class DullahanIntroVidioCanvas : VideoCanvasModel
     {
-        public override string PrefabPath => "DullahanVideo.prefab";
+        public override string PrefabPath => "DullahanIntro.prefab";
     }
 }

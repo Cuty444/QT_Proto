@@ -35,7 +35,7 @@ namespace QT.InGame
             
             _ownerEntity.Animator.SetBool(IsDeadAnimHash, true);
 
-            //SystemManager.Instance.ResourceManager.EmitParticle(BossEndEffectPath, _ownerEntity.CenterTransform.position);
+            SystemManager.Instance.ResourceManager.EmitParticle(BossEndEffectPath, _ownerEntity.CenterTransform.position);
             _ownerEntity.DeadImpulseSource.GenerateImpulse(1);
             
             _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Dead, _ownerEntity.transform.position);
