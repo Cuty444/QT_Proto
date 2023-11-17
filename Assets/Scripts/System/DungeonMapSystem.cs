@@ -721,11 +721,19 @@ namespace QT.Core.Map
                 case RoomType.Tutorial:
                     return _mapList[roomType][_mapCount++ % _mapList[roomType].Count];
                 case RoomType.Reward:
-                    if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
+                    if (Random.value > 0.5f)
                     {
-                        return _mapList[roomType][0];
+                        if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
+                        {
+                            return _mapList[roomType][2];
+                        }
+
+                        return _mapList[roomType][3];
                     }
-                    return _mapList[roomType][1];
+                    else
+                    {
+                        return _mapList[roomType][Random.Range(0, 2)];
+                    }
             }
             return _mapList[roomType][Random.Range(0, _mapList[roomType].Count)];
         }
