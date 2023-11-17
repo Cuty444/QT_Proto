@@ -9,6 +9,7 @@ namespace QT.InGame
 {
     // Param1: 타겟 타임스케일
     // Param2: 지속시간
+    // Param3: 이펙트 강도
     public class TimeScaleItemEffect : ItemEffect
     {
         private readonly int CyberEffectOpacityHash = Shader.PropertyToID("_Opacity");
@@ -20,6 +21,7 @@ namespace QT.InGame
         
         private readonly StatModifier _targetTimeScale;
         private readonly int _duration;
+        private readonly float _effectOpacity;
 
         private CancellationTokenSource _cancellationTokenSource;
         
@@ -30,6 +32,7 @@ namespace QT.InGame
             _targetTimeScale = new StatModifier( specialEffectData.Param1, StatModifier.ModifierType.Multiply, this);
             //_duration = (int) (specialEffectData.Param2 / _targetTimeScale * 1000);
             _duration = (int) (specialEffectData.Param2 * 1000);
+            _effectOpacity = specialEffectData.Param3;
 
             _ghostEffect = player.GhostEffect;
         }
@@ -75,7 +78,7 @@ namespace QT.InGame
             {
                 opacity = x;
                 cyberEffect.material.SetFloat(CyberEffectOpacityHash, opacity);
-            }, 0.5f, 0.5f).SetUpdate(true);
+            }, 0.5f * _effectOpacity, 0.5f).SetUpdate(true);
 
 
             await UniTask.Delay(_duration, cancellationToken: _cancellationTokenSource.Token);
