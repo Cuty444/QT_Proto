@@ -167,6 +167,11 @@ namespace QT.InGame
             Animator.SetBool(IsPause, isPause);
         }
 
+        public void PlayerInputPause(bool isPause)
+        {
+            PauseGame(isPause);
+        }
+
         public void Warp(Vector2Int cellPos)
         {
             SystemManager.Instance.UIManager.SetState(UIState.InGame);

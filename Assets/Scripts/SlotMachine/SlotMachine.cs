@@ -72,6 +72,8 @@ namespace QT
         [Space]
         [SerializeField] private UIItemDesc _uiItemDesc;
 
+        [SerializeField] private GameObject _focusCamera;
+
         private Animator _animator;
 
         private PlayerManager _playerManager;
@@ -130,6 +132,8 @@ namespace QT
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Insert);
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Start);
             _animator.SetTrigger(Run);
+            _focusCamera.SetActive(true);
+            _playerManager.Player.PlayerInputPause(true);
             StartCoroutine(UnityUtil.WaitForFunc(() =>
             {
                 var data = _slotPrizeData[_slotDropPercentage.RandomSlotPrize()];
@@ -162,6 +166,12 @@ namespace QT
                         SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Reward);
                         break;
                 }
+
+                StartCoroutine(UnityUtil.WaitForFunc(() =>
+                {
+                    _focusCamera.SetActive(false);
+                    _playerManager.Player.PlayerInputPause(false);
+                }, 0.2f));
             },1f));
         }
     }
