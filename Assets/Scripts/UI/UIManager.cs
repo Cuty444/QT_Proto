@@ -196,13 +196,45 @@ namespace QT.UI
         {
             _inputActions = new UIInputActions();
 
+            _inputActions.UI.LeftMenu.started += OnClickInventoryKey;
+            _inputActions.UI.RightMenu.started += OnClickMapKey;
             _inputActions.UI.Phone.started += OnClickPhoneKey;
             _inputActions.UI.Escape.started += OnClickEscapeKey;
             
             _inputActions.Enable();
         }
 
+        private void OnClickInventoryKey(InputAction.CallbackContext context)
+        {
+            bool useToClose = false;
+            if (_allUI.TryGetValue(typeof(PhoneCanvasModel), out var model))
+            {
+                useToClose = (model as PhoneCanvasModel).CurrentPage == 0;
+                (model as PhoneCanvasModel).OnClickLeft(context);
+            }
 
+            if (State != UIState.Phone || useToClose)
+            {
+                OnClickPhoneKey(context);
+            }
+        }
+
+        
+        private void OnClickMapKey(InputAction.CallbackContext context)
+        {
+            bool useToClose = false;
+            if (_allUI.TryGetValue(typeof(PhoneCanvasModel), out var model))
+            {
+                useToClose = (model as PhoneCanvasModel).CurrentPage == 1;
+                (model as PhoneCanvasModel).OnClickRight(context);
+            }
+
+            if (State != UIState.Phone || useToClose)
+            {
+                OnClickPhoneKey(context);
+            }
+        }
+        
         private void OnClickPhoneKey(InputAction.CallbackContext context)
         {
             if (SystemManager.Instance.PlayerManager.Player != null)

@@ -38,6 +38,8 @@ namespace QT.UI
         private PhoneCanvas _phoneCanvas;
         
         private bool _isMapInfo = false;
+        
+        public int CurrentPage => _phoneCanvas.ScrollSnap.CurrentPage;
 
         public override void SetState(UIState state)
         {
@@ -114,7 +116,7 @@ namespace QT.UI
             _phoneCanvas.MinimapRenderer.SetMiniMap(mapData);
         }
 
-        private void OnClickLeft(InputAction.CallbackContext context)
+        public void OnClickLeft(InputAction.CallbackContext context)
         {
             _phoneCanvas.ScrollSnap.PreviousScreen();
             _phoneCanvas.SwitchLeftAnimation.ReStart();
@@ -125,7 +127,7 @@ namespace QT.UI
             }
         }
 
-        private void OnClickRight(InputAction.CallbackContext context)
+        public void OnClickRight(InputAction.CallbackContext context)
         {
             _phoneCanvas.ScrollSnap.NextScreen();
             _phoneCanvas.SwitchRightAnimation.ReStart();
