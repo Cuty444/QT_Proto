@@ -15,6 +15,7 @@ namespace QT
         hp,
         item,
     }
+    
     [Serializable]
     public class SlotPrizeData
     {
@@ -27,6 +28,9 @@ namespace QT
 
     public class SlotMachine : MonoBehaviour
     {
+        private static readonly int Run = Animator.StringToHash("Run");
+        private static readonly int Result = Animator.StringToHash("Result");
+        private static readonly int Value = Animator.StringToHash("Value");
 
         #region SlotRandom
 
@@ -64,7 +68,8 @@ namespace QT
         #endregion
 
         [Header("소모 골드 값")]
-        [SerializeField] private int _priceGold;
+        [SerializeField] private int _startPrice;
+        [SerializeField] private float _priceIncressPer = 1;
 
         [Header("확률 테이블")] [SerializeField] private SlotPrizeData[] _slotPrizeData; 
         [Space]
@@ -77,14 +82,14 @@ namespace QT
         private PlayerManager _playerManager;
         private SlotDropPercentage _slotDropPercentage;
 
-        private static readonly int Run = Animator.StringToHash("Run");
-        private static readonly int Result = Animator.StringToHash("Result");
-        private static readonly int Value = Animator.StringToHash("Value");
+        private float _currentPrice;
 
         private void Awake()
         {
+            _currentPrice = _startPrice;
+            
             _animator = GetComponentInChildren<Animator>();
-            _uiItemDesc.SetGoldCost(string.Format("X {0}", _priceGold));
+            _uiItemDesc.SetGoldCost($"X {Mathf.RoundToInt(_currentPrice)}");
             _uiItemDesc.Hide();
             _slotDropPercentage = new SlotDropPercentage(_slotPrizeData);
         }
@@ -121,14 +126,20 @@ namespace QT
             {
                 return;
             }
-            if (_playerManager.Gold < _priceGold)
+            if (_playerManager.Gold < _currentPrice)
             {
                 _uiItemDesc.PlayFailButtonAnimation();
                 return;
             }
-            _playerManager.OnGoldValueChanged.Invoke(-_priceGold);
+            
+            _playerManager.OnGoldValueChanged.Invoke(-Mathf.RoundToInt(_currentPrice));
+            
+            _currentPrice *= _priceIncressPer;
+            _uiItemDesc.SetGoldCost($"X {Mathf.RoundToInt(_currentPrice)}");
+            
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Insert);
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Roulette_Start);
+            
             _animator.SetTrigger(Run);
             _focusCamera.SetActive(true);
             _playerManager.Player.PlayerInputPause(true);

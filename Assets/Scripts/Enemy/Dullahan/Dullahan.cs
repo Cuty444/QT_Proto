@@ -91,7 +91,7 @@ namespace QT.InGame
             Rigidbody.GetAttachedColliders(_colliders);
         }
         
-        public void Initialization(int enemyId)
+        public void Initialization(int enemyId, float hpPer)
         {
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
@@ -111,7 +111,7 @@ namespace QT.InGame
             
             Shooter.Initialize(null);
             
-            SetUpStats();
+            SetUpStats(hpPer);
             
             SetGlobalState(new DullahanGlobalState(this));
             SetUp(States.Normal);

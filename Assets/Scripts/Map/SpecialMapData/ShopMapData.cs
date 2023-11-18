@@ -13,20 +13,25 @@ namespace QT
         [SerializeField] private GameObject _itemObject;
         [Space]
         [Header("리롤 비용")]
-        [SerializeField] private int _rerollGoldValue = 5;
+        [SerializeField] private int _startRerollPrice = 15;
         [Header("리롤 1회당 증가하는 비용")]
-        [SerializeField] private int _rerollGoldAmountIncreases = 1;
+        [SerializeField] private float _rerollGoldAmountIncreases = 2;
         
         public UnityEvent _rerollEvnet { get; } = new();
 
         private List<ItemHolder> _itemHolders = new List<ItemHolder>();
 
         private ItemPoolSystem _itemPoolSystem;
+        
+        private float _currentRerollPrice;
+        
         private void Awake()
         {
             SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(ItemCreate);
             _rerollEvnet.AddListener(ReRoll);
             _itemPoolSystem = SystemManager.Instance.GetSystem<ItemPoolSystem>();
+
+            _currentRerollPrice = _startRerollPrice;
         }
 
         private void OnDestroy()
@@ -56,8 +61,9 @@ namespace QT
 
         private void ReRoll()
         {
-            SystemManager.Instance.PlayerManager.OnGoldValueChanged.Invoke(-_rerollGoldValue);
-            _rerollGoldValue += _rerollGoldAmountIncreases;
+            SystemManager.Instance.PlayerManager.OnGoldValueChanged.Invoke(-Mathf.RoundToInt(_currentRerollPrice));
+            _currentRerollPrice *= _rerollGoldAmountIncreases;
+            
             for (int i = 0; i < _itemHolders.Count; i++)
             {
                 if (_itemHolders[i].IsUsed())
@@ -83,7 +89,7 @@ namespace QT
 
         public int GetReRollGold()
         {
-            return _rerollGoldValue;
+            return Mathf.RoundToInt(_currentRerollPrice);
         }
 
         public bool ReRollCheck()

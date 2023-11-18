@@ -80,7 +80,7 @@ namespace QT.InGame
             Steering = GetComponent<Steering>();
         }
         
-        public void Initialization(int enemyId)
+        public void Initialization(int enemyId, float hpPer)
         {
             GetComponent();
             
@@ -89,7 +89,7 @@ namespace QT.InGame
             Shooter.Initialize(Animator);
             BounceMask = Shooter.BounceMask;
             
-            SetUpStats();
+            SetUpStats(hpPer);
             SetUp(States.Normal);
             SetGlobalState(new JelloLeftHandGlobalState(this));
         }

@@ -108,7 +108,7 @@ namespace QT.InGame
             LeftHand.Jello = this;
         }
         
-        public void Initialization(int enemyId)
+        public void Initialization(int enemyId, float hpPer)
         {
             _enemyId = enemyId;
             Data = SystemManager.Instance.DataManager.GetDataBase<EnemyGameDataBase>().GetData(_enemyId);
@@ -128,15 +128,15 @@ namespace QT.InGame
             
             //Shooter.Initialize(Animator);
             
-            SetUpStats();
+            SetUpStats(hpPer);
 
             SetGlobalState(new JelloGlobalState(this));
             SetUp(States.Normal);
             
             HitAbleManager.Instance.Register(this);
             
-            LeftHand.Initialization(JelloData.LeftHandEnemyId);
-            RightHand.Initialization(JelloData.RightHandEnemyId);
+            LeftHand.Initialization(JelloData.LeftHandEnemyId, hpPer);
+            RightHand.Initialization(JelloData.RightHandEnemyId, hpPer);
         }
 
         public void SetPhysics(bool enable)

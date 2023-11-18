@@ -246,7 +246,7 @@ namespace QT.InGame
             _ownerEntity.Animator.SetInteger(SwingLevelAnimHash, _isCharged ? 2 : ++_chargeLevel % 2);
             _ownerEntity.Animator.SetTrigger(SwingAnimHash);
 
-            _ownerEntity.LockAim(attackTime * 0.3f);
+            _ownerEntity.LockAnimation(speed.Value);
         }
 
         

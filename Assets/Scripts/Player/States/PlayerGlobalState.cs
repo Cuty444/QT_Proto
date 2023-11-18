@@ -13,12 +13,9 @@ namespace QT.InGame
     public class PlayerGlobalState : FSMState<Player>
     {
         private readonly int GainAnimHash = Animator.StringToHash("Gain");
-        private readonly int RotatationAnimHash = Animator.StringToHash("Rotation");
         private readonly int RigidAnimHash = Animator.StringToHash("Rigid");
 
         private PlayerHPCanvasModel _playerHpCanvas;
-
-        private InputAngleDamper _roationDamper = new (5);
 
         private GlobalData _globalData;
 
@@ -46,7 +43,6 @@ namespace QT.InGame
             
             SystemManager.Instance.EventManager.AddEvent(this, InvokeEvent);
             SystemManager.Instance.PlayerManager.AddItemEvent.AddListener(GainAnimation);
-            _ownerEntity.OnAim.AddListener(OnAim);
             
             var swingRad = _swingRadStat.Value / _swingRadStat.BaseValue * _globalData.BatSizeMultiplier;
             _swingRadDamper.ResetCurrentValue(swingRad);
@@ -70,7 +66,6 @@ namespace QT.InGame
             
             SystemManager.Instance.EventManager.RemoveEvent(this);
             SystemManager.Instance.PlayerManager.AddItemEvent.RemoveListener(GainAnimation);
-            _ownerEntity.OnAim.RemoveListener(OnAim);
             
             HitAbleManager.Instance.UnRegister(_ownerEntity);
         }
@@ -89,48 +84,6 @@ namespace QT.InGame
         }
 
 
-        private void OnAim(Vector2 aimPos)
-        {
-            var aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
-
-            if (aimDir == Vector2.zero)
-            {
-                return;
-            }
-            
-            if (_ownerEntity.IsReverseLookDir)
-            {
-                aimDir *= -1;
-            }
-            
-            float flip = 180;
-            if (_ownerEntity.IsDodge)
-            {
-                flip = _ownerEntity.IsFlip ? 180f : 0f;
-                _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
-                return;
-            }
-            var angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg - 90;
-            angle = _roationDamper.GetDampedValue(angle, Time.deltaTime);
-            
-            if (angle < 0)
-            {
-                angle += 360;
-            }
-
-            _ownerEntity.EyeTransform.rotation = Quaternion.Euler(0, 0, angle + 270);
-
-            if (angle > 180)
-            {
-                angle = 360 - angle;
-                flip = 0;
-            }
-
-            var aimValue = angle / 180 * 5;
-            
-            _ownerEntity.Animator.SetFloat(RotatationAnimHash, aimValue);
-            _ownerEntity.Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
-        }
         
         private void OnDamage(Vector2 dir, float damage)
         {

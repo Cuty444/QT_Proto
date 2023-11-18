@@ -72,7 +72,7 @@ namespace QT.InGame
             
         }
         
-        public void Initialization(int enemyId)
+        public void Initialization(int enemyId, float hpPer)
         {
             var dataManager = SystemManager.Instance.DataManager;
             
@@ -82,7 +82,7 @@ namespace QT.InGame
             Shooter.Initialize(Animator);
             BounceMask = Shooter.BounceMask;
             
-            SetUpStats();
+            SetUpStats(hpPer);
             SetUp(States.Normal);
             SetGlobalState(new EnemyGlobalState(this));
             
