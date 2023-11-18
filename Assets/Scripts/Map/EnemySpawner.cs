@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using QT.Core;
+using QT.Core.Map;
 using QT.InGame;
 using QT.Sound;
 using UnityEngine;
@@ -74,7 +75,10 @@ namespace QT.Map
 
             Target = (await SystemManager.Instance.ResourceManager.GetFromPool<Transform>(data.PrefabPath, transform)).GetComponent<IEnemy>();
             
-            Target.Initialization(EnemyId);
+            var floor = 800 + SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor();
+            var hpPer = SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>().GetData(floor).EnemyHpIncreasePer;
+            
+            Target.Initialization(EnemyId, hpPer);
             Target.PrefabPath = data.PrefabPath;
             
             var targetTransform = (Target as MonoBehaviour).transform;

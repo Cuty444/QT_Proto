@@ -19,7 +19,7 @@ namespace QT
 
         private void OnDestroy()
         {
-            //SystemManager.Instance.PlayerManager.PlayerMapPosition.RemoveListener(ItemCreate);
+            SystemManager.Instance?.PlayerManager.PlayerMapPosition.RemoveListener(ItemCreate);
         }
 
         private void ItemCreate(Vector2Int position)

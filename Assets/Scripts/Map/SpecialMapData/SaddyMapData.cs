@@ -1,5 +1,6 @@
 using QT.Core;
 using QT.Map;
+using QT.UI;
 using UnityEngine;
 
 namespace QT
@@ -19,10 +20,32 @@ namespace QT
         
         private ItemHolder _itemHolder;
 
+        private bool _isEntered = false;
+        
         private void Start()
         {
             _caseterNPC.gameObject.SetActive(false);
         }
+        
+        private void Awake()
+        {
+            SystemManager.Instance.PlayerManager.PlayerMapPosition.AddListener(ShowVidio);
+        }
+
+        private void OnDestroy()
+        {
+            SystemManager.Instance?.PlayerManager.PlayerMapPosition.RemoveListener(ShowVidio);
+        }
+
+        private void ShowVidio(Vector2Int position)
+        {
+            if (!_isEntered && position == MapPosition)
+            {
+                _isEntered = true;
+                SystemManager.Instance.UIManager.Show<SaddyIntroVidioCanvas>();
+            }
+        }
+        
         public void BossClear()
         {
             _caseterNPC.gameObject.SetActive(true);

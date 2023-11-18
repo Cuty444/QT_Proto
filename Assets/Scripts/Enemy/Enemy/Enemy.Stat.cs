@@ -1,4 +1,3 @@
-
 namespace QT.InGame
 {
     public partial class Enemy
@@ -6,9 +5,9 @@ namespace QT.InGame
         public Status HP { get; private set; }
         public Stat MoveSpd { get; private set; }
         
-        private  void SetUpStats()
+        private  void SetUpStats(float hpPer)
         {
-            HP = new Status(Data.MaxHp);
+            HP = new Status(Data.MaxHp * hpPer);
             MoveSpd = new Stat(Data.MovementSpd);
         }
     }

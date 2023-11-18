@@ -11,6 +11,6 @@ namespace QT.InGame
         public bool IsRigid { get; }
         public Status HP { get; }
 
-        public void Initialization(int enemyId);
+        public void Initialization(int enemyId, float hpPer);
     }
 }

@@ -837,7 +837,7 @@ namespace QT.Core.Map
             ProjectileManager.Instance.Clear();
             HitAbleManager.Instance.Clear();
 
-            await SystemManager.Instance.StageLoadManager.StageLoad(GetFloor() + 1);
+            await SystemManager.Instance.StageLoadManager.StageLoad(_floorValue + 1);
             
             SystemManager.Instance.LoadingManager.LoadScene(SceneNumber.InGame);
             DungenMapGenerate();
