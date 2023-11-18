@@ -220,7 +220,7 @@ Shader "UI/Shd_UI_Noise"
                 float voroi16 = voronoi16( coords16, time16, id16, uv16, 0, voronoiSmoothId16 );
                 
 
-                half4 color = tex2D( _MainTex1, ( texCoord38 + ( ( voroi13 * voroi16 ) * _Power ) ) );
+                half4 color = tex2D( _MainTex1, ( texCoord38 + ( ( voroi13 * voroi16 ) * _Power ) ) ) * _Color;
 
                 #ifdef UNITY_UI_CLIP_RECT
                 half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(IN.mask.xy)) * IN.mask.zw);
