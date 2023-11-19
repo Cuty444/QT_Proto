@@ -42,7 +42,7 @@ namespace QT
             if (!_isEntered && position == MapPosition)
             {
                 _isEntered = true;
-                SystemManager.Instance.UIManager.Show<SaddyIntroVidioCanvas>();
+                SystemManager.Instance.UIManager.Show<SaddyIntroVideoCanvas>();
             }
         }
         

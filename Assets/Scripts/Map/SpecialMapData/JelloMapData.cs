@@ -47,7 +47,7 @@ namespace QT
             if (!_isEntered && position == MapPosition)
             {
                 _isEntered = true;
-                SystemManager.Instance.UIManager.Show<JelloIntroVidioCanvas>();
+                SystemManager.Instance.UIManager.Show<JelloIntroVideoCanvas>();
             }
         }
 
