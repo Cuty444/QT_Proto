@@ -30,6 +30,8 @@ namespace QT
         
         public void Bomb(IHitAble ignore = null)
         {
+            SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Saddy_Bomb);
+            
             Vector2 pos = transform.position;
             
             var hitAbles = new List<IHitAble>();

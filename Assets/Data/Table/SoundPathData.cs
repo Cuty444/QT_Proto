@@ -95,6 +95,11 @@ namespace QT.Sound
         
         [field: SerializeField] public EventReference Monster_WaterDrop { get; private set; }
         
+        [field: SerializeField] public EventReference Jello_Comb { get; private set; }
+        [field: SerializeField] public EventReference Jello_Comb_Atk { get; private set; }
+        
+        [field: SerializeField] public EventReference Saddy_Bomb { get; private set; }
+        
         
         [field: SerializeField] public EventReference Boss_Walk { get; private set; }
         
