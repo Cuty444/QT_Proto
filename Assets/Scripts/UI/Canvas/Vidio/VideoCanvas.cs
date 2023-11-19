@@ -1,6 +1,7 @@
 using QT.Core;
 using QT.Util;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
 using UnityEngine.Video;
@@ -22,6 +23,8 @@ namespace QT.UI
         private VideoCanvas _videoCanvas;
         
         private float _lastTimeScale = 1;
+        
+        public UnityAction OnFinish;
         
         public override void OnCreate(UIPanel view)
         {
@@ -47,23 +50,31 @@ namespace QT.UI
         public override void ReleaseUI()
         {
             Time.timeScale = _lastTimeScale;
+            
+            OnFinish?.Invoke();
+            OnFinish = null;
             base.ReleaseUI();
         }
         
     }
 
-    public class JelloIntroVidioCanvas : VideoCanvasModel
+    public class JelloIntroVideoCanvas : VideoCanvasModel
     {
         public override string PrefabPath => "JelloIntro.prefab";
     }
     
-    public class SaddyIntroVidioCanvas : VideoCanvasModel
+    public class SaddyIntroVideoCanvas : VideoCanvasModel
     {
         public override string PrefabPath => "SaddyIntro.prefab";
     }
     
-    public class DullahanIntroVidioCanvas : VideoCanvasModel
+    public class DullahanIntroVideoCanvas : VideoCanvasModel
     {
         public override string PrefabPath => "DullahanIntro.prefab";
+    }
+    
+    public class EndingVideoCanvas : VideoCanvasModel
+    {
+        public override string PrefabPath => "EndingVideo.prefab";
     }
 }

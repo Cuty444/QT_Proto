@@ -109,9 +109,10 @@ namespace QT.UI
         
         private async void CheckCoolDown(Item activeItem)
         {
-            _playerHPCanvas.ActiveCoolTimeObject.SetActive(activeItem != null);
             if (activeItem != null)
             {
+                _playerHPCanvas.ActiveCoolTimeObject.SetActive(true);
+                
                 var data = activeItem.ItemGameData;
                 if (_lastActiveId != data.Index)
                 {
@@ -123,6 +124,11 @@ namespace QT.UI
                 
                 _playerHPCanvas.ActiveGlowObject.SetActive(coolTime <= 0);
                 _lastActiveId = activeItem.ItemGameData.Index;
+            }
+            else
+            {
+                _playerHPCanvas.ActiveCoolTimeObject.SetActive(false);
+                _playerHPCanvas.ActiveGlowObject.SetActive(false);
             }
         }
         

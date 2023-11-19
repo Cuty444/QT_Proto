@@ -28,7 +28,7 @@ namespace QT
             if (!_isEntered && position == MapPosition)
             {
                 _isEntered = true;
-                SystemManager.Instance.UIManager.Show<DullahanIntroVidioCanvas>();
+                SystemManager.Instance.UIManager.Show<DullahanIntroVideoCanvas>();
             }
         }
     }

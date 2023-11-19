@@ -41,6 +41,7 @@ namespace QT.UI
         public override void Show()
         {
             base.Show();
+            
             SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.ClearBGM);
 
             _startTime = Time.unscaledTime;

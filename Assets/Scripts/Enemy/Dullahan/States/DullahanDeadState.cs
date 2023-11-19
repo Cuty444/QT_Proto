@@ -60,6 +60,14 @@ namespace QT.InGame
             switch (_state)
             {
                 case 0:
+                    if (_time > 0.5f)
+                    {
+                        SystemManager.Instance.UIManager.SetState(UIState.None);
+                        _state++;
+                    }
+                    break;
+                
+                case 1:
                     if (_time > 4.5f)
                     {
                         SystemManager.Instance.ResourceManager.EmitParticle(BossDeadEffectPath,
@@ -79,21 +87,32 @@ namespace QT.InGame
                     }
                     break;
                 
-                case 1:
+                case 2:
                     if (_time > 3)
                     {
-                        SystemManager.Instance.UIManager.Show<CreditCanvasModel>();
+                        PlayEnding();
                         _state++;
                     }
                     break;
             }
-            
         }
 
         public override void ClearState()
         {
             _ownerEntity.SetPhysics(true);
             _ownerEntity.Animator.SetBool(IsDeadAnimHash, false);
+        }
+
+        private async void PlayEnding()
+        {
+            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.ClearBGM);
+            
+            var videoCanvas = await SystemManager.Instance.UIManager.Get<EndingVideoCanvas>();
+            videoCanvas.OnFinish += () =>
+            {
+                SystemManager.Instance.UIManager.Show<CreditCanvasModel>();
+            };
+            videoCanvas.Show();
         }
     }
 }

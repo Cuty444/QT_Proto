@@ -110,9 +110,22 @@ namespace QT
                 case RoomType.GoldShop:
                     SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.ShopStageBGM);
                     break;
+                
                 case RoomType.Boss:
-                    SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.BossStageBGM);
+                    switch (_dungeonMapSystem.GetFloor())
+                    {
+                        case 0:
+                            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.JelloStageBGM);
+                            break;
+                        case 1:
+                            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.SaddyStageBGM);
+                            break;
+                        case 2:
+                            SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.BossStageBGM);
+                            break;
+                    }
                     break;
+                
                 default:
                     SystemManager.Instance.SoundManager.PlayBGM(SystemManager.Instance.SoundManager.SoundData.Stage1BGM);
                     break;
