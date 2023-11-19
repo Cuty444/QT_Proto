@@ -73,6 +73,7 @@ namespace QT.InGame
             }
 
             GetChargeLevel();
+            GetProjectiles();
             OnSwing(_ownerEntity.GetActionValue(Player.ButtonActions.Swing));
         }
 

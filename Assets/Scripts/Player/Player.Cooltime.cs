@@ -14,7 +14,7 @@ namespace QT.InGame
         {
             if (CurrentStateIndex == (int) States.Dead)
             {
-                _attackSpeedCanvas.gameObject.SetActive(false);
+                //_attackSpeedCanvas.gameObject.SetActive(false);
                 return;
             }
             
@@ -34,22 +34,22 @@ namespace QT.InGame
         {
             if (StatComponent.GetStatus(PlayerStats.SwingCooldown).IsFull())
             {
-                _attackSpeedCanvas.gameObject.SetActive(false);
+                //_attackSpeedCanvas.gameObject.SetActive(false);
             }
             else
             {
-                _attackSpeedCanvas.gameObject.SetActive(true);
+                //_attackSpeedCanvas.gameObject.SetActive(true);
                 bool flip = PlayerAimAngle();
-                _attackSpeedBackground[flip ? 0 : 1].gameObject.SetActive(true);
-                _attackSpeedBackground[flip ? 1 : 0].gameObject.SetActive(false);
+                //_attackSpeedBackground[flip ? 0 : 1].gameObject.SetActive(true);
+                //_attackSpeedBackground[flip ? 1 : 0].gameObject.SetActive(false);
                 var attackCoolTime = StatComponent.GetStatus(PlayerStats.SwingCooldown);
                 Color color = _attackSpeedColorGradient.Evaluate(attackCoolTime.StatusValue / attackCoolTime.Value);
                 float remap = Util.Math.Remap(attackCoolTime.StatusValue, attackCoolTime.Value, 0f);
-                for (int i = 0; i < _attackGaugeImages.Length; i++)
-                {
-                    _attackGaugeImages[i].fillAmount = remap;
-                    _attackGaugeImages[i].color = color;
-                }
+                // for (int i = 0; i < _attackGaugeImages.Length; i++)
+                // {
+                //     _attackGaugeImages[i].fillAmount = remap;
+                //     _attackGaugeImages[i].color = color;
+                // }
             }
         }
         

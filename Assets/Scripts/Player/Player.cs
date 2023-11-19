@@ -58,10 +58,10 @@ namespace QT.InGame
         
         private PlayerManager _playerManager;
 
-        [SerializeField] private Transform _attackSpeedCanvas;
-        [SerializeField] private Transform[] _attackSpeedBackground;
-        [SerializeField] private Image[] _attackGaugeImages;
-        
+        // [SerializeField] private Transform _attackSpeedCanvas;
+        // [SerializeField] private Transform[] _attackSpeedBackground;
+        // [SerializeField] private Image[] _attackGaugeImages;
+        //
         private static readonly int IsPause = Animator.StringToHash("IsPause");
         private static readonly int IsWarp = Animator.StringToHash("IsWarp");
         private static readonly int Swing = Animator.StringToHash("Swing");
