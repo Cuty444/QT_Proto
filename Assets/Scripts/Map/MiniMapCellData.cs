@@ -148,7 +148,13 @@ namespace QT.Map
             var playerPos = DungeonManager.Instance.PlayerPosition;
             
             if (playerPos == _cellPos) return;
-            if (!_dungeonMapSystem.GetCellData(_cellPos).IsVisited) return;
+            if (!_dungeonMapSystem.GetCellData(_cellPos).IsVisited)
+            {
+                if (!(_dungeonMapSystem.DungeonMapData.BossRoomPosition == _cellPos))
+                { 
+                    return;
+                }
+            }
             
             if (!_dungeonMapSystem.GetCellData(playerPos).IsClear)
             {
