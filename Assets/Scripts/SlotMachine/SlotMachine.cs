@@ -84,6 +84,8 @@ namespace QT
 
         private float _currentPrice;
 
+        private bool _isMapClear = false;
+
         private void Awake()
         {
             _currentPrice = _startPrice;
@@ -119,8 +121,15 @@ namespace QT
             }
         }
 
+        public void MapClear()
+        {
+            _isMapClear = true;
+        }
+
         private void PlaySlotMachine()
         {
+            if (!_isMapClear)
+                return;
             AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
             if (!stateInfo.IsName("Idle"))
             {

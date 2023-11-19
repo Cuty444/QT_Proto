@@ -148,6 +148,13 @@ namespace QT.Map
                     }
                 }
             }
+            else if (_roomType == RoomType.Reward)
+            {
+                if (SpecialMapData.TryGetComponent(out RouletteMapData rouletteMapData))
+                {
+                    rouletteMapData.MapClearRouletteOn();
+                }
+            }
             
             _isPlaying = false;
         }
