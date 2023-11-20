@@ -30,6 +30,7 @@
 // Contributed by: Mitch Thompson
 
 using System.Collections.Generic;
+using QT.Core;
 using Spine.Unity;
 using UnityEngine;
 
@@ -77,9 +78,10 @@ namespace QT
 
 		void Start () {
 			Initialize(false);
+            SystemManager.Instance.PlayerManager.PlayerNextFloor.AddListener(OnInitialize);
 		}
 
-		public void Initialize (bool overwrite) {
+        public void Initialize (bool overwrite) {
 			if (pool == null || overwrite) {
 				if (ghostShader == null)
 					ghostShader = Shader.Find(GhostingShaderName);
@@ -182,8 +184,13 @@ namespace QT
 
 			foreach (Material mat in materialTable.Values)
 				Destroy(mat);
-		}
+        }
 
+        private void OnInitialize()
+        {
+            Initialize(true);
+        }
+        
 		// based on UnifyWiki http://wiki.unity3d.com/index.php?title=HexConverter
 		static Color32 HexToColor (string hex) {
 			const System.Globalization.NumberStyles HexNumber = System.Globalization.NumberStyles.HexNumber;

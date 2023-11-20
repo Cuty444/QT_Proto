@@ -86,6 +86,7 @@ namespace QT.Core
         private void ReleasePlayer()
         {
             SystemManager.Instance.ResourceManager.ReleaseObject(Constant.PlayerPrefabPath,Player);
+            PlayerNextFloor.RemoveAllListeners();
             Player = null;
         }
     }
