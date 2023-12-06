@@ -9,6 +9,8 @@ namespace QT.Map
 {
     public class MiniMapCellData : MonoBehaviour
     {
+        private static readonly int Monochrome = Shader.PropertyToID("_Monochrome");
+        
         public bool IsIconVisible => _mapImage.enabled;
         public RectTransform RectTransform => transform as RectTransform;
         
@@ -19,9 +21,6 @@ namespace QT.Map
         [Space]
         [SerializeField] private GameObject _lines;
         [SerializeField] private Image[] _mapLineImages;
-        
-        [Space]
-        [SerializeField] private Transform _iconsTransform;
         
         [Space]
         [SerializeField] private Sprite _playerSprite;
@@ -42,10 +41,18 @@ namespace QT.Map
         private Vector2Int _cellPos;
         private RoomType _roomType;
 
+        private Material _mat;
+
 
         private void Awake()
         {
             _clickTeleportButton.onClick.AddListener(OnClickTeleportButton);
+
+            if (_mapImage.material != null)
+            {
+                _mat = Instantiate(_mapImage.material);
+                _mapImage.material = _mat;
+            }
         }
 
         public void Setting(Vector2Int pos, Vector2Int startPos)
@@ -55,7 +62,6 @@ namespace QT.Map
             _lines.SetActive(false);
             
             _mapImage.enabled = false;
-            _iconsTransform.gameObject.SetActive(false);
             
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             
@@ -87,9 +93,12 @@ namespace QT.Map
             {
                 if (pos == _cellPos)
                 {
+                    _mat?.SetFloat(Monochrome, 0);
                     _mapImage.sprite = _playerSprite;
                     return;
                 }
+                
+                _mat?.SetFloat(Monochrome, 1);
                 
                 switch (_roomType)
                 {
