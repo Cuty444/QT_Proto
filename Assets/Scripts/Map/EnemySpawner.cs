@@ -74,10 +74,15 @@ namespace QT.Map
             }
 
             Target = (await SystemManager.Instance.ResourceManager.GetFromPool<Transform>(data.PrefabPath, transform)).GetComponent<IEnemy>();
+
+            float hpPer = 1;
             
-            var floor = 800 + SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor();
-            var hpPer = SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>().GetData(floor).EnemyHpIncreasePer;
-            
+            if (!SystemManager.Instance.IsTestMode)
+            {
+                var floor = 800 + SystemManager.Instance.GetSystem<DungeonMapSystem>().GetFloor();
+                hpPer = SystemManager.Instance.DataManager.GetDataBase<ProductialMapGameDataBase>().GetData(floor).EnemyHpIncreasePer;
+            }
+
             Target.Initialization(EnemyId, hpPer);
             Target.PrefabPath = data.PrefabPath;
             
