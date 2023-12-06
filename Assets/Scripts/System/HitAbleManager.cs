@@ -7,6 +7,8 @@ namespace QT
     public enum AttackType
     {
         Ball,
+        PowerBall,
+        
         Swing,
         PowerSwing,
         Teleport
