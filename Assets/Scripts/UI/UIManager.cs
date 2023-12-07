@@ -198,7 +198,7 @@ namespace QT.UI
 
             _inputActions.UI.LeftMenu.started += OnClickInventoryKey;
             _inputActions.UI.RightMenu.started += OnClickMapKey;
-            _inputActions.UI.Phone.started += OnClickPhoneKey;
+            //_inputActions.UI.Phone.started += OnClickPhoneKey;
             _inputActions.UI.Escape.started += OnClickEscapeKey;
             
             _inputActions.Enable();
@@ -247,7 +247,7 @@ namespace QT.UI
             switch (State)
             {
                 case UIState.InGame:
-                case UIState.Battle:
+                //case UIState.Battle:
                     SetState(UIState.Phone);
                     break;
                 case UIState.Phone:

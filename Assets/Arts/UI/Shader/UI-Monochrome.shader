@@ -1,11 +1,12 @@
 // Unity built-in shader source. Copyright (c) 2016 Unity Technologies. MIT license (see license.txt)
 
-Shader "UI/Scroll"
+Shader "UI/Monochrome"
 {
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
+        _Monochrome ("Monochrome", Float) = 0
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -14,8 +15,6 @@ Shader "UI/Scroll"
         _StencilReadMask ("Stencil Read Mask", Float) = 255
         
         _ColorMask ("Color Mask", Float) = 15
-		_ScrollSpeedX ("ScrollSpeed X", Float) = 1
-		_ScrollSpeedY ("ScrollSpeed Y", Float) = 1
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
@@ -82,6 +81,7 @@ Shader "UI/Scroll"
 
             sampler2D _MainTex;
             fixed4 _Color;
+            float _Monochrome;
             fixed4 _TextureSampleAdd;
             float4 _ClipRect;
             float4 _MainTex_ST;
@@ -89,9 +89,6 @@ Shader "UI/Scroll"
             float _UIMaskSoftnessY;
             int _UIVertexColorAlwaysGammaSpace;
 
-            float _UnscaledTime;
-			float _ScrollSpeedX;
-			float _ScrollSpeedY;
 
             v2f vert(appdata_t v)
             {
@@ -106,7 +103,7 @@ Shader "UI/Scroll"
                 pixelSize /= float2(1, 1) * abs(mul((float2x2)UNITY_MATRIX_P, _ScreenParams.xy));
 
                 float4 clampedRect = clamp(_ClipRect, -2e10, 2e10);
-                //float2 maskUV = (v.vertex.xy - clampedRect.xy) / (clampedRect.zw - clampedRect.xy);
+                float2 maskUV = (v.vertex.xy - clampedRect.xy) / (clampedRect.zw - clampedRect.xy);
                 OUT.texcoord = TRANSFORM_TEX(v.texcoord.xy, _MainTex);
                 OUT.mask = float4(v.vertex.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_UIMaskSoftnessX, _UIMaskSoftnessY) + abs(pixelSize.xy)));
 
@@ -132,11 +129,7 @@ Shader "UI/Scroll"
                 const half invAlphaPrecision = half(1.0/alphaPrecision);
                 IN.color.a = round(IN.color.a * alphaPrecision)*invAlphaPrecision;
 
-                
-                //float2 scroll = float2(_Time.x*_ScrollSpeedX, _Time.x*_ScrollSpeedY);
-                float2 scroll = float2(_ScrollSpeedX, _ScrollSpeedY) * _UnscaledTime;
-				half4 color = IN.color * (tex2D(_MainTex, IN.texcoord+scroll) + _TextureSampleAdd);
-                //half4 color = IN.color * (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd);
+                half4 color = IN.color * (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd);
                 
                 #ifdef UNITY_UI_CLIP_RECT
                 half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(IN.mask.xy)) * IN.mask.zw);
@@ -147,7 +140,11 @@ Shader "UI/Scroll"
                 clip (color.a - 0.001);
                 #endif
 
-                color.rgb *= color.a;
+                float alpha = color.a;
+
+                color = lerp(color, 0.2989 * color.r + 0.5870 * color.g + 0.1140 * color.b, _Monochrome);
+                
+                color *= alpha;
                 
                 return color;
             }

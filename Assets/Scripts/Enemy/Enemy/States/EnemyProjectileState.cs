@@ -150,7 +150,7 @@ namespace QT.InGame
                     if (_lastHitAble == hitAble)
                         return;
 
-                    hitAble.Hit(_direction, _damage);
+                    hitAble.Hit(_direction, _damage, AttackType.PowerBall);
                     if (!hitAble.IsClearTarget)
                     {
                         isTriggerCheck = hit.collider.isTrigger;

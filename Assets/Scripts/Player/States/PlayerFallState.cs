@@ -47,19 +47,12 @@ namespace QT
             yield return new WaitForSeconds(0.5f);
             
             _ownerEntity.Animator.SetBool(IsFallAnimHash, false);
+            _ownerEntity.ChangeState(Player.States.Move);
             
             var hp = _ownerEntity.StatComponent.GetStatus(PlayerStats.HP);
             hp.AddStatus(-25);
             
-            if (hp <= 0)
-            {
-                _ownerEntity.PlayerDead();
-            }
-            else
-            {
-                _ownerEntity.ChangeState(Player.States.Move);
-                _ownerEntity.MaterialChanger.SetHitMaterial();
-            }
+            SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnDamage, (Vector2.zero, 25.0f));
         }
         public override void ClearState()
         {
