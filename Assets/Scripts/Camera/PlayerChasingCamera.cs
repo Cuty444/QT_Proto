@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using DG.Tweening;
 using QT.Core;
 using QT.Core.Map;
 using QT.InGame;
@@ -9,116 +10,103 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-[Serializable]
-public class VolumData
-{
-    public Color VolumeColor;
-    [Range(0f, 1f)] public float Intensity;
-    [Range(0f, 1f)] public float Smooothness;
-}
-
 public class PlayerChasingCamera : MonoBehaviour
 {
     #region Inspector_Definition
 
     [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
-    
-    [SerializeField] private VolumData[] _volumDatas;
     [SerializeField] private Volume _globalVolume;
-    [SerializeField] private float _vignetteTimeScale;
+    
+    
+    [SerializeField] private Color _damageColor = Color.red;
+    [SerializeField] private float _damageIntensity = 0.4f;
+    [SerializeField] private float _damagePlayTime = 0.45f;
+    
     #endregion
-
-    #region Global_Declaration
-
-    private float _maxIntensity;
-
+    
     private Vignette _vignette;
-
-    private Coroutine _vignetteCoroutine = null;
-    #endregion
-
+    
+    private Color _vignetteColor;
+    private float _vignetteIntensity;
+    
     private void Awake()
     {
         SystemManager.Instance.EventManager.AddEvent(this, InvokeEvent);
         
-        var playerManager = SystemManager.Instance.PlayerManager;
-        playerManager.PlayerCreateEvent.AddListener((obj) =>
-        {
-            _cinemachineVirtualCamera.Follow = obj.transform;
-        });
-        playerManager.OnMapCellChanged.AddListener((data, cameraSize) =>
-        {
-            _globalVolume.profile = data;
-            _globalVolume.profile.TryGet(out _vignette);
-            _cinemachineVirtualCamera.m_Lens.OrthographicSize = cameraSize;
-        });
-        _globalVolume.profile.TryGet(out _vignette);
-        _maxIntensity = _volumDatas[1].Intensity;
+        SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener(PlayerCreateEvent);
+        SystemManager.Instance.PlayerManager.OnMapCellChanged.AddListener(OnMapCellChanged);
+
+        SetVignette();
     }
 
     private void OnDestroy()
     {
-        SystemManager.Instance?.EventManager.RemoveEvent(this);
+        if (SystemManager.Instance == null)
+        {
+            return;
+        }
+        SystemManager.Instance.EventManager.RemoveEvent(this);
+        
+        SystemManager.Instance.PlayerManager.PlayerCreateEvent.AddListener(PlayerCreateEvent);
+        SystemManager.Instance.PlayerManager.OnMapCellChanged.AddListener(OnMapCellChanged);
     }
 
     private void InvokeEvent(TriggerTypes triggerTypes, object data)
     {
         if (triggerTypes == TriggerTypes.OnDamage)
         {
-            VignetteOn();
+            PlayDamageEffect();
         }
     }
     
-
-    private void Update()
+    private void PlayerCreateEvent(Player obj)
     {
-        if (_vignetteCoroutine == null)
-        {
-            SetVolum(0);
-        }
+        _cinemachineVirtualCamera.Follow = obj.transform;
     }
 
-    private void VignetteOn()
+    private void OnMapCellChanged(VolumeProfile data, float cameraSize)
     {
-        if (_vignetteCoroutine != null)
-        {
-            return;
-        }
-        SetVolum(1);
-        _vignetteCoroutine = StartCoroutine(VignetteOff(_vignette,_vignetteTimeScale));
+        _globalVolume.profile = data;
+        _cinemachineVirtualCamera.m_Lens.OrthographicSize = cameraSize;
+
+        SetVignette();
     }
-
-    private IEnumerator VignetteOff(Vignette vignette,float time)
+    
+    private void PlayDamageEffect()
     {
-        float currentTime = 0f;
-        vignette.intensity.value = 0f;
-        float halfTime = time * 0.5f;
-        while (halfTime > currentTime)
-        {
-            currentTime += Time.deltaTime;
-            vignette.intensity.value = Unity.Mathematics.math.remap(0f, halfTime, 0f, _maxIntensity, currentTime);
-            yield return null;
-        }
-
-        currentTime = halfTime;
+        var duration = _damagePlayTime * 0.5f;
+        var sequence = DOTween.Sequence();
         
-        while (0f <= currentTime)
-        {
-            currentTime -= Time.deltaTime;
-            vignette.intensity.value = Unity.Mathematics.math.remap(0f, halfTime, 0f, _maxIntensity, currentTime);
-            yield return null;
-        }
-        SetVolum(0);
-        _vignetteCoroutine = null;
+        var seq = DOTween.Sequence();
+        seq.Join(DOTween.To(() => _vignette.intensity.value, x => _vignette.intensity.value = x,
+            _damageIntensity, duration).SetEase(Ease.OutBounce));
+        
+        seq.Join(DOTween.To(() => _vignette.color.value, x => _vignette.color.value = x,
+            _damageColor, duration).SetEase(Ease.OutBounce));
+
+        sequence.Append(seq);
+        
+        seq = DOTween.Sequence();
+        
+        seq.Join(DOTween.To(() => _vignette.intensity.value, x => _vignette.intensity.value = x,
+            _vignetteIntensity, duration).SetEase(Ease.OutQuad));
+        
+        seq.Join(DOTween.To(() => _vignette.color.value, x => _vignette.color.value = x,
+            _vignetteColor, duration).SetEase(Ease.OutQuad));
+        
+        sequence.Append(seq);
+        
+        sequence.Play();
     }
 
-    private void SetVolum(int index)
+    private void SetVignette()
     {
-        _vignette.color.value = _volumDatas[index].VolumeColor;
-        _vignette.intensity.value = _volumDatas[index].Intensity;
-        _vignette.smoothness.value = _volumDatas[index].Smooothness;
+        _globalVolume.profile.TryGet(out _vignette);
+        
+        _vignetteColor = _vignette.color.value;
+        _vignetteIntensity = _vignette.intensity.value;
     }
-
+    
     public void SetTarget(Transform target)
     {
         _cinemachineVirtualCamera.Follow = target;
