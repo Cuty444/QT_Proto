@@ -50,7 +50,7 @@ namespace QT
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
-                _playerManager.PlayerItemInteraction.AddListener(MoveStairMap);
+                _playerManager.PlayerInteraction.AddListener(PlayerInteraction);
                 _animator.SetBool(Talk,true);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Dialog);
                 _textBalloon.Show(DialogueId);
@@ -62,17 +62,26 @@ namespace QT
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
-                _playerManager.PlayerItemInteraction.RemoveListener(MoveStairMap);
+                _playerManager.PlayerInteraction.RemoveListener(PlayerInteraction);
                 _animator.SetBool(Talk,false);
                 _textBalloon.Hide();
             }
         }
 
+        private void PlayerInteraction()
+        {
+            if (!_textBalloon.Skip())
+            {
+                MoveStairMap();
+            }
+        }
+        
         private async void MoveStairMap()
         {
             _playerManager.Player.transform.position = _dungeonMapSystem._stairRoomEnterTransform.position;
             _playerManager.Player.LastSafePosition = _dungeonMapSystem._stairRoomEnterTransform.position;
             _dungeonMapSystem.EnterStairMap();
+            
             var minimapCanvas = await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>();
             minimapCanvas.SetMiniMap(_dungeonMapSystem.DungeonMapData);
             minimapCanvas.ChangeCenter(_dungeonMapSystem.DungeonMapData.BossRoomPosition);

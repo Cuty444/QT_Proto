@@ -122,7 +122,7 @@ namespace QT
             {
                 _itemDesc.Show();
                 
-                _playerManager.PlayerItemInteraction.AddListener(GainItem);
+                _playerManager.PlayerInteraction.AddListener(GainItem);
             }
         }
 
@@ -205,7 +205,7 @@ namespace QT
         
         private void ClearItem()
         {
-            _playerManager.PlayerItemInteraction.RemoveListener(GainItem);
+            _playerManager.PlayerInteraction.RemoveListener(GainItem);
         }
 
         private void SetColliders(bool active)

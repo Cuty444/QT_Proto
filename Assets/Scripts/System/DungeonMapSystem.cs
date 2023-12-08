@@ -820,6 +820,7 @@ namespace QT.Core.Map
             _mapData.MapNodeList.Clear();
             _mapData.MapNodeList.Add(_mapData.BossRoomPosition);
         }
+        
         public async void NextFloor()
         {
             if (_floorValue == 2)

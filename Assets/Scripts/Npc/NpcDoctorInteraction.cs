@@ -103,7 +103,7 @@ namespace QT
             {
                 _npcTextPopup.Show();
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Dialog);
-                _playerManager.PlayerItemInteraction.AddListener(Heal);
+                _playerManager.PlayerInteraction.AddListener(Heal);
             }
         }
 
@@ -117,7 +117,7 @@ namespace QT
                 _npcTextPopup.Hide();
                 if (!_isHeal)
                 {
-                    _playerManager.PlayerItemInteraction.RemoveListener(Heal);
+                    _playerManager.PlayerInteraction.RemoveListener(Heal);
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace QT
             //_playerManager.Player.Heal(_isFullHeal ? _playerManager.Player.StatComponent.GetStatus(PlayerStats.HP).Value : 50);
             _playerManager.Player.Heal(50);
             _playerManager.AddItemEvent.Invoke();
-            _playerManager.PlayerItemInteraction.RemoveListener(Heal);
+            _playerManager.PlayerInteraction.RemoveListener(Heal);
         }
     }
 }

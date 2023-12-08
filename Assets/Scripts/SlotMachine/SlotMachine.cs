@@ -106,7 +106,7 @@ namespace QT
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
-                _playerManager.PlayerItemInteraction.AddListener(PlaySlotMachine);
+                _playerManager.PlayerInteraction.AddListener(PlaySlotMachine);
                 _uiItemDesc.Show();
             }
         }
@@ -116,7 +116,7 @@ namespace QT
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
-                _playerManager.PlayerItemInteraction.RemoveListener(PlaySlotMachine);
+                _playerManager.PlayerInteraction.RemoveListener(PlaySlotMachine);
                 _uiItemDesc.Hide();
             }
         }

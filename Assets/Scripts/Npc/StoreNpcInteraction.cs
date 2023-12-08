@@ -86,7 +86,7 @@ namespace QT
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
-                _playerManager.PlayerItemInteraction.AddListener(ReRoll);
+                _playerManager.PlayerInteraction.AddListener(ReRoll);
                 _uiItemDesc.Show();
             }
         }
@@ -96,7 +96,7 @@ namespace QT
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
-                _playerManager.PlayerItemInteraction.RemoveListener(ReRoll);
+                _playerManager.PlayerInteraction.RemoveListener(ReRoll);
                 _uiItemDesc.Hide();
             }
         }
