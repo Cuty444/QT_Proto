@@ -65,7 +65,7 @@ namespace QT.UI
             
             //SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
             
-            SystemManager.Instance.PlayerManager.Reset();;
+            SystemManager.Instance.PlayerManager.Reset();
             SystemManager.Instance.LoadingManager.LoadScene(SceneNumber.Lobby);
         }
 

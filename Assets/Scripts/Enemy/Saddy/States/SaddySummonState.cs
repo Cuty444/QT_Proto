@@ -44,6 +44,7 @@ namespace QT.InGame
         {
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
             _ownerEntity.StopCoroutine(_summonSequence);
+            _ownerEntity.Animator.SetBool(SummonAnimHash, false);
         }
 
         

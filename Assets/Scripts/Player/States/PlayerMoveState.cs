@@ -118,7 +118,7 @@ namespace QT.InGame
         {
             if (isOn)
             {
-                SystemManager.Instance.PlayerManager.PlayerItemInteraction.Invoke();
+                SystemManager.Instance.PlayerManager.PlayerInteraction.Invoke();
             }
         }
 

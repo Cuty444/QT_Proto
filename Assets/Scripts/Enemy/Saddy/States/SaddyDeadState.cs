@@ -39,6 +39,8 @@ namespace QT.InGame
             _ownerEntity.MapData.BossWave.Kill();
             
             SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnKillEnemy, null);
+            
+            PlayerPrefs.SetInt(Constant.ProgressDataKey, (int)Progress.SaddyClear);
         }
 
         public override void ClearState()

@@ -5,12 +5,14 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using QT.Core;
 using QT.Core.Data;
+using QT.InGame;
 using QT.Map;
 using QT.UI;
 using QT.Util;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace QT.Core.Map
 {
@@ -129,7 +131,7 @@ namespace QT.Core.Map
 
         private GlobalData _globalData;
 
-        [HideInInspector] public Transform _stairRoomEnterTransform;
+        [HideInInspector] public MapCellData _stairRoom;
         [HideInInspector] public bool IsBossWaitEnter = false; // TODO : 보스 대기방인지 보스방 입장했는 시점 체크 여부
 
         public override void OnInitialized()
@@ -773,12 +775,11 @@ namespace QT.Core.Map
             {
                 if (_floorValue < 2)
                 {
-                    var floorCellData = Instantiate(GetMapObject(RoomType.Stairs,MapDirection.None), DungeonTransform)
+                    _stairRoom = Instantiate(GetMapObject(RoomType.Stairs,MapDirection.None), DungeonTransform)
                         .GetComponent<MapCellData>();
-                    floorCellData.transform.position = new Vector3(cellPosition.x, cellPosition.y + 1000f,0f);
-                    //mapCellData.CreateBossDoor(floorCellData.GetStageEnterDoorPosition(1));
-                    //floorCellData.CreateStairsDoor(mapCellData.GetStageEnterDoorPosition(0));
-                    _stairRoomEnterTransform = floorCellData.GetStageEnterDoorPosition(1);
+                    _stairRoom.transform.position = new Vector3(cellPosition.x, cellPosition.y + 1000f,0f);
+                    
+                    _stairRoom.gameObject.SetActive(false);
                 }
 
                 var waitCellData = Instantiate(GetMapObject(RoomType.Wait, MapDirection.None), DungeonTransform).GetComponent<MapCellData>();
@@ -815,11 +816,24 @@ namespace QT.Core.Map
 
         #region Floor
 
-        public void EnterStairMap()
+        public void EnterStairMap(Player player)
         {
+            _stairRoom.gameObject.SetActive(true);
+
+            Vector2 pos = _stairRoom.GetStageEnterDoorPosition(1).position;
+            player.transform.position = pos;
+            player.LastSafePosition = pos;
+            
             _mapData.MapNodeList.Clear();
-            _mapData.MapNodeList.Add(_mapData.BossRoomPosition);
+
+            var mapPos = _mapData.BossRoomPosition;
+            
+            _mapData.MapNodeList.Add(mapPos);
+            _mapData.Map[mapPos.y, mapPos.x].RoomType = RoomType.Stairs;
+            
+            SystemManager.Instance.PlayerManager.OnMapCellChanged.Invoke(_stairRoom.VolumeProfile, _stairRoom.CameraSize);
         }
+        
         public async void NextFloor()
         {
             if (_floorValue == 2)

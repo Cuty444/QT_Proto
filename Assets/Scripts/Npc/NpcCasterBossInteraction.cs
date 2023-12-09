@@ -5,6 +5,7 @@ using QT.Core;
 using QT.Core.Map;
 using QT.UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace QT
 {
@@ -19,7 +20,7 @@ namespace QT
         public int DialogueId;
         
         [SerializeField] private TextBalloon _textBalloon;
-        [SerializeField] private GameObject _image;
+        [SerializeField] private GameObject _casterObject;
 
         private PlayerManager _playerManager;
         private DungeonMapSystem _dungeonMapSystem;
@@ -34,15 +35,17 @@ namespace QT
             _animator = GetComponentInChildren<Animator>();
             _playerManager = SystemManager.Instance.PlayerManager;
             _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
-            SystemManager.Instance.ResourceManager.EmitParticle(SummonPrefabPath,
-                new Vector2(transform.position.x, transform.position.y + 1f));
-            _image.gameObject.SetActive(false);
+            
+            SystemManager.Instance.ResourceManager.EmitParticle(SummonPrefabPath, (Vector2)transform.position + Vector2.up);
+            
+            _casterObject.gameObject.SetActive(false);
             StartCoroutine(Util.UnityUtil.WaitForFunc(() =>
             {
-                _image.gameObject.SetActive(true);
+                _casterObject.gameObject.SetActive(true);
             }, 0.3f));
+            
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Appear);
-            _textBalloon.Hide();
+            //_textBalloon.Hide();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -50,7 +53,7 @@ namespace QT
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
-                _playerManager.PlayerItemInteraction.AddListener(MoveStairMap);
+                _playerManager.PlayerInteraction.AddListener(PlayerInteraction);
                 _animator.SetBool(Talk,true);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Dialog);
                 _textBalloon.Show(DialogueId);
@@ -62,17 +65,24 @@ namespace QT
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
                 other.gameObject.layer == LayerMask.NameToLayer("PlayerDodge"))
             {
-                _playerManager.PlayerItemInteraction.RemoveListener(MoveStairMap);
+                _playerManager.PlayerInteraction.RemoveListener(PlayerInteraction);
                 _animator.SetBool(Talk,false);
                 _textBalloon.Hide();
             }
         }
 
+        private void PlayerInteraction()
+        {
+            if (!_textBalloon.Skip())
+            {
+                MoveStairMap();
+            }
+        }
+        
         private async void MoveStairMap()
         {
-            _playerManager.Player.transform.position = _dungeonMapSystem._stairRoomEnterTransform.position;
-            _playerManager.Player.LastSafePosition = _dungeonMapSystem._stairRoomEnterTransform.position;
-            _dungeonMapSystem.EnterStairMap();
+            _dungeonMapSystem.EnterStairMap( _playerManager.Player);
+            
             var minimapCanvas = await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>();
             minimapCanvas.SetMiniMap(_dungeonMapSystem.DungeonMapData);
             minimapCanvas.ChangeCenter(_dungeonMapSystem.DungeonMapData.BossRoomPosition);

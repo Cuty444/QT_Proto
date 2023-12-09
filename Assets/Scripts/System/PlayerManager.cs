@@ -20,7 +20,7 @@ namespace QT.Core
         public UnityEvent<Vector2Int> PlayerMapTeleportPosition { get; } = new();
         public UnityEvent<bool> PlayerMapPass { get; } = new();
 
-        public UnityEvent PlayerItemInteraction { get; } = new();
+        public UnityEvent PlayerInteraction { get; } = new();
         
         public UnityEvent<int> OnGoldValueChanged { get; } = new();
 

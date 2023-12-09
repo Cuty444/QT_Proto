@@ -13,9 +13,23 @@ namespace QT.Core
         InGame = 3
     }
     
+    
+    public enum Progress
+    {
+        None,
+        TutorialClear,
+        
+        JelloClear,
+        SaddyClear,
+        
+        Clear
+    }
+    
     public static class Constant
     {
         public const string PlayerPrefabPath = "Prefabs/Player.prefab";
         public const string CoinPrefabPath = "Prefabs/Coin.prefab";
+
+        public const string ProgressDataKey = "Progress";
     }
 }

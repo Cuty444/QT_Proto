@@ -51,6 +51,8 @@ namespace QT.InGame
             }
             
             _ownerEntity.MapData.BossWave.Kill();
+            
+            PlayerPrefs.SetInt(Constant.ProgressDataKey, (int)Progress.Clear);
         }
 
         public override void UpdateState()

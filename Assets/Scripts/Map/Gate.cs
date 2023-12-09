@@ -23,6 +23,11 @@ namespace QT
             else
             {
                 SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+                
+                if (PlayerPrefs.GetInt(Constant.ProgressDataKey, 0) < (int) Progress.TutorialClear)
+                {
+                    PlayerPrefs.SetInt(Constant.ProgressDataKey, (int) Progress.TutorialClear);
+                }
             }
 
             SystemManager.Instance.PlayerManager.Reset();
