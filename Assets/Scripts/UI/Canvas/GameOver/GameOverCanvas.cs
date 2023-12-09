@@ -106,8 +106,8 @@ namespace QT.UI
             _gameOverCanvas.PopAnimator.Pause();
             _gameOverCanvas.ReleaseAnimator.ReStart();
             //_gameOverCanvas.SpineAnimation.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
-            // await SystemManager.Instance.StageLoadManager.StageLoad(1);
-            // SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+            await SystemManager.Instance.StageLoadManager.StageLoad(1);
+            SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
             
             var sequenceLength = _gameOverCanvas.ReleaseAnimator.SequenceLength;
             
@@ -117,8 +117,6 @@ namespace QT.UI
         
         private void OnClickExit()
         {
-            //_gameOverCanvas.TitleButton.GetComponent<Animator>().SetTrigger(ButtonCilckAnimation);
-
             SetInputs(false);
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.UIGameStartSFX);

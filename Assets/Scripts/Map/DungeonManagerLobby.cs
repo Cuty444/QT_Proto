@@ -26,7 +26,7 @@ namespace QT
         {
             //SystemManager.Instance.PlayerManager.OnMapCellChanged.Invoke(Target.VolumeProfile, Target.CameraSize);
 
-            SystemManager.Instance.UIManager.SetState(UIState.None);
+            SystemManager.Instance.UIManager.SetState(UIState.Lobby);
             
             SystemManager.Instance.PlayerManager.PlayerCreateEvent.RemoveListener(OnPlayerCreated);
         }

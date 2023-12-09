@@ -10,6 +10,10 @@ namespace QT.Sound
 
     public class SoundManager
     {
+        private const string MasterKey = "masterKey";
+        private const string BgmKey = "bgmKey";
+        private const string SfxKey = "sfxKey";
+        
         private StudioEventEmitter _bgmEmitter;
         
         private Bus _masterBus;
@@ -23,9 +27,6 @@ namespace QT.Sound
 
         private EventReference _currentBgm;
         [HideInInspector] public SoundPathData SoundData;
-        
-        private string bgmKey = "bgmKey";
-        private string sfxKey = "sfxKey";
         public void Initialize(SoundPathData soundPathData)
         {
             _poolRootTransform = new GameObject("AudioSourcePoolRoot").transform;
@@ -40,24 +41,35 @@ namespace QT.Sound
             _bgmBus = RuntimeManager.GetBus(SoundData.Bank[1]);
             _sfxBus = RuntimeManager.GetBus(SoundData.Bank[2]);
             GameObject.DontDestroyOnLoad(_poolRootTransform);
-            if (PlayerPrefs.HasKey(bgmKey))
+            
+            
+            if (PlayerPrefs.HasKey(MasterKey))
             {
-                _bgmBus.setVolume(PlayerPrefs.GetFloat(bgmKey));
+                _masterBus.setVolume(PlayerPrefs.GetFloat(MasterKey));
+            }
+            
+            if (PlayerPrefs.HasKey(BgmKey))
+            {
+                _bgmBus.setVolume(PlayerPrefs.GetFloat(BgmKey));
             }
 
-            if (PlayerPrefs.HasKey(sfxKey))
+            if (PlayerPrefs.HasKey(SfxKey))
             {
-                _sfxBus.setVolume(PlayerPrefs.GetFloat(sfxKey));
+                _sfxBus.setVolume(PlayerPrefs.GetFloat(SfxKey));
             }
         }
 
         public void VolumeSave()
         {
             float value = 0f;
+            
+            _masterBus.getVolume(out value);
+            PlayerPrefs.SetFloat(MasterKey, value);
             _bgmBus.getVolume(out value);
-            PlayerPrefs.SetFloat(bgmKey, value);
+            PlayerPrefs.SetFloat(BgmKey, value);
             _sfxBus.getVolume(out value);
-            PlayerPrefs.SetFloat(sfxKey,value);
+            PlayerPrefs.SetFloat(SfxKey,value);
+            
             PlayerPrefs.Save();
         }
 
