@@ -81,9 +81,7 @@ namespace QT
         
         private async void MoveStairMap()
         {
-            _playerManager.Player.transform.position = _dungeonMapSystem._stairRoomEnterTransform.position;
-            _playerManager.Player.LastSafePosition = _dungeonMapSystem._stairRoomEnterTransform.position;
-            _dungeonMapSystem.EnterStairMap();
+            _dungeonMapSystem.EnterStairMap( _playerManager.Player);
             
             var minimapCanvas = await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>();
             minimapCanvas.SetMiniMap(_dungeonMapSystem.DungeonMapData);
