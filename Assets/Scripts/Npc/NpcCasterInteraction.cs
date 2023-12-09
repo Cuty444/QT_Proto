@@ -18,6 +18,7 @@ namespace QT
         public bool IsClearTarget => false;
         public bool IsDead => false;
 
+        public int TutotialDualogueId;
         public List<int> DefaultDialogueIds;
         public List<int> BossDialogueIds;
         public List<int> ClearDialogueIds;
@@ -35,6 +36,8 @@ namespace QT
         private const string SummonPrefabPath = "Effect/Prefabs/FX_NPC_Ppyong_Dust.prefab";
 
 
+        private Progress _currentProgress;
+
         private void Start()
         {
             _animator = GetComponentInChildren<Animator>();
@@ -50,19 +53,49 @@ namespace QT
             
             SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Appear);
             //_textBalloon.Hide();
+
+            Init();
         }
 
-        private void Shuffle()
+        private void Init()
         {
+            _currentProgress = (Progress) PlayerPrefs.GetInt(Constant.ProgressDataKey, 0);
+            
             DefaultDialogueIds.Shuffle();
-            BossDialogueIds.Shuffle();
             ClearDialogueIds.Shuffle();
 
-            _dialogueIndex = 0;
+            if (_currentProgress == Progress.Clear)
+            {
+                DefaultDialogueIds = ClearDialogueIds;
+                _dialogueIndex = 0;
+            }
+            else
+            {
+                _dialogueIndex = -1;
+            }
         }
         
         private int PickDialogId()
         {
+            if (_currentProgress == Progress.None)
+            {
+                return TutotialDualogueId;
+            }
+            
+            if (_dialogueIndex < 0)
+            {
+                _dialogueIndex = 0;
+                switch (_currentProgress)
+                {
+                    case Progress.TutorialClear:
+                        return BossDialogueIds[0];
+                    case Progress.JelloClear:
+                        return BossDialogueIds[1];
+                    case Progress.SaddyClear:
+                        return BossDialogueIds[2];
+                }
+            }
+            
             _dialogueIndex++;
             
             if(_dialogueIndex < DefaultDialogueIds.Count)

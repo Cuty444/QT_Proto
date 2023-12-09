@@ -35,6 +35,8 @@ namespace QT.InGame
             _ownerEntity.RightHand.Hit(Vector2.zero, 99999, AttackType.Ball);
             
             SystemManager.Instance.EventManager.InvokeEvent(TriggerTypes.OnKillEnemy, null);
+            
+            PlayerPrefs.SetInt(Constant.ProgressDataKey, (int)Progress.JelloClear);
         }
 
         public override void ClearState()
