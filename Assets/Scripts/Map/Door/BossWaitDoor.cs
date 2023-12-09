@@ -24,7 +24,10 @@ namespace QT
             _waveHardCollider.enabled = true;
             _waveStartCollider.enabled = false;
             _mapCellData.PlayBossEnterRoom();
+            
             SystemManager.Instance.GetSystem<DungeonMapSystem>().IsBossWaitEnter = true;
+            SystemManager.Instance.PlayerManager.PlayerDoorEnter.Invoke(Vector2Int.zero);
+            
             DoorClose();
         }
 

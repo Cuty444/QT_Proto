@@ -101,10 +101,12 @@ namespace QT
             var data = SystemManager.Instance.GetSystem<DungeonMapSystem>().GetCellData(position);
             
             (await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>()).ChangeCenter(position);
-            
-            SystemManager.Instance.UIManager.SetState(data.IsClear ? UIState.InGame : UIState.Battle);
-            IsBattle = !data.IsClear;
 
+            bool isWaitRoom = data.RoomType == RoomType.Boss && !_dungeonMapSystem.IsBossWaitEnter;
+            IsBattle = !data.IsClear && !isWaitRoom;
+            
+            SystemManager.Instance.UIManager.SetState(IsBattle ? UIState.Battle : UIState.InGame);
+            
             switch (data.RoomType)
             {
                 case RoomType.GoldShop:
