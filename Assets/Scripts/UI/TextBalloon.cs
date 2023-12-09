@@ -44,6 +44,8 @@ namespace QT
         {
             _soundManager = SystemManager.Instance.SoundManager;
             _localeGameDataBase = SystemManager.Instance.DataManager.GetDataBase<LocaleGameDataBase>();
+            
+            _descAnimation.Reset();
         }
 
         public void Show(int dialogueId)

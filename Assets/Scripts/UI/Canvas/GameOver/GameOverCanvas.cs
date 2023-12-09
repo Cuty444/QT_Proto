@@ -106,13 +106,13 @@ namespace QT.UI
             _gameOverCanvas.PopAnimator.Pause();
             _gameOverCanvas.ReleaseAnimator.ReStart();
             //_gameOverCanvas.SpineAnimation.AnimationState.SetAnimation(1, "S_GameOver_Replay",false);
-            await SystemManager.Instance.StageLoadManager.StageLoad(1);
-            SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
+            // await SystemManager.Instance.StageLoadManager.StageLoad(1);
+            // SystemManager.Instance.GetSystem<DungeonMapSystem>().DungenMapGenerate();
             
             var sequenceLength = _gameOverCanvas.ReleaseAnimator.SequenceLength;
             
             _gameOverCanvas.StopAllCoroutines();
-            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(sequenceLength,SceneNumber.InGame));
+            _gameOverCanvas.StartCoroutine(WaitForReleaseAnimation(sequenceLength,SceneNumber.Lobby));
         }
         
         private void OnClickExit()
@@ -153,7 +153,7 @@ namespace QT.UI
             yield return new WaitForSecondsRealtime(waitTime);
             
             Time.timeScale = 1;
-            SystemManager.Instance.PlayerManager.Reset();;
+            SystemManager.Instance.PlayerManager.Reset();
             SystemManager.Instance.LoadingManager.LoadScene(SceneNumber);
         }
 

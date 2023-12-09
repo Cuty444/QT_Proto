@@ -434,10 +434,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5140093820890195488}
-  - component: {fileID: 4119240667444632335}
+  - component: {fileID: 7325958464879028963}
   - component: {fileID: 107575455018052014}
   m_Layer: 0
-  m_Name: CasterNpc(Boss)
+  m_Name: CasterNpc
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -460,7 +460,7 @@ Transform:
   - {fileID: 5033519466195497299}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4119240667444632335
+--- !u!114 &7325958464879028963
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -469,11 +469,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2627508139058767289}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d2b468ac8aa01d4aac86a3c28a4c28b, type: 3}
+  m_Script: {fileID: 11500000, guid: 2451172253be6f440b40dc81334c5e45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <ColliderRad>k__BackingField: 0.5
-  DialogueId: 0
+  DefaultDialogueIds: ea030000eb030000ec030000
+  BossDialogueIds: ed030000ee030000ef030000
+  ClearDialogueIds: f0030000f1030000f2030000
   _textBalloon: {fileID: 8788256763094049212}
   _casterObject: {fileID: 3607172539872750846}
 --- !u!61 &107575455018052014
@@ -530,7 +532,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5033519466195497299}
-  - component: {fileID: 6107878662947711181}
+  - component: {fileID: 7887523430289107636}
   m_Layer: 0
   m_Name: Caster
   m_TagString: Untagged
@@ -555,7 +557,7 @@ Transform:
   - {fileID: 8601890519412299224}
   m_Father: {fileID: 5140093820890195488}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!210 &6107878662947711181
+--- !u!210 &7887523430289107636
 SortingGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

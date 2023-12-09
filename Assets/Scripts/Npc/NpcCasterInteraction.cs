@@ -4,26 +4,31 @@ using System.Collections.Generic;
 using QT.Core;
 using QT.Core.Map;
 using QT.UI;
+using QT.Util;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace QT
 {
-    public class NpcCasterBossInteraction : MonoBehaviour, IHitAble
+    public class NpcCasterInteraction : MonoBehaviour, IHitAble
     {
         public int InstanceId => gameObject.GetInstanceID();
         public Vector2 Position => transform.position;
         [field: SerializeField] public float ColliderRad { get; private set; }
         public bool IsClearTarget => false;
         public bool IsDead => false;
+
+        public List<int> DefaultDialogueIds;
+        public List<int> BossDialogueIds;
+        public List<int> ClearDialogueIds;
+
+        private int _dialogueIndex;
         
-        public int DialogueId;
         
         [SerializeField] private TextBalloon _textBalloon;
         [SerializeField] private GameObject _casterObject;
 
         private PlayerManager _playerManager;
-        private DungeonMapSystem _dungeonMapSystem;
         private Animator _animator = null;
         
         private static readonly int Talk = Animator.StringToHash("Talk");
@@ -34,7 +39,6 @@ namespace QT
         {
             _animator = GetComponentInChildren<Animator>();
             _playerManager = SystemManager.Instance.PlayerManager;
-            _dungeonMapSystem = SystemManager.Instance.GetSystem<DungeonMapSystem>();
             
             SystemManager.Instance.ResourceManager.EmitParticle(SummonPrefabPath, (Vector2)transform.position + Vector2.up);
             
@@ -48,6 +52,30 @@ namespace QT
             //_textBalloon.Hide();
         }
 
+        private void Shuffle()
+        {
+            DefaultDialogueIds.Shuffle();
+            BossDialogueIds.Shuffle();
+            ClearDialogueIds.Shuffle();
+
+            _dialogueIndex = 0;
+        }
+        
+        private int PickDialogId()
+        {
+            _dialogueIndex++;
+            
+            if(_dialogueIndex < DefaultDialogueIds.Count)
+            {
+                return DefaultDialogueIds[_dialogueIndex];
+            }
+            
+            DefaultDialogueIds.Shuffle();
+            _dialogueIndex = 0;
+
+            return DefaultDialogueIds[_dialogueIndex];
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player") ||
@@ -56,7 +84,7 @@ namespace QT
                 _playerManager.PlayerInteraction.AddListener(PlayerInteraction);
                 _animator.SetBool(Talk,true);
                 SystemManager.Instance.SoundManager.PlayOneShot(SystemManager.Instance.SoundManager.SoundData.Npc_Bat_Dialog);
-                _textBalloon.Show(DialogueId);
+                _textBalloon.Show(PickDialogId());
             }
         }
 
@@ -75,23 +103,10 @@ namespace QT
         {
             if (!_textBalloon.Skip())
             {
-                MoveStairMap();
+                _textBalloon.Show(PickDialogId());
             }
         }
         
-        private async void MoveStairMap()
-        {
-            _playerManager.Player.transform.position = _dungeonMapSystem._stairRoomEnterTransform.position;
-            _playerManager.Player.LastSafePosition = _dungeonMapSystem._stairRoomEnterTransform.position;
-            _dungeonMapSystem.EnterStairMap();
-            
-            var minimapCanvas = await SystemManager.Instance.UIManager.Get<MinimapCanvasModel>();
-            minimapCanvas.SetMiniMap(_dungeonMapSystem.DungeonMapData);
-            minimapCanvas.ChangeCenter(_dungeonMapSystem.DungeonMapData.BossRoomPosition);
-            
-            var phoneCanvas = await SystemManager.Instance.UIManager.Get<PhoneCanvasModel>();
-            phoneCanvas.SetMiniMap(_dungeonMapSystem.DungeonMapData);
-        }
         
         public void Hit(Vector2 dir, float power,AttackType attackType)
         {
