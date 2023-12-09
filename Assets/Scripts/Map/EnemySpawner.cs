@@ -42,6 +42,8 @@ namespace QT.Map
 
         public void Kill()
         {
+            StopAllCoroutines();
+            
             Target?.Hit(Vector2.zero, 99999);
             Target = null;
             
