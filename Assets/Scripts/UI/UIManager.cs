@@ -19,6 +19,7 @@ namespace QT.UI
         Loading,
         Title,
         
+        Lobby,
         InGame,
         Battle,
         
@@ -261,6 +262,7 @@ namespace QT.UI
             switch (State)
             {
                 case UIState.Title:
+                case UIState.Lobby:
                 case UIState.InGame:
                 case UIState.Battle:
                 case UIState.Phone:
