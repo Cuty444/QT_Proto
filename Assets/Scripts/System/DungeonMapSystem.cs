@@ -723,24 +723,38 @@ namespace QT.Core.Map
                 case RoomType.Tutorial:
                     return _mapList[roomType][_mapCount++ % _mapList[roomType].Count];
                 case RoomType.Reward:
-                    if (Random.value > 0.5f)
-                    {
-                        if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
-                        {
-                            return _mapList[roomType][2];
-                        }
 
-                        return _mapList[roomType][3];
+                    List<GameObject> list;
+                    
+                    if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
+                    {
+                        list = _mapList[roomType].Where((x) => x.name[0] == 'h').ToList();
                     }
                     else
                     {
-                        if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
-                        {
-                            return _mapList[roomType][0];
-                        }
-
-                        return _mapList[roomType][1];
+                        list = _mapList[roomType].Where((x) => x.name[0] == 'v').ToList();
                     }
+
+                    return list[Random.Range(0,list.Count)];
+                    
+                    // if (Random.value > 0.5f)
+                    // {
+                    //     if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
+                    //     {
+                    //         return _mapList[roomType][2];
+                    //     }
+                    //
+                    //     return _mapList[roomType][3];
+                    // }
+                    // else
+                    // {
+                    //     if (mapDirection == MapDirection.Left || mapDirection == MapDirection.Down)
+                    //     {
+                    //         return _mapList[roomType][0];
+                    //     }
+                    //
+                    //     return _mapList[roomType][1];
+                    // }
             }
             return _mapList[roomType][Random.Range(0, _mapList[roomType].Count)];
         }
