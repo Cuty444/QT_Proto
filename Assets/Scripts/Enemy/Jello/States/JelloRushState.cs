@@ -60,7 +60,7 @@ namespace QT.InGame
             _ownerEntity.SetDir(_dir, 4);
             
             _ownerEntity.Animator.SetTrigger(RushReadyAnimHash);
-            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_RushReady, _ownerEntity.transform.position);
+            _soundManager.PlayOneShot(_soundManager.SoundData.Jello_RushReady, _ownerEntity.transform.position);
             
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             
@@ -150,7 +150,7 @@ namespace QT.InGame
             if (hits.Length > 0)
             {
                 _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush_Crash, _ownerEntity.transform.position);
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Jello_Land, _ownerEntity.transform.position);
                 return true;
             }
 
@@ -166,7 +166,7 @@ namespace QT.InGame
                 
                 _ownerEntity.Animator.SetBool(IsRushingAnimHash, true);
                 
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush, _ownerEntity.transform.position);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Jello_RushReady, _ownerEntity.transform.position);
                 _ownerEntity.SetPhysics(false);
                 _timer = 0;
                     
@@ -180,7 +180,7 @@ namespace QT.InGame
             
             if (_timer > _data.RushLengthTime)
             {
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Jello_Land, _ownerEntity.transform.position);
                 
                 _ownerEntity.RevertToPreviousState();
                 _timer = 0;

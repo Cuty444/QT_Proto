@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using QT.Core;
+using QT.Sound;
 using UnityEngine;
 
 
@@ -20,8 +21,12 @@ namespace QT.InGame
         private Animator _animator;
         private bool _useAnimator;
         
+        private SoundManager _soundManager;
+        
         public void Initialize(Animator animator)
         {
+            _soundManager = SystemManager.Instance.SoundManager;
+            
             StopAllCoroutines();
             _animator = animator;
             _useAnimator = animator != null;
@@ -66,6 +71,8 @@ namespace QT.InGame
                 }
 
                 Shoot(data.ShootDataId, data.AimType, owner);
+                
+                _soundManager.PlayOneShot(_soundManager.SoundData.MonsterShoot, ShootPoint.position);
 
                 if (data.AfterDelay != 0)
                 {

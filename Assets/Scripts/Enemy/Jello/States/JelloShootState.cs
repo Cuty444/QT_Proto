@@ -32,6 +32,8 @@ namespace QT.InGame
         private ShootState _state;
         private float _timer;
 
+        private SoundManager _soundManager;
+        
         public JelloShootState(IFSMEntity owner) : base(owner)
         {
             _enemyData = _ownerEntity.Data;
@@ -40,6 +42,8 @@ namespace QT.InGame
 
         public override void InitializeState()
         {
+            _soundManager = SystemManager.Instance.SoundManager;
+            
             _ownerEntity.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
 
             _ownerEntity.Animator.SetTrigger(ShootReadyAnimHash);
@@ -71,6 +75,7 @@ namespace QT.InGame
                                 ProjectileOwner.Boss);
                             
                             SystemManager.Instance.ResourceManager.EmitParticle(ShootEffectPath, _ownerEntity.RightHandTransform.position);
+                            _soundManager.PlayOneShot(_soundManager.SoundData.Jello_Comb_Atk, _ownerEntity.transform.position);
                         }
 
                         _state = ShootState.Left;
@@ -87,6 +92,7 @@ namespace QT.InGame
                                 ProjectileOwner.Boss);
                             
                             SystemManager.Instance.ResourceManager.EmitParticle(ShootEffectPath, _ownerEntity.LeftHandTransform.position);
+                            _soundManager.PlayOneShot(_soundManager.SoundData.Jello_Comb_Atk, _ownerEntity.transform.position);
                         }
 
                         SystemManager.Instance.ResourceManager.EmitParticle(StompEffectPath, _ownerEntity.ShootPointPivot.position);
@@ -98,11 +104,16 @@ namespace QT.InGame
                     if (_timer > _data.ShootFinalDelay)
                     {
                         _ownerEntity.Shooter.ShootPoint = _ownerEntity.ShootPointPivot;
+                        
                         _ownerEntity.Shooter.Shoot(_data.ShootFinalShootId, AimTypes.Target, ProjectileOwner.Boss);
+                        _soundManager.PlayOneShot(_soundManager.SoundData.Jello_Comb_Atk, _ownerEntity.transform.position);
+                        _soundManager.PlayOneShot(_soundManager.SoundData.MonsterShoot,  _ownerEntity.transform.position);
 
                         if (!_ownerEntity.LeftHand.IsDead && !_ownerEntity.RightHand.IsDead)
                         {
                             _ownerEntity.Shooter.Shoot(_data.ShootFinalShootId2, AimTypes.Target, ProjectileOwner.Boss);
+                            _soundManager.PlayOneShot(_soundManager.SoundData.Jello_Comb_Atk, _ownerEntity.transform.position);
+                            _soundManager.PlayOneShot(_soundManager.SoundData.MonsterShoot,  _ownerEntity.transform.position);
                         }
 
                         _state = ShootState.After;

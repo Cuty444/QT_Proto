@@ -126,7 +126,7 @@ namespace QT.InGame
                 MapData = mapCellData.SpecialMapData as JelloMapData;
             }
             
-            //Shooter.Initialize(Animator);
+            Shooter.Initialize(null);
             
             SetUpStats(hpPer);
 
