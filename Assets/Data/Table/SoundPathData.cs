@@ -38,6 +38,7 @@ namespace QT.Sound
         
         [field: SerializeField] public EventReference GameOverSFX{ get; private set; }
         
+        [field: SerializeField] public EventReference MonsterShoot{ get; private set; }
         [field: SerializeField] public EventReference MonsterStun{ get; private set; }
         [field: SerializeField] public EventReference MonsterFly{ get; private set; }
         
@@ -94,6 +95,11 @@ namespace QT.Sound
         [field: SerializeField] public EventReference Subway_End { get; private set; }
         
         [field: SerializeField] public EventReference Monster_WaterDrop { get; private set; }
+        
+        
+        [field: SerializeField] public EventReference Jello_RushReady { get; private set; }
+        [field: SerializeField] public EventReference Jello_Land { get; private set; }
+        [field: SerializeField] public EventReference Jello_Hit { get; private set; }
         
         [field: SerializeField] public EventReference Jello_Comb { get; private set; }
         [field: SerializeField] public EventReference Jello_Comb_Atk { get; private set; }

@@ -101,7 +101,11 @@ namespace QT.InGame
             GetProjectiles();
         }
         
-
+        protected override void OnAim(Vector2 aimPos)
+        {
+            _aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
+        }
+        
         protected override void OnSwing(bool isOn)
         {
             if (isOn)

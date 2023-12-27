@@ -113,7 +113,7 @@ namespace QT.InGame
             }
             
             _ownerEntity.Animator.SetTrigger(JumpReadyAnimHash);
-            _soundManager.PlayOneShot(_soundManager.SoundData.Boss_RushReady, _ownerEntity.transform.position);
+            _soundManager.PlayOneShot(_soundManager.SoundData.Jello_RushReady, _ownerEntity.transform.position);
             
             _ownerEntity.Rigidbody.velocity = Vector2.zero;
             
@@ -143,7 +143,7 @@ namespace QT.InGame
             
             if (_timer > _data.StompLengthTime)
             {
-                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Motorcycle_End, _ownerEntity.transform.position);
+                _soundManager.PlayOneShot(_soundManager.SoundData.Boss_Rush_Crash, _ownerEntity.transform.position);
                 _ownerEntity.Animator.SetBool(IsJumpingAnimHash, false);
                 _ownerEntity.SetPhysics(true);
                 

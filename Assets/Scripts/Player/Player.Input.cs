@@ -98,8 +98,32 @@ namespace QT.InGame
             OnMove?.Invoke(moveInput);
 
             _lockAnimRotationTimer += Time.deltaTime;
-            Aim(AimPosition);
 
+
+            var aimDir = ((Vector2) transform.position - AimPosition).normalized;
+            
+            SetEyeAngle(aimDir);
+            
+            if (CurrentStateIndex == (int) States.Swing)
+            {
+                SetRotation(aimDir);
+            }
+            else
+            {
+                SetRotation(-moveInput);
+            }
+            
+            
+            // if (CurrentStateIndex == (int) States.Swing)
+            // {
+            //     var aimDir = ((Vector2) transform.position - AimPosition).normalized;
+            //     Aim(aimDir);
+            // }
+            // else
+            // {
+            //     Aim(-moveInput);
+            // }
+            
             OnAim?.Invoke(AimPosition);
         }
 
@@ -208,11 +232,9 @@ namespace QT.InGame
         {
             return LastSwingTime + 0.2f > Time.time;
         }
-        
-        private void Aim(Vector2 aimPos)
-        {
-            var aimDir = ((Vector2) transform.position - aimPos).normalized;
 
+        private void SetEyeAngle(Vector2 aimDir)
+        {
             if (aimDir == Vector2.zero)
             {
                 return;
@@ -223,15 +245,8 @@ namespace QT.InGame
                 aimDir *= -1;
             }
             
-            float flip = 180;
-            if (IsDodge)
-            {
-                flip = IsFlip ? 180f : 0f;
-                Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
-                return;
-            }
             var angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg - 90;
-            angle = _roationDamper.GetDampedValue(angle, Time.deltaTime);
+            //angle = _roationDamper.GetDampedValue(angle, Time.deltaTime);
             
             if (angle < 0)
             {
@@ -239,20 +254,49 @@ namespace QT.InGame
             }
 
             EyeTransform.rotation = Quaternion.Euler(0, 0, angle + 270);
+        }
+        
+        private void SetRotation(Vector2 dir)
+        {
+            if (_lockAnimRotationTimer < _lockAnimRotationTime)
+            {
+                return;
+            }
+            
+            if (dir == Vector2.zero)
+            {
+                return;
+            }
+            
+            if (IsReverseLookDir)
+            {
+                dir *= -1;
+            }
+            
+            float flip = 180;
+            if (IsDodge)
+            {
+                flip = IsFlip ? 180f : 0f;
+                Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
+                return;
+            }
+            
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90;
+            angle = _roationDamper.GetDampedValue(angle, Time.deltaTime);
+            
+            if (angle < 0)
+            {
+                angle += 360;
+            }
 
             if (angle > 180)
             {
                 angle = 360 - angle;
                 flip = 0;
             }
-
-            var aimValue = angle / 180 * 5;
-
-            if (_lockAnimRotationTimer >= _lockAnimRotationTime)
-            {
-                Animator.SetFloat(RotatationAnimHash, aimValue);
-                Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
-            }
+            
+            Animator.SetFloat(RotatationAnimHash, angle / 180 * 5);
+            Animator.transform.rotation = Quaternion.Euler(0f, flip, 0f);
         }
 
     }
