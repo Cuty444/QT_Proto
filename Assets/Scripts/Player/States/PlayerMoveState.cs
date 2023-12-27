@@ -10,8 +10,8 @@ namespace QT.InGame
         private static readonly int MoveSpeedAnimHash = Animator.StringToHash("MoveSpeed");
         private static readonly int IsMoveAnimHash = Animator.StringToHash("IsMove");
         
-        private Vector2 _moveDirection;
-        private Vector2 _aimDir;
+        protected Vector2 _moveDirection;
+        protected Vector2 _aimDir;
         
         protected Stat _moveSpeed;
         
@@ -70,8 +70,11 @@ namespace QT.InGame
             var currentNormalizedSpeed = _ownerEntity.Rigidbody.velocity.sqrMagnitude / (speed * speed);
             
             _ownerEntity.Animator.SetBool(IsMoveAnimHash, currentNormalizedSpeed > 0.1f);
-            
-            currentNormalizedSpeed *= Vector2.Dot(_moveDirection, _aimDir) < 0f ? 1 : -1;
+
+            if (_aimDir != Vector2.zero)
+            {
+                currentNormalizedSpeed *= Vector2.Dot(_moveDirection, _aimDir) < 0f ? 1 : -1;
+            }
             _ownerEntity.Animator.SetFloat(MoveDirAnimHash, currentNormalizedSpeed);
             
             _ownerEntity.Rigidbody.velocity = _moveDirection * speed;
@@ -85,7 +88,8 @@ namespace QT.InGame
         
         protected virtual void OnAim(Vector2 aimPos)
         {
-            _aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
+            _aimDir = Vector2.zero;
+            //_aimDir = ((Vector2) _ownerEntity.transform.position - aimPos).normalized;
         }
 
         protected virtual void OnSwing(bool isOn)
